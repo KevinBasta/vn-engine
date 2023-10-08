@@ -1,4 +1,4 @@
-﻿// visual novel engine.h : Include file for standard system include files,
+﻿// vn_engine.h : Include file for standard system include files,
 // or project specific include files.
 
 #pragma once

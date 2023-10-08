@@ -1,4 +1,4 @@
-﻿// visual novel engine.cpp : Defines the entry point for the application.
+﻿// vn_engine.cpp : Defines the entry point for the application.
 //
 
 #include "vn_engine.h"
