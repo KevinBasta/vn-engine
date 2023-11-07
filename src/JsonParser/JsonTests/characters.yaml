@@ -1,0 +1,28 @@
+---
+  name: garu
+  sprites: [
+    {
+      type: default_one,
+      filename: garu_default.png
+    },
+    {
+      type: happy_one,
+      filename: garu_happy.png
+    },
+    {
+      type: angry_one,
+      filename: garu_angry.png
+    }
+  ]
+---
+  name: barazazaza
+  sprites: [
+    {
+      type: default_one,
+      filename: br_one.png
+    },
+    {
+      type: default_two,
+      filename: br_two.png
+    }
+  ]
