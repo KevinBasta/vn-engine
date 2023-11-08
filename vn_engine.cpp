@@ -2,11 +2,17 @@
 //
 
 #include "vn_engine.h"
+#include "json_lexer.h"
 
-using namespace std;
+#include <string>
 
 int main()
 {
-	cout << "Hello CMake." << endl;
+	std::cout << "Hello CMake." << std::endl;
+
+	std::string filename = "JsonTests/test1.json";
+	JsonLexer test(filename);
+	test.lex();
+
 	return 0;
 }
