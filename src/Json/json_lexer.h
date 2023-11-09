@@ -2,13 +2,15 @@
 #include <fstream>
 #include <string>
 #include <vector>
+#include <filesystem>
 
 class JsonLexer {
 public:
-	JsonLexer(std::string filename);
+	JsonLexer(std::filesystem::path filepath, std::string filename);
 	void lex();
 
 private:
-	std::ifstream filestream;
+	std::string data;
+	std::filesystem::path filePath;
 	std::vector<std::string> tokens;
 };
