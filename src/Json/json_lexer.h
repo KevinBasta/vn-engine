@@ -29,6 +29,8 @@ private:
 	void scanToken();
 	void scanTokens();
 	void scanString();
+	void scanNumber();
+	bool isDigit(char ch);
 	void addToken(tokenType type);
 };
 

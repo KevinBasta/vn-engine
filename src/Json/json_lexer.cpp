@@ -57,6 +57,7 @@ void JsonLexer::scanTokens() {
 				scanString();
 				break;
 			
+
 			case ' ':
 			case '\r':
 			case '\t':
@@ -66,8 +67,10 @@ void JsonLexer::scanTokens() {
 				line++;
 				break;
 			
-			
 			default:
+				if (isDigit(ch)) {
+					scanNumber();
+				}
 				break;
 		}
 
@@ -108,6 +111,49 @@ void JsonLexer::scanString() {
 	addToken(STRING);
 }
 
+
+bool JsonLexer::isDigit(char ch) {
+	// need to check if the std::isdigit can be used
+	return ch >= '0' && ch <= '9';
+}
+
+void JsonLexer::scanNumber() {
+	char ch{};
+	
+	while (filestream.peek() && isDigit(filestream.peek())) {
+		filestream.get(ch);
+		dataBuffer += ch;
+	}
+
+
+	// REFACTOR TO IGNORE THE DECIMAL IF THERE IS NO NUMBER AFTER IT
+	if (filestream.peek() == '.') {
+		filestream.get(ch);
+		dataBuffer += ch;
+
+		if (filestream.peek() && isDigit(filestream.peek())) {
+			while (filestream.peek() && isDigit(filestream.peek())) {
+				filestream.get(ch);
+				dataBuffer += ch;
+			}
+		} 
+		else {
+			// Fatal error, number ending on a decimal
+			std::cout << "INVALID DECIMAL, NO FOLLOWING NUMBERS" << std::endl;
+		}
+	}
+
+	if (ch == '\n') {
+		// raise an error, strings can't span lines
+		std::cout << "NUMBER HAS NEW LINE IN IT BEFORE COMMA" << std::endl;
+	}
+
+	addToken(NUMBER);
+}
+
+//static void checkNewLine(char ch) {
+//
+//}
 
 /*std::istream& JsonLexer::scanToken() {
 	//do {
