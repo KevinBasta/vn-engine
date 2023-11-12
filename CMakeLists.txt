@@ -15,6 +15,8 @@ target_sources(
 	visual_novel_engine
 	PRIVATE 
 	"src/Json/json_lexer.cpp"
+	"src/Json/json_token.cpp"
+	"src/Json/json_error.cpp"
 ) 
 
 target_include_directories(

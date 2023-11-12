@@ -1,3 +1,9 @@
+
+#ifndef JSON_LEXER_H
+#define JSON_LEXER_H
+
+#include "json_token.h"
+
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -10,7 +16,20 @@ public:
 	void lex();
 
 private:
-	std::string data;
-	std::filesystem::path filePath;
-	std::vector<std::string> tokens;
+	std::string filepath;
+	std::fstream filestream;
+	
+	int start;
+	int current;
+	int line;
+	
+	std::string dataBuffer;
+	std::vector<JsonToken> tokens;
+	
+	void scanToken();
+	void scanTokens();
+	void scanString();
+	void addToken(tokenType type);
 };
+
+#endif // JSON_LEXER_H

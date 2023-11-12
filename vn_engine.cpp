@@ -16,7 +16,8 @@ int main()
 	std::filesystem::path jsonTestDir = "C:\\Users\\Kevin\\Documents\\CS\\cpp\\visual-novel-engine\\visual_novel_engine\\tests\\Json\\";
 	//std::filesystem::path filepath = std::filesystem::absolute(jsonpath);
 
-	JsonLexer *test = new JsonLexer(jsonTestDir, "test1.json");
+	JsonLexer test(jsonTestDir, "test1.json");
+	test.lex();
 
 	return 0;
 }
