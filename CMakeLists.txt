@@ -13,15 +13,17 @@ add_executable (
 
 target_sources(
 	visual_novel_engine
-	PRIVATE  
-	"src/JsonParser/json_lexer.cpp"
+	PRIVATE 
+	"src/Json/json_lexer.cpp"
+	"src/Json/json_token.cpp"
+	"src/Json/json_error.cpp"
 ) 
 
 target_include_directories(
 	visual_novel_engine
 	BEFORE
 	PUBLIC
-	"src/JsonParser"
+	"src/Json"
 )
 
 
