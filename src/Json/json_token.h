@@ -20,9 +20,9 @@ enum tokenType {
 
 class JsonToken {
 private:
-	tokenType type;
-	std::string lexeme;
-	int line;
+	tokenType type{};
+	std::string lexeme{};
+	int line{};
 
 public:
 	JsonToken(tokenType enumType, std::string parsedString, int lineNumber);

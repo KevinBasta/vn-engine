@@ -9,7 +9,7 @@ project ("visual_novel_engine")
 add_executable (
 	visual_novel_engine
 	"vn_engine.cpp"
-)
+ "src/Util/timer.cpp" "src/Util/timer.h")
 
 target_sources(
 	visual_novel_engine
@@ -17,6 +17,9 @@ target_sources(
 	"src/Json/json_lexer.cpp"
 	"src/Json/json_token.cpp"
 	"src/Json/json_error.cpp"
+	"src/Json/json_expr.cpp"
+
+	"src/Core/character.cpp"
 ) 
 
 target_include_directories(
@@ -26,6 +29,19 @@ target_include_directories(
 	"src/Json"
 )
 
+target_include_directories(
+	visual_novel_engine
+	BEFORE
+	PUBLIC
+	"src/Core"
+)
+
+target_include_directories(
+	visual_novel_engine
+	BEFORE
+	PUBLIC
+	"src/Util"
+)
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)
   set_property(TARGET visual_novel_engine PROPERTY CXX_STANDARD 20)

@@ -16,15 +16,15 @@ public:
 	void lex();
 
 private:
-	std::string filepath;
-	std::fstream filestream;
+	std::string filepath{};
+	std::fstream filestream{};
 	
-	int start;
-	int current;
-	int line;
+	int start{};
+	int current{};
+	int line{};
 	
-	std::string dataBuffer;
-	std::vector<JsonToken> tokens;
+	std::string dataBuffer{};
+	std::vector<JsonToken> tokens{};
 	
 	void scanToken();
 	void scanTokens();

@@ -9,12 +9,13 @@
 #include <filesystem>
 
 
-JsonLexer::JsonLexer(std::filesystem::path filedir, std::string filename) {
-	filepath = (filedir.string()).append(filename);
+JsonLexer::JsonLexer(std::filesystem::path filedir, std::string filename)
+	: filepath{ (filedir.string()).append(filename) }
+	, start{ 0 }
+	, current{ 0 }
+	, line{ 0 }
+{
 	
-	start	= 0;
-	current = 0;
-	line	= 1;
 }
 
 void JsonLexer::lex() {
@@ -41,16 +42,16 @@ void JsonLexer::scanTokens() {
 		dataBuffer += ch;
 		switch(ch) {
 			case '{':
-				addToken(LEFT_BRACE);
+				addToken(tokenType::LEFT_BRACE);
 				break;
 			case '}':
-				addToken(RIGHT_BRACE);
+				addToken(tokenType::RIGHT_BRACE);
 				break;
 			case ':':
-				addToken(COLON);
+				addToken(tokenType::COLON);
 				break;
 			case ',':
-				addToken(COMMA);
+				addToken(tokenType::COMMA);
 				break;
 
 			case '"':
@@ -78,7 +79,7 @@ void JsonLexer::scanTokens() {
 	}
 
 
-	tokens.push_back(JsonToken(END_OF_FILE, "", line));
+	tokens.push_back(JsonToken(tokenType::END_OF_FILE, "", line));
 }
 
 
@@ -108,7 +109,7 @@ void JsonLexer::scanString() {
 	filestream.get(ch);
 	dataBuffer += ch;
 
-	addToken(STRING);
+	addToken(tokenType::STRING);
 }
 
 
@@ -148,7 +149,7 @@ void JsonLexer::scanNumber() {
 		std::cout << "NUMBER HAS NEW LINE IN IT BEFORE COMMA" << std::endl;
 	}
 
-	addToken(NUMBER);
+	addToken(tokenType::NUMBER);
 }
 
 //static void checkNewLine(char ch) {

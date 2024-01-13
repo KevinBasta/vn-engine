@@ -3,6 +3,7 @@
 
 #include "vn_engine.h"
 #include "json_lexer.h"
+#include "timer.h"
 
 #include <iostream>
 #include <string>
@@ -16,8 +17,13 @@ int main()
 	std::filesystem::path jsonTestDir = "C:\\Users\\Kevin\\Documents\\CS\\cpp\\visual-novel-engine\\visual_novel_engine\\tests\\Json\\";
 	//std::filesystem::path filepath = std::filesystem::absolute(jsonpath);
 
-	JsonLexer test(jsonTestDir, "test1.json");
+	Timer t;
+	t.resetp();
+
+	JsonLexer test{ jsonTestDir, "test1.json" };
 	test.lex();
+
+	t.elapsedp();
 
 	return 0;
 }

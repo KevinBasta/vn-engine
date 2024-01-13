@@ -1,8 +1,4 @@
-﻿// vn_engine.h : Include file for standard system include files,
-// or project specific include files.
+﻿#ifndef VN_ENGINE_H
+#define VN_ENGINE_H
 
-#pragma once
-
-#include <iostream>
-
-// TODO: Reference additional headers your program requires here.
+#endif // VN_ENGINE_H
