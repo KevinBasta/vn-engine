@@ -1,4 +1,7 @@
 
+
+#include <list>
+
 /*
  * A story node, should have side effects on characters?
  * Can contain a normal text, characters, positions, player talking, etc..
@@ -6,5 +9,9 @@
  * Maybe node subtypes
  */
 class Node {
+private:
+	std::list<Node> children{};
+
+public:
 
 };

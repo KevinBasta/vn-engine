@@ -9,7 +9,7 @@ project ("visual_novel_engine")
 add_executable (
 	visual_novel_engine
 	"vn_engine.cpp"
- "src/Util/timer.cpp" "src/Util/timer.h" "src/Data_Structures/graph.c" "src/Data_Structures/graph.h" "src/Core/node.cpp" "src/Core/node.h" "src/Core/bond.cpp" "src/Core/bond.h")
+ "src/Util/timer.cpp" "src/Util/timer.h" "src/Data_Structures/graph.c" "src/Data_Structures/graph.h" "src/Data_Structures/node.cpp" "src/Data_Structures/node.h" "src/Core/bond.cpp" "src/Core/bond.h" "src/Util/id.c" "src/Util/id.h")
 
 target_sources(
 	visual_novel_engine
