@@ -9,7 +9,7 @@ project ("visual_novel_engine")
 add_executable (
 	visual_novel_engine
 	"vn_engine.cpp"
- "src/Util/timer.cpp" "src/Util/timer.h" "src/Data_Structures/graph.c" "src/Data_Structures/graph.h" "src/Data_Structures/node.cpp" "src/Data_Structures/node.h" "src/Core/bond.cpp" "src/Core/bond.h" "src/Util/id.c" "src/Util/id.h")
+)
 
 target_sources(
 	visual_novel_engine
@@ -18,9 +18,13 @@ target_sources(
 	"src/Json/json_token.cpp"
 	"src/Json/json_error.cpp"
 	"src/Json/json_expr.cpp"
-
 	"src/Core/character.cpp"
-) 
+	"src/Core/bond.cpp"
+	"src/Core/graph.cpp"
+	"src/Core/node.cpp"
+	"src/Util/id.cpp"
+	"src/Util/timer.cpp"
+)
 
 target_include_directories(
 	visual_novel_engine

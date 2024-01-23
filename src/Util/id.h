@@ -1,7 +1,7 @@
 
 class Id {
 private:
-	const int m_id;
+	const int m_id{};
 
 public:
 	Id(int n) : m_id{ n } { }
@@ -17,12 +17,12 @@ public:
 
 static class IdGenerator {
 private:
-	static int currentId;
+	static int m_currentId;
 
 public:
 	static Id getId() {
-		return Id(currentId++);
+		return Id(m_currentId++);
 	}
 };
 
-int IdGenerator::currentId{ 1 };
+int IdGenerator::m_currentId{ 1 };
