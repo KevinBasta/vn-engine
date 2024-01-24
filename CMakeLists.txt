@@ -19,7 +19,7 @@ target_sources(
 	"src/Json/json_error.cpp"
 	"src/Json/json_expr.cpp"
 	"src/Core/character.cpp"
-	"src/Core/bond.cpp"
+	"src/Core/relation.cpp"
 	"src/Core/graph.cpp"
 	"src/Core/node.cpp"
 	"src/Util/id.cpp"

@@ -1,4 +1,7 @@
 
+#ifndef ID_H
+#define ID_H
+
 class Id {
 private:
 	const int m_id{};
@@ -26,3 +29,5 @@ public:
 };
 
 int IdGenerator::m_currentId{ 1 };
+
+#endif // ID_H
