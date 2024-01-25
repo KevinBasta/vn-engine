@@ -9,7 +9,7 @@ project ("visual_novel_engine")
 add_executable (
 	visual_novel_engine
 	"vn_engine.cpp"
-)
+ "src/Core/chapter.cpp" "src/Core/chapter.h")
 
 target_sources(
 	visual_novel_engine
