@@ -1,12 +1,37 @@
 
+#include "id.h"
 #include "relation.h"
 
-#include <vector>
 #include <string>
-#include <utility>
+#include <vector>
+#include <unordered_map>
+#include <iostream>
 
-std::vector<std::pair<std::string, int>> Relation::relationTypes{};
 
-void Relation::addRelationType(std::string relationName) {
-	relationTypes.push_back(std::pair(relationName, static_cast<int>(relationTypes.size())));
+
+std::unordered_map<std::string, int> RelationTypes::relationTypes{};
+
+void RelationTypes::addRelationType(std::string relationName) {
+	relationTypes.insert({ relationName, IdGenerator::getId() });
+}
+
+void RelationTypes::print() {
+	std::cout << "Relation Types:" << std::endl;
+
+	for (auto [key, value] : RelationTypes::relationTypes) {
+		std::cout << "\t name - " << key << "\t id -   " << value << std::endl;
+	}
+}
+
+
+
+
+Relations::Relations() : m_relationships{} {
+
+};
+
+std::ostream& operator<<(std::ostream& out, Relations relation) {
+	std::cout << "Relation:" << std::endl;
+
+	return out;
 }

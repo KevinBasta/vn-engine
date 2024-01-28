@@ -8,21 +8,24 @@ project ("visual_novel_engine")
 # Add source to this project's executable.
 add_executable (
 	visual_novel_engine
+	
 	"vn_engine.cpp"
- "src/Core/chapter.cpp" "src/Core/chapter.h")
-
-target_sources(
-	visual_novel_engine
-	PRIVATE 
+	
 	"src/Json/json_lexer.cpp"
 	"src/Json/json_token.cpp"
 	"src/Json/json_error.cpp"
 	"src/Json/json_expr.cpp"
+
+	"src/Core/chapter.cpp"
 	"src/Core/character.cpp"
 	"src/Core/relation.cpp"
 	"src/Core/graph.cpp"
 	"src/Core/node.cpp"
-	"src/Util/id.cpp"
+	"src/Core/id.cpp"
+	
+	"src/Runtime/runtime_characters.cpp"
+	"src/Runtime/runtime_relations.cpp"
+
 	"src/Util/timer.cpp"
 )
 
@@ -30,20 +33,10 @@ target_include_directories(
 	visual_novel_engine
 	BEFORE
 	PUBLIC
-	"src/Json"
-)
-
-target_include_directories(
-	visual_novel_engine
-	BEFORE
-	PUBLIC
 	"src/Core"
-)
-
-target_include_directories(
-	visual_novel_engine
-	BEFORE
-	PUBLIC
+	"src/Engine"
+	"src/Runtime"
+	"src/Json"
 	"src/Util"
 )
 

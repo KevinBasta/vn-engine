@@ -9,6 +9,8 @@
 #include <string>
 #include <filesystem>
 
+#include "runtime_characters.h"
+#include "runtime_relations.h"
 
 void testJson() {
 	// Set path of test files
@@ -25,7 +27,13 @@ void testJson() {
 }
 
 void testCore() {
+	initCharacters();
+	initRelations();
 
+
+	/*for (auto i : g_characters) {
+		std::cout << i;
+	}*/
 }
 
 

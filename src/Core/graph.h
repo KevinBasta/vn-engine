@@ -16,6 +16,7 @@
 class Graph {
 private:
 	std::unique_ptr<node> m_head{};
+	std::unique_ptr<node> m_current{};
 
 public:
 	Graph() : m_head{ new node } {
