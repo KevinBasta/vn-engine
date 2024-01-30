@@ -12,6 +12,7 @@
 #include "runtime_characters.h"
 #include "runtime_relations.h"
 
+
 void testJson() {
 	// Set path of test files
 	std::filesystem::path jsonTestDir = "C:\\Users\\Kevin\\Documents\\CS\\cpp\\visual-novel-engine\\visual_novel_engine\\tests\\Json\\";
@@ -28,12 +29,18 @@ void testJson() {
 
 void testCore() {
 	initCharacters();
-	initRelations();
+	//initRelations();
 
-
-	/*for (auto i : g_characters) {
-		std::cout << i;
+	/*for (auto it = std::begin(g_characters); it != std::end(g_characters); ++it) {
+		std::cout << **it;
 	}*/
+
+	/*for (int i = 0; i < g_characters.size(); i++) {
+		Character* temp = g_characters[i].get();
+		std::cout << *temp << std::endl;
+	}*/
+
+	initRelations();
 }
 
 
@@ -43,5 +50,6 @@ int main()
 	
 	testCore();
 
+	std::cout << "End of program" << std::endl;
 	return 0;
 }

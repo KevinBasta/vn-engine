@@ -24,6 +24,7 @@ add_executable (
 	"src/Core/id.cpp"
 	
 	"src/Runtime/runtime_characters.cpp"
+	"src/Runtime/runtime_characters.h"
 	"src/Runtime/runtime_relations.cpp"
 
 	"src/Util/timer.cpp"

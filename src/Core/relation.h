@@ -22,6 +22,7 @@ private:
 
 public:
 	static void addRelationType(std::string relationName);
+	static int getRelationId(std::string relationName);
 	static void print();
 };
 
@@ -38,6 +39,18 @@ private:
 
 public: 
 	Relations();
+
+	void addCharacterRelation(int characterId, std::string_view relationType, int amountToAdd) {
+		std::unordered_map<CharacterId, Relationship>::const_iterator characterRelationship = m_relationships.find(characterId);
+		if (characterRelationship != m_relationships.end()) {
+
+			//std::unordered_map<RelationId, RelationValue>::const_iterator relationshipType = characterRelationship.find()
+		}
+		else {
+
+		}
+
+	}
 
 	friend std::ostream& operator<<(std::ostream& out, Relations relation);
 };

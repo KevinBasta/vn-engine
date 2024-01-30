@@ -13,14 +13,16 @@ class Character {
 private:
 	std::string m_name{};
 	const int	m_id;
-	Relation	m_relationships{};
+	Relations	m_relationships{};
 
 
 public:
 	Character(std::string_view name);
-	Character(std::string_view name, Relation relationships);
+	Character(std::string_view name, Relations relationships);
 
-	friend std::ostream& operator<<(std::ostream& out, Character character);
+	~Character();
+
+	friend std::ostream& operator<<(std::ostream& out, Character& character);
 
 	// vector  of affection int (generalized to emotion object to hold differnet emotions) to a reference of a player and their affection number?	
 };

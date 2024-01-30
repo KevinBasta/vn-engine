@@ -1,18 +1,14 @@
 
 #include "character.h"
 #include <vector>
+#include <memory>
 
-std::vector<Character> g_characters{};
+std::vector<std::unique_ptr<Character>> g_characters{};
 
 void initCharacters() {
+	std::unique_ptr<Character> garu{ std::make_unique<Character>("garu") };
+	std::unique_ptr<Character> brz{ std::make_unique<Character>("brazazaza") };
 
-	// these are being pushed as copies for now
-	// multiple ways to make this better using
-	// move semantics
-
-	Character garu{ "garu" };	
-	Character brz{ "brazazaza" };
-
-	g_characters.push_back(garu);
-	g_characters.push_back(brz);
+	g_characters.push_back(std::move(garu));
+	g_characters.push_back(std::move(brz));
 }
