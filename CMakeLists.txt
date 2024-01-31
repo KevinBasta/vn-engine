@@ -28,7 +28,7 @@ add_executable (
 	"src/Runtime/runtime_relations.cpp"
 
 	"src/Util/timer.cpp"
-)
+ "src/Core/relation_types.cpp" "src/Core/relation_types.h"  )
 
 target_include_directories(
 	visual_novel_engine

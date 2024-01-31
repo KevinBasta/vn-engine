@@ -1,5 +1,6 @@
 
 #include "relation.h"
+#include "relation_types.h"
 
 void initRelations() {
 	RelationTypes::addRelationType("friendship");
