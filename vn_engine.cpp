@@ -35,12 +35,12 @@ void testCore() {
 		std::cout << **it;
 	}*/
 
-	/*for (int i = 0; i < g_characters.size(); i++) {
+	initRelations();
+
+	for (int i = 0; i < g_characters.size(); i++) {
 		Character* temp = g_characters[i].get();
 		std::cout << *temp << std::endl;
-	}*/
-
-	initRelations();
+	}
 }
 
 

@@ -20,6 +20,9 @@ public:
 	Character(std::string_view name);
 	Character(std::string_view name, Relations relationships);
 
+	Relations& getRelationsObject() { return m_relationships; }
+	int getId() { return m_id; }
+
 	~Character();
 
 	friend std::ostream& operator<<(std::ostream& out, Character& character);

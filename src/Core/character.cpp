@@ -30,9 +30,9 @@ Character::~Character() {
 
 std::ostream& operator<<(std::ostream& out, Character& character) {
 	out << "Character:" << std::endl;
-	out << "\t name      - " << character.m_name << std::endl;
-	out << "\t id        - " << character.m_id << std::endl;
-	out << "\t "<< character.m_relationships << std::endl;
+	out << "\tname      - " << character.m_name << std::endl;
+	out << "\tid        - " << character.m_id << std::endl;
+	out << "\t"<< character.m_relationships << std::endl;
 
 	return out;
 }

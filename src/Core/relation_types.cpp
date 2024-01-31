@@ -17,6 +17,7 @@ void RelationTypes::addRelationType(std::string relationName) {
  * Return true if relation found, false otherwise.
  */
 bool RelationTypes::getRelationId(std::string relationName, int& outId) {
+	// PI (potential improvement) with: https://en.cppreference.com/w/cpp/container/unordered_map/find to pass string_view
 	std::unordered_map<RelationName, RelationId>::const_iterator relationType = RelationTypes::relationTypes.find(relationName);
 	
 	if (relationType != RelationTypes::relationTypes.end()) {

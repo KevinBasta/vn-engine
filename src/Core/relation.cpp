@@ -12,13 +12,20 @@ Relations::Relations() : m_relationships{} {
 
 };
 
-std::ostream& operator<<(std::ostream& out, Relations relation) {
-	std::cout << "Relation:" << std::endl;
+std::ostream& operator<<(std::ostream& out, Relations& relation) {
+	out << "Relations:" << std::endl;
+
+	for (auto characterRelations : relation.m_relationships) {
+		out << "\tcharacter id: " << characterRelations.first << std::endl;
+		
+		for (auto relationValues : characterRelations.second) {
+			out << "\t\trelation id: " << relationValues.first << " relation value: " << relationValues.second << std::endl;
+		}
+	}
 
 	return out;
 }
 
-// PI with: https://en.cppreference.com/w/cpp/container/unordered_map/find to pass string_view
 void Relations::addCharacterRelation(int characterId, int relationId, int amountToAdd) {
 	CharacterToRelationMap::iterator relationWithCharacter = m_relationships.find(characterId);
 	

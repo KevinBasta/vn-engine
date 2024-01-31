@@ -29,7 +29,7 @@ public:
 
 	void addCharacterRelation(int characterId, int relationId, int amountToAdd);
 
-	friend std::ostream& operator<<(std::ostream& out, Relations relation);
+	friend std::ostream& operator<<(std::ostream& out, Relations& relation);
 };
 
 #endif // RELATION_H
