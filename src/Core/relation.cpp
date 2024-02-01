@@ -51,10 +51,14 @@ void Relations::addCharacterRelation(int characterId, int relationId, int amount
 		
 		if (result) {
 			// Add the relation id and value
-			relationshipEntry->second.insert(std::make_pair(relationId, amountToAdd));
+			auto [relationTypeEntry, result] = relationshipEntry->second.insert(std::make_pair(relationId, amountToAdd));
+			
+			if (!result) {
+				std::cout << "error adding character relation type and amount" << std::endl;
+			}
 		}
 		else {
-			std::cout << "error creating character relation entry" << std::endl;
+			std::cout << "error adding character relationship" << std::endl;
 		}
 	}
 }

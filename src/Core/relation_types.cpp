@@ -33,6 +33,6 @@ void RelationTypes::print() {
 	std::cout << "Relation Types:" << std::endl;
 
 	for (auto [key, value] : RelationTypes::relationTypes) {
-		std::cout << "\t name - " << key << "\t id -   " << value << std::endl;
+		std::cout << "\t name - " << key << "    \t id -   " << value << std::endl;
 	}
 }

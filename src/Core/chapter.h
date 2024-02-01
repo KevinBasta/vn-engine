@@ -4,7 +4,6 @@
 
 #include "graph.h"
 
-
 class Chapter {
 private:
 	Graph chapterTree{};

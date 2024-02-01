@@ -37,10 +37,12 @@ void testCore() {
 
 	initRelations();
 
-	for (int i = 0; i < g_characters.size(); i++) {
+	/*for (int i = 0; i < g_characters.size(); i++) {
 		Character* temp = g_characters[i].get();
 		std::cout << *temp << std::endl;
-	}
+	}*/
+
+	
 }
 
 

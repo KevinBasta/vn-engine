@@ -22,16 +22,16 @@ void initRelations() {
 	int garuId = garu->getId();
 	int brzId = brz->getId();
 
-	std::cout << garuId << brzId << friendshipId << respectId << hatredId << std::endl;
+	//std::cout << garuId << brzId << friendshipId << respectId << hatredId << std::endl;
 
 	garuRelations.addCharacterRelation(brzId, friendshipId, 1);
-	std::cout << garuRelations;
+	//std::cout << garuRelations;
 	garuRelations.addCharacterRelation(brzId, hatredId, 20);
-	std::cout << garuRelations;
+	//std::cout << garuRelations;
 	garuRelations.addCharacterRelation(brzId, hatredId, 2);
-	std::cout << garuRelations;
+	//std::cout << garuRelations;
 	garuRelations.addCharacterRelation(brzId, hatredId, -10);
-	std::cout << garuRelations;
+	//std::cout << garuRelations;
 
 	brzRelations.addCharacterRelation(garuId, respectId, 1);
 }
