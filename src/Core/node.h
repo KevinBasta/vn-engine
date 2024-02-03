@@ -2,10 +2,12 @@
 #ifndef BASE_NODE_H
 #define BASE_NODE_H
 
+#include "id.h"
 
 #include <vector>
 #include <string>
 #include <iostream>
+#include <memory>
 
 /*
  * A story node, should have side effects on characters?
@@ -15,33 +17,66 @@
  */
 class Node {
 private:
-	std::vector<Node&> m_children{};
+	int m_id{};
+	Node* m_parent{};
+	std::vector<std::unique_ptr<Node>> m_children{};
+
 	// pre actions (transitions, animations, etc..)
 	// body actions (text, animations, etc..)
 	// post actions (choises, bond mutations, transitions, animations, etc...)
 
 public:
 
-	Node() : m_children{} {
+	Node() : m_children{}, m_id{ IdGenerator::getId() } {
 
 	}
 
-	void addChild(Node& child) {
-		m_children.push_back(child);
+	int getId() {
+		return m_id;
 	}
 
-	Node& selectNode(int n) {
-		if (m_children.size() == 1) {
-			return m_children[0];
+	// Engine Operations:
+
+	// Usecase: A node is connected to a different parent
+	void changeParent(Node* newParent) {
+		m_parent = newParent;
+	}
+	
+	void removeChild(int childId) {
+
+	}
+
+	void addChild(Node* child) {
+		m_children.push_back(std::make_unique<Node>(child));
+	}
+
+	// function for writing out how to construct this node in cpp for to create runtime
+
+
+
+
+	// Game Operations:
+	Node* getParent() {
+		return m_parent;
+	}
+
+	Node* getChild(int childIndex) {
+		int lastVectorIndex = m_children.size() - 1;
+		
+		if (childIndex > lastVectorIndex || childIndex < 0) {
+			return nullptr;
 		}
-
-
-
+		
+		return m_children[childIndex].get();
 	}
-	
-	
-	virtual void displayNode() {
-		std::cout << "base node" << std::endl;
+
+	int getChildrenAmount() {
+		return m_children.size();
+	}
+
+	// Return children to display data from them for user to pick based on that
+	std::vector<std::unique_ptr<Node>>& getChildren() {
+		return m_children;
 	}
 
 	void action() {
@@ -49,17 +84,30 @@ public:
 		// ret = theaction();
 		// do post actions based on ret
 	}
+
+
+	virtual void displayNode() {
+		std::cout << "base node" << std::endl;
+	}
+
+	friend std::ostream& operator<<(std::ostream& out, Node& node);
 };
+
+
+
+
+
+
 
 class ChapterNode: Node {
 	virtual void displayNode() {
-		std::count << "chapter node" << std::endl;
+		std::cout << "chapter node" << std::endl;
 	}
 };
 
 class OpenGLNode : Node {
 	virtual void displayNode() {
-		std::count << "opengl node" << std::endl;
+		std::cout << "opengl node" << std::endl;
 	}
 };
 

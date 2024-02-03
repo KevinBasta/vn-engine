@@ -6,6 +6,7 @@
 
 #include <memory>
 #include <iostream>
+#include <unordered_set>
 
 /*
  * A structure that allows forward and backwards progress in the narrative.
@@ -19,27 +20,25 @@
 
 class Graph {
 private:
-	std::shared_ptr<Node> m_head{};
-	std::shared_ptr<Node> m_current{};
+	std::unique_ptr<Node> m_head{};
+	Node* m_current{};
 
 public:
 	Graph();
 
 public:
-	// Runtime Engine Operations:
-
+// Engine Operations:
 	// Usecase: modify or populate the m_current
-	Node* getCurrentNode() { return m_current.get(); }
+	Node* getCurrentNode() { return m_current; }
 
 	// Usecase: insert child node into m_current
-	bool insertChildNode(std::shared_ptr<Node> node);
+	// bool insertChildNode(Node* node); // Does this make sense? Can't this be done in the node object itself?
 
 	// Usecase: after constructing the tree, prepare it for traversal
-	bool setCurrentNodeToHead();
+	void setCurrentNodeToHead() { m_current = m_head.get(); };
 
 public:
-	// Runtime Game Operations:
-	
+// Game Operations:
 	// Usecase: forward progress in the story
 	bool goToChildNode(int nodeId);
 
@@ -48,6 +47,10 @@ public:
 	
 	// Usecase: viewing old nodes or loading from save file
 	bool setCurrentNode(int nodeId);
+
+private:
+	// Tail-recursive function only for use with setCurrentNode
+	void bfs(int targetNodeId, Node* nodeChecking, std::unordered_set<int>& visitedNodes);
 
 public:
 	// Operators:
