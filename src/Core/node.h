@@ -26,58 +26,24 @@ private:
 	// post actions (choises, bond mutations, transitions, animations, etc...)
 
 public:
+	Node();
 
-	Node() : m_children{}, m_id{ IdGenerator::getId() } {
+public:
+// Engine Operations:
+	// Usecase: Connect a node to a different parent
+	void changeParent(Node* newParent) { m_parent = newParent; }
+	void addChild(Node* child);
+	void removeChild(int childId);
 
-	}
-
-	int getId() {
-		return m_id;
-	}
-
-	// Engine Operations:
-
-	// Usecase: A node is connected to a different parent
-	void changeParent(Node* newParent) {
-		m_parent = newParent;
-	}
-	
-	void removeChild(int childId) {
-
-	}
-
-	void addChild(Node* child) {
-		m_children.push_back(std::make_unique<Node>(child));
-	}
-
-	// function for writing out how to construct this node in cpp for to create runtime
-
-
-
-
-	// Game Operations:
-	Node* getParent() {
-		return m_parent;
-	}
-
-	Node* getChild(int childIndex) {
-		int lastVectorIndex = m_children.size() - 1;
-		
-		if (childIndex > lastVectorIndex || childIndex < 0) {
-			return nullptr;
-		}
-		
-		return m_children[childIndex].get();
-	}
-
-	int getChildrenAmount() {
-		return m_children.size();
-	}
+public:
+// Game Operations:
+	int getId() { return m_id; }
+	Node* getParent() { return m_parent; }
+	Node* getChild(int childIndex);
+	int getChildrenAmount() { return m_children.size(); }
 
 	// Return children to display data from them for user to pick based on that
-	std::vector<std::unique_ptr<Node>>& getChildren() {
-		return m_children;
-	}
+	std::vector<std::unique_ptr<Node>>& getChildren() { return m_children; }
 
 	void action() {
 		// pre
@@ -85,11 +51,11 @@ public:
 		// do post actions based on ret
 	}
 
-
 	virtual void displayNode() {
 		std::cout << "base node" << std::endl;
 	}
 
+	// maybe repurpose for writing out to file how to construct this node in cpp for to create runtime or make separte function
 	friend std::ostream& operator<<(std::ostream& out, Node& node);
 };
 
