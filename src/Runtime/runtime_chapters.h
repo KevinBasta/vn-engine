@@ -2,6 +2,8 @@
 #ifndef RUNTIME_CHAPTERS_H
 #define RUNTIME_CHAPTERS_H
 
+#include "node.h"
+#include "node_children.h"
 #include "chapter.h"
 
 #include <vector>

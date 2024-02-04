@@ -29,7 +29,7 @@ void NodeChildren::updateChildrenViewer() {
 }
 
 void NodeChildren::addOwnedChild(Node* node) {
-	m_ownedChildren.push_back(std::make_unique<Node>(node));
+	m_ownedChildren.push_back(std::unique_ptr<Node>{node});
 }
 
 void NodeChildren::addReferencedChild(Node* node) {

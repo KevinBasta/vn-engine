@@ -2,10 +2,10 @@
 #ifndef NODE_CHILDREN_H
 #define NODE_CHILDREN_H
 
-#include "node.h"
-
 #include <memory>
 #include <vector>
+
+class Node;
 
 class NodeChildren {
 private:

@@ -7,7 +7,7 @@ void initRelations() {
 	RelationTypes::addRelationType("friendship");
 	RelationTypes::addRelationType("respect");
 	RelationTypes::addRelationType("hatred");
-	RelationTypes::print();
+	// RelationTypes::print();
 
 	Character* garu = g_characters[0].get();
 	Relations& garuRelations = (*garu).getRelationsObject();

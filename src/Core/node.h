@@ -10,9 +10,7 @@
 #include <iostream>
 #include <memory>
 
-
-
-
+class NodeChildren;
 
 /*
  * A story node, should have side effects on characters?
@@ -41,7 +39,7 @@ public:
 // Engine Operations:
 	// Usecase: Connect a node to a different parent
 	bool isOwned() { return m_isOwned; }
-	bool setOwned(bool owned) { m_isOwned = owned; };
+	void setOwned(bool owned) { m_isOwned = owned; };
 
 	void setParent(Node* parent) { m_parent = parent; }
 
@@ -54,7 +52,7 @@ public:
 	int getId() { return m_id; }
 	Node* getParent() { return m_parent; }
 	Node* getChildByIndex(int childIndex);
-	int getChildrenAmount() { return m_children.size(); }
+	int getChildrenAmount();
 
 	// Return children to display data from them for user to pick based on that
 	// std::vector<std::unique_ptr<Node>>& getChildren() { return m_children; }
@@ -65,19 +63,7 @@ public:
 		// do post actions based on ret
 	}
 
-	virtual void print(bool printChildren) {
-		std::cout << "node" << std::endl;
-		std::cout << "	id:		 " << m_id << std::endl;
-		std::cout << "	temp data: " << m_temp << std::endl;
-
-		if (printChildren) {
-			std::cout << "START children of " << m_temp << std::endl;
-			for (int i{ 0 }; i < m_children.size(); i++) {
-				m_children[i]->print(true);
-			}
-			std::cout << "END children of " << m_temp << std::endl;
-		}
-	}
+	virtual void print(bool printChildren);
 
 	// maybe repurpose for writing out to file how to construct this node in cpp for to create runtime or make separte function
 	friend std::ostream& operator<<(std::ostream& out, Node& node);

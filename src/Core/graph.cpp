@@ -19,7 +19,7 @@ Graph::Graph() :
 
 void Graph::setHeadNode(Node* node) {
 	// Does this deallocate the previous uniqueptr object if there was one?
-	m_head = std::make_unique<Node>(node);
+	m_head.reset(node);
 }
 
 // Game Operations:
@@ -27,7 +27,14 @@ void Graph::setHeadNode(Node* node) {
 // Usecase: Forward progress in the story
 bool Graph::pointToChild(int nodeIndex) {
 	// handle no children case
-	m_current = m_current->getChildByIndex(nodeIndex);
+	Node* child = m_current->getChildByIndex(nodeIndex);
+
+	if (child) {
+		m_current = child;
+		return true;
+	}
+
+	return false;
 }
 
 // Usecase: backward progress in the story
@@ -96,8 +103,15 @@ bool Graph::pointToNode(int nodeId) {
 
 std::ostream& operator<<(std::ostream& out, Graph& graph) {
 	std::cout << "Graph:" << std::endl;
-	std::cout << "\tHead:" << *(graph.m_head.get()) << std::endl;
-	
-	std::cout << "\tCurrent:" << std::endl;
-	std::cout << *(graph.m_current)->print(false);
+	std::cout << "Head:" << std::endl;
+	(graph.m_head.get())->print(true);
+	std::cout << std::endl;
+
+	std::cout << "Current:" << std::endl;
+	if (graph.m_current != nullptr) {
+		(graph.m_current)->print(false);
+		std::cout << std::endl;
+	}
+
+	return out;
 }

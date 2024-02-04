@@ -1,5 +1,6 @@
 
 #include "node.h"
+#include "node_children.h"
 #include "graph.h"
 #include "chapter.h"
 
@@ -27,7 +28,7 @@ void createChapterOne() {
 
 	chapterOneChild1->addChild(chapterOneChild4);
 	chapterOneChild4->addChild(chapterOneChild5);
-	chapterOneHead->addChild(chapterOneHead);
+	// chapterOneHead->addChild(chapterOneHead); unhandled case yet
 
 	chapterOneGraph.setHeadNode(chapterOneHead);
 

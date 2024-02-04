@@ -28,14 +28,14 @@ void testJson() {
 }
 
 void testCore() {
-	initCharacters();
+	// initCharacters();
 	//initRelations();
 
 	/*for (auto it = std::begin(g_characters); it != std::end(g_characters); ++it) {
 		std::cout << **it;
 	}*/
 
-	initRelations();
+	// initRelations();
 
 	/*for (int i = 0; i < g_characters.size(); i++) {
 		Character* temp = g_characters[i].get();
