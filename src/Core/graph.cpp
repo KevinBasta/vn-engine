@@ -6,8 +6,10 @@
 #include <unordered_set>
 #include <iostream>
 
-Graph::Graph() : m_head{ std::make_unique<Node>() } {
-	m_current = m_head.get();
+Graph::Graph() :
+	m_head{},
+	m_current{ nullptr }
+{
 }
 
 
@@ -15,17 +17,21 @@ Graph::Graph() : m_head{ std::make_unique<Node>() } {
 //	m_current
 //}
 
+void Graph::setHeadNode(Node* node) {
+	// Does this deallocate the previous uniqueptr object if there was one?
+	m_head = std::make_unique<Node>(node);
+}
 
 // Game Operations:
 
 // Usecase: Forward progress in the story
-bool Graph::goToChildNode(int nodeIndex) {
+bool Graph::pointToChild(int nodeIndex) {
 	// handle no children case
-	m_current = m_current->getChild(nodeIndex);
+	m_current = m_current->getChildByIndex(nodeIndex);
 }
 
 // Usecase: backward progress in the story
-void Graph::goToParentNode() {
+void Graph::pointToParent() {
 	if (m_current != m_head.get()) {
 		m_current = m_current->getParent();
 	}
@@ -37,7 +43,8 @@ void Graph::goToParentNode() {
 
 
 // Set m_current to the node with id targetNodeId if it exists
-void Graph::bfs(int targetNodeId, Node* nodeChecking, std::unordered_set<int>& visitedNodes) {
+// can be switched to bfs later, although it's a tradeoff, if can be made tail recursive would be better
+void Graph::dfs(int targetNodeId, Node* nodeChecking, std::unordered_set<int>& visitedNodes) {
 	// there might be a bug in this function where unordered_set is placed elsewhere? may not apply to unordered_set
 	if (m_current != nullptr) {
 		return;
@@ -52,10 +59,10 @@ void Graph::bfs(int targetNodeId, Node* nodeChecking, std::unordered_set<int>& v
 		int childrenAmount = nodeChecking->getChildrenAmount();
 
 		for (int i{ 0 }; i < childrenAmount; i++) {
-			Node* child = nodeChecking->getChild(i);
+			Node* child = nodeChecking->getChildByIndex(i);
 			
 			if (visitedNodes.find(child->getId()) == visitedNodes.end()) {
-				bfs(targetNodeId, child, visitedNodes);
+				dfs(targetNodeId, child, visitedNodes);
 			}
 		}
 	}
@@ -64,7 +71,7 @@ void Graph::bfs(int targetNodeId, Node* nodeChecking, std::unordered_set<int>& v
 }
 
 // Usecase: Viewing old nodes or loading from save file
-bool Graph::setCurrentNode(int nodeId) {
+bool Graph::pointToNode(int nodeId) {
 	using visitedNodeId = int;
 
 	// Required to keep track of visited nodes since graph can have cycles
@@ -72,11 +79,11 @@ bool Graph::setCurrentNode(int nodeId) {
 
 	m_current = nullptr;
 
-	bfs(nodeId, m_head.get(), visitedNodes);
+	dfs(nodeId, m_head.get(), visitedNodes);
 
 	if (m_current == nullptr) {
 		std::cout << "Node not found" << std::endl;
-		setCurrentNodeToHead();
+		pointToHead();
 		return false;
 	}
 	else {
@@ -89,6 +96,8 @@ bool Graph::setCurrentNode(int nodeId) {
 
 std::ostream& operator<<(std::ostream& out, Graph& graph) {
 	std::cout << "Graph:" << std::endl;
-	std::cout << "\tHead      " << *(graph.m_head.get()) << std::endl;
-	std::cout << "\tCurrent   " << *(graph.m_current) << std::endl;
+	std::cout << "\tHead:" << *(graph.m_head.get()) << std::endl;
+	
+	std::cout << "\tCurrent:" << std::endl;
+	std::cout << *(graph.m_current)->print(false);
 }

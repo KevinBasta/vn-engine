@@ -11,7 +11,7 @@
 
 #include "runtime_characters.h"
 #include "runtime_relations.h"
-
+#include "runtime_chapters.h"
 
 void testJson() {
 	// Set path of test files
@@ -42,7 +42,7 @@ void testCore() {
 		std::cout << *temp << std::endl;
 	}*/
 
-	
+	createChapterOne();
 }
 
 

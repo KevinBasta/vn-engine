@@ -18,17 +18,22 @@ add_executable (
 
 	"src/Core/chapter.cpp"
 	"src/Core/character.cpp"
+	"src/Core/relation_types.cpp" 
 	"src/Core/relation.cpp"
 	"src/Core/graph.cpp"
 	"src/Core/node.cpp"
+	"src/Core/node_children.cpp" 
 	"src/Core/id.cpp"
 	
 	"src/Runtime/runtime_characters.cpp"
 	"src/Runtime/runtime_characters.h"
 	"src/Runtime/runtime_relations.cpp"
-
+	"src/Runtime/runtime_relations.h"
+	"src/Runtime/runtime_chapters.cpp" 
+	"src/Runtime/runtime_chapters.h" 
+	
 	"src/Util/timer.cpp"
- "src/Core/relation_types.cpp" "src/Core/relation_types.h"  )
+)
 
 target_include_directories(
 	visual_novel_engine

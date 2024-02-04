@@ -6,12 +6,15 @@
 
 class Chapter {
 private:
-	Graph chapterTree{};
+	Graph m_graph{};
 
 public:
 	Chapter() {
 
 	}
+
+	Graph& getGraph() { return m_graph; }
+
 
 };
 

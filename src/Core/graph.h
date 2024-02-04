@@ -34,23 +34,25 @@ public:
 	// Usecase: insert child node into m_current
 	// bool insertChildNode(Node* node); // Does this make sense? Can't this be done in the node object itself?
 
-	// Usecase: after constructing the tree, prepare it for traversal
-	void setCurrentNodeToHead() { m_current = m_head.get(); };
+	void setHeadNode(Node* node);
 
 public:
 // Game Operations:
+	// Usecase: after constructing the tree, prepare it for traversal
+	void pointToHead() { m_current = m_head.get(); };
+	
 	// Usecase: forward progress in the story
-	bool goToChildNode(int nodeId);
+	bool pointToChild(int nodeId);
 
 	// Usecase: backward progress in the story
-	void goToParentNode();
+	void pointToParent();
 	
 	// Usecase: viewing old nodes or loading from save file
-	bool setCurrentNode(int nodeId);
+	bool pointToNode(int nodeId);
 
 private:
-	// Tail-recursive function only for use with setCurrentNode
-	void bfs(int targetNodeId, Node* nodeChecking, std::unordered_set<int>& visitedNodes);
+	// Recursive function only for use with setCurrentNode
+	void dfs(int targetNodeId, Node* nodeChecking, std::unordered_set<int>& visitedNodes);
 
 public:
 	// Operators:
