@@ -63,7 +63,7 @@ public:
 		// do post actions based on ret
 	}
 
-	virtual void print(bool printChildren);
+	virtual void print(bool printChildren, int indentLevel=0);
 
 	// maybe repurpose for writing out to file how to construct this node in cpp for to create runtime or make separte function
 	friend std::ostream& operator<<(std::ostream& out, Node& node);

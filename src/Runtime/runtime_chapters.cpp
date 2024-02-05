@@ -20,14 +20,15 @@ void createChapterOne() {
 
 	Node* chapterOneChild4{ new Node("level 2 child node 1!") };
 	
-	Node* chapterOneChild5{ new Node("level 3 child node 1!") };
+	//Node* chapterOneChild5{ new Node("level 3 child node 1!") };
 
 	chapterOneHead->addChild(chapterOneChild1);
 	chapterOneHead->addChild(chapterOneChild2);
 	chapterOneHead->addChild(chapterOneChild3);
 
 	chapterOneChild1->addChild(chapterOneChild4);
-	chapterOneChild4->addChild(chapterOneChild5);
+	chapterOneChild1->addChild(chapterOneChild2);
+	//chapterOneChild4->addChild(chapterOneChild5);
 	// chapterOneHead->addChild(chapterOneHead); unhandled case yet
 
 	chapterOneGraph.setHeadNode(chapterOneHead);

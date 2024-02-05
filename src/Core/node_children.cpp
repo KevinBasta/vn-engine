@@ -70,3 +70,19 @@ Node* NodeChildren::operator[](int index) {
 std::vector<Node*>& NodeChildren::getChildrenView() {
 	return m_childrenViewer;
 }
+
+void NodeChildren::print(int indentLevel) {
+	for (int i = 0; i < indentLevel; i++) { std::cout << '\t'; };
+	std::cout << "Owned Children: ";
+	for (std::unique_ptr<Node>& node : m_ownedChildren) {
+		std::cout << node.get()->getId() << ' ';
+	}
+	std::cout << std::endl;
+
+	for (int i = 0; i < indentLevel; i++) { std::cout << '\t'; };
+	std::cout << "Referenced Children: ";
+	for (Node* node : m_referencedChildren) {
+		std::cout << node->getId() << ' ';
+	}
+	std::cout << std::endl;
+}

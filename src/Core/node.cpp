@@ -38,16 +38,23 @@ int Node::getChildrenAmount() {
 	return m_children.size(); 
 }
 
-void Node::print(bool printChildren) {
-	std::cout << "node" << std::endl;
-	std::cout << "	id:		 " << m_id << std::endl;
-	std::cout << "	temp data: " << m_temp << std::endl;
+void Node::print(bool printChildren, int indentLevel) {
+	for (int i = 0; i < indentLevel; i++) { std::cout << '\t'; };
+	std::cout << "node id: " << m_id << std::endl;
+	for (int i = 0; i < indentLevel; i++) { std::cout << '\t'; };
+	std::cout << "temp data: " << m_temp << std::endl;
+	m_children.print(indentLevel);
+
 
 	if (printChildren) {
-		std::cout << "START children of " << m_temp << std::endl;
+		for (int i = 0; i < indentLevel; i++) { std::cout << '\t'; };
+		std::cout << "{" << std::endl;
+		
 		for (int i{ 0 }; i < m_children.size(); i++) {
-			m_children[i]->print(true);
+			m_children[i]->print(printChildren, indentLevel + 1);
 		}
-		std::cout << "END children of " << m_temp << std::endl;
+	
+		for (int i = 0; i < indentLevel; i++) { std::cout << '\t'; };
+		std::cout << "}" << std::endl;
 	}
 }

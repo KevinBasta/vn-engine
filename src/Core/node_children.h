@@ -34,6 +34,7 @@ public:
 	Node* operator[](int index);
 	std::vector<Node*>& getChildrenView();
 
+	void print(int indentLevel = 0);
 	//Node* getChildById(int id);
 };
 
