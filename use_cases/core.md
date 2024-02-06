@@ -11,7 +11,7 @@ Node
 Use Case 1:
 
 [static]  Characters are loaded into and owned by main() (from file or as static code)
-[dynamic] Characters are added to a Chapter as references on chapter load
+[dynamic] Characters are added to a Chapter as references on chapter load (not needed?)
 
 [static] Graph contains Nodes and owns all its Nodes
 [static] Graph and its Nodes are loaded in a chapter (from file or as static code)

@@ -33,6 +33,7 @@ protected:
 
 public:
 	Node();
+	~Node();
 	Node(std::string tempData);
 
 public:

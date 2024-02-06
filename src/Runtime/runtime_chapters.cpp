@@ -14,13 +14,13 @@ void createChapterOne() {
 	Graph& chapterOneGraph{ chapterOne.get()->getGraph() };
 	
 	Node* chapterOneHead{ new Node("the head node!") };
-	Node* chapterOneChild1{ new Node("level 1 child node one!") };
-	Node* chapterOneChild2{ new Node("level 1 child node two!") };
-	Node* chapterOneChild3{ new Node("level 1 child node three!") };
+	Node* chapterOneChild1{ new Node("level 1 child node 1!") };
+	Node* chapterOneChild2{ new Node("level 1 child node 2!") };
+	Node* chapterOneChild3{ new Node("level 1 child node 3!") };
 
 	Node* chapterOneChild4{ new Node("level 2 child node 1!") };
 	
-	//Node* chapterOneChild5{ new Node("level 3 child node 1!") };
+	Node* chapterOneChild5{ new Node("level 2 child node 2!") };
 
 	chapterOneHead->addChild(chapterOneChild1);
 	chapterOneHead->addChild(chapterOneChild2);
@@ -28,6 +28,8 @@ void createChapterOne() {
 
 	chapterOneChild1->addChild(chapterOneChild4);
 	chapterOneChild1->addChild(chapterOneChild2);
+	chapterOneChild2->addChild(chapterOneChild5);
+	
 	//chapterOneChild4->addChild(chapterOneChild5);
 	// chapterOneHead->addChild(chapterOneHead); unhandled case yet
 

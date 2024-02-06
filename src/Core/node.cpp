@@ -26,6 +26,11 @@ Node::Node(std::string tempData) :
 
 }
 
+Node::~Node() {
+	std::cout << "Destructing NODE: " << m_temp << std::endl;
+}
+
+
 Node* Node::getChildByIndex(int childIndex) {
 	return m_children[childIndex];
 }
@@ -41,20 +46,35 @@ int Node::getChildrenAmount() {
 void Node::print(bool printChildren, int indentLevel) {
 	for (int i = 0; i < indentLevel; i++) { std::cout << '\t'; };
 	std::cout << "node id: " << m_id << std::endl;
+	
+	m_children.print(indentLevel);
+	
 	for (int i = 0; i < indentLevel; i++) { std::cout << '\t'; };
 	std::cout << "temp data: " << m_temp << std::endl;
-	m_children.print(indentLevel);
 
 
 	if (printChildren) {
 		for (int i = 0; i < indentLevel; i++) { std::cout << '\t'; };
 		std::cout << "{" << std::endl;
 		
-		for (int i{ 0 }; i < m_children.size(); i++) {
-			m_children[i]->print(printChildren, indentLevel + 1);
+		// Only print the children of the owned children. Otherwise will have
+		// duplicate prints and possible infinite loops. Will need to temporarily 
+		// relax the node children interface
+		std::vector<std::unique_ptr<Node>>& ownedChildren = m_children.getOwnedChildren();
+		for (size_t i = 0; i < ownedChildren.size(); i++) {
+			ownedChildren[i].get()->print(printChildren, indentLevel + 1);
 		}
-	
+
+		std::vector<Node*>& referencedChildren = m_children.getReferencedChildren();
+		for (size_t i = 0; i < referencedChildren.size(); i++) {
+			referencedChildren[i]->print(false, indentLevel + 1);
+		}
+
 		for (int i = 0; i < indentLevel; i++) { std::cout << '\t'; };
 		std::cout << "}" << std::endl;
+	}
+	else {
+		for (int i = 0; i < indentLevel; i++) { std::cout << '\t'; };
+		std::cout << "{children not printed...}" << std::endl;
 	}
 }

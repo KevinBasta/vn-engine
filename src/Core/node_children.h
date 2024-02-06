@@ -33,9 +33,13 @@ public:
 	Node* getChildByIndex(int index);
 	Node* operator[](int index);
 	std::vector<Node*>& getChildrenView();
-
-	void print(int indentLevel = 0);
 	//Node* getChildById(int id);
+
+public: 
+// TEMP FUNCTIONS ONLY FOR TESTING
+	void print(int indentLevel = 0);
+	std::vector<std::unique_ptr<Node>>& getOwnedChildren() { return m_ownedChildren; }
+	std::vector<Node*>& getReferencedChildren() { return m_referencedChildren; }
 };
 
 #endif // NODE_CHILDREN_H

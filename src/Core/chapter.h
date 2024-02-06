@@ -6,6 +6,8 @@
 
 class Chapter {
 private:
+	std::string m_name{};
+	int m_id{};
 	Graph m_graph{};
 
 public:
