@@ -11,9 +11,7 @@ private:
 	Graph m_graph{};
 
 public:
-	Chapter() {
-
-	}
+	Chapter();
 
 	Graph& getGraph() { return m_graph; }
 

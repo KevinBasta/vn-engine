@@ -11,6 +11,14 @@ add_executable (
 	
 	"vn_engine.cpp"
 	
+	"external/imgui/imgui.cpp"
+	"external/imgui/imgui_demo.cpp"
+	"external/imgui/imgui_draw.cpp"
+	"external/imgui/imgui_tables.cpp"
+	"external/imgui/imgui_widgets.cpp"
+	"external/imgui/backends/imgui_impl_opengl3.cpp"
+	"external/imgui/backends/imgui_impl_sdl2.cpp"
+
 	"src/Json/json_lexer.cpp"
 	"src/Json/json_token.cpp"
 	"src/Json/json_error.cpp"
@@ -44,6 +52,9 @@ target_include_directories(
 	"src/Runtime"
 	"src/Json"
 	"src/Util"
+	"external/imgui"
+	"external/imgui/backends/imgui_impl_opengl3.h"
+	"external/imgui/backends/imgui_impl_sdl2.h"
 )
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)
