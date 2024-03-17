@@ -13,6 +13,8 @@
 #include "runtime_relations.h"
 #include "runtime_chapters.h"
 
+#include <glad/glad.h>
+
 void testJson() {
 	// Set path of test files
 	std::filesystem::path jsonTestDir = "C:\\Users\\Kevin\\Documents\\CS\\cpp\\visual-novel-engine\\visual_novel_engine\\tests\\Json\\";

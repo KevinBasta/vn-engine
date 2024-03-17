@@ -9,9 +9,9 @@
 std::vector<std::unique_ptr<Chapter>> g_chapters{};
 
 void createChapterOne() {
-	std::unique_ptr<Chapter> chapterOne{ std::make_unique<Chapter>() };
+	Chapter* chapterOne = new Chapter{};
 
-	Graph& chapterOneGraph{ chapterOne.get()->getGraph() };
+	Graph& chapterOneGraph{ chapterOne->getGraph() };
 	
 	Node* chapterOneHead{ new Node("the head node!") };
 	Node* chapterOneChild1{ new Node("level 1 child node 1!") };
@@ -35,5 +35,6 @@ void createChapterOne() {
 
 	chapterOneGraph.setHeadNode(chapterOneHead);
 
-	std::cout << chapterOneGraph << std::endl;
+	g_chapters.push_back(std::unique_ptr<Chapter>(chapterOne));
+	//std::cout << chapterOneGraph << std::endl;
 }

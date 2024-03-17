@@ -3,21 +3,16 @@
 #
 cmake_minimum_required (VERSION 3.8)
 
-project ("visual_novel_engine")
 
-# Add source to this project's executable.
+project("vn_engine")
+set(CMAKE_CXX_STANDARD 20)
+
+
+
 add_executable (
-	visual_novel_engine
+	"vn_engine"
 	
 	"vn_engine.cpp"
-	
-	"external/imgui/imgui.cpp"
-	"external/imgui/imgui_demo.cpp"
-	"external/imgui/imgui_draw.cpp"
-	"external/imgui/imgui_tables.cpp"
-	"external/imgui/imgui_widgets.cpp"
-	"external/imgui/backends/imgui_impl_opengl3.cpp"
-	"external/imgui/backends/imgui_impl_sdl2.cpp"
 
 	"src/Json/json_lexer.cpp"
 	"src/Json/json_token.cpp"
@@ -34,18 +29,22 @@ add_executable (
 	"src/Core/id.cpp"
 	
 	"src/Runtime/runtime_characters.cpp"
-	"src/Runtime/runtime_characters.h"
 	"src/Runtime/runtime_relations.cpp"
-	"src/Runtime/runtime_relations.h"
 	"src/Runtime/runtime_chapters.cpp" 
-	"src/Runtime/runtime_chapters.h" 
 	
 	"src/Util/timer.cpp"
+
+	"external/imgui/imgui.cpp"
+	"external/imgui/imgui_demo.cpp"
+	"external/imgui/imgui_draw.cpp"
+	"external/imgui/imgui_tables.cpp"
+	"external/imgui/imgui_widgets.cpp"
+	"external/imgui/backends/imgui_impl_opengl3.cpp"
+	"external/imgui/backends/imgui_impl_glfw.cpp"
 )
 
 target_include_directories(
-	visual_novel_engine
-	BEFORE
+	"vn_engine"
 	PUBLIC
 	"src/Core"
 	"src/Engine"
@@ -54,11 +53,35 @@ target_include_directories(
 	"src/Util"
 	"external/imgui"
 	"external/imgui/backends/imgui_impl_opengl3.h"
-	"external/imgui/backends/imgui_impl_sdl2.h"
+	"external/imgui/backends/imgui_impl_glfw.h"
 )
 
-if (CMAKE_VERSION VERSION_GREATER 3.12)
-  set_property(TARGET visual_novel_engine PROPERTY CXX_STANDARD 20)
-endif()
+add_subdirectory("external/glad")
+add_subdirectory("external/glfw")
+add_subdirectory("external/glm")
+
+#file(GLOB_RECURSE opengl_inc_files "${opengl_inc}/*.h" "${opengl_inc}/*/*.h" "${opengl_inc}/*.hpp" "${opengl_inc}/*/*.hpp")
+#file(GLOB_RECURSE opengl_src_files "${opengl_src}/*.c" "${opengl_src}/*.cpp")
+#file(GLOB_RECURSE opengl_lib_files "${opengl_lib}/*.dll" "${opengl_lib}/*.lib")
+#target_include_directories("vn_engine" PUBLIC "${opengl_inc_files}")
+#target_sources("vn_engine" PRIVATE "${opengl_src_files}")
+target_link_libraries("vn_engine" PRIVATE glad glfw glm)
+
+
+project ("vn_runtime")
+
+
+#find_package(OpenGL REQUIRED)
+#include_directories("C:/OpenGL/inc/glad/")
+#include_directories("C:/OpenGL/inc/KHR/")
+#include_directories("C:/OpenGL/inc/GLFW/")
+#include_directories("C:/OpenGL/inc/GLM/")
+
+# Add source to this project's executable.
+
+
+
+#target_link_libraries(visual_novel_engine ${OPENGL_LIBRARIES})
+
 
 # TODO: Add tests and install targets if needed.
