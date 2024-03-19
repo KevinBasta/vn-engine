@@ -13,7 +13,7 @@
 #include "runtime_relations.h"
 #include "runtime_chapters.h"
 
-#include <glad/glad.h>
+#include "frame.h"
 
 void testJson() {
 	// Set path of test files
@@ -53,6 +53,10 @@ int main()
 	std::cout << "Hello CMake." << std::endl;
 	
 	testCore();
+
+	OpenGLFrame vn{};
+
+	vn.gameLoop();
 
 	std::cout << "End of program" << std::endl;
 	return 0;

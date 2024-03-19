@@ -7,8 +7,6 @@ cmake_minimum_required (VERSION 3.8)
 project("vn_engine")
 set(CMAKE_CXX_STANDARD 20)
 
-
-
 add_executable (
 	"vn_engine"
 	
@@ -41,7 +39,7 @@ add_executable (
 	"external/imgui/imgui_widgets.cpp"
 	"external/imgui/backends/imgui_impl_opengl3.cpp"
 	"external/imgui/backends/imgui_impl_glfw.cpp"
-)
+ "src/Engine/frame.cpp" "src/Engine/frame.h" "src/Engine/shader.cpp" "src/Engine/shader.h")
 
 target_include_directories(
 	"vn_engine"
@@ -51,37 +49,17 @@ target_include_directories(
 	"src/Runtime"
 	"src/Json"
 	"src/Util"
+
 	"external/imgui"
 	"external/imgui/backends/imgui_impl_opengl3.h"
 	"external/imgui/backends/imgui_impl_glfw.h"
+	"external/stb/stb_image.h"
 )
 
 add_subdirectory("external/glad")
 add_subdirectory("external/glfw")
 add_subdirectory("external/glm")
-
-#file(GLOB_RECURSE opengl_inc_files "${opengl_inc}/*.h" "${opengl_inc}/*/*.h" "${opengl_inc}/*.hpp" "${opengl_inc}/*/*.hpp")
-#file(GLOB_RECURSE opengl_src_files "${opengl_src}/*.c" "${opengl_src}/*.cpp")
-#file(GLOB_RECURSE opengl_lib_files "${opengl_lib}/*.dll" "${opengl_lib}/*.lib")
-#target_include_directories("vn_engine" PUBLIC "${opengl_inc_files}")
-#target_sources("vn_engine" PRIVATE "${opengl_src_files}")
 target_link_libraries("vn_engine" PRIVATE glad glfw glm)
-
 
 project ("vn_runtime")
 
-
-#find_package(OpenGL REQUIRED)
-#include_directories("C:/OpenGL/inc/glad/")
-#include_directories("C:/OpenGL/inc/KHR/")
-#include_directories("C:/OpenGL/inc/GLFW/")
-#include_directories("C:/OpenGL/inc/GLM/")
-
-# Add source to this project's executable.
-
-
-
-#target_link_libraries(visual_novel_engine ${OPENGL_LIBRARIES})
-
-
-# TODO: Add tests and install targets if needed.
