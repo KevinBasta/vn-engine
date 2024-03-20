@@ -39,6 +39,8 @@ add_executable (
 	"external/imgui/imgui_widgets.cpp"
 	"external/imgui/backends/imgui_impl_opengl3.cpp"
 	"external/imgui/backends/imgui_impl_glfw.cpp"
+	"external/imgui/backends/imgui_impl_opengl3.h"
+	"external/imgui/backends/imgui_impl_glfw.h"
 
 	"src/Engine/frame.cpp" 
 	"src/Engine/frame.h" 
@@ -54,13 +56,21 @@ target_include_directories(
 	"src/Runtime"
 	"src/Json"
 	"src/Util"
-
-	"external/imgui"
-	"external/imgui/backends/imgui_impl_opengl3.h"
-	"external/imgui/backends/imgui_impl_glfw.h"
-	"external/stb"
 )
 
+# Avoid warnings/errors from libraries 
+target_include_directories(
+	"vn_engine"
+	SYSTEM
+	PUBLIC
+	"external/imgui"
+	"external/stb"
+	"external/glad"
+	"external/glfw"
+	"external/glm"
+)
+
+# Add libraries
 add_subdirectory("external/glad")
 add_subdirectory("external/glfw")
 add_subdirectory("external/glm")
