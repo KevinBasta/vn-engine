@@ -9,11 +9,23 @@
 
 #include "shader.h"
 
+
+OpenGLShader::OpenGLShader(const char* vertexPath, const char* fragmentPath) :
+	m_vertexPath{ vertexPath },
+	m_fragmentPath{ fragmentPath }
+{
+	compileShaderFiles();
+}
+
+void OpenGLShader::reload() {
+	compileShaderFiles();
+}
+
 void OpenGLShader::use() const {
 	glUseProgram(m_programID);
 }
 
-OpenGLShader::OpenGLShader(const char* vertexPath, const char* fragmentPath) {
+void OpenGLShader::compileShaderFiles() {
 	// 1: Get the shader code from files
 	std::string vertexCode{};
 	std::string fragmentCode{};
@@ -27,8 +39,8 @@ OpenGLShader::OpenGLShader(const char* vertexPath, const char* fragmentPath) {
 
 	try {
 		// open files
-		vertexShaderFile.open(vertexPath);
-		fragmentShaderFile.open(fragmentPath);
+		vertexShaderFile.open(m_vertexPath);
+		fragmentShaderFile.open(m_fragmentPath);
 
 		// read the files buffer contents into streams
 		std::stringstream vertexShaderStream{};

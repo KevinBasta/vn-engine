@@ -9,7 +9,7 @@ out vec2 passedTextureCoord;
 //uniform mat4 inProjection;
 
 void main() {
-	gl_Position = vec4(inPos.x, -1 * inPos.y, inPos.z, 1.0);
+	gl_Position = vec4(inPos.x, -1 * inPos.y - 0.5, inPos.z, 1.0);
 	passedTextureCoord = inTextureCoord;
 	//gl_Position = inProjection * inView * inModel * vec4(inPos, 1.0);
 }

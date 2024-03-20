@@ -8,17 +8,21 @@
 
 class OpenGLShader {
 public:
-	GLuint m_programID{};
-	
-public: 
+	GLuint	m_programID{};
+	const char*	m_vertexPath{};
+	const char*	m_fragmentPath{};
+
+public:
 	/**
 	 * Give two file paths, one for the vertex shader and one
 	 * for the fragment shader, read, compile, and link them.
 	 */
 	OpenGLShader(const char* vertexPath, const char* fragmentPath);
 	void use() const;
+	void reload();
 
 private:
+	void compileShaderFiles();
 	void checkCompileErrors(GLuint shader, std::string type);
 	void checkLinkErrors(GLuint shader);
 };
