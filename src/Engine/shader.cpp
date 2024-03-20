@@ -21,7 +21,7 @@ OpenGLShader::OpenGLShader(const char* vertexPath, const char* fragmentPath) {
 	std::ifstream vertexShaderFile{};
 	std::ifstream fragmentShaderFile{};
 
-	// Allow ifstream objects to throw exceptions
+	// allow ifstream objects to throw exceptions
 	vertexShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
 	vertexShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
 
@@ -48,9 +48,10 @@ OpenGLShader::OpenGLShader(const char* vertexPath, const char* fragmentPath) {
 		std::cout << "ERROR::SHADER_FILE_NOT_SUCCESSFULLY_READ: " << e.what() << std::endl;
 	}
 
+
 	// 2: Compile the shaders
-	const GLchar* vertexShaderCode{ vertexCode.c_str() };
-	const GLchar* fragmentShaderCode{ fragmentCode.c_str() };
+	const char* vertexShaderCode{ vertexCode.c_str() };
+	const char* fragmentShaderCode{ fragmentCode.c_str() };
 
 	GLuint vertexShader;
 	GLuint fragmentShader;
@@ -64,6 +65,7 @@ OpenGLShader::OpenGLShader(const char* vertexPath, const char* fragmentPath) {
 	// fragment shader
 	fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
 	glShaderSource(fragmentShader, 1, &fragmentShaderCode, NULL);
+	glCompileShader(fragmentShader);
 	checkCompileErrors(fragmentShader, "FRAGMENT");
 
 

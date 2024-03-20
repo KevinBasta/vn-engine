@@ -39,7 +39,12 @@ add_executable (
 	"external/imgui/imgui_widgets.cpp"
 	"external/imgui/backends/imgui_impl_opengl3.cpp"
 	"external/imgui/backends/imgui_impl_glfw.cpp"
- "src/Engine/frame.cpp" "src/Engine/frame.h" "src/Engine/shader.cpp" "src/Engine/shader.h")
+
+	"src/Engine/frame.cpp" 
+	"src/Engine/frame.h" 
+	"src/Engine/shader.cpp" 
+	"src/Engine/shader.h"
+)
 
 target_include_directories(
 	"vn_engine"
@@ -53,7 +58,7 @@ target_include_directories(
 	"external/imgui"
 	"external/imgui/backends/imgui_impl_opengl3.h"
 	"external/imgui/backends/imgui_impl_glfw.h"
-	"external/stb/stb_image.h"
+	"external/stb"
 )
 
 add_subdirectory("external/glad")

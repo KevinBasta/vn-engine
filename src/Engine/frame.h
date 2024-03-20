@@ -13,6 +13,8 @@ private:
 	void initFrame();
 	void processInput();
 
+	void setupRectangle();
+	void drawRectangle();
 	//void updateResolution();
 
 public:
