@@ -5,6 +5,7 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+#include "runtime_characters.h"
 #include "shader.h"
 #include "frame.h"
 
@@ -12,8 +13,6 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
 
 static void frameSizeUpdateCallback(GLFWwindow* window, int newWidth, int newHeight) {
 	glViewport(0, 0, newWidth, newHeight);
@@ -66,42 +65,17 @@ void OpenGLFrame::drawRectangle() {
 
 }
 
-void OpenGLFrame::gameLoop() {
+OpenGLFrame::OpenGLFrame() {
 	initFrame();
+}
 
+void OpenGLFrame::gameLoop() {
 	OpenGLShader squareShader(
 		"C:\\Users\\Kevin\\Documents\\CS\\cpp\\visual-novel-engine\\visual_novel_engine\\src\\Engine\\scene_vertex_shader.glsl",
 		"C:\\Users\\Kevin\\Documents\\CS\\cpp\\visual-novel-engine\\visual_novel_engine\\src\\Engine\\scene_fragment_shader.glsl");
 
-
-	GLuint texture;
-
-	glGenTextures(1, &texture);
-	glBindTexture(GL_TEXTURE_2D, texture);
-
-	// set the texture wrapping parameters
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
-	// set texture filtering parameters
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-	// load and geneate the texture
-	int width, height, nrChannels;
-	char filepath[] = "C:\\Users\\Kevin\\Documents\\CS\\cpp\\visual-novel-engine\\visual_novel_engine\\assets\\garu_outline.png";
-	unsigned char* data = stbi_load(filepath, &width, &height, &nrChannels, 0);
-
-	if (data) {
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
-		glGenerateMipmap(GL_TEXTURE_2D);
-	}
-	else {
-		std::cout << "failed to load texture" << std::endl;
-	}
-
-	stbi_image_free(data);
-
+	int width	{ g_characters[0].get()->getTextures()[0].width() };
+	int height	{ g_characters[0].get()->getTextures()[0].height() };
 
 	std::pair<float, float> topLeft		{ 0.0								, 0.0 };
 	std::pair<float, float> topRight	{ static_cast<float>(width) / 800.0f	, 0.0 };
@@ -154,7 +128,7 @@ void OpenGLFrame::gameLoop() {
 
 	squareShader.use();
 	glUniform1i(glGetUniformLocation(squareShader.m_programID, "inTexture"), 0);
-
+	
 
 	while (!glfwWindowShouldClose(m_window)) {
 		processInput();

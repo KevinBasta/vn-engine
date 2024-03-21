@@ -2,11 +2,13 @@
 #ifndef CHARACTER_H
 #define CHARACTER_H
 
+#include "texture.h"
 #include "relation.h"
 #include "id.h"
 
 #include <string>
 #include <string_view>
+#include <vector>
 #include <iostream>
 
 class Character {
@@ -14,11 +16,16 @@ private:
 	std::string m_name{};
 	const int	m_id;
 	Relations	m_relationships{};
-
+	std::vector<OpenGLTexture> m_textures{};
 
 public:
 	Character(std::string_view name);
 	Character(std::string_view name, Relations relationships);
+
+	void addTexture(const char* texturePath);
+	std::vector<OpenGLTexture>& getTextures() {
+		return m_textures;
+	}
 
 	Relations& getRelationsObject() { return m_relationships; }
 	int getId() { return m_id; }

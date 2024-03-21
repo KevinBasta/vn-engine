@@ -1,5 +1,6 @@
 
 
+#include "texture.h"
 #include "id.h"
 #include "character.h"
 #include "relation.h"
@@ -21,6 +22,11 @@ Character::Character(std::string_view name, Relations relationships) :
 	m_relationships{ relationships }
 {
 
+}
+
+void Character::addTexture(const char* texturePath) {
+	OpenGLTexture newTexture{ texturePath };
+	m_textures.push_back(newTexture);
 }
 
 Character::~Character() {

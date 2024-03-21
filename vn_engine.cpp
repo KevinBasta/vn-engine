@@ -30,7 +30,7 @@ void testJson() {
 }
 
 void testCore() {
-	// initCharacters();
+	initCharacters();
 	//initRelations();
 
 	/*for (auto it = std::begin(g_characters); it != std::end(g_characters); ++it) {
@@ -52,9 +52,10 @@ int main()
 {
 	std::cout << "Hello CMake." << std::endl;
 	
+	OpenGLFrame vn{};
+
 	testCore();
 
-	OpenGLFrame vn{};
 
 	vn.gameLoop();
 

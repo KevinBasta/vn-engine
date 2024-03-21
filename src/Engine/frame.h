@@ -18,6 +18,7 @@ private:
 	//void updateResolution();
 
 public:
+	OpenGLFrame();
 	void gameLoop();
 
 
