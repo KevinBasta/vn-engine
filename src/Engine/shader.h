@@ -20,6 +20,7 @@ public:
 	OpenGLShader(const char* vertexPath, const char* fragmentPath);
 	void use() const;
 	void reload();
+	GLuint ID() const { return m_programID; };
 
 private:
 	void compileShaderFiles();

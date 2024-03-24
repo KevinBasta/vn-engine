@@ -72,11 +72,18 @@ public:
 
 
 
-
-
+//enum ChapterNodeActions {
+//	TYPE_TEXT,
+//	MOVE_CHARACTER,
+//};
 
 
 class ChapterNode: Node {
+private:
+	//std::vector<
+
+
+public:
 	virtual void print(bool printChildren) {
 		std::cout << "chapter node" << std::endl;
 		std::cout << "id:		 " << m_id << std::endl;

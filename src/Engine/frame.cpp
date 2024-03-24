@@ -8,14 +8,27 @@
 #include "runtime_characters.h"
 #include "shader.h"
 #include "frame.h"
+#include "camera.h"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+float deltaTime = 0.0f;
+float lastFrame = 0.0f;
+
+OpenGLCamera* g_camera{};
 
 static void frameSizeUpdateCallback(GLFWwindow* window, int newWidth, int newHeight) {
 	glViewport(0, 0, newWidth, newHeight);
+}
+
+static void mouseCallback(GLFWwindow* window, double xpos, double ypos) {
+	(*g_camera).processMouseMovement(xpos, ypos);
+}
+
+static void scrollCallback(GLFWwindow* window, double xoffset, double yoffset) {
+	(*g_camera).processMouseScroll(yoffset);
 }
 
 void OpenGLFrame::initFrame() {
@@ -39,10 +52,16 @@ void OpenGLFrame::initFrame() {
 		// raise exception or return err?
 	}
 
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	/*glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);*/
 
 	glViewport(0, 0, 800, 600);
+
+	g_camera = &m_camera;
+
+	glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	glfwSetCursorPosCallback(m_window, mouseCallback);
+	glfwSetScrollCallback(m_window, scrollCallback);
 }
 
 
@@ -54,15 +73,22 @@ void OpenGLFrame::processInput() {
 	if (glfwGetKey(m_window, GLFW_KEY_R) == GLFW_PRESS) {
 		// reload all shaders?
 	}
-}
 
+	if (glfwGetKey(m_window, GLFW_KEY_W) == GLFW_PRESS) {
+		m_camera.processKeyboard(GLFW_KEY_W, deltaTime);
+	}
 
-void OpenGLFrame::setupRectangle() {
-	
-}
+	if (glfwGetKey(m_window, GLFW_KEY_S) == GLFW_PRESS) {
+		m_camera.processKeyboard(GLFW_KEY_S, deltaTime);
+	}
 
-void OpenGLFrame::drawRectangle() {
+	if (glfwGetKey(m_window, GLFW_KEY_D) == GLFW_PRESS) {
+		m_camera.processKeyboard(GLFW_KEY_D, deltaTime);
+	}
 
+	if (glfwGetKey(m_window, GLFW_KEY_A) == GLFW_PRESS) {
+		m_camera.processKeyboard(GLFW_KEY_A, deltaTime);
+	}
 }
 
 OpenGLFrame::OpenGLFrame() {
@@ -70,29 +96,29 @@ OpenGLFrame::OpenGLFrame() {
 }
 
 void OpenGLFrame::gameLoop() {
-	OpenGLShader squareShader(
+
+	float currentFrame = glfwGetTime();
+	deltaTime = currentFrame - lastFrame;
+	lastFrame = currentFrame;
+
+	OpenGLShader shader(
 		"C:\\Users\\Kevin\\Documents\\CS\\cpp\\visual-novel-engine\\visual_novel_engine\\src\\Engine\\scene_vertex_shader.glsl",
 		"C:\\Users\\Kevin\\Documents\\CS\\cpp\\visual-novel-engine\\visual_novel_engine\\src\\Engine\\scene_fragment_shader.glsl");
 
-	int width	{ g_characters[0].get()->getTextures()[0].width() };
-	int height	{ g_characters[0].get()->getTextures()[0].height() };
-
-	std::pair<float, float> topLeft		{ 0.0								, 0.0 };
-	std::pair<float, float> topRight	{ static_cast<float>(width) / 800.0f	, 0.0 };
-	std::pair<float, float> bottomLeft	{ 0.0								, static_cast<float>(height) / 600.0f };
-	std::pair<float, float> buttomRight	{ static_cast<float>(width) / 800.0f	, static_cast<float>(height) / 600.0f };
+	float width		{ static_cast<float>(g_characters[0].get()->getTextures()[0].width())};
+	float height	{ static_cast<float>(g_characters[0].get()->getTextures()[0].height())};
 
 	float vertices[] = {
-		// positions				// texture coords
-		  topRight.first,  topRight.second, 0.0f,		0.0f, 1.0f,			// top right
-		  buttomRight.first, -1 * buttomRight.second, 0.0f,		0.0f, 0.0f,			// bottom right
-		 -1 * bottomLeft.first, -1 * bottomLeft.second, 0.0f,		1.0f, 0.0f,			// bottom left
-		 -1 * topLeft.first,  topLeft.second, 0.0f,		1.0f, 1.0f,			// top left
+		// positions		 // texture coords
+		 0.0f, height, 0.0f, 0.0f, 1.0f, // top left
+		width, height, 0.0f, 1.0f, 1.0f, // top right
+		 0.0f,   0.0f, 0.0f, 0.0f, 0.0f, // bottom left
+		width,   0.0f, 0.0f, 1.0f, 0.0f, // bottom right
 	};
 
 	unsigned int indices[] = {
 		0, 1, 2,
-		0, 3, 2
+		3, 2, 1
 	};
 	
 	// vertex array object, vertex buffer object, Element Buffer Object
@@ -125,23 +151,39 @@ void OpenGLFrame::gameLoop() {
 
 	
 
-
-	squareShader.use();
-	glUniform1i(glGetUniformLocation(squareShader.m_programID, "inTexture"), 0);
+	shader.use();
+	glUniform1i(glGetUniformLocation(shader.ID(), "inTexture"), 0);
 	
+	unsigned int modelLocation = glGetUniformLocation(shader.ID(), "inModel");
+	unsigned int viewLocation = glGetUniformLocation(shader.ID(), "inView");
+	unsigned int projectionLocation = glGetUniformLocation(shader.ID(), "inProjection");
+
+	glm::mat4 projection = glm::perspective(90.0f, 800.0f / 600.0f, 0.001f, 1000.0f);
+
 
 	while (!glfwWindowShouldClose(m_window)) {
 		processInput();
 
 		if (glfwGetKey(m_window, GLFW_KEY_R) == GLFW_PRESS) {
-			squareShader.reload();
+			shader.reload();
+			m_camera.resetCamera();
 		}
 
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		squareShader.use();
+		shader.use();
 		glBindVertexArray(VAO);
+
+		// set coordinate system matrix uniforms
+		glm::mat4 model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 1.0f));
+		model = glm::scale(model, glm::vec3(0.001f, 0.001f, 0.0f));
+		
+		glUniformMatrix4fv(viewLocation, 1, GL_FALSE, glm::value_ptr(m_camera.getViewMatrix()));
+		glUniformMatrix4fv(projectionLocation, 1, GL_FALSE, glm::value_ptr(projection));
+		glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(model));
+
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
 		glfwSwapBuffers(m_window);

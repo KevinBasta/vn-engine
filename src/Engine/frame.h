@@ -4,17 +4,18 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+#include "camera.h"
+
 class OpenGLFrame {
 private:
 	GLFWwindow* m_window{};
+	OpenGLCamera m_camera{};
 	int m_frameWidth{};
 	int m_frameHeight{};
 
 	void initFrame();
 	void processInput();
 
-	void setupRectangle();
-	void drawRectangle();
 	//void updateResolution();
 
 public:
@@ -23,7 +24,6 @@ public:
 
 
 };
-
 
 
 #endif // OPENGL_FRAME_H
