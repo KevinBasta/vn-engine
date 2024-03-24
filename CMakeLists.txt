@@ -12,25 +12,25 @@ add_executable (
 	
 	"vn_engine.cpp"
 
-	"src/Json/json_lexer.cpp"
-	"src/Json/json_token.cpp"
-	"src/Json/json_error.cpp"
-	"src/Json/json_expr.cpp"
+	"src/savefile/json_lexer.cpp"
+	"src/savefile/json_token.cpp"
+	"src/savefile/json_error.cpp"
+	"src/savefile/json_expr.cpp"
 
-	"src/Core/chapter.cpp"
-	"src/Core/character.cpp"
-	"src/Core/relation_types.cpp" 
-	"src/Core/relation.cpp"
-	"src/Core/graph.cpp"
-	"src/Core/node.cpp"
-	"src/Core/node_children.cpp" 
-	"src/Core/id.cpp"
+	"src/core/chapter.cpp"
+	"src/core/character.cpp"
+	"src/core/relation_types.cpp" 
+	"src/core/relation.cpp"
+	"src/core/graph.cpp"
+	"src/core/node.cpp"
+	"src/core/node_children.cpp" 
+	"src/core/id.cpp"
 	
-	"src/Runtime/runtime_characters.cpp"
-	"src/Runtime/runtime_relations.cpp"
-	"src/Runtime/runtime_chapters.cpp" 
+	"src/runtime/runtime_characters.cpp"
+	"src/runtime/runtime_relations.cpp"
+	"src/runtime/runtime_chapters.cpp" 
 	
-	"src/Util/timer.cpp"
+	"src/utility/timer.cpp"
 
 	"external/imgui/imgui.cpp"
 	"external/imgui/imgui_demo.cpp"
@@ -42,24 +42,24 @@ add_executable (
 	"external/imgui/backends/imgui_impl_opengl3.h"
 	"external/imgui/backends/imgui_impl_glfw.h"
 
-	"src/Engine/frame.cpp" 
-	"src/Engine/frame.h" 
-	"src/Engine/shader.cpp" 
-	"src/Engine/shader.h"
-	"src/Engine/texture.cpp"
-	"src/Engine/texture.h" 
-	"src/Engine/camera.cpp" 
-	"src/Engine/camera.h"
+	"src/engine/frame.cpp" 
+	"src/engine/frame.h" 
+	"src/engine/shader.cpp" 
+	"src/engine/shader.h"
+	"src/engine/texture.cpp"
+	"src/engine/texture.h" 
+	"src/engine/camera.cpp" 
+	"src/engine/camera.h"
 )
 
 target_include_directories(
 	"vn_engine"
 	PUBLIC
-	"src/Core"
-	"src/Engine"
-	"src/Runtime"
-	"src/Json"
-	"src/Util"
+	"src/core"
+	"src/engine"
+	"src/runtime"
+	"src/savefile"
+	"src/utility"
 )
 
 # Avoid warnings/errors from libraries 

@@ -10,6 +10,6 @@ uniform mat4 inProjection;
 
 void main() {
 	//gl_Position = inProjection * inView * inModel * vec4(inPos, 1.0);
-	gl_Position = vec4(inPos, 1.0);
+	gl_Position = inModel * vec4(inPos, 1.0);
 	passedTextureCoord = inTextureCoord;
 }
