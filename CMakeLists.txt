@@ -46,7 +46,11 @@ add_executable (
 	"src/Engine/frame.h" 
 	"src/Engine/shader.cpp" 
 	"src/Engine/shader.h"
- "src/Engine/texture.cpp" "src/Engine/texture.h" "src/Engine/camera.cpp" "src/Engine/camera.h")
+	"src/Engine/texture.cpp"
+	"src/Engine/texture.h" 
+	"src/Engine/camera.cpp" 
+	"src/Engine/camera.h"
+)
 
 target_include_directories(
 	"vn_engine"

@@ -6,7 +6,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-class OpenGLCamera {
+class FlyCamera {
 private:
 	static constexpr glm::vec3 defaultPosition	{ glm::vec3(0.0f, 0.0f, 0.0f) };
 	static constexpr glm::vec3 defaultFront		{ glm::vec3(0.0f, 0.0f, -1.0f) };
@@ -40,7 +40,7 @@ private:
 	float m_zoom{};
 
 public:
-	OpenGLCamera();
+	FlyCamera();
 	void resetCamera();
 	glm::mat4 getViewMatrix();
 	

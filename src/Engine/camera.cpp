@@ -5,7 +5,7 @@
 
 #include "camera.h"
 
-OpenGLCamera::OpenGLCamera() :
+FlyCamera::FlyCamera() :
 	m_position{ defaultPosition },
 	m_front{ defaultFront },
 	m_worldUp{ defaultWorldUp },
@@ -18,7 +18,7 @@ OpenGLCamera::OpenGLCamera() :
 	updateCameraVectors();
 }
 
-void OpenGLCamera::resetCamera() {
+void FlyCamera::resetCamera() {
 	m_position = defaultPosition;
 	m_front = defaultFront;
 	m_worldUp = defaultWorldUp;
@@ -29,7 +29,7 @@ void OpenGLCamera::resetCamera() {
 	updateCameraVectors();
 }
 
-void OpenGLCamera::updateCameraVectors() {
+void FlyCamera::updateCameraVectors() {
 	glm::vec3 front{};
 	front.x = cos(glm::radians(m_yaw)) * cos(glm::radians(m_pitch));
 	front.y = sin(glm::radians(m_pitch));
@@ -41,14 +41,14 @@ void OpenGLCamera::updateCameraVectors() {
 }
 
 // Return the vertex shader camera view matrix
-glm::mat4 OpenGLCamera::getViewMatrix() {
+glm::mat4 FlyCamera::getViewMatrix() {
 	return glm::lookAt(m_position, m_position + m_front, m_up);
 }
 
 
 
 
-void OpenGLCamera::processKeyboard(int glfwKey, float deltaTime) {
+void FlyCamera::processKeyboard(int glfwKey, float deltaTime) {
 	float velocity = m_movementSpeed * deltaTime;
 	
 	// Front
@@ -72,7 +72,7 @@ void OpenGLCamera::processKeyboard(int glfwKey, float deltaTime) {
 	}
 }
 
-void OpenGLCamera::processMouseMovement(float xpos, float ypos) {
+void FlyCamera::processMouseMovement(float xpos, float ypos) {
 	if (m_firstMouse) {
 		m_lastX = xpos;
 		m_lastY = ypos;
@@ -103,7 +103,7 @@ void OpenGLCamera::processMouseMovement(float xpos, float ypos) {
 	updateCameraVectors();
 }
 
-void OpenGLCamera::processMouseScroll(float yoffset) {
+void FlyCamera::processMouseScroll(float yoffset) {
 	m_zoom -= yoffset;
 	if (m_zoom < 1.0f)
 		m_zoom = 1.0f;

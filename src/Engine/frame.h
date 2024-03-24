@@ -9,9 +9,9 @@
 class OpenGLFrame {
 private:
 	GLFWwindow* m_window{};
-	OpenGLCamera m_camera{};
-	int m_frameWidth{};
-	int m_frameHeight{};
+	FlyCamera m_camera{};
+	float m_frameWidth{ 800.0f };
+	float m_frameHeight{ 600.0f };
 
 	void initFrame();
 	void processInput();

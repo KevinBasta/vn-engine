@@ -6,7 +6,7 @@
 
 #include <string>
 
-class OpenGLShader {
+class Shader {
 public:
 	GLuint	m_programID{};
 	const char*	m_vertexPath{};
@@ -17,7 +17,7 @@ public:
 	 * Give two file paths, one for the vertex shader and one
 	 * for the fragment shader, read, compile, and link them.
 	 */
-	OpenGLShader(const char* vertexPath, const char* fragmentPath);
+	Shader(const char* vertexPath, const char* fragmentPath);
 	void use() const;
 	void reload();
 	GLuint ID() const { return m_programID; };

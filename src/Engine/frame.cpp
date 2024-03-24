@@ -17,7 +17,7 @@
 float deltaTime = 0.0f;
 float lastFrame = 0.0f;
 
-OpenGLCamera* g_camera{};
+FlyCamera* g_camera{};
 
 static void frameSizeUpdateCallback(GLFWwindow* window, int newWidth, int newHeight) {
 	glViewport(0, 0, newWidth, newHeight);
@@ -37,7 +37,7 @@ void OpenGLFrame::initFrame() {
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-	m_window = glfwCreateWindow(800, 600, "opengl :)", NULL, NULL);
+	m_window = glfwCreateWindow(m_frameWidth, m_frameHeight, "opengl :)", NULL, NULL);
 	if (m_window == NULL) {
 		std::cout << "failed to create GLFW window" << std::endl;
 		glfwTerminate();
@@ -52,10 +52,11 @@ void OpenGLFrame::initFrame() {
 		// raise exception or return err?
 	}
 
-	/*glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);*/
+	// Uncomment to enable transparent backgrounds
+	// glEnable(GL_BLEND);
+	// glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	glViewport(0, 0, 800, 600);
+	glViewport(0, 0, m_frameWidth, m_frameHeight);
 
 	g_camera = &m_camera;
 
@@ -101,90 +102,60 @@ void OpenGLFrame::gameLoop() {
 	deltaTime = currentFrame - lastFrame;
 	lastFrame = currentFrame;
 
-	OpenGLShader shader(
-		"C:\\Users\\Kevin\\Documents\\CS\\cpp\\visual-novel-engine\\visual_novel_engine\\src\\Engine\\scene_vertex_shader.glsl",
-		"C:\\Users\\Kevin\\Documents\\CS\\cpp\\visual-novel-engine\\visual_novel_engine\\src\\Engine\\scene_fragment_shader.glsl");
-
-	float width		{ static_cast<float>(g_characters[0].get()->getTextures()[0].width())};
-	float height	{ static_cast<float>(g_characters[0].get()->getTextures()[0].height())};
-
-	float vertices[] = {
-		// positions		 // texture coords
-		 0.0f, height, 0.0f, 0.0f, 1.0f, // top left
-		width, height, 0.0f, 1.0f, 1.0f, // top right
-		 0.0f,   0.0f, 0.0f, 0.0f, 0.0f, // bottom left
-		width,   0.0f, 0.0f, 1.0f, 0.0f, // bottom right
-	};
-
-	unsigned int indices[] = {
-		0, 1, 2,
-		3, 2, 1
-	};
+	Shader characterShader(
+		"C:\\Users\\Kevin\\Documents\\CS\\cpp\\visual-novel-engine\\visual_novel_engine\\src\\Glsl\\characterVertex.glsl",
+		"C:\\Users\\Kevin\\Documents\\CS\\cpp\\visual-novel-engine\\visual_novel_engine\\src\\Glsl\\characterFragment.glsl");
 	
-	// vertex array object, vertex buffer object, Element Buffer Object
-	GLuint VAO, VBO, EBO;
-	glGenVertexArrays(1, &VAO);
-	glGenBuffers(1, &VBO);
-	glGenBuffers(1, &EBO);
+	Shader brackgroundShader(
+		"C:\\Users\\Kevin\\Documents\\CS\\cpp\\visual-novel-engine\\visual_novel_engine\\src\\Glsl\\backgroundVertex.glsl",
+		"C:\\Users\\Kevin\\Documents\\CS\\cpp\\visual-novel-engine\\visual_novel_engine\\src\\Glsl\\backgroundFragment.glsl");
 
-	// Connect everything to the VAO
-	glBindVertexArray(VAO);
+	Texture2D& characterTexture{ g_characters[0].get()->getTextures()[0] };
 
-	// vertex data buffer, put data in a buffer
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+	Texture2D backgroundTexture{ "C:\\Users\\Kevin\\Documents\\CS\\cpp\\visual-novel-engine\\visual_novel_engine\\assets\\test.jpg" };
 
-	// define what points are used to make the shapes, reusing vertecies from VBO
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-
-
-	// define how the different attributes data are stored
-
-	// vertex coords
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(0);
-
-	// texture mapping
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
-	glEnableVertexAttribArray(1);
-
+	characterShader.use();
+	glUniform1i(glGetUniformLocation(characterShader.ID(), "inTexture"), 0);
 	
+	unsigned int modelLocation = glGetUniformLocation(characterShader.ID(), "inModel");
+	unsigned int viewLocation = glGetUniformLocation(characterShader.ID(), "inView");
+	unsigned int projectionLocation = glGetUniformLocation(characterShader.ID(), "inProjection");
 
-	shader.use();
-	glUniform1i(glGetUniformLocation(shader.ID(), "inTexture"), 0);
-	
-	unsigned int modelLocation = glGetUniformLocation(shader.ID(), "inModel");
-	unsigned int viewLocation = glGetUniformLocation(shader.ID(), "inView");
-	unsigned int projectionLocation = glGetUniformLocation(shader.ID(), "inProjection");
-
-	glm::mat4 projection = glm::perspective(90.0f, 800.0f / 600.0f, 0.001f, 1000.0f);
+	glm::mat4 projection = glm::perspective(90.0f, m_frameWidth / m_frameHeight, 0.0f, 1000.0f);
 
 
 	while (!glfwWindowShouldClose(m_window)) {
 		processInput();
 
 		if (glfwGetKey(m_window, GLFW_KEY_R) == GLFW_PRESS) {
-			shader.reload();
+			characterShader.reload();
 			m_camera.resetCamera();
 		}
 
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		shader.use();
-		glBindVertexArray(VAO);
+		brackgroundShader.use();
+	
+		backgroundTexture.draw();
 
+
+		characterShader.use();
+
+		float scale{ 0.004f };
+		float scaledWidth{ characterTexture.width() * scale };
+		float scaledHeight{ characterTexture.height() * scale };
 		// set coordinate system matrix uniforms
 		glm::mat4 model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 1.0f));
-		model = glm::scale(model, glm::vec3(0.001f, 0.001f, 0.0f));
+		model = glm::translate(model, glm::vec3(-1.0 * (scaledWidth / 2.0f), -1.0 * (scaledHeight / 2.0f), -1.0f));
+		model = glm::scale(model, glm::vec3(scale, scale, 0.0f));
 		
 		glUniformMatrix4fv(viewLocation, 1, GL_FALSE, glm::value_ptr(m_camera.getViewMatrix()));
 		glUniformMatrix4fv(projectionLocation, 1, GL_FALSE, glm::value_ptr(projection));
 		glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(model));
 
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		characterTexture.draw();
+
 
 		glfwSwapBuffers(m_window);
 		glfwPollEvents();

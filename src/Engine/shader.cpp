@@ -10,22 +10,22 @@
 #include "shader.h"
 
 
-OpenGLShader::OpenGLShader(const char* vertexPath, const char* fragmentPath) :
+Shader::Shader(const char* vertexPath, const char* fragmentPath) :
 	m_vertexPath{ vertexPath },
 	m_fragmentPath{ fragmentPath }
 {
 	compileShaderFiles();
 }
 
-void OpenGLShader::reload() {
+void Shader::reload() {
 	compileShaderFiles();
 }
 
-void OpenGLShader::use() const {
+void Shader::use() const {
 	glUseProgram(m_programID);
 }
 
-void OpenGLShader::compileShaderFiles() {
+void Shader::compileShaderFiles() {
 	// 1: Get the shader code from files
 	std::string vertexCode{};
 	std::string fragmentCode{};
@@ -94,7 +94,7 @@ void OpenGLShader::compileShaderFiles() {
 	glDeleteShader(fragmentShader);
 }
 
-void OpenGLShader::checkCompileErrors(GLuint shader, std::string type) {
+void Shader::checkCompileErrors(GLuint shader, std::string type) {
 	GLint success;
 	GLchar infoLog[1024];
 
@@ -109,7 +109,7 @@ void OpenGLShader::checkCompileErrors(GLuint shader, std::string type) {
 	}
 }
 
-void OpenGLShader::checkLinkErrors(GLuint shader) {
+void Shader::checkLinkErrors(GLuint shader) {
 	GLint success;
 	GLchar infoLog[1024];
 
