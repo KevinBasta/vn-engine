@@ -140,12 +140,38 @@ void OpenGLFrame::gameLoop() {
 
 		unsigned int bgModelLocation = glGetUniformLocation(brackgroundShader.ID(), "inModel");
 
-		float scale1{ 0.002f };
-		float scaledWidth1{ backgroundTexture.width() * scale1 };
-		float scaledHeight1{ backgroundTexture.height() * scale1 };
 		glm::mat4 model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(-1.0 * (scaledWidth1 / 2.0f), -1.0 * (scaledHeight1 / 2.0f), -1.0f));
-		model = glm::scale(model, glm::vec3(scale1, scale1, 0.0f));
+
+		float widthRatio{ m_frameWidth / backgroundTexture.width() };
+		float heightRatio{ m_frameHeight / backgroundTexture.height() };
+
+		float bestRatio{ std::min(widthRatio, heightRatio) };
+
+		float screenAspect{ m_frameWidth / m_frameHeight };
+		float imageAspect{ static_cast<float>(backgroundTexture.width()) / backgroundTexture.height() };
+		float scaleFactor{ 0 };
+
+		float imageWidth	{ static_cast<float>(backgroundTexture.width()) };
+		float imageHeight	{ static_cast<float>(backgroundTexture.height()) };
+
+		float widthScaled	{ 0 };
+		float heightScaled	{ 0 };
+
+		if (screenAspect > imageAspect) {
+			widthScaled		= imageWidth * (m_frameHeight / imageHeight);
+			heightScaled	= m_frameHeight;
+		} 
+		else {
+			widthScaled		= m_frameWidth;
+			heightScaled	= imageHeight * (m_frameWidth / imageWidth);
+		}
+		
+		float scaleDown{ 1 / (imageWidth - m_frameWidth)};
+		model = glm::scale(model, glm::vec3(scaleDown, scaleDown, 0.0f));
+		model = glm::translate(model, glm::vec3(-1 * (imageWidth / 2), -1 * (imageHeight / 2), -1.0f));
+
+
+		//model = glm::translate(model, glm::vec3(-1.0 * (scaledWidth1 / 2.0f), -1.0 * (scaledHeight1 / 2.0f), -1.0f));
 
 		glUniformMatrix4fv(bgModelLocation, 1, GL_FALSE, glm::value_ptr(model));
 

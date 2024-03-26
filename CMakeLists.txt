@@ -82,3 +82,16 @@ target_link_libraries("vn_engine" PRIVATE glad glfw glm)
 
 project ("vn_runtime")
 
+
+project ("local_test")
+
+add_executable (
+	"local_test"
+	"local_test/local_test.cpp"
+)
+
+target_include_directories(
+	"local_test"
+	PUBLIC
+	"local_test"
+)
