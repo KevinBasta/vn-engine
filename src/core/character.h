@@ -23,10 +23,7 @@ public:
 	Character(std::string_view name, Relations relationships);
 
 	void addTexture(const char* texturePath);
-	std::vector<Texture2D>& getTextures() {
-		return m_textures;
-	}
-
+	std::vector<Texture2D>& getTextures() { return m_textures; }
 	Relations& getRelationsObject() { return m_relationships; }
 	int getId() { return m_id; }
 

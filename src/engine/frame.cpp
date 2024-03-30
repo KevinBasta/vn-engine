@@ -112,7 +112,7 @@ void OpenGLFrame::gameLoop() {
 
 	Texture2D& characterTexture{ g_characters[0].get()->getTextures()[0] };
 
-	Texture2D backgroundTexture{ "C:\\Users\\Kevin\\Documents\\CS\\cpp\\visual-novel-engine\\visual_novel_engine\\assets\\test.jpg" };
+	Texture2D backgroundTexture{ "C:\\Users\\Kevin\\Documents\\CS\\cpp\\visual-novel-engine\\visual_novel_engine\\assets\\test.jpg", TextureType::BACKGROUND };
 
 	characterShader.use();
 	glUniform1i(glGetUniformLocation(characterShader.ID(), "inTexture"), 0);
@@ -142,31 +142,22 @@ void OpenGLFrame::gameLoop() {
 
 		glm::mat4 model = glm::mat4(1.0f);
 
-		float widthRatio{ m_frameWidth / backgroundTexture.width() };
-		float heightRatio{ m_frameHeight / backgroundTexture.height() };
-
-		float bestRatio{ std::min(widthRatio, heightRatio) };
-
 		float screenAspect{ m_frameWidth / m_frameHeight };
 		float imageAspect{ static_cast<float>(backgroundTexture.width()) / backgroundTexture.height() };
-		float scaleFactor{ 0 };
 
 		float imageWidth	{ static_cast<float>(backgroundTexture.width()) };
 		float imageHeight	{ static_cast<float>(backgroundTexture.height()) };
 
-		float widthScaled	{ 0 };
-		float heightScaled	{ 0 };
+		float scaleFactor{ 0 };
+		float scaleDown{};
 
-		if (screenAspect > imageAspect) {
-			widthScaled		= imageWidth * (m_frameHeight / imageHeight);
-			heightScaled	= m_frameHeight;
+		if (imageWidth > imageHeight) {
+			scaleDown = 1 / (std::max(imageWidth, m_frameWidth) - std::min(imageWidth, m_frameWidth));
 		} 
 		else {
-			widthScaled		= m_frameWidth;
-			heightScaled	= imageHeight * (m_frameWidth / imageWidth);
+			scaleDown = 1 / (std::max(imageHeight, m_frameHeight) - std::min(imageHeight, m_frameHeight));
 		}
 		
-		float scaleDown{ 1 / (imageWidth - m_frameWidth)};
 		model = glm::scale(model, glm::vec3(scaleDown, scaleDown, 0.0f));
 		model = glm::translate(model, glm::vec3(-1 * (imageWidth / 2), -1 * (imageHeight / 2), -1.0f));
 

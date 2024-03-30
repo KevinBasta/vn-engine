@@ -25,7 +25,7 @@ Character::Character(std::string_view name, Relations relationships) :
 }
 
 void Character::addTexture(const char* texturePath) {
-	Texture2D newTexture{ texturePath };
+	Texture2D newTexture{ texturePath, TextureType::CHARACTER };
 	m_textures.push_back(newTexture);
 }
 
