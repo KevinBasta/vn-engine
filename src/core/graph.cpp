@@ -6,10 +6,12 @@
 #include <unordered_set>
 #include <iostream>
 
-Graph::Graph() :
+Graph::Graph(Chapter* chapter) :
 	m_head{},
-	m_current{ nullptr }
+	m_current{ nullptr },
+	m_chapter{ chapter }
 {
+
 }
 
 

@@ -50,7 +50,7 @@ add_executable (
 	"src/engine/texture.h" 
 	"src/engine/camera.cpp" 
 	"src/engine/camera.h"
-)
+ "src/engine/engine.cpp" "src/engine/engine.h" "src/engine/frame_composer.cpp" "src/engine/frame_composer.h")
 
 target_include_directories(
 	"vn_engine"
@@ -88,7 +88,7 @@ project ("local_test")
 add_executable (
 	"local_test"
 	"local_test/local_test.cpp"
-)
+ "src/engine/engine.cpp" "src/engine/engine.h" "src/engine/frame_composer.cpp" "src/engine/frame_composer.h")
 
 target_include_directories(
 	"local_test"

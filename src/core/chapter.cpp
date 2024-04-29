@@ -1,6 +1,7 @@
 
 #include "chapter.h"
+#include "graph.h"
 
-Chapter::Chapter() {
+Chapter::Chapter() : m_graph{ this } {
 
 }

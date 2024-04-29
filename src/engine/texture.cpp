@@ -3,8 +3,17 @@
 
 #include "texture.h"
 
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
+
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
+
+#include <utility>
 
 Texture2D::Texture2D(const char* filepath, TextureType type) {
 	std::filesystem::path path{ filepath };
@@ -113,3 +122,17 @@ void Texture2D::createVAO() {
 	m_VAO = VAO;
 };
 
+void Texture2D::centerToScreen(float frameWidth, float frameHeight) {
+	float imageWidth	{ static_cast<float>(m_width) };
+	float imageHeight	{ static_cast<float>(m_height) };
+
+	if (imageWidth > imageHeight) {
+		m_scaleFactor = 1 / (std::max(imageWidth, frameWidth) - std::min(imageWidth, frameWidth));
+	}
+	else {
+		m_scaleFactor = 1 / (std::max(imageHeight, frameHeight) - std::min(imageHeight, frameHeight));
+	}
+
+	m_model = glm::scale(m_model, glm::vec3(m_scaleFactor, m_scaleFactor, 0.0f));
+	m_model = glm::translate(m_model, glm::vec3(-1 * (imageWidth / 2), -1 * (imageHeight / 2), -1.0f));
+}

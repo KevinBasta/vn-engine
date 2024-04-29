@@ -8,6 +8,8 @@
 #include <iostream>
 #include <unordered_set>
 
+class Chapter;
+
 /*
  * A structure that allows forward and backwards progress in the narrative.
  * Forward progress to allow for progression based on choises.
@@ -20,11 +22,14 @@
 
 class Graph {
 private:
+	Chapter* m_chapter{ nullptr };
+
 	std::unique_ptr<Node> m_head{};
 	Node* m_current{};
 
+
 public:
-	Graph();
+	Graph(Chapter* chapter);
 
 public:
 // Engine Operations:

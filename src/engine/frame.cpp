@@ -1,18 +1,18 @@
 
-#include <iostream>
-#include <utility>
-
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
-
 #include "runtime_characters.h"
 #include "shader.h"
 #include "frame.h"
 #include "camera.h"
 
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
+
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+
+#include <iostream>
+#include <utility>
 
 float deltaTime = 0.0f;
 float lastFrame = 0.0f;
@@ -139,6 +139,7 @@ void OpenGLFrame::gameLoop() {
 		brackgroundShader.use();
 
 		unsigned int bgModelLocation = glGetUniformLocation(brackgroundShader.ID(), "inModel");
+		unsigned int bgViewLocation = glGetUniformLocation(brackgroundShader.ID(), "inView");
 
 		glm::mat4 model = glm::mat4(1.0f);
 
@@ -165,6 +166,7 @@ void OpenGLFrame::gameLoop() {
 		//model = glm::translate(model, glm::vec3(-1.0 * (scaledWidth1 / 2.0f), -1.0 * (scaledHeight1 / 2.0f), -1.0f));
 
 		glUniformMatrix4fv(bgModelLocation, 1, GL_FALSE, glm::value_ptr(model));
+		glUniformMatrix4fv(bgViewLocation, 1, GL_FALSE, glm::value_ptr(m_camera.getViewMatrix()));
 
 
 		backgroundTexture.draw();

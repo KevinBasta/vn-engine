@@ -22,7 +22,6 @@ public:
 	OpenGLFrame();
 	void gameLoop();
 
-
 };
 
 
