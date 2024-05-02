@@ -103,12 +103,12 @@ void OpenGLFrame::gameLoop() {
 	lastFrame = currentFrame;
 
 	Shader characterShader(
-		"C:\\Users\\Kevin\\Documents\\CS\\cpp\\visual-novel-engine\\visual_novel_engine\\src\\Glsl\\characterVertex.glsl",
-		"C:\\Users\\Kevin\\Documents\\CS\\cpp\\visual-novel-engine\\visual_novel_engine\\src\\Glsl\\characterFragment.glsl");
+		"C:\\Users\\Kevin\\Documents\\CS\\cpp\\visual-novel-engine\\visual_novel_engine\\src\\view\\glsl\\characterVertex.glsl",
+		"C:\\Users\\Kevin\\Documents\\CS\\cpp\\visual-novel-engine\\visual_novel_engine\\src\\view\\glsl\\characterFragment.glsl");
 	
 	Shader brackgroundShader(
-		"C:\\Users\\Kevin\\Documents\\CS\\cpp\\visual-novel-engine\\visual_novel_engine\\src\\Glsl\\backgroundVertex.glsl",
-		"C:\\Users\\Kevin\\Documents\\CS\\cpp\\visual-novel-engine\\visual_novel_engine\\src\\Glsl\\backgroundFragment.glsl");
+		"C:\\Users\\Kevin\\Documents\\CS\\cpp\\visual-novel-engine\\visual_novel_engine\\src\\view\\glsl\\backgroundVertex.glsl",
+		"C:\\Users\\Kevin\\Documents\\CS\\cpp\\visual-novel-engine\\visual_novel_engine\\src\\view\\glsl\\backgroundFragment.glsl");
 
 	Texture2D& characterTexture{ g_characters[0].get()->getTextures()[0] };
 
