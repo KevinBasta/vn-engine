@@ -4,6 +4,7 @@
 
 #include "id.h"
 #include "node_children.h"
+#include "character.h"
 
 #include <vector>
 #include <string>
@@ -24,12 +25,7 @@ protected:
 	bool m_isOwned{};
 	Node* m_parent{};
 	NodeChildren m_children{};
-
 	std::string m_temp{};
-
-	// pre actions (transitions, animations, etc..)
-	// body actions (text, animations, etc..)
-	// post actions (choises, bond mutations, transitions, animations, etc...)
 
 public:
 	Node();
@@ -58,45 +54,17 @@ public:
 	// Return children to display data from them for user to pick based on that
 	// std::vector<std::unique_ptr<Node>>& getChildren() { return m_children; }
 
-	void action() {
+	virtual void action() = 0; 
+	//{
 		// pre
 		// ret = theaction();
 		// do post actions based on ret
-	}
+	//}
 
 	virtual void print(bool printChildren, int indentLevel=0);
 
 	// maybe repurpose for writing out to file how to construct this node in cpp for to create runtime or make separte function
 	friend std::ostream& operator<<(std::ostream& out, Node& node);
-};
-
-
-
-//enum ChapterNodeActions {
-//	TYPE_TEXT,
-//	MOVE_CHARACTER,
-//};
-
-
-class ChapterNode: Node {
-private:
-	//std::vector<
-
-
-public:
-	virtual void print(bool printChildren) {
-		std::cout << "chapter node" << std::endl;
-		std::cout << "id:		 " << m_id << std::endl;
-		std::cout << "temp data: " << m_temp << std::endl;
-	}
-};
-
-class OpenGLNode : Node {
-	virtual void print(bool printChildren) {
-		std::cout << "opengl node" << std::endl;
-		std::cout << "id:		 " << m_id << std::endl;
-		std::cout << "temp data: " << m_temp << std::endl;
-	}
 };
 
 #endif // BASE_NODE_H

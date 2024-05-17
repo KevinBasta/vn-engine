@@ -29,6 +29,9 @@ add_executable (
 	"src/common/id.cpp"
 
 	# model
+	"src/model/subject.h"
+	"src/model/state_subject.h"
+	"src/model/model_subject.h"
 	"src/model/character/character.cpp"
 	"src/model/character/relation_types.cpp" 
 	"src/model/character/relation.cpp"
@@ -49,6 +52,9 @@ add_executable (
 	"src/runtime/runtime_chapters.cpp" 
 
 	# view
+	"src/view/observer.h" 
+	"src/view/game_observer.h" 
+	"src/view/engine_observer.h" 
 	"src/view/common/shader.cpp" 
 	"src/view/common/texture.cpp"
 
@@ -56,8 +62,8 @@ add_executable (
 
 	"src/view/game/camera.cpp" 
 	"src/view/game/frame.cpp" 
-	"src/view/game/frame_composer.cpp"
-)
+	
+ "src/view/game/context.cpp" "src/view/game/context.h" "src/view/game/controller.cpp" "src/view/game/controller.h" "src/model/story/chapter_node.cpp" "src/model/story/chapter_node.h")
 
 target_include_directories(
 	"vn_engine"
@@ -92,18 +98,18 @@ add_subdirectory("external/glfw")
 add_subdirectory("external/glm")
 target_link_libraries("vn_engine" PRIVATE glad glfw glm)
 
-project ("vn_runtime")
+#project ("vn_runtime")
 
 
-project ("local_test")
+#project ("local_test")
 
-add_executable (
-	"local_test"
-	"local_test/local_test.cpp"
-)
+#add_executable (
+#	"local_test"
+#	"local_test/local_test.cpp"
+#)
 
-target_include_directories(
-	"local_test"
-	PUBLIC
-	"local_test"
-)
+#target_include_directories(
+#	"local_test"
+#	PUBLIC
+#	"local_test"
+#)

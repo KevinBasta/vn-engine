@@ -9,8 +9,8 @@
 #include <vector>
 #include <memory>
 
-extern std::vector<std::unique_ptr<Chapter>> g_chapters;
-
-void createChapterOne();
+//extern std::vector<std::unique_ptr<Chapter>> g_chapters;
+//
+//void createChapterOne();
 
 #endif //RUNTIME_CHAPTERS_H

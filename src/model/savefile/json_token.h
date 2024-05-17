@@ -29,4 +29,21 @@ public:
 	friend std::ostream& operator<<(std::ostream& os, const JsonToken& token);
 };
 
+
+
+//void testJson() {
+//	// Set path of test files
+//	std::filesystem::path jsonTestDir = "C:\\Users\\Kevin\\Documents\\CS\\cpp\\visual-novel-engine\\visual_novel_engine\\tests\\Json\\";
+//	//std::filesystem::path filepath = std::filesystem::absolute(jsonpath);
+//
+//	Timer t;
+//	t.resetp();
+//
+//	JsonLexer test{ jsonTestDir, "test1.json" };
+//	test.lex();
+//
+//	t.elapsedp();
+//}
+
+
 #endif // JSON_TOKEN_H
