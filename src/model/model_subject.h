@@ -12,6 +12,7 @@
 
 #include "relation.h"
 #include "relation_types.h"
+#include "state_subject.h"
 
 #include <vector>
 #include <memory>
@@ -20,8 +21,13 @@ class ModelSubject : Subject {
 public:
 	std::vector<std::unique_ptr<Chapter>>	m_chapters{};
 	std::vector<std::unique_ptr<Character>> m_characters{};
-
+	// arr telling which chapters loaded, func to ckeck and load
 public:
+	void forwardProgress(StateSubject* stateSubject) {
+		m_chapters[0].get()->attatchControllingObject(stateSubject);
+		m_chapters[0].get()->forwardProgress();
+	}
+
 	void createChapterOne() {
 		Chapter* chapterOne = new Chapter{};
 

@@ -4,6 +4,7 @@
 #include "node.h"
 
 #include "character.h"
+#include "state_subject.h"
 
 #include <string>
 
@@ -30,8 +31,12 @@ public:
 
 
 
-	void action() {
+	void action(StateSubject* stateSubject) {
+		if (stateSubject == nullptr) {
+			return;
+		}
 
+		stateSubject->updateCurrentText("Test", m_temp);
 	}
 
 public:

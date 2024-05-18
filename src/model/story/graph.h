@@ -4,6 +4,8 @@
 
 #include "node.h"
 
+#include "state_subject.h"
+
 #include <memory>
 #include <iostream>
 #include <unordered_set>
@@ -25,11 +27,10 @@ private:
 	Chapter* m_chapter{ nullptr };
 
 	std::unique_ptr<Node> m_head{};
-	Node* m_current{};
-
+	Node* m_current{nullptr};
 
 public:
-	Graph(Chapter* chapter);
+	Graph();
 
 public:
 // Engine Operations:
@@ -54,6 +55,15 @@ public:
 	
 	// Usecase: viewing old nodes or loading from save file
 	bool pointToNode(int nodeId);
+
+	// Usecase: take next action
+	void forwardProgress(StateSubject* stateSubject) {
+		if (m_current == nullptr) {
+			m_current = m_head.get();
+		}
+		
+		m_current->action(stateSubject);
+	}
 
 private:
 	// Recursive function only for use with setCurrentNode

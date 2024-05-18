@@ -6,6 +6,8 @@
 #include "node_children.h"
 #include "character.h"
 
+#include "state_subject.h"
+
 #include <vector>
 #include <string>
 #include <iostream>
@@ -54,7 +56,7 @@ public:
 	// Return children to display data from them for user to pick based on that
 	// std::vector<std::unique_ptr<Node>>& getChildren() { return m_children; }
 
-	virtual void action() = 0; 
+	virtual void action(StateSubject* stateSubject) = 0; 
 	//{
 		// pre
 		// ret = theaction();

@@ -41,6 +41,10 @@ int main()
 	subject.initCharacters();
 	subject.createChapterOne();
 	
+	StateSubject stateSubject{};
+
+	subject.forwardProgress(&stateSubject);
+
 	game.run();
 	
 	std::cout << "End of program" << std::endl;

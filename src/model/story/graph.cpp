@@ -2,14 +2,15 @@
 #include "graph.h"
 #include "node.h"
 
+#include "state_subject.h"
+
 #include <memory>
 #include <unordered_set>
 #include <iostream>
 
-Graph::Graph(Chapter* chapter) :
+Graph::Graph() :
 	m_head{},
-	m_current{ nullptr },
-	m_chapter{ chapter }
+	m_current{ nullptr }
 {
 
 }

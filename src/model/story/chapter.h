@@ -12,36 +12,25 @@
 
 #include <unordered_map>
 
-struct CharacterSceneData {
-	Texture2D* currentTexture;
-	float scaleValue{ 1.0f };
-	glm::mat4 model{ glm::mat4(1.0f) };
-	bool onScreen{ false };
-
-	CharacterSceneData(Character& character) : 
-		currentTexture{ &(character.getTextures()[0]) }
-	{
-	
-	};
-};
-
-// Scene camera/projection data
-/*
-struct SceneCameraData {
-
-};
-*/
-
 class Chapter {
 private:
+	StateSubject* m_stateSubject{ nullptr };
+
 	std::string m_name{};
+	Graph m_graph{};
 	int m_id{};
-	Graph m_graph;
-	//std::unordered_map<Character&, CharacterSceneData> m_characterSceneData{};
-	// background variable can be defined here too
 
 public:
-	Chapter();
+	Chapter() {};
+
+	void attatchControllingObject(StateSubject* stateSubject) {
+		m_stateSubject = stateSubject;
+	}
+
+	void forwardProgress() {
+		m_graph.forwardProgress(m_stateSubject);
+	}
+
 
 	// Setters
 	//void addCharacter(Character& character) { m_characterSceneData[character] = character; };
