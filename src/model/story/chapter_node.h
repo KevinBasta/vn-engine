@@ -28,6 +28,8 @@ public:
 		m_characters.push_back(character);
 	}
 
+
+
 	void action() {
 
 	}

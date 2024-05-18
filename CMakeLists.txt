@@ -68,6 +68,7 @@ add_executable (
 target_include_directories(
 	"vn_engine"
 	PUBLIC
+	""
 	"src/common"
 	"src/model"
 	"src/model/character"
