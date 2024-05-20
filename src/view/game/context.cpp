@@ -20,9 +20,6 @@ float lastFrame = 0.0f;
 
 FlyCamera* g_camera{};
 
-static void frameSizeUpdateCallback(GLFWwindow* window, int newWidth, int newHeight) {
-	glViewport(0, 0, newWidth, newHeight);
-}
 
 static void mouseCallback(GLFWwindow* window, double xpos, double ypos) {
 	(*g_camera).processMouseMovement(xpos, ypos);
@@ -33,32 +30,9 @@ static void scrollCallback(GLFWwindow* window, double xoffset, double yoffset) {
 }
 
 void GameContext::initFrame() {
-	glfwInit();
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
-	m_window = glfwCreateWindow(m_frameWidth, m_frameHeight, "opengl :)", NULL, NULL);
-	if (m_window == NULL) {
-		std::cout << "failed to create GLFW window" << std::endl;
-		glfwTerminate();
-		// raise exception or return err?
-	}
-	
-	glfwMakeContextCurrent(m_window);
-	glfwSetFramebufferSizeCallback(m_window, frameSizeUpdateCallback);
-
-	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
-		std::cout << "failed to initialize GLAD" << std::endl;
-		// raise exception or return err?
-	}
-
 	// Uncomment to enable transparent backgrounds
 	// glEnable(GL_BLEND);
 	// glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-	glViewport(0, 0, m_frameWidth, m_frameHeight);
-
 	g_camera = &m_camera;
 
 	glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
@@ -93,9 +67,7 @@ void GameContext::processInput() {
 	}
 }
 
-GameContext::GameContext() {
-	initFrame();
-}
+
 
 void GameContext::gameLoop() {
 

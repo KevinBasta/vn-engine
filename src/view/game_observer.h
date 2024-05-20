@@ -6,14 +6,21 @@
 #include "model_subject.h"
 //#include "state_subject.h"
 
+#include <GLFW/glfw3.h>
+
 class GameObserver : Observer {
 private:
 	ModelSubject* m_modelSubject{};
+	GLFWwindow* m_window;
 	//StateSubject* m_stateSubject{};
-	GameContext m_vn{};
+	GameContext m_vn;
 
 public:
-	GameObserver(ModelSubject* modelSubjcet) : m_modelSubject{ modelSubjcet }
+	// can register the callbacks here for controller
+	GameObserver(GLFWwindow* window, ModelSubject* modelSubjcet) : 
+		m_window{ window },
+		m_modelSubject{ modelSubjcet },
+		m_vn{ window }
 	{
 		
 	}

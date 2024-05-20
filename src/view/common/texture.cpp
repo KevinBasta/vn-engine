@@ -127,12 +127,12 @@ void Texture2D::centerToScreen(float frameWidth, float frameHeight) {
 	float imageHeight	{ static_cast<float>(m_height) };
 
 	if (imageWidth > imageHeight) {
-		m_scaleFactor = 1 / (std::max(imageWidth, frameWidth) - std::min(imageWidth, frameWidth));
+		m_defaultScaleFactor = 1 / (std::max(imageWidth, frameWidth) - std::min(imageWidth, frameWidth));
 	}
 	else {
-		m_scaleFactor = 1 / (std::max(imageHeight, frameHeight) - std::min(imageHeight, frameHeight));
+		m_defaultScaleFactor = 1 / (std::max(imageHeight, frameHeight) - std::min(imageHeight, frameHeight));
 	}
 
-	m_model = glm::scale(m_model, glm::vec3(m_scaleFactor, m_scaleFactor, 0.0f));
-	m_model = glm::translate(m_model, glm::vec3(-1 * (imageWidth / 2), -1 * (imageHeight / 2), -1.0f));
+	m_defaultModel = glm::scale(m_defaultModel, glm::vec3(m_defaultScaleFactor, m_defaultScaleFactor, 0.0f));
+	m_defaultModel = glm::translate(m_defaultModel, glm::vec3(-1 * (imageWidth / 2), -1 * (imageHeight / 2), -1.0f));
 }

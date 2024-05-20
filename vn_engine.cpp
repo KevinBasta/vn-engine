@@ -2,15 +2,19 @@
 //
 
 #include "vn_engine.h"
+
 #include "timer.h"
+
+#include "frame.h"
+
+#include "window.h"
+#include "model_subject.h"
+#include "state_subject.h"
+#include "game_observer.h"
 
 #include <iostream>
 #include <string>
 #include <filesystem>
-
-#include "frame.h"
-#include "model_subject.h"
-#include "game_observer.h"
 
 void testCore() {
 
@@ -34,14 +38,20 @@ int main()
 {
 	std::cout << "Hello CMake." << std::endl;
 	
+	VnWindow window{};
+	window.load();
+
+	// contains state of what chapter/node on and character relations and items
 	ModelSubject subject{};
-	
-	GameObserver game{ &subject }; // separate the opengl initalizeation to decouple this dependancy of Texture2D
-	
 	subject.initCharacters();
 	subject.createChapterOne();
 	
+	// contatins all other state
 	StateSubject stateSubject{};
+
+	GameObserver game{ window.getWindow() ,& subject }; // separate the opengl initalizeation to decouple this dependancy of Texture2D
+	
+	
 
 	subject.forwardProgress(&stateSubject);
 

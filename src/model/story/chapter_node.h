@@ -7,9 +7,14 @@
 #include "state_subject.h"
 
 #include <string>
+#include <list>
+
+ //class chaternodestep
+
 
 class ChapterNode : public Node {
 private:
+	std::list<std::list<int>> actions{}; // list to contain actions needed to be taked at each step
 	std::vector<Character*> m_characters{};
 	int m_charactersSpeakerIndex{};
 	std::string m_text{};
@@ -37,6 +42,12 @@ public:
 		}
 
 		stateSubject->updateCurrentText("Test", m_temp);
+	}
+
+public:
+	// Engine operations
+	void addStep() {
+
 	}
 
 public:

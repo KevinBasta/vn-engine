@@ -1,11 +1,12 @@
 #ifndef GAME_CONTEXT_H
 #define GAME_CONTEXT_H
 
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
 
 #include "camera.h"
 #include "model_subject.h"
+
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
 
 class GameContext {
 public:
@@ -22,7 +23,11 @@ public:
 	ModelSubject* m_subject{};
 
 public:
-	GameContext();
+	GameContext(GLFWwindow* window) : m_window{ window }
+	{
+		initFrame();
+	}
+
 	void addSubject(ModelSubject* subject) {
 		m_subject = subject;
 	}

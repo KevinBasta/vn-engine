@@ -26,8 +26,8 @@ private:
 	int m_height{};
 	int m_nrChannels{};
 
-	float m_scaleFactor{ 1.0f };
-	glm::mat4 m_model{ glm::mat4(1.0f) };
+	float m_defaultScaleFactor{ 1.0f };
+	glm::mat4 m_defaultModel{ glm::mat4(1.0f) };
 
 	bool m_modelMatrixComputed{ false };
 	bool m_VAOGenerated{ false };
