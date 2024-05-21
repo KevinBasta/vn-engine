@@ -63,7 +63,7 @@ add_executable (
 	"src/view/game/camera.cpp" 
 	"src/view/game/frame.cpp" 
 	
- "src/view/game/context.cpp" "src/view/game/context.h" "src/view/game/controller.cpp" "src/view/game/controller.h" "src/model/story/chapter_node.cpp" "src/model/story/chapter_node.h" "src/view/game/window.cpp" "src/view/game/window.h")
+ "src/view/game/context.cpp" "src/view/game/context.h" "src/view/game/controller.cpp" "src/view/game/controller.h" "src/model/story/chapter_node.cpp" "src/model/story/chapter_node.h" "src/view/game/window.cpp" "src/view/game/window.h" "src/view/gameloop.h")
 
 target_include_directories(
 	"vn_engine"

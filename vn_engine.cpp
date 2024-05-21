@@ -38,24 +38,25 @@ int main()
 {
 	std::cout << "Hello CMake." << std::endl;
 	
+	// load opengl
 	VnWindow window{};
 	window.load();
-
-	// contains state of what chapter/node on and character relations and items
-	ModelSubject subject{};
-	subject.initCharacters();
-	subject.createChapterOne();
 	
-	// contatins all other state
+	// contatins current game state
 	StateSubject stateSubject{};
 
-	GameObserver game{ window.getWindow() ,& subject }; // separate the opengl initalizeation to decouple this dependancy of Texture2D
-	
-	
+	// contains state of what chapter/node on and character relations and items
+	ModelSubject modelSubject{};
+	modelSubject.initCharacters();
+	modelSubject.createChapterOne();
+	modelSubject.attatchStateSubject(&stateSubject);
 
-	subject.forwardProgress(&stateSubject);
-
+	// the vn game
+	GameObserver game{ window.getWindow(), &stateSubject };
 	game.run();
+	
+	
+	//subject.forwardProgress(&stateSubject);
 	
 	std::cout << "End of program" << std::endl;
 	return 0;

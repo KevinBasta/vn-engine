@@ -73,6 +73,8 @@ void Texture2D::draw() {
 
 	glBindVertexArray(m_VAO);
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+	// unbind texture???
 };
 
 

@@ -78,12 +78,16 @@ public:
 
 
 	// Background
-	Texture2D m_currentBackground{ PLACEHOLDER_PATH, TextureType::BACKGROUND};
+	Texture2D* m_currentBackground;
 	
-	void updateCurrentBackground(Texture2D newBackground) {
+	void setTempBackground(Texture2D* texture) {
+		m_currentBackground = texture;
+	}
+
+	void updateCurrentBackground(Texture2D* newBackground) {
 		m_currentBackground = newBackground;
 		m_stateDelta.push_back(StateDelta::BACKGROUND);
-		notify();
+		//notify();
 	}
 
 	// Character Text
@@ -102,6 +106,14 @@ public:
 		std::cout << m_currentSpeaker << " said: " << m_currentText << std::endl;
 		
 		notify();
+	}
+
+public: 
+	// current textures
+	Texture2D* m_tempTexture;
+
+	void setTempTexture(Texture2D* texture) {
+		m_tempTexture = texture;
 	}
 
 public:

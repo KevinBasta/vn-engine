@@ -41,6 +41,8 @@ public:
 
 	void draw();
 
+	// DeleteVAO();
+
 	GLuint ID()  const { return m_textureID; }
 	int width()  const { return m_width; }
 	int height() const { return m_height; }
