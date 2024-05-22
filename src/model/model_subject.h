@@ -25,14 +25,14 @@ public:
 	Texture2D backgroundTexture; // TEMP
 	// arr telling which chapters loaded, func to ckeck and load
 public:
-	ModelSubject(): backgroundTexture{ "C:\\Users\\Kevin\\Documents\\CS\\cpp\\visual-novel-engine\\visual_novel_engine\\assets\\test.jpg", TextureType::BACKGROUND }  
+	ModelSubject(): backgroundTexture{ "C:\\Users\\Kevin\\Documents\\CS\\cpp\\visual-novel-engine\\visual_novel_engine\\assets\\test.jpg" }  
 	{
 
 	}
 
 	void attatchStateSubject(StateSubject* stateSubject) {
 		m_stateSubject = stateSubject;
-		m_stateSubject->setTempTexture(&(m_characters[0].get()->getTextures()[0]));
+		m_stateSubject->setTempTexture(m_characters[0].get()->getTexture(0));
 		m_stateSubject->setTempBackground(&backgroundTexture);
 
 		m_chapters[0].get()->attatchControllingObject(m_stateSubject);

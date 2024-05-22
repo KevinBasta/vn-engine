@@ -34,7 +34,7 @@ struct CharacterSceneData {
 	glm::mat4 model{ glm::mat4(1.0f) };
 
 	CharacterSceneData(Character& character) :
-		currentTexture{ &(character.getTextures()[0]) }
+		currentTexture{ character.getTexture(0) }
 	{
 
 	};

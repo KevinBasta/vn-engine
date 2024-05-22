@@ -15,11 +15,43 @@
 
 #include <utility>
 
-Texture2D::Texture2D(const char* filepath, TextureType type) {
+Texture2D::Texture2D(const char* filepath) {
+	if (filepath == nullptr) {
+		return;
+	}
+
+	createTexture(filepath);
+	createVAO();
+}
+
+Texture2D::~Texture2D() {
+	std::cout << "deleting texture" << std::endl;
+	deleteTexture();
+	deleteVAO();
+}
+
+void Texture2D::draw() {
+	if (!m_generatedVAO || !m_generatedTexture) {
+		std::cout << "texture not generated" << std::endl;
+		return;
+	}
+
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, m_textureID);
+
+	glBindVertexArray(m_VAO);
+	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+	// unbind texture???
+};
+
+void Texture2D::createTexture(const char* filepath) {
 	std::filesystem::path path{ filepath };
 
 	glGenTextures(1, &m_textureID);
 	glBindTexture(GL_TEXTURE_2D, m_textureID);
+
+	// TODO: Unsure if this needs to be here or when drawing or program level
 
 	// set the texture wrapping parameters
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -50,32 +82,15 @@ Texture2D::Texture2D(const char* filepath, TextureType type) {
 
 	stbi_image_free(data);
 
-	switch (type)
-	{
-	case TextureType::CHARACTER:
-		
-		break;
-	case TextureType::BACKGROUND:
-		
-		break;
-	default:
-		break;
-	}
+	m_generatedTexture = true;
+
+	// unbind the texture
+	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-void Texture2D::draw() {
-	if (!m_VAOGenerated) {
-		createVAO();
-	}
-
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, m_textureID);
-
-	glBindVertexArray(m_VAO);
-	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-
-	// unbind texture???
-};
+void Texture2D::deleteTexture() {
+	glDeleteTextures(1, &m_textureID);
+}
 
 
 void Texture2D::createVAO() {
@@ -93,13 +108,13 @@ void Texture2D::createVAO() {
 	};
 
 	// vertex array object, vertex buffer object, Element Buffer Object
-	GLuint VAO, VBO, EBO;
-	glGenVertexArrays(1, &VAO);
+	GLuint VBO, EBO;
+	glGenVertexArrays(1, &m_VAO);
 	glGenBuffers(1, &VBO);
 	glGenBuffers(1, &EBO);
 
-	// Connect everything to the VAO
-	glBindVertexArray(VAO);
+	// connect everything to the VAO
+	glBindVertexArray(m_VAO);
 
 	// vertex data buffer, put data in a buffer
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
@@ -120,9 +135,25 @@ void Texture2D::createVAO() {
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
 	glEnableVertexAttribArray(1);
 
-	m_VAOGenerated = true;
-	m_VAO = VAO;
+	m_generatedVAO = true;
+
+	// unbind all buffers
+	glBindVertexArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 };
+
+void Texture2D::deleteVAO() {
+	glDeleteVertexArrays(1, &m_VAO);
+}
+
+
+
+
+
+
+
+
 
 void Texture2D::centerToScreen(float frameWidth, float frameHeight) {
 	float imageWidth	{ static_cast<float>(m_width) };

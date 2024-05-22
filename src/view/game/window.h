@@ -18,6 +18,11 @@ private:
 
 public:
 	VnWindow() {}
+	~VnWindow() { 
+		std::cout << "VN WINDOW DYSTROYED" << std::endl;
+		glfwDestroyWindow(m_window);
+		glfwTerminate();
+	}
 
 	// load glfw, create window, and load glad
 	void load() {

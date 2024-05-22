@@ -15,6 +15,9 @@
 #include <iostream>
 #include <string>
 #include <filesystem>
+#include <memory>
+
+#include <crtdbg.h>
 
 void testCore() {
 
@@ -33,31 +36,37 @@ void testCore() {
 
 }
 
+void memCheck() {
+	// load opengl
+	std::unique_ptr<VnWindow> window{ std::make_unique<VnWindow>() };
+	window.get()->load();
+	std::cout << "test" << std::endl;
+
+	// contatins current game state
+	//StateSubject stateSubject{};
+
+	// contains state of what chapter/node on and character relations and items
+	//ModelSubject modelSubject{};
+	//modelSubject.initCharacters();
+	//modelSubject.createChapterOne();
+	//modelSubject.attatchStateSubject(&stateSubject);
+
+	// the vn game
+	//GameObserver game{ window.getWindow(), &stateSubject };
+	//game.run();
+}
 
 int main()
 {
 	std::cout << "Hello CMake." << std::endl;
-	
-	// load opengl
-	VnWindow window{};
-	window.load();
-	
-	// contatins current game state
-	StateSubject stateSubject{};
+	std::cout << "before " << std::endl;
 
-	// contains state of what chapter/node on and character relations and items
-	ModelSubject modelSubject{};
-	modelSubject.initCharacters();
-	modelSubject.createChapterOne();
-	modelSubject.attatchStateSubject(&stateSubject);
-
-	// the vn game
-	GameObserver game{ window.getWindow(), &stateSubject };
-	game.run();
-	
-	
+	memCheck();
 	//subject.forwardProgress(&stateSubject);
 	
 	std::cout << "End of program" << std::endl;
+	bool test = _CrtDumpMemoryLeaks();
+
+	std::cout << test << std::endl;
 	return 0;
 }

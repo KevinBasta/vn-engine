@@ -10,20 +10,21 @@
 #include <string_view>
 #include <vector>
 #include <iostream>
+#include <memory>
 
 class Character {
 private:
 	std::string m_name{};
 	const int	m_id;
 	Relations	m_relationships{};
-	std::vector<Texture2D> m_textures{};
+	std::vector<std::unique_ptr<Texture2D>> m_textures{};
 
 public:
 	Character(std::string_view name);
 	Character(std::string_view name, Relations relationships);
 
 	void addTexture(const char* texturePath);
-	std::vector<Texture2D>& getTextures() { return m_textures; }
+	Texture2D* getTexture(int index);
 	Relations& getRelationsObject() { return m_relationships; }
 	int getId() { return m_id; }
 

@@ -64,7 +64,6 @@ public:
 			glfwPollEvents();
 		}
 		
-		glfwTerminate();
 	}
 
 	void update() {

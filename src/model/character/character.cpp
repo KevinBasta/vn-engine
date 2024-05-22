@@ -8,6 +8,7 @@
 #include <iostream>
 #include <string>
 #include <string_view>
+#include <memory>
 
 Character::Character(std::string_view name) :
 	m_name{ name },
@@ -24,9 +25,13 @@ Character::Character(std::string_view name, Relations relationships) :
 
 }
 
+Texture2D* Character::getTexture(int index) {
+	// TODO: handle negative index?
+	return m_textures[index].get();
+}
+
 void Character::addTexture(const char* texturePath) {
-	Texture2D newTexture{ texturePath, TextureType::CHARACTER };
-	m_textures.push_back(newTexture);
+	m_textures.push_back(std::make_unique<Texture2D>(texturePath));
 }
 
 Character::~Character() {

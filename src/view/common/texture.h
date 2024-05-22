@@ -12,16 +12,13 @@
 
 #include <iostream>
 
-enum class TextureType {
-	CHARACTER,
-	BACKGROUND
-};
-
 class Texture2D {
 private:
+	// Opengl specific IDs
 	GLuint m_textureID{};
 	GLuint m_VAO{};
 
+private:
 	int m_width{};
 	int m_height{};
 	int m_nrChannels{};
@@ -30,18 +27,22 @@ private:
 	glm::mat4 m_defaultModel{ glm::mat4(1.0f) };
 
 	bool m_modelMatrixComputed{ false };
-	bool m_VAOGenerated{ false };
+	bool m_generatedTexture{ false };
+	bool m_generatedVAO{ false };
 
 private:
+	void createTexture(const char* filepath);
+	void deleteTexture();
+	
 	void createVAO();
+	void deleteVAO();
+
 	void centerToScreen(float frameWidth, float frameHeight);
 
 public:
-	Texture2D(const char* filepath, TextureType type);
-
+	Texture2D(const char* filepath);
+	~Texture2D();
 	void draw();
-
-	// DeleteVAO();
 
 	GLuint ID()  const { return m_textureID; }
 	int width()  const { return m_width; }
