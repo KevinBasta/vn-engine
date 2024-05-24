@@ -6,8 +6,6 @@
 #include <iostream>
 #include <unordered_map>
 
-std::unordered_map<std::string, int> RelationTypes::relationTypes{};
-
 void RelationTypes::addRelationType(std::string relationName) {
 	relationTypes.insert({ relationName, IdGenerator::getId() });
 }

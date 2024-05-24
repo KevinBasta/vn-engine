@@ -18,14 +18,17 @@ public:
 	 * for the fragment shader, read, compile, and link them.
 	 */
 	Shader(const char* vertexPath, const char* fragmentPath);
+	~Shader() { deleteShaderProgram(); };
 	void use() const;
 	void reload();
 	GLuint ID() const { return m_programID; };
+
 
 private:
 	void compileShaderFiles();
 	void checkCompileErrors(GLuint shader, std::string type);
 	void checkLinkErrors(GLuint shader);
+	void deleteShaderProgram();
 };
 
 

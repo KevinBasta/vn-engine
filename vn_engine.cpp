@@ -43,17 +43,19 @@ void memCheck() {
 	std::cout << "test" << std::endl;
 
 	// contatins current game state
-	//StateSubject stateSubject{};
+	StateSubject stateSubject{};
 
 	// contains state of what chapter/node on and character relations and items
-	//ModelSubject modelSubject{};
-	//modelSubject.initCharacters();
-	//modelSubject.createChapterOne();
-	//modelSubject.attatchStateSubject(&stateSubject);
+	ModelSubject modelSubject{};
+	modelSubject.initCharacters();
+	modelSubject.createChapterOne();
+	modelSubject.attatchStateSubject(&stateSubject);
 
 	// the vn game
-	//GameObserver game{ window.getWindow(), &stateSubject };
-	//game.run();
+	GameObserver game{ window.get()->getWindow(), &stateSubject };
+	game.run();
+	
+	//subject.forwardProgress(&stateSubject);
 }
 
 int main()
@@ -62,11 +64,19 @@ int main()
 	std::cout << "before " << std::endl;
 
 	memCheck();
-	//subject.forwardProgress(&stateSubject);
 	
 	std::cout << "End of program" << std::endl;
-	bool test = _CrtDumpMemoryLeaks();
 
-	std::cout << test << std::endl;
+
+	// Check for memory leaks. Does not account for global variables or static variables.
+	_CrtSetReportMode(_CRT_WARN, _CRTDBG_MODE_FILE);
+	_CrtSetReportFile(_CRT_WARN, _CRTDBG_FILE_STDOUT);
+	_CrtSetReportMode(_CRT_ERROR, _CRTDBG_MODE_FILE);
+	_CrtSetReportFile(_CRT_ERROR, _CRTDBG_FILE_STDOUT);
+	_CrtSetReportMode(_CRT_ASSERT, _CRTDBG_MODE_FILE);
+	_CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDOUT);
+	bool test = _CrtDumpMemoryLeaks();
+	std::cout << ((test == 1) ? "MEMORY LEAK PRESENT" : "NO MEMORY LEAK DETECTED") << std::endl;
+
 	return 0;
 }

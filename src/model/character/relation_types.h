@@ -10,12 +10,12 @@ private:
 	using RelationName = std::string;
 	using RelationId = int;
 
-	static std::unordered_map<RelationName, RelationId> relationTypes;
+	std::unordered_map<RelationName, RelationId> relationTypes{};
 
 public:
-	static void addRelationType(std::string relationName);
-	static bool getRelationId(std::string relationName, int& outId);
-	static void print();
+	void addRelationType(std::string relationName);
+	bool getRelationId(std::string relationName, int& outId);
+	void print();
 };
 
 #endif // RELATION_TYPES_H

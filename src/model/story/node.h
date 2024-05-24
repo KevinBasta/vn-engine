@@ -31,7 +31,7 @@ protected:
 
 public:
 	Node();
-	~Node();
+	virtual ~Node();
 	Node(std::string tempData);
 
 public:

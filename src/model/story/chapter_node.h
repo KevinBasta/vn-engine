@@ -24,6 +24,7 @@ private:
 	// post actions (choises, bond mutations, transitions, animations, etc...)
 public:
 	ChapterNode() : Node() {}
+	~ChapterNode() { std::cout << "child destructor" << std::endl; };
 	ChapterNode(std::string tempData) : Node(tempData) {}
 
 	void addCharacter(Character* character) {

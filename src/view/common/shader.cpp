@@ -123,3 +123,8 @@ void Shader::checkLinkErrors(GLuint shader) {
 		std::cout << "---------------------------------------------------" << std::endl;
 	}
 }
+
+void Shader::deleteShaderProgram() {
+	std::cout << "delete shader" << std::endl;
+	glDeleteProgram(m_programID);
+}
