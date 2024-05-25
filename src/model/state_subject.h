@@ -52,7 +52,7 @@ enum class TextState {
 	COMPLETE
 };
 
-class StateSubject : Subject {
+class StateSubject : public Subject {
 public:
 	// Delta tracking inquiry
 	// an array of enums describing what changed to allow an

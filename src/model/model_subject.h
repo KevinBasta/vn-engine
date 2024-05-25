@@ -17,7 +17,7 @@
 #include <vector>
 #include <memory>
 
-class ModelSubject : Subject {
+class ModelSubject : public Subject {
 public:
 	StateSubject* m_stateSubject{};
 	std::vector<std::unique_ptr<Chapter>>	m_chapters{};

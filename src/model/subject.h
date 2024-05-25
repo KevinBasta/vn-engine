@@ -2,7 +2,9 @@
 #define VN_SUBJECT_H
 
 #include "observer.h"
+
 #include <list>
+#include <iostream>
 
 class Subject {
 private:
@@ -31,6 +33,8 @@ public:
 		for (std::list<Observer*>::iterator iter{ m_observers.begin()}; iter != m_observers.end(); iter++) {
 			(*iter)->update();
 		}
+
+		std::cout << "notification occured for " << m_observers.size() << " observers" << std::endl;
 	}
 };
 

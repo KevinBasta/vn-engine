@@ -17,7 +17,7 @@ static void scrollCallback(GLFWwindow* window, double xoffset, double yoffset) {
 	//(*g_camera).processMouseScroll(yoffset);
 }
 
-class GameObserver : Observer {
+class GameObserver : public Observer {
 private:
 	GLFWwindow* m_window;
 	

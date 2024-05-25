@@ -52,7 +52,11 @@ void memCheck() {
 
 	// the vn game
 	GameObserver game{ window.get(), &stateSubject };
+	
+	stateSubject.attatch(static_cast<Observer*>(&game));
+	
 	game.run();
+
 	
 	//subject.forwardProgress(&stateSubject);
 }
