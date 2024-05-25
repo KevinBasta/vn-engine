@@ -38,10 +38,9 @@ void testCore() {
 
 void memCheck() {
 	// load opengl
-	std::unique_ptr<VnWindow> window{ std::make_unique<VnWindow>() };
-	window.get()->load();
-	std::cout << "test" << std::endl;
-
+	VnWindow window{};
+	window.load();
+	
 	// contatins current game state
 	StateSubject stateSubject{};
 
@@ -52,7 +51,7 @@ void memCheck() {
 	modelSubject.attatchStateSubject(&stateSubject);
 
 	// the vn game
-	GameObserver game{ window.get()->getWindow(), &stateSubject };
+	GameObserver game{ window.get(), &stateSubject };
 	game.run();
 	
 	//subject.forwardProgress(&stateSubject);

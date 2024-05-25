@@ -3,8 +3,8 @@
 
 #include "observer.h"
 #include "context.h"
-#include "model_subject.h"
-//#include "state_subject.h"
+#include "state_subject.h"
+#include "controller.h"
 
 #include <GLFW/glfw3.h>
 
@@ -23,13 +23,15 @@ private:
 	
 	StateSubject* m_stateSubject{};
 	GameContext m_context;
+	GameController m_controller;
 
 public:
 	// can register the callbacks here for controller
 	GameObserver(GLFWwindow* window, StateSubject* stateSubjcet) :
 		m_window{ window },
 		m_stateSubject{ stateSubjcet },
-		m_context{ window }
+		m_context{ window },
+		m_controller{ window, stateSubjcet }
 	{
 	}
 
@@ -47,6 +49,8 @@ public:
 		float lastFrame = 0.0f;
 
 		while (!glfwWindowShouldClose(m_window)) {
+			m_controller.processInput();
+
 			float currentFrame = glfwGetTime();
 			deltaTime = currentFrame - lastFrame;
 			lastFrame = currentFrame;

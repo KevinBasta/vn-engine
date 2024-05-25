@@ -90,6 +90,7 @@ void Shader::compileShaderFiles() {
 
 
 	// 4: Delete the shaders are they are linked in the program
+	// TODO: check return value
 	glDeleteShader(vertexShader);
 	glDeleteShader(fragmentShader);
 }
@@ -126,5 +127,7 @@ void Shader::checkLinkErrors(GLuint shader) {
 
 void Shader::deleteShaderProgram() {
 	std::cout << "delete shader" << std::endl;
+
+	// TODO: check return value
 	glDeleteProgram(m_programID);
 }

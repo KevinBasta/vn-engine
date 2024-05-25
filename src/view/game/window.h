@@ -51,10 +51,7 @@ public:
 		std::cout << "OpenGL " << GLVersion.major << "." << GLVersion.minor << std::endl;
 	}
 
-
-
-
-	GLFWwindow* getWindow() {
+	GLFWwindow* get() {
 		return m_window;
 	}
 
