@@ -32,24 +32,24 @@ add_executable (
 	"src/model/subject.h"
 	"src/model/state_subject.h"
 	"src/model/model_subject.h"
+	"src/model/subjects_orchestrator.h" 
+	"src/model/model_common.h"
+
 	"src/model/character/character.cpp"
 	"src/model/character/relation_types.cpp" 
 	"src/model/character/relation.cpp"
 	
-	"src/model/story/chapter.cpp"
-	"src/model/story/graph.cpp"
-	"src/model/story/node.cpp"
-	"src/model/story/node_children.cpp" 
-	
-	"src/model/savefile/json_lexer.cpp"
-	"src/model/savefile/json_token.cpp"
-	"src/model/savefile/json_error.cpp"
-	"src/model/savefile/json_expr.cpp"
+	"src/model/chapter/chapter.cpp"
+	"src/model/graph/graph.cpp"
+	"src/model/node/node.cpp"
+	"src/model/node/node_children.cpp" 
+	"src/model/node/chapter_node.cpp" 
+	"src/model/node/chapter_node.h" 
 
-	# runtime
-	"src/runtime/runtime_characters.cpp"
-	"src/runtime/runtime_relations.cpp"
-	"src/runtime/runtime_chapters.cpp" 
+	"src/model/savefile/json/json_lexer.cpp"
+	"src/model/savefile/json/json_token.cpp"
+	"src/model/savefile/json/json_error.cpp"
+	"src/model/savefile/json/json_expr.cpp"
 
 	# view
 	"src/view/observer.h" 
@@ -63,7 +63,14 @@ add_executable (
 	"src/view/game/camera.cpp" 
 	"src/view/game/frame.cpp" 
 	
- "src/view/game/context.cpp" "src/view/game/context.h" "src/view/game/controller.cpp" "src/view/game/controller.h" "src/model/story/chapter_node.cpp" "src/model/story/chapter_node.h" "src/view/game/window.cpp" "src/view/game/window.h" "src/view/gameloop.h")
+	"src/view/game/context.cpp"
+	"src/view/game/context.h"
+	"src/view/game/controller.cpp"
+	"src/view/game/controller.h" 
+	"src/view/game/window.cpp" 
+	"src/view/game/window.h" 
+	"src/view/gameloop.h" 
+ "src/model/graph/graph_iterator.cpp" "src/model/graph/graph_iterator.h")
 
 target_include_directories(
 	"vn_engine"
@@ -71,9 +78,11 @@ target_include_directories(
 	""
 	"src/common"
 	"src/model"
+	"src/model/chapter"
 	"src/model/character"
+	"src/model/graph"
+	"src/model/node"
 	"src/model/savefile"
-	"src/model/story"
 	"src/runtime"
 	"src/view"
 	"src/view/common"

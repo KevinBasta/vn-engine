@@ -4,13 +4,15 @@
 #include "vn_engine.h"
 
 #include "timer.h"
-
-#include "frame.h"
-
 #include "window.h"
+
+#include "subjects_orchestrator.h"
 #include "model_subject.h"
 #include "state_subject.h"
+
+#include "gameloop.h"
 #include "game_observer.h"
+#include "engine_observer.h"
 
 #include <iostream>
 #include <string>
@@ -46,9 +48,9 @@ void memCheck() {
 
 	// contains state of what chapter/node on and character relations and items
 	ModelSubject modelSubject{};
-	modelSubject.initCharacters();
-	modelSubject.createChapterOne();
-	modelSubject.attatchStateSubject(&stateSubject);
+
+	SubjectsOrchestrator subjectsOrchestrator{&modelSubject, &stateSubject};
+	subjectsOrchestrator.newGame();
 
 	// the vn game
 	GameObserver game{ window.get(), &stateSubject };

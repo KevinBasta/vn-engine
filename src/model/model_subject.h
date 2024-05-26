@@ -19,27 +19,18 @@
 
 class ModelSubject : public Subject {
 public:
+	// This class is only for creating the chapters and characters. The current would actually be stored in the stat
 	StateSubject* m_stateSubject{};
 	std::vector<std::unique_ptr<Chapter>>	m_chapters{};
 	std::vector<std::unique_ptr<Character>> m_characters{};
-	Texture2D backgroundTexture; // TEMP
 	// arr telling which chapters loaded, func to ckeck and load
 public:
-	ModelSubject(): backgroundTexture{ "C:\\Users\\Kevin\\Documents\\CS\\cpp\\visual-novel-engine\\visual_novel_engine\\assets\\test.jpg" }  
+	ModelSubject()  
 	{
-
-	}
-
-	void attatchStateSubject(StateSubject* stateSubject) {
-		m_stateSubject = stateSubject;
-		m_stateSubject->setTempTexture(m_characters[0].get()->getTexture(0));
-		m_stateSubject->setTempBackground(&backgroundTexture);
-
-		m_chapters[0].get()->attatchControllingObject(m_stateSubject);
 	}
 
 	void forwardProgress() {
-		m_chapters[0].get()->forwardProgress();
+
 	}
 
 	void createChapterOne() {

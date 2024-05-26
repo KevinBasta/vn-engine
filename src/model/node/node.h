@@ -7,6 +7,7 @@
 #include "character.h"
 
 #include "state_subject.h"
+#include "model_common.h"
 
 #include <vector>
 #include <string>
@@ -56,7 +57,7 @@ public:
 	// Return children to display data from them for user to pick based on that
 	// std::vector<std::unique_ptr<Node>>& getChildren() { return m_children; }
 
-	virtual void action(StateSubject* stateSubject) = 0; 
+	virtual ChapterStatus action(StateSubject* stateSubject) = 0;
 	//{
 		// pre
 		// ret = theaction();

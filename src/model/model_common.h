@@ -1,0 +1,12 @@
+#ifndef VN_MODEL_COMMON_H
+#define VN_MODEL_COMMON_H
+
+enum class ChapterStatus {
+	NODE_STEP,
+	NODE_END,
+	GRAPH_STEP,
+	GRAPH_END,
+	STATE_UNKNOWN
+};
+
+#endif // VN_MODEL_COMMON_H

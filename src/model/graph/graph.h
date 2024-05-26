@@ -3,14 +3,12 @@
 #define GRAPH_H
 
 #include "node.h"
-
 #include "state_subject.h"
+#include "model_common.h"
 
 #include <memory>
 #include <iostream>
 #include <unordered_set>
-
-class Chapter;
 
 /*
  * A structure that allows forward and backwards progress in the narrative.
@@ -24,8 +22,6 @@ class Chapter;
 
 class Graph {
 private:
-	Chapter* m_chapter{ nullptr };
-
 	std::unique_ptr<Node> m_head{};
 	Node* m_current{nullptr};
 
@@ -57,12 +53,13 @@ public:
 	bool pointToNode(int nodeId);
 
 	// Usecase: take next action
-	void forwardProgress(StateSubject* stateSubject) {
+	ChapterStatus forwardProgress(StateSubject* stateSubject) {
 		if (m_current == nullptr) {
 			m_current = m_head.get();
 		}
 		
-		m_current->action(stateSubject);
+		ChapterStatus status = m_current->action(stateSubject);
+		return status;
 	}
 
 private:

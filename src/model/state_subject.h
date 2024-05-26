@@ -54,6 +54,10 @@ enum class TextState {
 
 class StateSubject : public Subject {
 public:
+		
+
+
+public:
 	// Delta tracking inquiry
 	// an array of enums describing what changed to allow an
 	// observer to fetch new data from only what changed

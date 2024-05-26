@@ -4,13 +4,13 @@
 #include "state_subject.h"
 
 
-static bool m_leftButtonReleaseEvent{ false };
+static bool sg_leftButtonReleaseEvent{ false };
 
 
 void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
 {
 	if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_RELEASE) {
-		m_leftButtonReleaseEvent = true;
+		sg_leftButtonReleaseEvent = true;
 	}
 }
 
@@ -39,9 +39,9 @@ private:
 			std::cout << "w pressed" << std::endl;
 		}
 
-		if (m_leftButtonReleaseEvent) {
+		if (sg_leftButtonReleaseEvent) {
 			m_stateSubject->updateCurrentText("lol", "test");
-			m_leftButtonReleaseEvent = false;
+			sg_leftButtonReleaseEvent = false;
 		}
 
 		//if (glfwGetMouseButton(m_window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {

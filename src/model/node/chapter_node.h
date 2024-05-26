@@ -5,16 +5,19 @@
 
 #include "character.h"
 #include "state_subject.h"
+#include "model_common.h"
 
 #include <string>
 #include <list>
 
  //class chaternodestep
+enum class ChapterNodeActionType {
 
+};
 
 class ChapterNode : public Node {
 private:
-	std::list<std::list<int>> actions{}; // list to contain actions needed to be taked at each step
+	std::list<std::list<int>> m_steps{};
 	std::vector<Character*> m_characters{};
 	int m_charactersSpeakerIndex{};
 	std::string m_text{};
@@ -37,12 +40,13 @@ public:
 
 
 
-	void action(StateSubject* stateSubject) {
+	ChapterStatus action(StateSubject* stateSubject) {
 		if (stateSubject == nullptr) {
-			return;
+			return ChapterStatus::STATE_UNKNOWN;
 		}
 
 		stateSubject->updateCurrentText("Test", m_temp);
+		return ChapterStatus::NODE_STEP;
 	}
 
 public:
