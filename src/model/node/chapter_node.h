@@ -12,15 +12,32 @@
 
  //class chaternodestep
 enum class ChapterNodeActionType {
-
+	TYPE_TEXT,
+	CHANGE_SPRITE,
+	MOVE_SPRITE,
 };
 
 class ChapterNode : public Node {
 private:
-	std::list<std::list<int>> m_steps{};
+	std::list<std::list<ChapterNodeActionType>> m_steps{};
+
+	std::list<std::pair<int, std::string>> m_typeText{};
+
 	std::vector<Character*> m_characters{};
 	int m_charactersSpeakerIndex{};
 	std::string m_text{};
+
+
+
+
+	void doStep() {
+		// execture every action in current iter step
+		// for (int )
+
+
+
+		// call notify on state
+	}
 
 	// pre actions (transitions, animations, etc..)
 	// body actions (text, animations, etc..)

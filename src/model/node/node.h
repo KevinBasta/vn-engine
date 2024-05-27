@@ -14,6 +14,15 @@
 #include <iostream>
 #include <memory>
 
+
+enum class NodeState {
+	NODE_NOT_STARTED, 
+	NODE_STEP,
+	NODE_CHOICE,
+	NODE_END
+};
+
+
 class NodeChildren;
 
 /*

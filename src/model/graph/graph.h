@@ -40,6 +40,9 @@ public:
 
 public:
 // Game Operations:
+
+	Node* getHead() { return m_head.get(); }
+
 	// Usecase: after constructing the tree, prepare it for traversal
 	void pointToHead() { m_current = m_head.get(); };
 	

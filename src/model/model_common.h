@@ -3,6 +3,7 @@
 
 enum class ChapterStatus {
 	NODE_STEP,
+	NODE_CHOICE,
 	NODE_END,
 	GRAPH_STEP,
 	GRAPH_END,
