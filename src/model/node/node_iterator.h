@@ -13,19 +13,19 @@ private:
 public:
 	NodeIterator(Node* node) : m_node{ node }
 	{
-	
+
 	}
 
 	void attatch(StateSubject* stateSubject) {
 		m_state = stateSubject;
 	}
 	
-	void step() {
-		m_node->action(m_state, m_currentStep);
+	NodeState step() {
+		NodeState actionResult = m_node->action(m_state, m_currentStep);
 		m_currentStep++;
+
+		return actionResult;
 	}
-
-
 };
 
 #endif // VN_NODE_ITERATOR_H

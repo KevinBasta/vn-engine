@@ -1,9 +1,12 @@
 
 #include "node_children.h"
 #include "node.h"
+#include "node_iterator.h"
 
 #include <iostream>
 #include <string>
+
+NodeIterator Node::iterator() { return NodeIterator(this); }
 
 std::ostream& operator<<(std::ostream& out, Node& node) {
 	std::cout << "a node" << std::endl;

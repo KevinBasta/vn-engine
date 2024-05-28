@@ -9,29 +9,26 @@
 class GraphIterator {
 private:
 	Graph* m_graph{ nullptr };
-	// node iterator?
 	Node* m_current{ nullptr };
+	NodeIterator m_nodeIterator{ nullptr };
 
 	StateSubject* m_state{ nullptr };
 
-	void pointToHead() {
-		// null checks needed
-		
-		m_current = m_graph->getHead();
-	}
+	bool pointToParent(int parentID);
+	bool pointToChild(int childIndex = 0);
 
 public: 
 	GraphIterator(Graph* graph) : m_graph{ graph } {
-		pointToHead();
 	}
 
-	void attatch(StateSubject* stateSubject) {
+	void attatchState(StateSubject* stateSubject) {
 		m_state = stateSubject;
 	}
 
-	void next(int childIndex = 0) {
-				
-	}
+	// interface
+	void first();
+	void step();
+	void jumpToNode(int nodeId);
 };
 
 

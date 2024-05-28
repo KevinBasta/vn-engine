@@ -10,6 +10,9 @@
 #include <iostream>
 #include <unordered_set>
 
+
+class GraphIterator;
+
 /*
  * A structure that allows forward and backwards progress in the narrative.
  * Forward progress to allow for progression based on choises.
@@ -23,54 +26,28 @@
 class Graph {
 private:
 	std::unique_ptr<Node> m_head{};
-	Node* m_current{nullptr};
-
-public:
-	Graph();
-
-public:
-// Engine Operations:
-	// Usecase: modify or populate the m_current
-	Node* getCurrentNode() { return m_current; }
-
-	// Usecase: insert child node into m_current
-	// bool insertChildNode(Node* node); // Does this make sense? Can't this be done in the node object itself?
-
-	void setHeadNode(Node* node);
+	Node* m_targetSearchNode{ nullptr };
 
 public:
 // Game Operations:
-
 	Node* getHead() { return m_head.get(); }
-
-	// Usecase: after constructing the tree, prepare it for traversal
-	void pointToHead() { m_current = m_head.get(); };
-	
-	// Usecase: forward progress in the story
-	bool pointToChild(int nodeId);
-
-	// Usecase: backward progress in the story
-	void pointToParent();
-	
-	// Usecase: viewing old nodes or loading from save file
-	bool pointToNode(int nodeId);
-
-	// Usecase: take next action
-	/*void forwardProgress(StateSubject* stateSubject) {
-		if (m_current == nullptr) {
-			m_current = m_head.get();
-		}
-		
-		m_current->action(stateSubject);
-	}*/
-
-private:
-	// Recursive function only for use with setCurrentNode
-	void dfs(int targetNodeId, Node* nodeChecking, std::unordered_set<int>& visitedNodes);
+	GraphIterator iterator();
 
 public:
-	// Operators:
+// Engine Operations:
+	void setHeadNode(Node* node) { m_head.reset(node); }
 	friend std::ostream& operator<<(std::ostream& out, Graph& graph);
+
+/* 
+ * Algorithm for iterator 
+ */
+public:
+	// Usecase: viewing old nodes or loading from save file
+	Node* getNodeById(int nodeId);
+
+private:
+	// Recursive function only for use with getNodeById
+	void dfs(int targetNodeId, Node* nodeChecking, std::unordered_set<int>& visitedNodes);
 };
 
 #endif // GRAPH_H

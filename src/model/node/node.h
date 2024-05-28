@@ -24,7 +24,7 @@ enum class NodeState {
 
 
 class NodeChildren;
-
+class NodeIterator;
 /*
  * A story node, should have side effects on characters?
  * Can contain a normal text, characters, positions, player talking, etc..
@@ -43,12 +43,13 @@ public:
 	Node();
 	virtual ~Node();
 	Node(std::string tempData);
+	NodeIterator iterator();
 
 public:
 // Engine Operations:
 	// Usecase: Connect a node to a different parent
 	bool isOwned() { return m_isOwned; }
-	void setOwned(bool owned) { m_isOwned = owned; };
+	void setOwned(bool owned) { m_isOwned = owned; }
 
 	void setParent(Node* parent) { m_parent = parent; }
 
