@@ -32,8 +32,8 @@ public:
 
 	}
 
-	void forwardProgress() {
-		m_model->forwardProgress();
+	void action() {
+		m_state->action();
 	}
 };
 

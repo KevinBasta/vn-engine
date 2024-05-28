@@ -30,7 +30,7 @@ private:
 
 
 
-	void doStep() {
+	void doStep(StateSubject* stateSubject, int stepIndex) {
 		// execture every action in current iter step
 		// for (int )
 
@@ -57,13 +57,22 @@ public:
 
 
 
-	ChapterStatus action(StateSubject* stateSubject) {
-		if (stateSubject == nullptr) {
-			return ChapterStatus::STATE_UNKNOWN;
-		}
+	NodeState action(StateSubject* stateSubject, int stepIndex) {
+		doStep(stateSubject, stepIndex);
 
 		stateSubject->updateCurrentText("Test", m_temp);
-		return ChapterStatus::NODE_STEP;
+		
+		if (stepIndex == (m_steps.size() - 1)) {
+			if (m_children.size() > 1) {
+				return NodeState::NODE_CHOICE;
+			}
+			else {
+				return NodeState::NODE_END;
+			}
+		}
+		else {
+			return NodeState::NODE_STEP;
+		}
 	}
 
 public:

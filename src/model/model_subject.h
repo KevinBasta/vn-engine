@@ -29,10 +29,6 @@ public:
 	{
 	}
 
-	void forwardProgress() {
-
-	}
-
 	void createChapterOne() {
 		Chapter* chapterOne = new Chapter{};
 

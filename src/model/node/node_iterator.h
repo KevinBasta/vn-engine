@@ -6,7 +6,7 @@
 
 class NodeIterator {
 private:
-	Node* m_node{};
+	Node* m_node{ nullptr };
 	int m_currentStep{ 0 };
 	StateSubject* m_state{ nullptr };
 
@@ -21,7 +21,8 @@ public:
 	}
 	
 	void step() {
-		m_node->action(m_state);
+		m_node->action(m_state, m_currentStep);
+		m_currentStep++;
 	}
 
 

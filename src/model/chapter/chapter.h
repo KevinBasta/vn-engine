@@ -14,23 +14,12 @@
 
 class Chapter {
 private:
-	StateSubject* m_stateSubject{ nullptr };
-
 	std::string m_name{};
 	Graph m_graph{};
 	int m_id{};
 
 public:
 	Chapter() {};
-
-	void attatchControllingObject(StateSubject* stateSubject) {
-		m_stateSubject = stateSubject;
-	}
-
-	void forwardProgress() {
-		m_graph.forwardProgress(m_stateSubject);
-	}
-
 
 	// Setters
 	//void addCharacter(Character& character) { m_characterSceneData[character] = character; };

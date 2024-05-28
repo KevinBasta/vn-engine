@@ -7,6 +7,9 @@
 #include "texture.h"
 
 #include "character.h"
+//#include "chapter.h"
+//#include "graph.h"
+//#include "graph_iterator.h"
 
 #include <string>
 #include <string_view>
@@ -54,8 +57,11 @@ enum class TextState {
 
 class StateSubject : public Subject {
 public:
-		
+	//Chapter* currentChapter{ nullptr };
 
+	void action() {
+
+	}
 
 public:
 	// Delta tracking inquiry

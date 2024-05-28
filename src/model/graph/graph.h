@@ -56,14 +56,13 @@ public:
 	bool pointToNode(int nodeId);
 
 	// Usecase: take next action
-	ChapterStatus forwardProgress(StateSubject* stateSubject) {
+	/*void forwardProgress(StateSubject* stateSubject) {
 		if (m_current == nullptr) {
 			m_current = m_head.get();
 		}
 		
-		ChapterStatus status = m_current->action(stateSubject);
-		return status;
-	}
+		m_current->action(stateSubject);
+	}*/
 
 private:
 	// Recursive function only for use with setCurrentNode

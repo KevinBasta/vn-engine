@@ -16,7 +16,7 @@
 
 
 enum class NodeState {
-	NODE_NOT_STARTED, 
+	NODE_NOT_STARTED,
 	NODE_STEP,
 	NODE_CHOICE,
 	NODE_END
@@ -59,14 +59,14 @@ public:
 public:
 // Game Operations:
 	int getId() { return m_id; }
-	Node* getParent() { return m_parent; }
+	Node* getParent() { return m_parent; } // TODO: can have multiple parents? hence must change
 	Node* getChildByIndex(int childIndex);
 	int getChildrenAmount();
 
 	// Return children to display data from them for user to pick based on that
 	// std::vector<std::unique_ptr<Node>>& getChildren() { return m_children; }
 
-	virtual ChapterStatus action(StateSubject* stateSubject) = 0;
+	virtual NodeState action(StateSubject* stateSubject, int stepIndex) = 0;
 	//{
 		// pre
 		// ret = theaction();
