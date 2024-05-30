@@ -29,37 +29,5 @@ bool GraphIterator::pointToChild(int childIndex) {
 	return false;
 }
 
-/*
- * Public Interface 
- */
 
 
-void GraphIterator::first() {
-	// m_graph null check needed
-	m_current = m_graph->getHead();
-	m_nodeIterator = m_current->iterator();
-	m_nodeIterator.attatch(m_state);
-}
-
-void GraphIterator::jumpToNode(int nodeId) {
-	Node* node{ m_graph->getNodeById(nodeId) };
-	
-	if (node) {
-		m_current = node;
-		m_nodeIterator = m_current->iterator();
-		m_nodeIterator.attatch(m_state);
-	}
-	else {
-		std::cout << "Node not found" << std::endl;
-		first();
-	}
-}
-
-void GraphIterator::step() {
-	// can return a graph iterator status saying that no more children so parent can go to next chapter
-	NodeState stepResult{ m_nodeIterator.step() };
-
-	if (stepResult == NodeState::NODE_END) {
-		pointToChild(0);
-	}
-}

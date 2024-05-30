@@ -70,7 +70,7 @@ add_executable (
 	"src/view/game/window.cpp" 
 	"src/view/game/window.h" 
 	"src/view/gameloop.h" 
- "src/model/graph/graph_iterator.cpp" "src/model/graph/graph_iterator.h" "src/model/node/node_iterator.h" "src/model/node/node_iterator.cpp")
+ "src/model/graph/graph_iterator.cpp" "src/model/graph/graph_iterator.h" "src/model/node/node_iterator.h" "src/model/node/node_iterator.cpp" "src/model/chapter/chapter_iterator.cpp" "src/model/chapter/chapter_iterator.h")
 
 target_include_directories(
 	"vn_engine"
