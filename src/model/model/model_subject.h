@@ -28,7 +28,7 @@ public:
 	std::list<Chapter*> m_chapterOrder{};
 
 	Chapter* getChapterByOrderIndex(int orderIndex) {
-		return m_chapters[0].get();
+		return m_chapters[0].get(); // TODO: reason for current cycle
 	}
 
 	ChapterIterator iter(int chapterIndex);
@@ -62,7 +62,7 @@ public:
 		chapterOneChild2->addChild(chapterOneChild5);
 
 		//chapterOneChild4->addChild(chapterOneChild5);
-		// chapterOneHead->addChild(chapterOneHead); unhandled case yet
+		// chapterOneHead->addChild(chapterOneHead); TODO: unhandled case yet cycle
 
 		//chapterOneHead->addCharacter(m_characters[0].get());
 

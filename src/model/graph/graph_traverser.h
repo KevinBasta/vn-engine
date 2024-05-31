@@ -39,8 +39,11 @@ private:
 		return true;
 	}
 	
-	bool pointToParent(int parentID);
+	// TODO: point child should update the iterator too
 	bool pointToChild(int childIndex = 0);
+
+	// TODO: implement point to parent
+	bool pointToParent(int parentID);
 
 public: 
 	GraphTraverser(Graph* graph) : m_curGraph{ graph } {
@@ -59,6 +62,8 @@ public:
 			if (!nextNodeInit) {
 				return GraphState::GRAPH_END;
 			}
+
+			m_nodeIterator = m_curNode->iter(); // TODO: move to pointToChild
 		}
 
 		return GraphState::GRAPH_STEP;

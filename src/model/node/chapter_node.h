@@ -21,7 +21,7 @@ enum class ChapterNodeActionType {
 
 class ChapterNode : public Node {
 private:
-	std::list<std::list<ChapterNodeActionType>> m_steps{};
+	std::list<std::list<ChapterNodeActionType>> m_steps{ std::list<ChapterNodeActionType>{ChapterNodeActionType::TYPE_TEXT } };
 
 	std::list<std::pair<int, std::string>> m_typeText{};
 
