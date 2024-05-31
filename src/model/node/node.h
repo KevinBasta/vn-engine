@@ -24,7 +24,7 @@ enum class NodeState {
 
 class StateSubject;
 class NodeChildren;
-class NodeIterator;
+class NodeRunner;
 /*
  * A story node, should have side effects on characters?
  * Can contain a normal text, characters, positions, player talking, etc..
@@ -43,7 +43,7 @@ public:
 	Node();
 	virtual ~Node();
 	Node(std::string tempData);
-	NodeIterator iterator();
+	NodeRunner iter();
 
 public:
 // Engine Operations:

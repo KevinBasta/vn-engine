@@ -16,6 +16,9 @@
 #include <vector>
 #include <memory>
 
+// Circular dependancy resolutions:
+class ChapterIterator;
+
 class ModelSubject : public Subject {
 public:
 	// This class is only for creating the chapters and characters. The current would actually be stored in the stat
@@ -27,6 +30,9 @@ public:
 	Chapter* getChapterByOrderIndex(int orderIndex) {
 		return m_chapters[0].get();
 	}
+
+	ChapterIterator iter(int chapterIndex);
+
 	// arr telling which chapters loaded, func to ckeck and load
 public:
 	ModelSubject()  

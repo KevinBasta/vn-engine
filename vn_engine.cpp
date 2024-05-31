@@ -56,7 +56,6 @@ void memCheck() {
 	GameObserver game{ window.get(), &stateSubject };
 	
 	stateSubject.attatch(static_cast<Observer*>(&game));
-	stateSubject.notify();
 
 	game.run();
 

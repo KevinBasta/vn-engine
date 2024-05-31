@@ -1,11 +1,11 @@
 
 #include "graph.h"
-#include "graph_iterator.h"
+#include "graph_traverser.h"
 
 #include <iostream>
 
-bool GraphIterator::pointToParent(int parentID) {
-	if (m_current != m_graph->getHead()) {
+bool GraphTraverser::pointToParent(int parentID) {
+	if (m_curNode != m_curGraph->getHead()) {
 		// needs to pick by parent id
 		//m_current = m_current->getParent();
 	}
@@ -17,12 +17,12 @@ bool GraphIterator::pointToParent(int parentID) {
 	return false;
 }
 
-bool GraphIterator::pointToChild(int childIndex) {
+bool GraphTraverser::pointToChild(int childIndex) {
 	// handle no children case
-	Node* child = m_current->getChildByIndex(childIndex);
+	Node* child = m_curNode->getChildByIndex(childIndex);
 
 	if (child) {
-		m_current = child;
+		m_curNode = child;
 		return true;
 	}
 

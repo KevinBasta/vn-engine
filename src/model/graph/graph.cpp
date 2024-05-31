@@ -2,13 +2,13 @@
 #include "graph.h"
 
 #include "node.h"
-#include "graph_iterator.h"
+#include "graph_traverser.h"
 
 #include <memory>
 #include <unordered_set>
 #include <iostream>
 
-GraphIterator Graph::iterator() { return GraphIterator(this);	}
+GraphTraverser Graph::iter() { return GraphTraverser(this);	}
 
 std::ostream& operator<<(std::ostream& out, Graph& graph) {
 	std::cout << "Graph:" << std::endl;

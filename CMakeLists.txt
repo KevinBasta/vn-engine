@@ -30,8 +30,8 @@ add_executable (
 
 	# model
 	"src/model/subject.h"
-	"src/model/state_subject.h"
-	"src/model/model_subject.h"
+	"src/model/state/state_subject.h"
+	"src/model/model/model_subject.h"
 	"src/model/subjects_orchestrator.h" 
 	"src/model/model_common.h"
 
@@ -70,7 +70,7 @@ add_executable (
 	"src/view/game/window.cpp" 
 	"src/view/game/window.h" 
 	"src/view/gameloop.h" 
- "src/model/graph/graph_iterator.cpp" "src/model/graph/graph_iterator.h" "src/model/node/node_iterator.h" "src/model/node/node_iterator.cpp" "src/model/chapter/chapter_iterator.cpp" "src/model/chapter/chapter_iterator.h")
+ "src/model/graph/graph_traverser.cpp" "src/model/graph/graph_traverser.h" "src/model/node/node_runner.h" "src/model/node/node_runner.cpp" "src/model/chapter/chapter_iterator.cpp" "src/model/chapter/chapter_iterator.h" "src/model/model/model_subject.cpp")
 
 target_include_directories(
 	"vn_engine"
@@ -83,6 +83,8 @@ target_include_directories(
 	"src/model/graph"
 	"src/model/node"
 	"src/model/savefile"
+	"src/model/model"
+	"src/model/state"
 	"src/runtime"
 	"src/view"
 	"src/view/common"

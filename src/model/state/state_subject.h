@@ -63,14 +63,14 @@ public:
 
 public:
 	Chapter* currentChapter{ nullptr };
-	ChapterIterator iterator{nullptr, nullptr, 0};
+	ChapterIterator iterator{nullptr, 0};
 
-	void initIterator(ModelSubject* model, int chapterIndex) {
-		iterator = ChapterIterator(this, model, chapterIndex);
+	void initIterator(ChapterIterator chapterIterator) {
+		iterator = chapterIterator;
 	}
 
 	void action() {
-		iterator.step();
+		iterator.step(this);
 	}
 
 public:
@@ -111,15 +111,15 @@ public:
 	}
 
 	// Character Text
-	//TextState m_textState{ TextState::EMPTY };
-	//std::string m_currentSpeaker{};
-	//std::string m_currentText{};
+	TextState m_textState{ TextState::EMPTY };
+	std::string m_currentSpeaker{};
+	std::string m_currentText{};
 	// can switch to string views if saved in model?
 
 	void updateCurrentText(std::string newSpeaker, std::string newText) {
-		//m_currentSpeaker = newSpeaker;
-		//m_currentText = newText;
-		//m_textState = TextState::COMPLETE;
+		m_currentSpeaker = newSpeaker;
+		m_currentText = newText;
+		m_textState = TextState::COMPLETE;
 		
 		//m_stateDelta.push_back(StateDelta::TEXT);
 		

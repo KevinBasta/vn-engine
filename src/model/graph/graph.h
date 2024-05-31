@@ -10,7 +10,7 @@
 #include <unordered_set>
 
 
-class GraphIterator;
+class GraphTraverser;
 
 /*
  * A structure that allows forward and backwards progress in the narrative.
@@ -30,7 +30,7 @@ private:
 public:
 // Game Operations:
 	Node* getHead() { return m_head.get(); }
-	GraphIterator iterator();
+	GraphTraverser iter();
 
 public:
 // Engine Operations:

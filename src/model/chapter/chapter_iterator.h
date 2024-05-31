@@ -2,9 +2,12 @@
 #define VN_CHAPTER_ITERATOR_H
 
 #include "chapter.h"
+
 #include "graph.h"
-#include "graph_iterator.h"
+#include "graph_traverser.h"
+
 #include "model_subject.h"
+
 
 class StateSubject;
 
@@ -13,40 +16,66 @@ enum class ChapterState {
 	CHAPTERS_END
 };
 
-
 class ChapterIterator {
 private:
-	ModelSubject* m_modelSubject{ nullptr };
-	StateSubject* m_stateSubject{ nullptr };
+	ModelSubject*	m_model{ nullptr };
+	Chapter*		m_curChapter{ nullptr };
+	int				m_curChapterIndex{ 0 };
+	
+	Graph*			m_curGraph{ nullptr };
+	GraphTraverser	m_graphIter{ nullptr };
 
-	int m_currentChapterIndex{ 0 };
-	Chapter* m_currentChapter{ nullptr };
-	Graph* m_currentGraph{ nullptr };
-	GraphIterator m_graphIterator{ nullptr };
-
-public:
-	ChapterIterator(StateSubject* state, ModelSubject* model, int chapterIndex) :
-		m_modelSubject{ model }	
-	{
-		if (m_modelSubject) {
-			m_currentChapter = model->getChapterByOrderIndex(chapterIndex);
-		
-			if (m_currentChapter) {
-				m_currentGraph = m_currentChapter->getGraph();
-				m_graphIterator = m_currentGraph->iterator();
-				m_graphIterator.attatchStateSubject(m_stateSubject);
-			}
+	// flase for fail, true for success
+	bool initChapter(int chapterIndex) {
+		if (!m_model) {
+			return false;
 		}
+
+		m_curChapter = m_model->getChapterByOrderIndex(m_curChapterIndex);
+
+		if (!m_curChapter) {
+			return false;
+		}
+
+		m_curGraph = m_curChapter->getGraph();
+
+		if (!m_curGraph) {
+			return false;
+		}
+
+		m_graphIter = m_curGraph->iter();
+	
+		return true;
 	}
 
-	ChapterState step() {
-		GraphState state = m_graphIterator.step();
+public:
+	ChapterIterator(ModelSubject* model, int chapterIndex) :
+		m_model{ model },
+		m_curChapterIndex{ chapterIndex }
+	{
+		initChapter(m_curChapterIndex);
+	}
+
+	ChapterState step(StateSubject* stateSubject) {
+		// TODO: check graph iter containing a null graph
+		GraphState state = m_graphIter.step(stateSubject);
+
+		if (m_model && (state == GraphState::GRAPH_END)) {
+			m_curChapterIndex++;
+			
+			bool nextChapterInit = initChapter(m_curChapterIndex);
+			if (!nextChapterInit) {
+				// Avoid future traversals
+				m_curChapter = nullptr;
+				m_curGraph = nullptr;
+				m_graphIter = GraphTraverser(nullptr);
+				
+				return ChapterState::CHAPTERS_END;
+			}
+		}
 
 		return ChapterState::CHAPTER_STEP;
 	}
-
-
-
 };
 
 
