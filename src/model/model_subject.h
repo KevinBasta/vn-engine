@@ -12,7 +12,6 @@
 
 #include "relation.h"
 #include "relation_types.h"
-#include "state_subject.h"
 
 #include <vector>
 #include <memory>
@@ -20,9 +19,14 @@
 class ModelSubject : public Subject {
 public:
 	// This class is only for creating the chapters and characters. The current would actually be stored in the stat
-	StateSubject* m_stateSubject{};
 	std::vector<std::unique_ptr<Chapter>>	m_chapters{};
 	std::vector<std::unique_ptr<Character>> m_characters{};
+
+	std::list<Chapter*> m_chapterOrder{};
+
+	Chapter* getChapterByOrderIndex(int orderIndex) {
+		return m_chapters[0].get();
+	}
 	// arr telling which chapters loaded, func to ckeck and load
 public:
 	ModelSubject()  
@@ -32,7 +36,7 @@ public:
 	void createChapterOne() {
 		Chapter* chapterOne = new Chapter{};
 
-		Graph& chapterOneGraph{ chapterOne->getGraph() };
+		Graph* chapterOneGraph{ new Graph() };
 
 		ChapterNode* chapterOneHead{ new ChapterNode("the head node!") };
 		ChapterNode* chapterOneChild1{ new ChapterNode("level 1 child node 1!") };
@@ -56,7 +60,9 @@ public:
 
 		//chapterOneHead->addCharacter(m_characters[0].get());
 
-		chapterOneGraph.setHeadNode(chapterOneHead);
+		chapterOneGraph->setHeadNode(chapterOneHead);
+
+		chapterOne->setGraph(chapterOneGraph);
 
 		m_chapters.push_back(std::unique_ptr<Chapter>(chapterOne));
 		//std::cout << chapterOneGraph << std::endl;

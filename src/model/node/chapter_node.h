@@ -4,13 +4,15 @@
 #include "node.h"
 
 #include "character.h"
-#include "state_subject.h"
 #include "model_common.h"
 
 #include <string>
 #include <list>
 
- //class chaternodestep
+
+class StateSubject;
+
+//class chaternodestep
 enum class ChapterNodeActionType {
 	TYPE_TEXT,
 	CHANGE_SPRITE,
@@ -57,23 +59,7 @@ public:
 
 
 
-	NodeState action(StateSubject* stateSubject, int stepIndex) {
-		doStep(stateSubject, stepIndex);
-
-		stateSubject->updateCurrentText("Test", m_temp);
-		
-		if (stepIndex == (m_steps.size() - 1)) {
-			if (m_children.size() > 1) {
-				return NodeState::NODE_CHOICE;
-			}
-			else {
-				return NodeState::NODE_END;
-			}
-		}
-		else {
-			return NodeState::NODE_STEP;
-		}
-	}
+	NodeState action(StateSubject* stateSubject, int stepIndex);
 
 public:
 	// Engine operations

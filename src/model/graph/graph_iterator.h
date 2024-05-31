@@ -4,7 +4,13 @@
 #include "graph.h"
 #include "node.h"
 #include "node_iterator.h"
-#include "state_subject.h"
+
+class StateSubject;
+
+enum class GraphState {
+	GRAPH_STEP,
+	GRAPH_END
+};
 
 class GraphIterator {
 private:
@@ -12,13 +18,16 @@ private:
 	Node* m_current{ nullptr };
 	NodeIterator m_nodeIterator{ nullptr };
 
-	StateSubject* m_state{ nullptr };
+	StateSubject* m_stateSubject{ nullptr };
 
 	bool pointToParent(int parentID);
 	bool pointToChild(int childIndex = 0);
 
 public: 
 	GraphIterator(Graph* graph) : m_graph{ graph } {
+		if (graph) {
+			first();
+		}
 	}
 
 
@@ -26,24 +35,26 @@ public:
 	 * Public Interface
 	 */
 
-	void attatchState(StateSubject* stateSubject) {
-		m_state = stateSubject;
+	void attatchStateSubject(StateSubject* stateSubject) {
+		m_stateSubject = stateSubject;
 	}
 
 	void first() {
 		// m_graph null check needed
 		m_current = m_graph->getHead();
 		m_nodeIterator = m_current->iterator();
-		m_nodeIterator.attatch(m_state);
+		m_nodeIterator.attatchStateSubject(m_stateSubject);
 	}
 
-	void step() {
+	GraphState step() {
 		// can return a graph iterator status saying that no more children so parent can go to next chapter
 		NodeState stepResult{ m_nodeIterator.step() };
 
 		if (stepResult == NodeState::NODE_END) {
 			pointToChild(0);
 		}
+
+		return GraphState::GRAPH_STEP;
 	}
 
 
@@ -53,7 +64,7 @@ public:
 		if (node) {
 			m_current = node;
 			m_nodeIterator = m_current->iterator();
-			m_nodeIterator.attatch(m_state);
+			m_nodeIterator.attatchStateSubject(m_stateSubject);
 		}
 		else {
 			std::cout << "Node not found" << std::endl;

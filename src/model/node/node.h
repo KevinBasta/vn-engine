@@ -6,7 +6,6 @@
 #include "node_children.h"
 #include "character.h"
 
-#include "state_subject.h"
 #include "model_common.h"
 
 #include <vector>
@@ -23,6 +22,7 @@ enum class NodeState {
 };
 
 
+class StateSubject;
 class NodeChildren;
 class NodeIterator;
 /*

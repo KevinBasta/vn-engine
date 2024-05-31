@@ -40,7 +40,8 @@ private:
 		}
 
 		if (sg_leftButtonReleaseEvent) {
-			m_stateSubject->updateCurrentText("lol", "test");
+			//m_stateSubject->updateCurrentText("lol", "test");
+			m_stateSubject->action();
 			sg_leftButtonReleaseEvent = false;
 		}
 

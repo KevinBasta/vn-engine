@@ -2,13 +2,14 @@
 #define VN_NODE_ITERATOR_H
 
 #include "node.h"
-#include "state_subject.h"
+
+class StateSubject;
 
 class NodeIterator {
 private:
 	Node* m_node{ nullptr };
 	int m_currentStep{ 0 };
-	StateSubject* m_state{ nullptr };
+	StateSubject* m_stateSubject{ nullptr };
 
 public:
 	NodeIterator(Node* node) : m_node{ node }
@@ -16,12 +17,12 @@ public:
 
 	}
 
-	void attatch(StateSubject* stateSubject) {
-		m_state = stateSubject;
+	void attatchStateSubject(StateSubject* stateSubject) {
+		m_stateSubject = stateSubject;
 	}
 	
 	NodeState step() {
-		NodeState actionResult = m_node->action(m_state, m_currentStep);
+		NodeState actionResult = m_node->action(m_stateSubject, m_currentStep);
 		m_currentStep++;
 
 		return actionResult;

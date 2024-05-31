@@ -10,6 +10,7 @@
 //#include "chapter.h"
 //#include "graph.h"
 //#include "graph_iterator.h"
+#include "chapter_iterator.h"
 
 #include <string>
 #include <string_view>
@@ -57,10 +58,19 @@ enum class TextState {
 
 class StateSubject : public Subject {
 public:
-	//Chapter* currentChapter{ nullptr };
+	StateSubject() {}
+	~StateSubject() {}
+
+public:
+	Chapter* currentChapter{ nullptr };
+	ChapterIterator iterator{nullptr, nullptr, 0};
+
+	void initIterator(ModelSubject* model, int chapterIndex) {
+		iterator = ChapterIterator(this, model, chapterIndex);
+	}
 
 	void action() {
-
+		iterator.step();
 	}
 
 public:
@@ -68,15 +78,15 @@ public:
 	// an array of enums describing what changed to allow an
 	// observer to fetch new data from only what changed
 	
-	std::vector<StateDelta> m_stateDelta{};
+	//std::vector<StateDelta> m_stateDelta{};
 
-	std::vector<StateDelta>& getStateDelta() {
-		return m_stateDelta;
-	}
+	//std::vector<StateDelta>& getStateDelta() {
+	//	return m_stateDelta;
+	//}
 
-	void clearStateDelta() {
-		m_stateDelta.clear();
-	}
+	//void clearStateDelta() {
+	//	m_stateDelta.clear();
+	//}
 
 public:
 	// Model specific state
@@ -96,24 +106,24 @@ public:
 
 	void updateCurrentBackground(Texture2D* newBackground) {
 		m_currentBackground = newBackground;
-		m_stateDelta.push_back(StateDelta::BACKGROUND);
+		//m_stateDelta.push_back(StateDelta::BACKGROUND);
 		//notify();
 	}
 
 	// Character Text
-	TextState m_textState{ TextState::EMPTY };
-	std::string m_currentSpeaker{};
-	std::string m_currentText{};
+	//TextState m_textState{ TextState::EMPTY };
+	//std::string m_currentSpeaker{};
+	//std::string m_currentText{};
 	// can switch to string views if saved in model?
 
 	void updateCurrentText(std::string newSpeaker, std::string newText) {
-		m_currentSpeaker = newSpeaker;
-		m_currentText = newText;
-		m_textState = TextState::COMPLETE;
+		//m_currentSpeaker = newSpeaker;
+		//m_currentText = newText;
+		//m_textState = TextState::COMPLETE;
 		
-		m_stateDelta.push_back(StateDelta::TEXT);
+		//m_stateDelta.push_back(StateDelta::TEXT);
 		
-		std::cout << m_currentSpeaker << " said: " << m_currentText << std::endl;
+		std::cout << newSpeaker << " said: " << newText << std::endl;
 		
 		notify();
 	}
@@ -133,7 +143,7 @@ public:
 
 public:
 	// User input specific state
-	bool m_menuOpened{ false };
+	//bool m_menuOpened{ false };
 
 
 };

@@ -11,11 +11,12 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include <unordered_map>
+#include <memory>
 
 class Chapter {
 private:
 	std::string m_name{};
-	Graph m_graph{};
+	std::unique_ptr<Graph> m_graph{};
 	int m_id{};
 
 public:
@@ -25,7 +26,8 @@ public:
 	//void addCharacter(Character& character) { m_characterSceneData[character] = character; };
 
 	// Getters
-	Graph& getGraph() { return m_graph; }
+	void setGraph(Graph* graph) { m_graph = std::unique_ptr<Graph>(graph); }
+	Graph* getGraph() { return m_graph.get(); }
 
 
 };
