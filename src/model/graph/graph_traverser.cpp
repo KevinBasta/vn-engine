@@ -4,6 +4,40 @@
 
 #include <iostream>
 
+bool GraphTraverser::pointToGraphHead() {
+	if (!m_curGraph) {
+		return false;
+	}
+
+	m_curNode = m_curGraph->getHead();
+
+	if (!m_curNode) {
+		return false;
+	}
+
+	m_nodeIterator = m_curNode->iter();
+
+	return true;
+}
+
+bool GraphTraverser::pointToChild(int childIndex) {
+	// handle no children case
+	if (!m_curNode) {
+		return false;
+	}
+
+	Node* child = m_curNode->getChildByIndex(childIndex);
+
+	if (child) {
+		m_curNode = child;
+		m_nodeIterator = m_curNode->iter();
+
+		return true;
+	}
+
+	return false;
+}
+
 bool GraphTraverser::pointToParent(int parentID) {
 	if (m_curNode != m_curGraph->getHead()) {
 		// needs to pick by parent id
@@ -16,18 +50,3 @@ bool GraphTraverser::pointToParent(int parentID) {
 
 	return false;
 }
-
-bool GraphTraverser::pointToChild(int childIndex) {
-	// handle no children case
-	Node* child = m_curNode->getChildByIndex(childIndex);
-
-	if (child) {
-		m_curNode = child;
-		return true;
-	}
-
-	return false;
-}
-
-
-

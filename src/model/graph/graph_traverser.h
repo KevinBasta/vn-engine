@@ -23,23 +23,7 @@ private:
 
 private:
 	// flase for fail, true for success
-	bool pointToGraphHead() {
-		if (!m_curGraph) {
-			return false;
-		}
-
-		m_curNode = m_curGraph->getHead();
-
-		if (!m_curNode) {
-			return false;
-		}
-
-		m_nodeIterator = m_curNode->iter();
-
-		return true;
-	}
-	
-	// TODO: point child should update the iterator too
+	bool pointToGraphHead();
 	bool pointToChild(int childIndex = 0);
 
 	// TODO: implement point to parent
@@ -62,8 +46,6 @@ public:
 			if (!nextNodeInit) {
 				return GraphState::GRAPH_END;
 			}
-
-			m_nodeIterator = m_curNode->iter(); // TODO: move to pointToChild
 		}
 
 		return GraphState::GRAPH_STEP;
