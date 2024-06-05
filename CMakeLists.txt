@@ -70,7 +70,7 @@ add_executable (
 	"src/view/game/window.cpp" 
 	"src/view/game/window.h" 
 	"src/view/gameloop.h" 
- "src/model/graph/graph_traverser.cpp" "src/model/graph/graph_traverser.h" "src/model/node/node_runner.h" "src/model/node/node_runner.cpp" "src/model/chapter/chapter_iterator.cpp" "src/model/chapter/chapter_iterator.h" "src/model/model/model_subject.cpp")
+ "src/model/graph/graph_traverser.cpp" "src/model/graph/graph_traverser.h" "src/model/node/node_runner.h" "src/model/node/node_runner.cpp" "src/model/chapter/chapter_iterator.cpp" "src/model/chapter/chapter_iterator.h" "src/model/model/model_subject.cpp" "src/view/common/text.h" "src/view/common/text.cpp")
 
 target_include_directories(
 	"vn_engine"
@@ -102,13 +102,15 @@ target_include_directories(
 	"external/glad"
 	"external/glfw"
 	"external/glm"
+	"external/freetype"
 )
 
 # Add libraries
 add_subdirectory("external/glad")
 add_subdirectory("external/glfw")
 add_subdirectory("external/glm")
-target_link_libraries("vn_engine" PRIVATE glad glfw glm)
+add_subdirectory("external/freetype")
+target_link_libraries("vn_engine" PRIVATE glad glfw glm freetype)
 
 #project ("vn_runtime")
 

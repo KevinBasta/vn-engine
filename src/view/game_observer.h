@@ -5,6 +5,7 @@
 #include "context.h"
 #include "state_subject.h"
 #include "controller.h"
+#include "text.h"
 
 #include <GLFW/glfw3.h>
 
@@ -24,6 +25,7 @@ private:
 	StateSubject* m_stateSubject{};
 	GameContext m_context;
 	GameController m_controller;
+	VnText m_text{};
 
 public:
 	// can register the callbacks here for controller
@@ -63,6 +65,7 @@ public:
 			m_context.drawBackground(m_stateSubject->m_currentBackground);
 			m_context.drawSprite(m_stateSubject->m_tempTexture);
 
+			m_text.RenderText("test test test lol 123", 25.0f, 25.0f, 1.0f, glm::vec3(0.5, 0.8f, 0.2f));
 		
 			glfwSwapBuffers(m_window);
 			glfwPollEvents();
