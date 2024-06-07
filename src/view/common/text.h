@@ -16,8 +16,10 @@
 #include <string>
 #include <iostream>
 #include <unordered_map>
+//#include <locale>
+//#include < locale.h >
 
-#define TEMP_FONT_PATH				"C:\\Users\\Kevin\\Documents\\CS\\cpp\\visual-novel-engine\\visual_novel_engine\\fonts\\Roboto-Regular.ttf"
+#define TEMP_FONT_PATH				"C:\\Users\\Kevin\\Documents\\CS\\cpp\\visual-novel-engine\\visual_novel_engine\\fonts\\BIZ-UDGothicB.ttc"
 #define TEMP_TEXT_VERTEX_SHADER		"C:\\Users\\Kevin\\Documents\\CS\\cpp\\visual-novel-engine\\visual_novel_engine\\src\\view\\glsl\\textVertex.glsl"
 #define TEMP_TEXT_FRAGMENT_SHADER	"C:\\Users\\Kevin\\Documents\\CS\\cpp\\visual-novel-engine\\visual_novel_engine\\src\\view\\glsl\\textFragment.glsl"
 
@@ -30,7 +32,7 @@ struct textChar {
 
 class VnText {
 private: 
-	std::unordered_map<GLchar, textChar> m_loadedTextChars{};
+	std::unordered_map<wchar_t, textChar> m_loadedTextChars{};
 	Shader	m_textShader;
 	FT_Library m_ft{};
 	FT_Face m_face{};
@@ -75,15 +77,17 @@ private:
 		glBindVertexArray(0);
 	}
 
-	int loadCharacter(const char charInput) {
+	int loadCharacter(const wchar_t charInput) {
 		// set size to load glyphs as
 		FT_Set_Pixel_Sizes(m_face, 0, 48);
 
 		// disable byte-alignment restriction
 		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+		//FT_Select_Charmap(m_face, ft_encoding_unicode);
+		unsigned long c = FT_Get_Char_Index(m_face, charInput);
 
 		// Load character glyph 
-		if (FT_Load_Char(m_face, charInput, FT_LOAD_RENDER))
+		if (FT_Load_Glyph(m_face, c, FT_LOAD_RENDER))
 		{
 			std::cout << "ERROR::FREETYTPE: Failed to load Glyph" << std::endl;
 			return -1;
@@ -119,7 +123,7 @@ private:
 			static_cast<unsigned int>(m_face->glyph->advance.x)
 		};
 
-		m_loadedTextChars.insert(std::pair<char, textChar>(charInput, character));
+		m_loadedTextChars.insert(std::pair<wchar_t, textChar>(charInput, character));
 
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
@@ -140,7 +144,7 @@ public:
 
 	// render line of text
 	// -------------------
-	void RenderText(std::string text, float x, float y, float scale, glm::vec3 color)
+	void RenderText(std::wstring text, float x, float y, float scale, glm::vec3 color)
 	{
 		//glEnable(GL_CULL_FACE);
 		glEnable(GL_BLEND);
@@ -163,12 +167,12 @@ public:
 		glBindVertexArray(m_VAO);
 
 		// iterate through all characters
-		std::string::const_iterator c;
+		std::wstring::const_iterator c;
 		for (c = text.begin(); c != text.end(); c++)
 		{
 			if (m_loadedTextChars.find(*c) == m_loadedTextChars.end()) {
 				loadCharacter(*c);
-				std::cout << "char loaded: " << *c << std::endl;
+				std::cout << "char loaded: " << static_cast<uint32_t>(*c) << std::endl;
 			}
 
 			textChar ch = m_loadedTextChars[*c];

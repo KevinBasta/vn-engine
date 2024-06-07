@@ -1,4 +1,4 @@
-#ifndef GAME_OBSERVER_H
+﻿#ifndef GAME_OBSERVER_H
 #define GAME_OBSERVER_H
 
 #include "observer.h"
@@ -46,7 +46,7 @@ public:
 
 	void run() {
 		// Gameloop
-		
+		bool test = true;
 		float deltaTime = 0.0f;
 		float lastFrame = 0.0f;
 
@@ -58,16 +58,25 @@ public:
 			lastFrame = currentFrame;
 
 
-			glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-			glClear(GL_COLOR_BUFFER_BIT);
 
 			//for (int i)
-			m_context.drawBackground(m_stateSubject->m_currentBackground);
-			m_context.drawSprite(m_stateSubject->m_tempTexture);
+			if (test) {
+			
+				glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+				glClear(GL_COLOR_BUFFER_BIT);
+				
+				m_context.drawBackground(m_stateSubject->m_currentBackground);
+				m_context.drawSprite(m_stateSubject->m_tempTexture);
 
-			m_text.RenderText("test test test lol 123", 25.0f, 25.0f, 1.0f, glm::vec3(0.5, 0.8f, 0.2f));
+				m_text.RenderText(L"test test test lol 123 あ私", 25.0f, 25.0f, 1.0f, glm::vec3(0.5, 0.8f, 0.2f));
+				m_text.RenderText(L"test test test lol 123 あ私", 1.0f, 1.0f, 1.0f, glm::vec3(0.2, 0.9f, 0.7f));
+				m_text.RenderText(L"test test test lol 123 あ私", 55.0f, 55.0f, 1.0f, glm::vec3(0.5, 0.2f, 0.2f));
+			
+				glfwSwapBuffers(m_window);
+			
+				//test = false; 
+			}
 		
-			glfwSwapBuffers(m_window);
 			glfwPollEvents();
 		}
 		

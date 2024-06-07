@@ -1,8 +1,6 @@
-#ifndef GAME_CONTEXT_H
-#define GAME_CONTEXT_H
+#ifndef VN_GAME_CONTEXT_H
+#define VN_GAME_CONTEXT_H
 
-
-#include "camera.h"
 #include "model_subject.h"
 #include "texture.h"
 #include "shader.h"
@@ -13,13 +11,7 @@
 class GameContext {
 public:
 	GLFWwindow* m_window{};
-	FlyCamera m_camera{};
-	Shader m_characterShader;
-	Shader m_brackgroundShader;
-
-	// temp
-	float m_frameWidth{ 800.0f };
-	float m_frameHeight{ 600.0f };
+	Shader m_defaultShader;
 
 public:
 	GameContext(GLFWwindow* window);
@@ -33,4 +25,4 @@ public:
 	}*/
 };
 
-#endif // GAME_CONTEXT_H
+#endif // VN_GAME_CONTEXT_H

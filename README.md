@@ -10,5 +10,6 @@
 ## Design patterns
 
 - `Observer pattern` for state_subject, model subject, game observer, engine observer
-- `Visitor pattern` for sending down the state subject for forward progress
-- `Iterator pattern` for iterating graph and potentially node
+- `Visitor pattern/injection` for sending down the state subject down to the model nodes
+- `Iterator pattern` for iterating chapter, graph, and node
+- `Command pattern` for menu commands

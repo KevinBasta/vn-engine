@@ -10,13 +10,11 @@ class SubjectsOrchestrator {
 private:
 	ModelSubject* m_model{};
 	StateSubject* m_state{};
-	Texture2D backgroundTexture; // TEMP
 
 public:
 	SubjectsOrchestrator(ModelSubject* model, StateSubject* state) :
 		m_model{model},
 		m_state{state},
-		backgroundTexture{ "C:\\Users\\Kevin\\Documents\\CS\\cpp\\visual-novel-engine\\visual_novel_engine\\assets\\test.jpg" }
 	{
 		m_model->initCharacters();
 	}

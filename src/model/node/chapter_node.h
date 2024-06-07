@@ -7,36 +7,88 @@
 #include "model_common.h"
 
 #include <string>
-#include <list>
+#include <vector>
 
 
 class StateSubject;
+
+#define TEMP_BACKGROUND "C:\\Users\\Kevin\\Documents\\CS\\cpp\\visual-novel-engine\\visual_novel_engine\\assets\\test.jpg"
 
 //class chaternodestep
 enum class ChapterNodeActionType {
 	TYPE_TEXT,
 	CHANGE_SPRITE,
+	CHANGE_BACKGROUND,
 	MOVE_SPRITE,
+};
+
+struct ChapterNodeText {
+	int characterID{};
+	std::string line{};
+	
+	bool overrideSpeakerName{};
+	std::string speakerName{};
+};
+
+struct ChapterNodeBackground {
+	std::string backgroundTexturePath{};
+	// replace with index and centralize backgrounds
+};
+
+struct ChapterNodeSprite {
+	int characterID{};
+	int spriteIndex{};
+	bool isActive{};
 };
 
 class ChapterNode : public Node {
 private:
-	std::list<std::list<ChapterNodeActionType>> m_steps{ std::list<ChapterNodeActionType>{ChapterNodeActionType::TYPE_TEXT } };
+	// temp constructions here, will be done by engine/hooks
+	std::vector<std::vector<ChapterNodeActionType>> m_steps{ 
+		std::vector<ChapterNodeActionType>{ ChapterNodeActionType::CHANGE_BACKGROUND }, 
+		std::vector<ChapterNodeActionType>{ ChapterNodeActionType::TYPE_TEXT, ChapterNodeActionType::CHANGE_SPRITE } 
+	};
 
-	std::list<std::pair<int, std::string>> m_typeText{};
+	std::vector<std::vector<ChapterNodeSprite>> m_spriteSteps{ 
+		std::vector<ChapterNodeSprite>{ChapterNodeSprite{0, 1, true}}
+	};
+	
+	std::vector<std::vector<ChapterNodeBackground>> m_backgroundSteps{
+		std::vector<ChapterNodeBackground>{ChapterNodeBackground{TEMP_BACKGROUND}}
+	};
 
-	std::vector<Character*> m_characters{};
-	int m_charactersSpeakerIndex{};
+	std::vector<std::vector<ChapterNodeText>> m_textSteps{
+		std::vector<ChapterNodeText>{ChapterNodeText{0, "hello, this is garu", false, ""}}
+	};
+
 	std::string m_text{};
-
-
-
 
 	void doStep(StateSubject* stateSubject, int stepIndex) {
 		// execture every action in current iter step
-		// for (int )
+		std::vector<ChapterNodeActionType>& stepActions{ m_steps[stepIndex] };
 
+		std::vector<ChapterNodeActionType>::iterator actionIter;
+		for (actionIter = stepActions.begin(); actionIter < stepActions.end(); actionIter++) {
+			switch (*actionIter)
+			{
+			case ChapterNodeActionType::TYPE_TEXT:
+				std::vector<ChapterNodeText>::iterator textIterator;
 
+				for (textIterator = m_textSteps[stepIndex].begin(); textIterator < m_textSteps[stepIndex].end(); textIterator++)
+				{
+					//stateSubject.handle(*textIterator);
+				}
+				break;
+			case ChapterNodeActionType::CHANGE_SPRITE:
+
+				break;
+			case ChapterNodeActionType::CHANGE_BACKGROUND:
+
+				break;
+			default:
+				break;
+			}
+		}
 
 		// call notify on state
 	}
@@ -48,14 +100,6 @@ public:
 	ChapterNode() : Node() {}
 	~ChapterNode() { std::cout << "child destructor" << std::endl; };
 	ChapterNode(std::string tempData) : Node(tempData) {}
-
-	void addCharacter(Character* character) {
-		if (character == nullptr) {
-			return;
-		}
-
-		m_characters.push_back(character);
-	}
 
 
 

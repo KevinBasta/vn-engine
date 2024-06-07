@@ -128,6 +128,10 @@ public:
 		notify();
 	}
 
+	void handle(ChapterNodeText& textAction) {
+		
+	}
+
 public: 
 	// current textures
 	Texture2D* m_tempTexture;
