@@ -14,9 +14,10 @@ private:
 public:
 	SubjectsOrchestrator(ModelSubject* model, StateSubject* state) :
 		m_model{model},
-		m_state{state},
+		m_state{state}
 	{
 		m_model->initCharacters();
+		m_model->initBackgrounds();
 	}
 
 	void newGame() {

@@ -41,6 +41,11 @@ public:
 
 	// arr telling which chapters loaded, func to ckeck and load
 public:
+	Texture2D* getBackgroundTexture(int index) {
+		return m_backgrounds[index].get();
+	}
+
+public:
 	ModelSubject()  
 	{
 	}

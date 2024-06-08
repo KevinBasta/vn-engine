@@ -26,6 +26,7 @@ private:
 	GameContext m_context;
 	GameController m_controller;
 	VnText m_text{};
+	bool m_rerenderContext{ false };
 
 public:
 	// can register the callbacks here for controller
@@ -46,7 +47,6 @@ public:
 
 	void run() {
 		// Gameloop
-		bool test = true;
 		float deltaTime = 0.0f;
 		float lastFrame = 0.0f;
 
@@ -57,10 +57,7 @@ public:
 			deltaTime = currentFrame - lastFrame;
 			lastFrame = currentFrame;
 
-
-
-			//for (int i)
-			if (test) {
+			if (m_rerenderContext) {
 			
 				glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 				glClear(GL_COLOR_BUFFER_BIT);
@@ -73,8 +70,8 @@ public:
 				m_text.RenderText(L"test test test lol 123 あ私", 55.0f, 55.0f, 1.0f, glm::vec3(0.5, 0.2f, 0.2f));
 			
 				glfwSwapBuffers(m_window->get());
-			
-				//test = false; 
+
+				m_rerenderContext = false;
 			}
 		
 			glfwPollEvents();
@@ -84,6 +81,7 @@ public:
 
 	void update() {
 		std::cout << "GAME OBSERVER UPDATE CALLED" << std::endl;
+		m_rerenderContext = true;
 	}
 };
 

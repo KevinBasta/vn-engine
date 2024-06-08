@@ -12,6 +12,7 @@
 //#include "graph.h"
 //#include "graph_iterator.h"
 #include "chapter_iterator.h"
+#include "model_subject.h"
 
 #include <string>
 #include <string_view>
@@ -55,8 +56,11 @@ enum class TextState {
 };
 
 class StateSubject : public Subject {
+private:
+	ModelSubject* m_model{};
+
 public:
-	StateSubject() {}
+	StateSubject(ModelSubject* modelSubject) : m_model{ modelSubject } {}
 	~StateSubject() {}
 
 public:
@@ -69,6 +73,10 @@ public:
 
 	void action() {
 		iterator.step(this);
+
+		// if state delta not empty
+		notify();
+		// then clear state delta
 	}
 
 public:
@@ -101,28 +109,11 @@ public:
 	// node id for saving if needed
 	// chapter numb, load chapter if not by asking model
 
-
-
-	// Background
-	Texture2D* m_currentBackground;
 	
-	void setTempBackground(Texture2D* texture) {
-		m_currentBackground = texture;
-	}
+	//
+	// Text
+	//
 
-	void updateCurrentBackground(Texture2D* newBackground) {
-		m_currentBackground = newBackground;
-		//m_stateDelta.push_back(StateDelta::BACKGROUND);
-		//notify();
-	}
-
-
-	void handle(ChapterNodeText& textAction) {
-
-	}
-
-
-	// Character Text
 	TextState m_textState{ TextState::EMPTY };
 	std::string m_currentSpeaker{};
 	std::string m_currentText{};
@@ -132,24 +123,55 @@ public:
 		m_currentSpeaker = newSpeaker;
 		m_currentText = newText;
 		m_textState = TextState::COMPLETE;
-		
+
 		//m_stateDelta.push_back(StateDelta::TEXT);
-		
+
 		std::cout << newSpeaker << " said: " << newText << std::endl;
-		
-		notify();
 	}
 
 	void handle(ChapterNodeText& textAction) {
-		
+
+
+		m_stateDelta.push_back(StateDelta::TEXT);
 	}
 
-public: 
-	// current textures
-	Texture2D* m_tempTexture;
 
-	void setTempTexture(Texture2D* texture) {
+	//
+	// Background
+	//
+	
+	Texture2D* m_currentBackground{ nullptr };
+	
+	void setTempBackground(Texture2D* texture) {
+		m_currentBackground = texture;
+	}
+
+	void updateCurrentBackground(Texture2D* newBackground) {
+		m_currentBackground = newBackground;
+	}
+
+	void handle(ChapterNodeBackground& backgroundAction) {
+		
+		m_currentBackground = m_model->getBackgroundTexture(backgroundAction.backgroundIndex);
+
+		m_stateDelta.push_back(StateDelta::BACKGROUND);
+	}
+
+
+	//
+	// Characters
+	//
+	
+	//Texture2D* m_tempTexture;
+
+	/*void setTempTexture(Texture2D* texture) {
 		m_tempTexture = texture;
+	}*/
+
+	void handle(ChapterNodeSprite& spriteAction) {
+
+
+		//m_stateDelta.push_back(StateDelta::SPRITE);
 	}
 
 public:

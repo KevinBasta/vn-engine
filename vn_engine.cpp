@@ -43,17 +43,17 @@ void memCheck() {
 	VnWindow window{};
 	window.load();
 	
-	// contatins current game state
-	StateSubject stateSubject{};
-
 	// contains state of what chapter/node on and character relations and items
 	ModelSubject modelSubject{};
+
+	// contatins current game state
+	StateSubject stateSubject{&modelSubject};
 
 	SubjectsOrchestrator subjectsOrchestrator{&modelSubject, &stateSubject};
 	subjectsOrchestrator.newGame();
 
 	// the vn game
-	GameObserver game{ window.get(), &stateSubject };
+	GameObserver game{ &window, &stateSubject };
 	
 	stateSubject.attatch(static_cast<Observer*>(&game));
 
