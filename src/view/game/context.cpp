@@ -15,8 +15,11 @@
 #include "model_subject.h"
 
 
-GameContext::GameContext(GLFWwindow* window) :
+GameContext::GameContext(VnWindow* window, StateSubject* stateSubject) :
 	m_window{ window },
+	m_stateSubject{ stateSubject },
+	m_backgroundLayer{ window, stateSubject },
+	m_spriteLayer{ window, stateSubject },
 	m_defaultShader{ TEMP_VERTEX_PATH, TEMP_FRAGMENT_PATH }
 {
 	// Uncomment to enable transparent backgrounds

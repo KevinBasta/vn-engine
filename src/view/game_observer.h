@@ -20,7 +20,7 @@ static void scrollCallback(GLFWwindow* window, double xoffset, double yoffset) {
 
 class GameObserver : public Observer {
 private:
-	GLFWwindow* m_window;
+	VnWindow* m_window;
 	
 	StateSubject* m_stateSubject{};
 	GameContext m_context;
@@ -29,18 +29,18 @@ private:
 
 public:
 	// can register the callbacks here for controller
-	GameObserver(GLFWwindow* window, StateSubject* stateSubjcet) :
+	GameObserver(VnWindow* window, StateSubject* stateSubjcet) :
 		m_window{ window },
 		m_stateSubject{ stateSubjcet },
-		m_context{ window },
+		m_context{ window, stateSubjcet },
 		m_controller{ window, stateSubjcet }
 	{
 	}
 
 	void init() {
-		glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-		glfwSetCursorPosCallback(m_window, mouseCallback);
-		glfwSetScrollCallback(m_window, scrollCallback);
+		glfwSetInputMode(m_window->get(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+		glfwSetCursorPosCallback(m_window->get(), mouseCallback);
+		glfwSetScrollCallback(m_window->get(), scrollCallback);
 
 	}
 
@@ -50,7 +50,7 @@ public:
 		float deltaTime = 0.0f;
 		float lastFrame = 0.0f;
 
-		while (!glfwWindowShouldClose(m_window)) {
+		while (!glfwWindowShouldClose(m_window->get())) {
 			m_controller.processInput();
 
 			float currentFrame = glfwGetTime();
@@ -65,14 +65,14 @@ public:
 				glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 				glClear(GL_COLOR_BUFFER_BIT);
 				
-				m_context.drawBackground(m_stateSubject->m_currentBackground);
-				m_context.drawSprite(m_stateSubject->m_tempTexture);
+
+				m_context.draw();
 
 				m_text.RenderText(L"test test test lol 123 あ私", 25.0f, 25.0f, 1.0f, glm::vec3(0.5, 0.8f, 0.2f));
 				m_text.RenderText(L"test test test lol 123 あ私", 1.0f, 1.0f, 1.0f, glm::vec3(0.2, 0.9f, 0.7f));
 				m_text.RenderText(L"test test test lol 123 あ私", 55.0f, 55.0f, 1.0f, glm::vec3(0.5, 0.2f, 0.2f));
 			
-				glfwSwapBuffers(m_window);
+				glfwSwapBuffers(m_window->get());
 			
 				//test = false; 
 			}

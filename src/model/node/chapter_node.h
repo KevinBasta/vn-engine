@@ -12,8 +12,6 @@
 
 class StateSubject;
 
-#define TEMP_BACKGROUND "C:\\Users\\Kevin\\Documents\\CS\\cpp\\visual-novel-engine\\visual_novel_engine\\assets\\test.jpg"
-
 //class chaternodestep
 enum class ChapterNodeActionType {
 	TYPE_TEXT,
@@ -31,7 +29,7 @@ struct ChapterNodeText {
 };
 
 struct ChapterNodeBackground {
-	std::string backgroundTexturePath{};
+	int backgroundIndex{};
 	// replace with index and centralize backgrounds
 };
 
@@ -54,7 +52,7 @@ private:
 	};
 	
 	std::vector<std::vector<ChapterNodeBackground>> m_backgroundSteps{
-		std::vector<ChapterNodeBackground>{ChapterNodeBackground{TEMP_BACKGROUND}}
+		std::vector<ChapterNodeBackground>{ChapterNodeBackground{0}}
 	};
 
 	std::vector<std::vector<ChapterNodeText>> m_textSteps{
@@ -76,7 +74,7 @@ private:
 
 				for (textIterator = m_textSteps[stepIndex].begin(); textIterator < m_textSteps[stepIndex].end(); textIterator++)
 				{
-					//stateSubject.handle(*textIterator);
+					stateSubject->handle(*textIterator);
 				}
 				break;
 			case ChapterNodeActionType::CHANGE_SPRITE:

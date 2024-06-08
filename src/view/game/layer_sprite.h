@@ -1,8 +1,10 @@
 #ifndef VN_SPRITE_LAYER_H
 #define VN_SPRITE_LAYER_H
 
+#include "window.h"
 #include "shader.h"
 #include "texture.h"
+#include "state_delta.h"
 #include "state_subject.h"
 
 #define TEMP_VERTEX_PATH	"C:\\Users\\Kevin\\Documents\\CS\\cpp\\visual-novel-engine\\visual_novel_engine\\src\\view\\glsl\\defaultVertex.glsl"
@@ -10,6 +12,7 @@
 
 class SpriteLayer {
 private:
+	VnWindow* m_window{ nullptr };
 	Shader m_defaultShader;
 	StateSubject* m_stateSubject{ nullptr };
 
@@ -38,14 +41,17 @@ private:
 	}
 
 public:
-	SpriteLayer(StateSubject* stateSubject):
+	SpriteLayer(VnWindow* window, StateSubject* stateSubject):
+		m_window{ window },
 		m_stateSubject{ stateSubject },
 		m_defaultShader{ TEMP_VERTEX_PATH, TEMP_FRAGMENT_PATH }
 	{
 	}
 
-	void pollState() {
-		// get statesubject characters and draw sprites
+	void pollAndDraw() {
+		if (m_stateSubject->isInDelta(StateDelta::SPRITE)) {
+
+		}
 	}
 };
 

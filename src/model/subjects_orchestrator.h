@@ -22,9 +22,6 @@ public:
 	void newGame() {
 		m_model->createChapterOne();
 
-		m_state->setTempTexture(m_model->m_characters[0].get()->getTexture(0));
-		m_state->setTempBackground(&backgroundTexture);
-
 		m_state->initIterator(m_model->iter(0));
 	}
 	

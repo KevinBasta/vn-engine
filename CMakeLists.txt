@@ -70,7 +70,7 @@ add_executable (
 	"src/view/game/window.cpp" 
 	"src/view/game/window.h" 
 	"src/view/gameloop.h" 
- "src/model/graph/graph_traverser.cpp" "src/model/graph/graph_traverser.h" "src/model/node/node_runner.h" "src/model/node/node_runner.cpp" "src/model/chapter/chapter_iterator.cpp" "src/model/chapter/chapter_iterator.h" "src/model/model/model_subject.cpp" "src/view/common/text.h" "src/view/common/text.cpp" "src/view/game/layer_background.h" "src/view/game/layer_sprite.cpp" "src/view/game/layer_sprite.h" "src/view/game/layer_background.cpp")
+ "src/model/graph/graph_traverser.cpp" "src/model/graph/graph_traverser.h" "src/model/node/node_runner.h" "src/model/node/node_runner.cpp" "src/model/chapter/chapter_iterator.cpp" "src/model/chapter/chapter_iterator.h" "src/model/model/model_subject.cpp" "src/view/common/text.h" "src/view/common/text.cpp" "src/view/game/layer_background.h" "src/view/game/layer_sprite.cpp" "src/view/game/layer_sprite.h" "src/view/game/layer_background.cpp" "src/model/state/state_delta.h")
 
 target_include_directories(
 	"vn_engine"

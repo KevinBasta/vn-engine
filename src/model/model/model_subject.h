@@ -3,6 +3,7 @@
 
 #include "subject.h"
 
+#include "texture.h"
 #include "character.h"
 #include "node.h"
 #include "node_children.h"
@@ -16,6 +17,10 @@
 #include <vector>
 #include <memory>
 
+
+#define TEMP_BACKGROUND "C:\\Users\\Kevin\\Documents\\CS\\cpp\\visual-novel-engine\\visual_novel_engine\\assets\\test.jpg"
+
+
 // Circular dependancy resolutions:
 class ChapterIterator;
 
@@ -24,6 +29,7 @@ public:
 	// This class is only for creating the chapters and characters. The current would actually be stored in the stat
 	std::vector<std::unique_ptr<Chapter>>	m_chapters{};
 	std::vector<std::unique_ptr<Character>> m_characters{};
+	std::vector<std::unique_ptr<Texture2D>> m_backgrounds{};
 
 	std::list<Chapter*> m_chapterOrder{};
 
@@ -82,6 +88,11 @@ public:
 
 		m_characters.push_back(std::move(garu));
 		m_characters.push_back(std::move(brz));
+	}
+
+	void initBackgrounds() {
+		std::unique_ptr<Texture2D> background_0{ std::make_unique<Texture2D>(TEMP_BACKGROUND) };
+		m_backgrounds.push_back(std::move(background_0));
 	}
 
 	//void initRelations() {

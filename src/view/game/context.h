@@ -1,22 +1,33 @@
 #ifndef VN_GAME_CONTEXT_H
 #define VN_GAME_CONTEXT_H
 
-#include "model_subject.h"
+#include "window.h"
+#include "state_subject.h"
 #include "texture.h"
 #include "shader.h"
+
+#include "layer_background.h"
+#include "layer_sprite.h"
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
 class GameContext {
 public:
-	GLFWwindow* m_window{};
+	VnWindow* m_window{};
+	StateSubject* m_stateSubject{};
+	BackgroundLayer m_backgroundLayer;
+	SpriteLayer	m_spriteLayer;
+	//TextLayer m_textLayer;
 	Shader m_defaultShader;
 
 public:
-	GameContext(GLFWwindow* window);
-	void drawBackground(Texture2D* texture);
-	void drawSprite(Texture2D* texture);
+	GameContext(VnWindow* window, StateSubject* stateSubject);
+	
+	void draw() {
+		m_backgroundLayer.pollAndDraw();
+		m_spriteLayer.pollAndDraw();
+	};
 
 	//void reloadShaders();
 	/*if (glfwGetKey(m_window, GLFW_KEY_R) == GLFW_PRESS) {

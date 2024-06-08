@@ -1,6 +1,7 @@
 #ifndef VN_BACKGROUND_LAYER_H
 #define VN_BACKGROUND_LAYER_H
 
+#include "window.h"
 #include "shader.h"
 #include "texture.h"
 #include "state_subject.h"
@@ -10,6 +11,7 @@
 
 class BackgroundLayer {
 private:
+	VnWindow* m_window{ nullptr };
 	Shader m_defaultShader;
 	StateSubject* m_stateSubject{ nullptr };
 
@@ -49,14 +51,17 @@ private:
 	}
 
 public:
-	BackgroundLayer(StateSubject* stateSubject) :
+	BackgroundLayer(VnWindow* window, StateSubject* stateSubject) :
+		m_window{ window },
 		m_stateSubject{ stateSubject },
 		m_defaultShader{ TEMP_VERTEX_PATH, TEMP_FRAGMENT_PATH }
 	{
 	}
 
-	void pollState() {
-		// get statesubject background and draw it
+	void pollAndDraw() {
+		if (m_stateSubject->isInDelta(StateDelta::BACKGROUND)) {
+			drawBackground(m_stateSubject->m_currentBackground);
+		}
 	}
 };
 

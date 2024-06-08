@@ -1,11 +1,10 @@
 #ifndef VN_GAME_CONTROLLER_H
 #define VN_GAME_CONTROLLER_H
 
+#include "window.h"
 #include "state_subject.h"
 
-
 static bool sg_leftButtonReleaseEvent{ false };
-
 
 void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
 {
@@ -17,15 +16,15 @@ void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
 
 class GameController {
 private:
-	GLFWwindow* m_window{};
+	VnWindow* m_window{};
 	StateSubject* m_stateSubject{};
 
 public:
-	GameController(GLFWwindow* window, StateSubject* stateSubject) :
+	GameController(VnWindow* window, StateSubject* stateSubject) :
 		m_window{ window },
 		m_stateSubject{ stateSubject }
 	{
-		glfwSetMouseButtonCallback(window, mouseButtonCallback);
+		glfwSetMouseButtonCallback(window->get(), mouseButtonCallback);
 	}
 
 	void processInput() {
@@ -35,7 +34,7 @@ public:
 
 private:
 	void processMouse() {
-		if (glfwGetKey(m_window, GLFW_KEY_W) == GLFW_PRESS) {
+		if (glfwGetKey(m_window->get(), GLFW_KEY_W) == GLFW_PRESS) {
 			std::cout << "w pressed" << std::endl;
 		}
 
@@ -56,12 +55,12 @@ private:
 	}
 
 	void processKeyboard() {
-		if (glfwGetKey(m_window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
+		if (glfwGetKey(m_window->get(), GLFW_KEY_ESCAPE) == GLFW_PRESS) {
 			// open menu?
-			glfwSetWindowShouldClose(m_window, true);
+			glfwSetWindowShouldClose(m_window->get(), true);
 		}
 
-		if (glfwGetKey(m_window, GLFW_KEY_R) == GLFW_PRESS) {
+		if (glfwGetKey(m_window->get(), GLFW_KEY_R) == GLFW_PRESS) {
 			// development: reload all shaders?
 			// TODO: implement when needed
 		}

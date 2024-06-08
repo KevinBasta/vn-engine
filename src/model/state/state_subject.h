@@ -5,6 +5,7 @@
 
 #include "vn_engine.h"
 #include "texture.h"
+#include "state_delta.h"
 
 #include "character.h"
 //#include "chapter.h"
@@ -15,6 +16,7 @@
 #include <string>
 #include <string_view>
 
+#include <algorithm>
 #include <vector>
 
 #define PLACEHOLDER_PATH "C:\\Users\\Kevin\\Documents\\CS\\cpp\\visual-novel-engine\\visual_novel_engine\\assets\\test.jpg"
@@ -45,10 +47,6 @@ struct CharacterSceneData {
 };
 
 
-enum class StateDelta {
-	TEXT,
-	BACKGROUND
-};
 
 enum class TextState {
 	EMPTY,
@@ -63,7 +61,7 @@ public:
 
 public:
 	Chapter* currentChapter{ nullptr };
-	ChapterIterator iterator{nullptr, 0};
+	ChapterIterator iterator{ nullptr, 0 };
 
 	void initIterator(ChapterIterator chapterIterator) {
 		iterator = chapterIterator;
@@ -78,15 +76,23 @@ public:
 	// an array of enums describing what changed to allow an
 	// observer to fetch new data from only what changed
 	
-	//std::vector<StateDelta> m_stateDelta{};
+	std::vector<StateDelta> m_stateDelta{};
 
-	//std::vector<StateDelta>& getStateDelta() {
-	//	return m_stateDelta;
-	//}
+	void addStateDelta(StateDelta stateDelta) {
+		m_stateDelta.push_back(stateDelta);
+	}
 
-	//void clearStateDelta() {
-	//	m_stateDelta.clear();
-	//}
+	void clearStateDelta() {
+		m_stateDelta.clear();
+	}
+
+	bool isInDelta(StateDelta stateDelta) {
+		if (std::find(m_stateDelta.begin(), m_stateDelta.end(), stateDelta) != m_stateDelta.end()) {
+			return true;
+		}
+
+		return false;
+	}
 
 public:
 	// Model specific state
@@ -109,6 +115,12 @@ public:
 		//m_stateDelta.push_back(StateDelta::BACKGROUND);
 		//notify();
 	}
+
+
+	void handle(ChapterNodeText& textAction) {
+
+	}
+
 
 	// Character Text
 	TextState m_textState{ TextState::EMPTY };
