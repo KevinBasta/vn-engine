@@ -16,7 +16,6 @@ class Character {
 private:
 	std::string m_name{};
 	const int	m_id;
-	Relations	m_relationships{};
 	std::vector<std::unique_ptr<Texture2D>> m_textures{};
 
 public:
@@ -25,7 +24,6 @@ public:
 
 	void addTexture(const char* texturePath);
 	Texture2D* getTexture(int index);
-	Relations& getRelationsObject() { return m_relationships; }
 	int getId() { return m_id; }
 
 	~Character();

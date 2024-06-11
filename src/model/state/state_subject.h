@@ -6,6 +6,8 @@
 #include "vn_engine.h"
 #include "texture.h"
 #include "state_delta.h"
+#include "state_types.h"
+#include "chapter_node_types.h"
 
 #include "character.h"
 //#include "chapter.h"
@@ -32,22 +34,6 @@ struct SceneCameraData {
 
 };
 */
-
-struct CharacterSceneData {
-	bool onScreen{ false };
-
-	Texture2D* currentTexture;
-	float scaleValue{ 1.0f };
-	glm::mat4 model{ glm::mat4(1.0f) };
-
-	CharacterSceneData(Character& character) :
-		currentTexture{ character.getTexture(0) }
-	{
-
-	};
-};
-
-
 
 enum class TextState {
 	EMPTY,
@@ -141,10 +127,6 @@ public:
 	//
 	
 	Texture2D* m_currentBackground{ nullptr };
-	
-	void setTempBackground(Texture2D* texture) {
-		m_currentBackground = texture;
-	}
 
 	void updateCurrentBackground(Texture2D* newBackground) {
 		m_currentBackground = newBackground;
@@ -161,17 +143,41 @@ public:
 	//
 	// Characters
 	//
+	typedef int zIndex;
+	typedef int ID;
+	typedef std::unordered_map<ID, SpriteState> spriteRenderMap;
 	
-	//Texture2D* m_tempTexture;
+	spriteRenderMap m_spriteRenderData{};
+	//std::unordered_map<zIndex, ChapterNodeSprite*> m_spriteIndexData{}; // can be vector by index?
+
+	spriteRenderMap& getSpriteRenderData() {
+		return m_spriteRenderData;
+	}
+
+	void initCharacterData() {
+		const ModelSubject::characterMap& characterMap = m_model->getCharacters();
+
+		for (auto iter = characterMap.begin(); iter != characterMap.end(); iter++) {
+			m_spriteRenderData[iter->first] = SpriteState{};
+		}
+	}
 
 	/*void setTempTexture(Texture2D* texture) {
 		m_tempTexture = texture;
 	}*/
 
 	void handle(ChapterNodeSprite& spriteAction) {
+		try {
+			SpriteState& obj = m_spriteRenderData[spriteAction.m_characterID];
 
+			obj.m_onScreen = spriteAction.m_onScreen;
+			obj.m_texture = m_model->getCharacterByID(spriteAction.m_characterID)->getTexture(spriteAction.m_textureIndex);
+		}
+		catch (...) {
+			std::cout << "handle chapter node sprite failed" << std::endl;
+		}
 
-		//m_stateDelta.push_back(StateDelta::SPRITE);
+		m_stateDelta.push_back(StateDelta::SPRITE);
 	}
 
 public:

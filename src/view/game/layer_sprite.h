@@ -50,7 +50,10 @@ public:
 
 	void pollAndDraw() {
 		if (m_stateSubject->isInDelta(StateDelta::SPRITE)) {
-
+			StateSubject::spriteRenderMap& data = m_stateSubject->getSpriteRenderData();
+			
+			drawSprite(data[1].m_texture);
+			std::cout << "SPRITE IN DELTA" << std::endl;
 		}
 	}
 };

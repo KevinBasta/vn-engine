@@ -5,6 +5,7 @@
 
 #include "character.h"
 #include "model_common.h"
+#include "chapter_node_types.h"
 
 #include <string>
 #include <vector>
@@ -33,12 +34,6 @@ struct ChapterNodeBackground {
 	// replace with index and centralize backgrounds
 };
 
-struct ChapterNodeSprite {
-	int characterID{};
-	int spriteIndex{};
-	bool isActive{};
-};
-
 class ChapterNode : public Node {
 private:
 	// temp constructions here, will be done by engine/hooks
@@ -47,12 +42,15 @@ private:
 		std::vector<ChapterNodeActionType>{ ChapterNodeActionType::TYPE_TEXT, ChapterNodeActionType::CHANGE_SPRITE } 
 	};
 
+	// better as maps
 	std::vector<std::vector<ChapterNodeText>> m_textSteps{
+		std::vector<ChapterNodeText>{},
 		std::vector<ChapterNodeText>{ChapterNodeText{0, "hello, this is garu", false, ""}}
 	};
 
 	std::vector<std::vector<ChapterNodeSprite>> m_spriteSteps{ 
-		std::vector<ChapterNodeSprite>{ChapterNodeSprite{0, 1, true}}
+		std::vector<ChapterNodeSprite>{},
+		std::vector<ChapterNodeSprite>{ChapterNodeSprite{1, true, 0}}
 	};
 	
 	std::vector<std::vector<ChapterNodeBackground>> m_backgroundSteps{

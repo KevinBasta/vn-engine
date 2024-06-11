@@ -2,20 +2,17 @@
 
 #include "chapter_node.h"
 #include "state_subject.h"
-
-
-
-
-
-
+#include "chapter_node_types.h"
 
 
 void ChapterNode::doStep(StateSubject* stateSubject, int stepIndex) {
 	// execture every action in current iter step
-	std::vector<ChapterNodeActionType>& stepActions{ m_steps[stepIndex] };
+	std::cout << "STEP #########################" << stepIndex << std::endl;
 
 	std::vector<ChapterNodeActionType>::iterator actionIter;
-	for (actionIter = stepActions.begin(); actionIter < stepActions.end(); actionIter++) {
+	for (actionIter = m_steps[stepIndex].begin(); actionIter < m_steps[stepIndex].end(); actionIter++) {
+		std::cout << "ACTION ITER" << int(*actionIter) << std::endl;
+		
 		switch (*actionIter)
 		{
 		case ChapterNodeActionType::TYPE_TEXT:
@@ -35,6 +32,7 @@ void ChapterNode::doStep(StateSubject* stateSubject, int stepIndex) {
 
 			for (iter = m_spriteSteps[stepIndex].begin(); iter < m_spriteSteps[stepIndex].end(); iter++)
 			{
+				std::cout << "sprite action!!!!!!!!!!!!!!!!!!" << std::endl;
 				stateSubject->handle(*iter);
 			}
 
@@ -63,20 +61,19 @@ void ChapterNode::doStep(StateSubject* stateSubject, int stepIndex) {
 
 NodeState ChapterNode::action(StateSubject* stateSubject, int stepIndex) 
 {
-
-	 stateSubject->updateCurrentText("test speaker", m_temp);
-
-	 if (stepIndex == (m_steps.size() - 1)) {
-		 /*if (m_children.size() > 1) {
-			 return NodeState::NODE_CHOICE;
-		 }
-		 else {
-			 return NodeState::NODE_END;
-		 }*/
+	std::cout << "STEP ###########" << stepIndex << std::endl;
+	stateSubject->updateCurrentText("test speaker", m_temp);
+	if (stepIndex == (m_steps.size())) {
+		/*if (m_children.size() > 1) {
+			return NodeState::NODE_CHOICE;
+		}
+		else {
+			return NodeState::NODE_END;
+		}*/
 		return NodeState::NODE_END;
-	 }
-	 else {
+	}
+	else {
 		doStep(stateSubject, stepIndex);
-		 return NodeState::NODE_STEP;
-	 }
+		return NodeState::NODE_STEP;
+	}
 }

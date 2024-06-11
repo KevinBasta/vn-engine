@@ -7,7 +7,7 @@
 #include <unordered_map>
 
 void RelationTypes::addRelationType(std::string relationName) {
-	relationTypes.insert({ relationName, IdGenerator::getId() });
+	relationTypes.insert({ relationName, IdGenerator<RelationTypes>::getId() });
 }
 
 /**

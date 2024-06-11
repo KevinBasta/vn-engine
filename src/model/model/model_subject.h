@@ -27,8 +27,11 @@ class ChapterIterator;
 class ModelSubject : public Subject {
 public:
 	// This class is only for creating the chapters and characters. The current would actually be stored in the stat
+	typedef int ID;
+	typedef std::unordered_map<ID, std::unique_ptr<Character>> characterMap;
+	
 	std::vector<std::unique_ptr<Chapter>>	m_chapters{};
-	std::vector<std::unique_ptr<Character>> m_characters{};
+	characterMap m_characters{};
 	std::vector<std::unique_ptr<Texture2D>> m_backgrounds{};
 
 	std::list<Chapter*> m_chapterOrder{};
@@ -43,6 +46,14 @@ public:
 public:
 	Texture2D* getBackgroundTexture(int index) {
 		return m_backgrounds[index].get();
+	}
+
+	const characterMap& getCharacters() {
+		return m_characters;
+	}
+
+	Character* getCharacterByID(int id) {
+		return m_characters[id].get();
 	}
 
 public:
@@ -91,8 +102,8 @@ public:
 
 		garu.get()->addTexture("C:\\Users\\Kevin\\Documents\\CS\\cpp\\visual-novel-engine\\visual_novel_engine\\assets\\garu_outline.png");
 
-		m_characters.push_back(std::move(garu));
-		m_characters.push_back(std::move(brz));
+		m_characters[garu.get()->getId()] = std::move(garu);
+		m_characters[brz.get()->getId()] = std::move(brz);
 	}
 
 	void initBackgrounds() {

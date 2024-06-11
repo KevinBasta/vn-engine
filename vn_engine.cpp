@@ -3,6 +3,7 @@
 
 #include "vn_engine.h"
 
+#include "id.h"
 #include "timer.h"
 #include "window.h"
 
@@ -63,11 +64,24 @@ void memCheck() {
 	//subject.forwardProgress(&stateSubject);
 }
 
+void idCheck() {
+	std::cout << IdGenerator<Character>::getId() << std::endl;
+	std::cout << IdGenerator<Character>::getId() << std::endl;
+	std::cout << IdGenerator<Character>::getId() << std::endl;
+
+	std::cout << IdGenerator<Node>::getId() << std::endl;
+	std::cout << IdGenerator<Node>::getId() << std::endl;
+	std::cout << IdGenerator<Node>::getId() << std::endl;
+	
+	std::cout << IdGenerator<Character>::getId() << std::endl;
+}
+
 int main()
 {
 	std::cout << "Hello CMake." << std::endl;
 	std::cout << "before " << std::endl;
 
+	//idCheck();
 	memCheck();
 	
 	std::cout << "End of program" << std::endl;
