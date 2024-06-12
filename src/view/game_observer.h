@@ -72,6 +72,7 @@ public:
 				glfwSwapBuffers(m_window->get());
 
 				m_rerenderContext = false;
+				m_stateSubject->clearStateDelta();
 			}
 		
 			glfwPollEvents();

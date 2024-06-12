@@ -49,10 +49,17 @@ public:
 	}
 
 	void pollAndDraw() {
+		StateSubject::spriteRenderMap& data = m_stateSubject->getSpriteRenderData();
+		
+		StateSubject::spriteRenderMap::iterator iter;
+		for (iter = data.begin(); iter != data.end(); iter++) {
+			if (iter->second.m_texture != nullptr && iter->second.m_opacity > 0.0f) {
+				drawSprite(iter->second.m_texture);
+			}
+		}
+
 		if (m_stateSubject->isInDelta(StateDelta::SPRITE)) {
-			StateSubject::spriteRenderMap& data = m_stateSubject->getSpriteRenderData();
 			
-			drawSprite(data[1].m_texture);
 			std::cout << "SPRITE IN DELTA" << std::endl;
 		}
 	}

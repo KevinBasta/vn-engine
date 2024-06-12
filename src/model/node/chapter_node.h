@@ -9,7 +9,7 @@
 
 #include <string>
 #include <vector>
-
+#include <unordered_map>
 
 class StateSubject;
 
@@ -21,43 +21,36 @@ enum class ChapterNodeActionType {
 	MOVE_SPRITE,
 };
 
-struct ChapterNodeText {
-	int characterID{};
-	std::string line{};
-	
-	bool overrideSpeakerName{};
-	std::string speakerName{};
-};
-
-struct ChapterNodeBackground {
-	int backgroundIndex{};
-	// replace with index and centralize backgrounds
-};
-
 class ChapterNode : public Node {
 private:
 	// temp constructions here, will be done by engine/hooks
 	std::vector<std::vector<ChapterNodeActionType>> m_steps{ 
-		std::vector<ChapterNodeActionType>{ ChapterNodeActionType::CHANGE_BACKGROUND }, 
+		std::vector<ChapterNodeActionType>{ ChapterNodeActionType::CHANGE_BACKGROUND, ChapterNodeActionType::CHANGE_SPRITE },
 		std::vector<ChapterNodeActionType>{ ChapterNodeActionType::TYPE_TEXT, ChapterNodeActionType::CHANGE_SPRITE } 
 	};
 
-	// better as maps
-	std::vector<std::vector<ChapterNodeText>> m_textSteps{
-		std::vector<ChapterNodeText>{},
-		std::vector<ChapterNodeText>{ChapterNodeText{0, "hello, this is garu", false, ""}}
+	typedef int StepIndex;
+	std::unordered_map<StepIndex, std::vector<ChapterNodeText>> m_textSteps{
+		{ 1, std::vector<ChapterNodeText>{{0, "hello, this is garu", false, ""}} }
 	};
 
-	std::vector<std::vector<ChapterNodeSprite>> m_spriteSteps{ 
-		std::vector<ChapterNodeSprite>{},
-		std::vector<ChapterNodeSprite>{ChapterNodeSprite{1, true, 0}}
+	std::unordered_map<StepIndex, std::vector<ActionSpriteTexture>> m_spriteTextureSteps{
+		{ 0, std::vector<ActionSpriteTexture>{{1, 0}} }
+	};	
+	
+	std::unordered_map<StepIndex, std::vector<ActionSpriteOpacity>> m_spriteOpacitySteps{
+		{ 0, std::vector<ActionSpriteOpacity>{{1, 0.0f}} },
+		{ 1, std::vector<ActionSpriteOpacity>{{1, 1.0f}} }
+	};
+
+	std::unordered_map<StepIndex, std::vector<ActionBackgroundTexture>> m_backgroundSteps{
+		{ 0, std::vector<ActionBackgroundTexture>{{0}} }
 	};
 	
-	std::vector<std::vector<ChapterNodeBackground>> m_backgroundSteps{
-		std::vector<ChapterNodeBackground>{ChapterNodeBackground{0}}
-	};
-
 	std::string m_text{};
+
+	template <class T>
+	void handleStep(StateSubject* stateSubject, StepIndex stepIndex, std::unordered_map<StepIndex, std::vector<T>>& stepMap);
 
 	void doStep(StateSubject* stateSubject, int stepIndex);
 

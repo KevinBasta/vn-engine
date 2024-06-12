@@ -132,8 +132,8 @@ public:
 		m_currentBackground = newBackground;
 	}
 
-	void handle(ChapterNodeBackground& backgroundAction) {
-		
+	void handle(ActionBackgroundTexture& backgroundAction) {
+		// TODO: Error handling
 		m_currentBackground = m_model->getBackgroundTexture(backgroundAction.backgroundIndex);
 
 		m_stateDelta.push_back(StateDelta::BACKGROUND);
@@ -166,15 +166,27 @@ public:
 		m_tempTexture = texture;
 	}*/
 
-	void handle(ChapterNodeSprite& spriteAction) {
+	void handle(ActionSpriteTexture& action) {
 		try {
-			SpriteState& obj = m_spriteRenderData[spriteAction.m_characterID];
+			SpriteState& state = m_spriteRenderData[action.m_characterID];
 
-			obj.m_onScreen = spriteAction.m_onScreen;
-			obj.m_texture = m_model->getCharacterByID(spriteAction.m_characterID)->getTexture(spriteAction.m_textureIndex);
+			state.m_texture = m_model->getCharacterByID(action.m_characterID)->getTexture(action.m_textureIndex);
 		}
 		catch (...) {
-			std::cout << "handle chapter node sprite failed" << std::endl;
+			std::cout << "handle ActionSpriteTexture failed" << std::endl;
+		}
+
+		m_stateDelta.push_back(StateDelta::SPRITE);
+	}
+
+	void handle(ActionSpriteOpacity& action) {
+		try {
+			SpriteState& state = m_spriteRenderData[action.m_characterID];
+
+			state.m_opacity = action.m_opacity;
+		}
+		catch (...) {
+			std::cout << "handle ActionSpriteOpacity failed" << std::endl;
 		}
 
 		m_stateDelta.push_back(StateDelta::SPRITE);

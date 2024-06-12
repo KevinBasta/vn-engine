@@ -59,8 +59,9 @@ public:
 	}
 
 	void pollAndDraw() {
+		drawBackground(m_stateSubject->m_currentBackground);
+		
 		if (m_stateSubject->isInDelta(StateDelta::BACKGROUND)) {
-			drawBackground(m_stateSubject->m_currentBackground);
 			std::cout << "BACKGROUND IN DELTA" << std::endl;
 		}
 	}

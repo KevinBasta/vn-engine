@@ -9,7 +9,7 @@
 
 struct SpriteState {
 	// Current Texture Properties
-	bool m_onScreen{ false };
+	float m_opacity{ 0.0f };
 	
 	Texture2D* m_texture{ nullptr };
 	
