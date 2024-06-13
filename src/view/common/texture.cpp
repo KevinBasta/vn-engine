@@ -147,25 +147,28 @@ void Texture2D::deleteVAO() {
 	glDeleteVertexArrays(1, &m_VAO);
 }
 
+float Texture2D::getScaleToViewport() {
+	float scaleFactor	{ 0.0f };
 
+	float frameWidth	{ 2.0f };
+	float frameHeight	{ 2.0f };
 
-
-
-
-
-
-
-void Texture2D::centerToScreen(float frameWidth, float frameHeight) {
 	float imageWidth	{ static_cast<float>(m_width) };
 	float imageHeight	{ static_cast<float>(m_height) };
 
+	std::cout << "Image width" << imageWidth << std::endl;
+	std::cout << "frame width" << frameWidth << std::endl;
+	std::cout << "Image height" << imageHeight << std::endl;
+	std::cout << "frame height" << frameHeight << std::endl;
+
+
+	// TODO: may still be incorrect, background squished
 	if (imageWidth > imageHeight) {
-		m_defaultScaleFactor = 1 / (std::max(imageWidth, frameWidth) - std::min(imageWidth, frameWidth));
+		scaleFactor = std::max(imageWidth, frameWidth) / std::min(imageWidth, frameWidth);
 	}
 	else {
-		m_defaultScaleFactor = 1 / (std::max(imageHeight, frameHeight) - std::min(imageHeight, frameHeight));
+		scaleFactor = std::max(imageHeight, frameHeight) / std::min(imageHeight, frameHeight);
 	}
 
-	m_defaultModel = glm::scale(m_defaultModel, glm::vec3(m_defaultScaleFactor, m_defaultScaleFactor, 0.0f));
-	m_defaultModel = glm::translate(m_defaultModel, glm::vec3(-1 * (imageWidth / 2), -1 * (imageHeight / 2), -1.0f));
+	return 1.0f/scaleFactor;
 }

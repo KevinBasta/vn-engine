@@ -15,10 +15,6 @@ private:
 	Shader m_defaultShader;
 	StateSubject* m_stateSubject{ nullptr };
 
-	// temp
-	float m_frameWidth{ 800.0f };
-	float m_frameHeight{ 600.0f };
-
 	void drawBackground(Texture2D* texture) {
 		if (texture == nullptr) {
 			return;
@@ -26,23 +22,12 @@ private:
 
 		m_defaultShader.use();
 
-		float imageWidth{ static_cast<float>(texture->width()) };
-		float imageHeight{ static_cast<float>(texture->height()) };
-
 		// can move to Texture2D
-		float scaleFactor{ 0 };
-		float scaleDown{};
-
-		if (imageWidth > imageHeight) {
-			scaleDown = 1 / (std::max(imageWidth, m_frameWidth) - std::min(imageWidth, m_frameWidth));
-		}
-		else {
-			scaleDown = 1 / (std::max(imageHeight, m_frameHeight) - std::min(imageHeight, m_frameHeight));
-		}
+		float scale{ texture->getScaleToViewport() };
 
 		glm::mat4 model = glm::mat4(1.0f);
-		model = glm::scale(model, glm::vec3(scaleDown, scaleDown, 0.0f));
-		model = glm::translate(model, glm::vec3(-1 * (imageWidth / 2), -1 * (imageHeight / 2), -1.0f));
+		model = glm::translate(model, glm::vec3(-1.0f, -1.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(scale, scale, 0.0f));
 
 		unsigned int modelLocation = glGetUniformLocation(m_defaultShader.ID(), "inModel");
 		glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(model));

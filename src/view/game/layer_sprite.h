@@ -23,12 +23,10 @@ private:
 
 		m_defaultShader.use();
 
-		float scale{ 0.001f };
-		float scaledWidth{ texture->width() * scale };
-		float scaledHeight{ texture->height() * scale };
+		float scale{ texture->getScaleToViewport() };
 
 		glm::mat4 model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(-1.0 * (scaledWidth / 2.0f), -1.0 * (scaledHeight / 2.0f), -1.0f));
+		model = glm::translate(model, glm::vec3(-1.0f, -1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(scale, scale, 0.0f));
 
 		unsigned int modelLocation = glGetUniformLocation(m_defaultShader.ID(), "inModel");

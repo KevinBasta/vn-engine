@@ -6,15 +6,42 @@
 
 #include <iostream>
 
+#define widthRatio 16
+#define heightRatio 9
+
+// TODO: Must turn into singleton so that sg_ variables apply only to that one
+// instance of VnWindow
+static int sg_frameWidth{ 1600 };
+static int sg_frameHeight{ 900 };
+
 static void frameSizeUpdateCallback(GLFWwindow* window, int newWidth, int newHeight) {
-	glViewport(0, 0, newWidth, newHeight);
+	int ratioWidth{ 0 };
+	int ratioHeight{ 0 };
+	
+	float ratioMultiplier{ 0.0f };
+
+	if (newWidth > newHeight) {
+		ratioMultiplier = newHeight / heightRatio;
+		
+		ratioWidth = ratioMultiplier * widthRatio;
+		ratioHeight = newHeight;
+	}
+	else {
+		ratioMultiplier = newWidth / widthRatio;
+
+		ratioWidth = newWidth;
+		ratioHeight = ratioMultiplier * heightRatio;
+	}
+	
+	glViewport(0, 0, ratioWidth, ratioHeight);
+
+	sg_frameWidth = ratioWidth;
+	sg_frameHeight = ratioHeight;
 }
 
 class VnWindow {
 private:
 	GLFWwindow* m_window{};
-	float m_frameWidth{ 800.0f };
-	float m_frameHeight{ 600.0f };
 
 public:
 	VnWindow() {}
@@ -31,7 +58,7 @@ public:
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-		m_window = glfwCreateWindow(m_frameWidth, m_frameHeight, "opengl :)", NULL, NULL);
+		m_window = glfwCreateWindow(sg_frameWidth, sg_frameHeight, "opengl :)", NULL, NULL);
 		if (m_window == NULL) {
 			std::cout << "failed to create GLFW window" << std::endl;
 			glfwTerminate();
@@ -39,6 +66,7 @@ public:
 		}
 
 		glfwMakeContextCurrent(m_window);
+		glfwSetWindowAspectRatio(m_window, widthRatio, heightRatio);
 		glfwSetFramebufferSizeCallback(m_window, frameSizeUpdateCallback);
 
 		if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
@@ -46,9 +74,17 @@ public:
 			// raise exception or return err?
 		}
 
-		glViewport(0, 0, m_frameWidth, m_frameHeight);
+		glViewport(0, 0, sg_frameWidth, sg_frameHeight);
 
 		std::cout << "OpenGL " << GLVersion.major << "." << GLVersion.minor << std::endl;
+	}
+
+	int width() {
+		return sg_frameWidth;
+	}
+
+	int height() {
+		return sg_frameHeight;
 	}
 
 	GLFWwindow* get() {

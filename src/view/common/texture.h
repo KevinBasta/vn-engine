@@ -37,8 +37,6 @@ private:
 	void createVAO();
 	void deleteVAO();
 
-	void centerToScreen(float frameWidth, float frameHeight);
-
 public:
 	Texture2D(const char* filepath);
 	~Texture2D();
@@ -47,6 +45,7 @@ public:
 	GLuint ID()  const { return m_textureID; }
 	int width()  const { return m_width; }
 	int height() const { return m_height; }
+	float getScaleToViewport();
 };
 
 
