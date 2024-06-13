@@ -2,6 +2,7 @@
 #include <filesystem> 
 
 #include "texture.h"
+#include "window.h"
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -94,12 +95,18 @@ void Texture2D::deleteTexture() {
 
 
 void Texture2D::createVAO() {
+	float rightX{ static_cast<float>(m_width) };
+	float leftX{ 0.0f };
+
+	float topY{ static_cast<float>(m_height) };
+	float bottomY{ 0.0f };
+
 	float vertices[] = {
 		// positions			// texture coords
-			0.0f, m_height, 0.0f,	1.0f, 0.0f, // top left
-		 m_width, m_height, 0.0f,	0.0f, 0.0f, // top right
-			0.0f,     0.0f, 0.0f,	1.0f, 1.0f, // bottom left
-		 m_width,     0.0f, 0.0f,	0.0f, 1.0f, // bottom right
+		   leftX,    topY, 0.0f,	1.0f, 0.0f, // top left
+		  rightX,    topY, 0.0f,	0.0f, 0.0f, // top right
+		   leftX, bottomY, 0.0f,	1.0f, 1.0f, // bottom left
+		  rightX, bottomY, 0.0f,	0.0f, 1.0f, // bottom right
 	};
 
 	unsigned int indices[] = {
@@ -147,11 +154,16 @@ void Texture2D::deleteVAO() {
 	glDeleteVertexArrays(1, &m_VAO);
 }
 
-float Texture2D::getScaleToViewport() {
+float Texture2D::getScaleToViewport(VnWindow* window) {
+	if (window == nullptr) {
+		// TODO: raise exception?
+		return 1.0f;
+	}
+
 	float scaleFactor	{ 0.0f };
 
-	float frameWidth	{ 2.0f };
-	float frameHeight	{ 2.0f };
+	float frameWidth	{ static_cast<float>(window->width()) };
+	float frameHeight	{ static_cast<float>(window->height()) };
 
 	float imageWidth	{ static_cast<float>(m_width) };
 	float imageHeight	{ static_cast<float>(m_height) };
@@ -170,5 +182,10 @@ float Texture2D::getScaleToViewport() {
 		scaleFactor = std::max(imageHeight, frameHeight) / std::min(imageHeight, frameHeight);
 	}
 
-	return 1.0f/scaleFactor;
+
+	if (imageWidth > frameWidth || imageHeight > frameHeight) {
+		scaleFactor = 1 / scaleFactor;
+	}
+	
+	return scaleFactor;
 }

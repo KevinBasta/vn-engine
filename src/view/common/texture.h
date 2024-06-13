@@ -1,6 +1,8 @@
 #ifndef OPENGL_TEXTURE_H
 #define OPENGL_TEXTURE_H
 
+#include "window.h"
+
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
@@ -45,7 +47,7 @@ public:
 	GLuint ID()  const { return m_textureID; }
 	int width()  const { return m_width; }
 	int height() const { return m_height; }
-	float getScaleToViewport();
+	float getScaleToViewport(VnWindow* window);
 };
 
 
