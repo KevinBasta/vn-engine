@@ -13,6 +13,7 @@
 // instance of VnWindow
 static int sg_frameWidth{ 1600 };
 static int sg_frameHeight{ 900 };
+static bool sg_updated{ true };
 
 static void frameSizeUpdateCallback(GLFWwindow* window, int newWidth, int newHeight) {
 	int ratioWidth{ 0 };
@@ -37,6 +38,7 @@ static void frameSizeUpdateCallback(GLFWwindow* window, int newWidth, int newHei
 
 	sg_frameWidth = ratioWidth;
 	sg_frameHeight = ratioHeight;
+	sg_updated = true;
 }
 
 class VnWindow {
@@ -85,6 +87,14 @@ public:
 
 	int height() {
 		return sg_frameHeight;
+	}
+
+	bool updated() {
+		bool updated{ sg_updated };
+
+		sg_updated = false;
+		
+		return updated;
 	}
 
 	GLFWwindow* get() {

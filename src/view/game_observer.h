@@ -57,6 +57,10 @@ public:
 			deltaTime = currentFrame - lastFrame;
 			lastFrame = currentFrame;
 
+			if (m_window->updated()) {
+				m_rerenderContext = true;
+			}
+
 			if (m_rerenderContext) {
 			
 				glClearColor(0.2f, 0.3f, 0.3f, 1.0f);

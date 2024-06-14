@@ -168,11 +168,10 @@ float Texture2D::getScaleToViewport(VnWindow* window) {
 	float imageWidth	{ static_cast<float>(m_width) };
 	float imageHeight	{ static_cast<float>(m_height) };
 
-	std::cout << "Image width" << imageWidth << std::endl;
-	std::cout << "frame width" << frameWidth << std::endl;
-	std::cout << "Image height" << imageHeight << std::endl;
-	std::cout << "frame height" << frameHeight << std::endl;
-
+	//std::cout << "Image width" << imageWidth << std::endl;
+	//std::cout << "frame width" << frameWidth << std::endl;
+	//std::cout << "Image height" << imageHeight << std::endl;
+	//std::cout << "frame height" << frameHeight << std::endl;
 
 	// TODO: may still be incorrect, background squished
 	if (imageWidth > imageHeight) {
