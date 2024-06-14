@@ -39,7 +39,7 @@ private:
 		glUniformMatrix4fv(viewLocation, 1, GL_FALSE, glm::value_ptr(view));
 
 
-		glm::mat4 ortho = glm::ortho(0.0f, float(m_window->width()), 0.0f, float(m_window->height()), 0.0f, 100.0f);
+		glm::mat4 ortho = glm::ortho(0.0f, static_cast<float>(m_window->width()), 0.0f, static_cast<float>(m_window->height()), 0.0f, 100.0f);
 		
 		unsigned int orthoLocation = glGetUniformLocation(m_defaultShader.ID(), "inOrtho");
 		glUniformMatrix4fv(orthoLocation, 1, GL_FALSE, glm::value_ptr(ortho));

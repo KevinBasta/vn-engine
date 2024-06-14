@@ -26,7 +26,8 @@ private:
 		float scale{ texture->getScaleToViewport(m_window) };
 
 		glm::mat4 model = glm::mat4(1.0f);
-		//model = glm::translate(model, glm::vec3(-1.0f, -1.0f, 0.0f));
+		//model = glm::translate(model, glm::vec3((static_cast<float>(m_window->width()) / 2) - (static_cast<float>(texture->width()) / 2), 0.0f, 0.0f));
+		model = glm::translate(model, glm::vec3(1500.0f * m_window->scale(), 0.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(scale, scale, 0.0f));
 
 		unsigned int modelLocation = glGetUniformLocation(m_defaultShader.ID(), "inModel");
@@ -39,7 +40,7 @@ private:
 		glUniformMatrix4fv(viewLocation, 1, GL_FALSE, glm::value_ptr(view));
 
 
-		glm::mat4 ortho = glm::ortho(0.0f, float(m_window->width()), 0.0f, float(m_window->height()), 0.0f, 100.0f);
+		glm::mat4 ortho = glm::ortho(0.0f, static_cast<float>(m_window->width()), 0.0f, static_cast<float>(m_window->height()), 0.0f, 100.0f);
 
 		unsigned int orthoLocation = glGetUniformLocation(m_defaultShader.ID(), "inOrtho");
 		glUniformMatrix4fv(orthoLocation, 1, GL_FALSE, glm::value_ptr(ortho));
