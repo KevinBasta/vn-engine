@@ -7,7 +7,9 @@
 #include <iostream>
 
 #define widthRatio 16
+#define widthRatioFloat 16.0f
 #define heightRatio 9
+#define heightRatioFloat 9.0f
 
 // TODO: Must turn into singleton so that sg_ variables apply only to that one
 // instance of VnWindow
@@ -17,6 +19,9 @@
 
 #define standardWindowWidth 1920.0f
 #define standardWindowHeight 1080.0f
+
+#define startWidth 1600
+#define startHeight 900
 
 static int sg_frameWidth{ 1920 };
 static int sg_frameHeight{ 1080 };
@@ -66,13 +71,50 @@ static void frameSizeUpdateCallback(GLFWwindow* window, int newWidth, int newHei
 	// then make glViewport use the first two value to offset half
 	// of that so that the viewport is centered
 
+	// TODO: should all this be in just ints not floats?
+
+	float widthGCD{ newWidth / widthRatioFloat };
+	float heightGCD{ newHeight / heightRatioFloat };
+
+	if (static_cast<int>(widthGCD) != static_cast<int>(heightGCD)) {
+		//std::cout << "gcd not equal" << std::endl << std::endl;
+		if (heightGCD > widthGCD) {
+			std::cout << "Height Too Big" << std::endl;
+			float correctedHeight{ heightRatioFloat * widthGCD };
+
+
+			sg_frameWidth = newWidth;
+			sg_frameHeight = correctedHeight;
+
+			sg_scale = sg_frameHeight / standardWindowHeight;
+
+
+			glViewport(0, (newHeight - correctedHeight) / 2, newWidth, correctedHeight);
+		}
+		else {
+			std::cout << "Width Too Big" << std::endl;
+			float correctedWidth{ widthRatioFloat * heightGCD };
+
+
+			sg_frameWidth = correctedWidth;
+			sg_frameHeight = newHeight;
+
+			sg_scale = sg_frameWidth / standardWindowWidth;
+			
+			glViewport((newWidth - correctedWidth) / 2, 0, correctedWidth, newHeight);
+		}
+	}
+	else {
+		std::cout << "gcd equal" << std::endl << std::endl;
+		glViewport(0, 0, newWidth, newHeight);
+	
+		sg_scale = newWidth / standardWindowWidth;
+		
+		sg_frameWidth = newWidth;
+		sg_frameHeight = newHeight;
+	}
+
 	glfwSetWindowAspectRatio(window, widthRatio, heightRatio);
-	glViewport(0, 0, newWidth, newHeight);
-
-	sg_scale = newWidth / standardWindowWidth;
-
-	sg_frameWidth = newWidth;
-	sg_frameHeight = newHeight;
 
 	sg_updated = true;
 }
@@ -133,6 +175,8 @@ public:
 
 		glViewport(0, 0, sg_frameWidth, sg_frameHeight);
 		//glfwMaximizeWindow(m_window);
+
+		glfwSetWindowSize(m_window, startWidth, startHeight);
 
 		std::cout << "OpenGL " << GLVersion.major << "." << GLVersion.minor << std::endl;
 	}
