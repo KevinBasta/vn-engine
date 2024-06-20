@@ -16,18 +16,22 @@ private:
 	Shader m_defaultShader;
 	StateSubject* m_stateSubject{ nullptr };
 
-	void drawSprite(Texture2D* texture) {
-		if (texture == nullptr) {
-			return;
-		}
-
+	void drawSprite(SpriteState& spriteState) {
 		m_defaultShader.use();
 
-		float scale{ texture->getScaleToViewport(m_window) };
+		float scale{ spriteState.m_texture->getScaleToViewport(m_window) };
 
 		glm::mat4 model = glm::mat4(1.0f);
 		//model = glm::translate(model, glm::vec3((static_cast<float>(m_window->width()) / 2) - (static_cast<float>(texture->width()) / 2), 0.0f, 0.0f));
-		model = glm::translate(model, glm::vec3(1500.0f * m_window->scale(), 0.0f, 0.0f));
+		model = glm::translate(model, 
+							   glm::vec3(spriteState.m_xCoord * m_window->scale(),
+										 spriteState.m_yCoord * m_window->scale(), 
+										 spriteState.m_zCoord));
+		
+		std::cout << "scale to view port" << scale << std::endl;
+		std::cout << "scale to view port" << spriteState.m_xCoord << std::endl;
+		std::cout << "scale to view port" << spriteState.m_yCoord << std::endl;
+		std::cout << "scale to view port" << spriteState.m_zCoord << std::endl;
 		model = glm::scale(model, glm::vec3(scale, scale, 0.0f));
 
 		unsigned int modelLocation = glGetUniformLocation(m_defaultShader.ID(), "inModel");
@@ -49,7 +53,7 @@ private:
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-		texture->draw();
+		spriteState.m_texture->draw();
 	}
 
 public:
@@ -66,7 +70,7 @@ public:
 		StateSubject::spriteRenderMap::iterator iter;
 		for (iter = data.begin(); iter != data.end(); iter++) {
 			if (iter->second.m_texture != nullptr && iter->second.m_opacity > 0.0f) {
-				drawSprite(iter->second.m_texture);
+				drawSprite(iter->second);
 			}
 		}
 

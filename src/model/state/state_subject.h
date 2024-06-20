@@ -22,9 +22,6 @@
 #include <algorithm>
 #include <vector>
 
-#define PLACEHOLDER_PATH "C:\\Users\\Kevin\\Documents\\CS\\cpp\\visual-novel-engine\\visual_novel_engine\\assets\\test.jpg"
-
-
 //std::unordered_map<Character&, CharacterSceneData> m_characterSceneData{};
 // background variable can be defined here too
 
@@ -187,6 +184,22 @@ public:
 		}
 		catch (...) {
 			std::cout << "handle ActionSpriteOpacity failed" << std::endl;
+		}
+
+		m_stateDelta.push_back(StateDelta::SPRITE);
+	}
+
+	void handle(ActionSpritePosition& action) {
+		try {
+			SpriteState& state = m_spriteRenderData[action.m_characterID];
+
+			state.m_xCoord = action.m_xCoord;
+			state.m_yCoord = action.m_yCoord;
+			state.m_zCoord = action.m_zCoord;
+			state.m_scale = action.m_scale;
+		}
+		catch (...) {
+			std::cout << "handle ActionSpritePosition failed" << std::endl;
 		}
 
 		m_stateDelta.push_back(StateDelta::SPRITE);

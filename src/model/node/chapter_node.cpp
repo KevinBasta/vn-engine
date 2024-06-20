@@ -35,6 +35,7 @@ void ChapterNode::doStep(StateSubject* stateSubject, int stepIndex) {
 		case ChapterNodeActionType::CHANGE_SPRITE:
 			handleStep(stateSubject, stepIndex, m_spriteTextureSteps);
 			handleStep(stateSubject, stepIndex, m_spriteOpacitySteps);
+			handleStep(stateSubject, stepIndex, m_spritePositionSteps);
 			break;
 		case ChapterNodeActionType::CHANGE_BACKGROUND:
 			handleStep(stateSubject, stepIndex, m_backgroundSteps);

@@ -43,6 +43,14 @@ private:
 		{ 1, std::vector<ActionSpriteOpacity>{{1, 1.0f}} }
 	};
 
+
+	// TODO: consider a way to make the z index more intuative? maybe the background should be 
+	// set at a specific z index (or setable by user) then the rest of the z > than that 
+	// is usable for sprites?
+	std::unordered_map<StepIndex, std::vector<ActionSpritePosition>> m_spritePositionSteps{
+		{ 1, std::vector<ActionSpritePosition>{{1, 700.0f, -100.0f, -1.0f, 1.0f}} }
+	};
+
 	std::unordered_map<StepIndex, std::vector<ActionBackgroundTexture>> m_backgroundSteps{
 		{ 0, std::vector<ActionBackgroundTexture>{{0}} }
 	};

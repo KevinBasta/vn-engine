@@ -23,9 +23,11 @@ struct ActionSpriteTexture {
 
 struct ActionSpritePosition {
 	int m_characterID{ 0 };
-	int m_zIndex{ 0 };
-	float m_scale{ 1.0f };
-	glm::mat4 m_model{ glm::mat4(1.0f) };
+	
+	float m_xCoord	{ 0.0f };
+	float m_yCoord	{ 0.0f };
+	float m_zCoord  { 0.0f };
+	float m_scale	{ 1.0f };
 };
 
 
