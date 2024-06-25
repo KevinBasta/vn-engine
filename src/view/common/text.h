@@ -67,6 +67,57 @@ public:
 
 public:
 
+	static int computeBreakIndex(std::wstring text, int startIndex, int maxWidth, float scale) {
+		if (instance.get() == nullptr) {
+			instance = std::make_unique<TextTexture>();
+		}
+
+		int endIndex{ startIndex };
+		int lastSpaceIndex{ startIndex };
+		float x{ 0.0f };
+		float y{ 0.0f };
+
+		std::wstring::const_iterator c;
+		for (c = text.begin() + startIndex; c != text.end(); c++)
+		{
+			if (instance.get()->m_loadedTextChars.find(*c) == instance.get()->m_loadedTextChars.end()) {
+				instance.get()->loadCharacter(*c);
+			}
+
+			textChar ch = instance.get()->m_loadedTextChars[*c];
+
+			if ((x + (ch.advance >> 6) * scale) > maxWidth) {
+				if (*c != ' ') {
+					endIndex = lastSpaceIndex;
+				}
+
+				break;
+			}
+			
+			if (*c == '\n') {
+				break;
+			}
+
+			float xpos = x + ch.bearing.x * scale;
+			float ypos = y - (ch.size.y - ch.bearing.y) * scale;
+
+			float w = ch.size.x * scale;
+			float h = ch.size.y * scale;
+			
+			x += (ch.advance >> 6) * scale;
+			
+			if (*c == ' ') {
+				lastSpaceIndex = endIndex - 1;
+			}
+
+			endIndex++;
+		}
+
+		std::cout << "End index: " << endIndex << " " << std::endl;
+
+		return endIndex;
+	}
+
 	// render line of text
 	// -------------------
 	static void draw(std::wstring text)

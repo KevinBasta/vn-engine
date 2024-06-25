@@ -31,32 +31,65 @@ private:
 	Shader m_textShader;
 
 	void drawBackground(Texture2D* texture) {
+		if (texture == nullptr) {
+			return;
+		}
+
 
 	}
 
 	void drawText() {
+		std::wstring text = L"Hello, this is Garu. I've come from a far land.\n To meet brazazazaza.\n brazazaza Test Test Test how should line breaking work?";
+
 		m_textShader.use();
 		
 		glm::vec3 color = glm::vec3(1.0f, 0.0f, 0.0f);
 		glUniform3f(glGetUniformLocation(m_textShader.ID(), "inTextColor"), color.x, color.y, color.z);
 
-		float scalee{ 0.001f };
-		float scaledWidth{ 100 * scalee };
-		float scaledHeight{ 10 * scalee };
+		float scale{ 0.7f };
 
-		glm::mat4 model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(300.0f * m_window->scale(), 100.0f * m_window->scale(), -1.0f));
-		model = glm::scale(model, glm::vec3(m_window->scale(), m_window->scale(), 0.0f));
-		glUniformMatrix4fv(glGetUniformLocation(m_textShader.ID(), "inModel"), 1, GL_FALSE, glm::value_ptr(model));
-
-
-		// TODO: move ortho to vn window
+		// TODO: move ortho to camera object
 		glm::mat4 ortho = glm::ortho(0.0f, static_cast<float>(m_window->width()), 0.0f, static_cast<float>(m_window->height()), 0.0f, 100.0f);
-
 		unsigned int orthoLocation = glGetUniformLocation(m_textShader.ID(), "inOrtho");
 		glUniformMatrix4fv(orthoLocation, 1, GL_FALSE, glm::value_ptr(ortho));
 
-		TextTexture::draw(L"test test test lol 123 あ私 test hello this is the text area does this wrap around????? idk but needs to");
+
+		float paddingLeft{ 300.0f };
+		float paddingRight{ 300.0f };
+		float paddingBottom{ 100.0f };
+		int lastConsumedIndex{ 0 };
+
+		while (lastConsumedIndex < text.length() - 1) {
+			glm::mat4 model = glm::mat4(1.0f);
+			model = glm::translate(model, glm::vec3(paddingLeft * m_window->scale(), paddingBottom * m_window->scale(), -1.0f));
+			model = glm::scale(model, glm::vec3(m_window->scale() * scale, m_window->scale() * scale, 0.0f));
+			glUniformMatrix4fv(glGetUniformLocation(m_textShader.ID(), "inModel"), 1, GL_FALSE, glm::value_ptr(model));
+
+			int endIndex = TextTexture::computeBreakIndex(text, lastConsumedIndex, m_window->width() - ((paddingLeft + paddingRight) * m_window->scale()), m_window->scale() * scale);
+			TextTexture::draw(text.substr(lastConsumedIndex, endIndex));
+			
+			// Skip any non-display characters
+			while (endIndex < text.length() - 1) {
+				wchar_t c{ text[endIndex] };
+
+				//std::cout << int(c) << std::endl;
+
+				if (c == ' ' || c == '\n') {
+					endIndex++;
+				}
+				else {
+					break;
+				}
+			}
+
+			lastConsumedIndex = endIndex;
+
+			paddingBottom -= 50.0f;
+			std::cout << "Next start index: " << lastConsumedIndex << std::endl;
+		}
+
+
+
 	}
 
 public:
