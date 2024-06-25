@@ -94,8 +94,10 @@ int main()
 	_CrtSetReportFile(_CRT_ERROR, _CRTDBG_FILE_STDOUT);
 	_CrtSetReportMode(_CRT_ASSERT, _CRTDBG_MODE_FILE);
 	_CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDOUT);
-	bool test = _CrtDumpMemoryLeaks();
-	std::cout << ((test == 1) ? "MEMORY LEAK PRESENT" : "NO MEMORY LEAK DETECTED") << std::endl;
+	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 
+	//bool test = _CrtDumpMemoryLeaks();
+	//std::cout << ((test == 1) ? "MEMORY LEAK PRESENT" : "NO MEMORY LEAK DETECTED") << std::endl;
+	//int* test = new int;
 	return 0;
 }

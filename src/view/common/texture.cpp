@@ -43,7 +43,7 @@ void Texture2D::draw() {
 	glBindVertexArray(m_VAO);
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
-	// unbind texture???
+	// TODO: unbind texture???
 };
 
 void Texture2D::createTexture(const char* filepath) {
@@ -152,6 +152,10 @@ void Texture2D::createVAO() {
 
 void Texture2D::deleteVAO() {
 	glDeleteVertexArrays(1, &m_VAO);
+	
+	// TODO: store id of and delete ebo and vbo
+	//glDeleteBuffers(GL_ARRAY_BUFFER, &m_VBO);
+
 }
 
 float Texture2D::getScaleToViewport(VnWindow* window) {

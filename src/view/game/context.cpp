@@ -20,6 +20,7 @@ GameContext::GameContext(VnWindow* window, StateSubject* stateSubject) :
 	m_stateSubject{ stateSubject },
 	m_backgroundLayer{ window, stateSubject },
 	m_spriteLayer{ window, stateSubject },
+	m_textLayer{ window, stateSubject },
 	m_defaultShader{ TEMP_VERTEX_PATH, TEMP_FRAGMENT_PATH }
 {
 	// Uncomment to enable transparent backgrounds

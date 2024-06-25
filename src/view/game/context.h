@@ -8,6 +8,7 @@
 
 #include "layer_background.h"
 #include "layer_sprite.h"
+#include "layer_text.h"
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -18,7 +19,7 @@ public:
 	StateSubject* m_stateSubject{};
 	BackgroundLayer m_backgroundLayer;
 	SpriteLayer	m_spriteLayer;
-	//TextLayer m_textLayer;
+	TextLayer m_textLayer;
 	Shader m_defaultShader;
 
 public:
@@ -27,6 +28,7 @@ public:
 	void draw() {
 		m_backgroundLayer.pollAndDraw();
 		m_spriteLayer.pollAndDraw();
+		m_textLayer.pollAndDraw();
 	};
 
 	//void reloadShaders();

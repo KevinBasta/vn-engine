@@ -25,7 +25,6 @@ private:
 	StateSubject* m_stateSubject{};
 	GameContext m_context;
 	GameController m_controller;
-	VnText m_text{};
 	bool m_rerenderContext{ false };
 
 public:
@@ -69,10 +68,6 @@ public:
 
 				m_context.draw();
 
-				m_text.RenderText(L"test test test lol 123 あ私", 25.0f, 25.0f, 1.0f, glm::vec3(0.5, 0.8f, 0.2f));
-				m_text.RenderText(L"test test test lol 123 あ私", 1.0f, 1.0f, 1.0f, glm::vec3(0.2, 0.9f, 0.7f));
-				m_text.RenderText(L"test test test lol 123 あ私", 55.0f, 55.0f, 1.0f, glm::vec3(0.5, 0.2f, 0.2f));
-			
 				glfwSwapBuffers(m_window->get());
 
 				m_rerenderContext = false;
