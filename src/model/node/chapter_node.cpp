@@ -30,7 +30,9 @@ void ChapterNode::doStep(StateSubject* stateSubject, int stepIndex) {
 		switch (*actionIter)
 		{
 		case ChapterNodeActionType::TYPE_TEXT:
-			handleStep(stateSubject, stepIndex, m_textSteps);
+			handleStep(stateSubject, stepIndex, m_textLineSteps);
+			handleStep(stateSubject, stepIndex, m_textOverrideSpeakerSteps);
+			handleStep(stateSubject, stepIndex, m_textOverrideColorSteps);
 			break;
 		case ChapterNodeActionType::CHANGE_SPRITE:
 			handleStep(stateSubject, stepIndex, m_spriteTextureSteps);
@@ -50,8 +52,9 @@ void ChapterNode::doStep(StateSubject* stateSubject, int stepIndex) {
 
 NodeState ChapterNode::action(StateSubject* stateSubject, int stepIndex) 
 {
-	// TODO: Remove
-	stateSubject->updateCurrentText("test speaker", m_temp);
+	// TODO: Remove m_temp
+	//stateSubject->updateCurrentText("test speaker", m_temp);
+	std::cout << "test speaker" << " said: " << m_temp << std::endl;
 
 	if (stepIndex >= (m_steps.size())) {
 		return NodeState::NODE_END;

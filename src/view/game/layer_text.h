@@ -18,6 +18,7 @@
 #include FT_FREETYPE_H
 
 #include <string>
+#include <string_view>
 #include <iostream>
 #include <unordered_map>
 
@@ -38,12 +39,11 @@ private:
 
 	}
 
-	void drawText() {
-		std::wstring text = L"Hello, this is Garu. I've come from a far land.\n To meet brazazazaza.\n brazazaza Test Test Test how should line breaking work?";
+	void drawText(std::wstring_view speaker, std::wstring_view text, glm::vec3 color) {
+		//text = L"Hello, this is Garu. I've come from a far land. To meet brazazazaza.\n brazazaza Test Test Test how should line breaking work?";
 
 		m_textShader.use();
 		
-		glm::vec3 color = glm::vec3(1.0f, 0.0f, 0.0f);
 		glUniform3f(glGetUniformLocation(m_textShader.ID(), "inTextColor"), color.x, color.y, color.z);
 
 		float scale{ 0.7f };
@@ -56,7 +56,7 @@ private:
 
 		float paddingLeft{ 300.0f };
 		float paddingRight{ 300.0f };
-		float paddingBottom{ 100.0f };
+		float paddingBottom{ 150.0f };
 		int lastConsumedIndex{ 0 };
 
 		while (lastConsumedIndex < text.length() - 1) {
@@ -66,7 +66,7 @@ private:
 			glUniformMatrix4fv(glGetUniformLocation(m_textShader.ID(), "inModel"), 1, GL_FALSE, glm::value_ptr(model));
 
 			int endIndex = TextTexture::computeBreakIndex(text, lastConsumedIndex, m_window->width() - ((paddingLeft + paddingRight) * m_window->scale()), m_window->scale() * scale);
-			TextTexture::draw(text.substr(lastConsumedIndex, endIndex));
+			TextTexture::draw(text.substr(lastConsumedIndex, endIndex - lastConsumedIndex));
 			
 			// Skip any non-display characters
 			while (endIndex < text.length() - 1) {
@@ -101,7 +101,9 @@ public:
 	}
 
 	void pollAndDraw() {
-		drawText();
+		drawText(m_stateSubject->m_textState.m_speakerName, 
+				 m_stateSubject->m_textState.m_line,
+				 m_stateSubject->m_textState.m_color);
 	}
 };
 

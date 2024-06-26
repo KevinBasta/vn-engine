@@ -97,8 +97,8 @@ public:
 	}
 
 	void initCharacters() {
-		std::unique_ptr<Character> garu{ std::make_unique<Character>("garu") };
-		std::unique_ptr<Character> brz{ std::make_unique<Character>("brazazaza") };
+		std::unique_ptr<Character> garu{ std::make_unique<Character>(L"garu") };
+		std::unique_ptr<Character> brz{ std::make_unique<Character>(L"brazazaza") };
 
 		garu.get()->addTexture("C:\\Users\\Kevin\\Documents\\CS\\cpp\\visual-novel-engine\\visual_novel_engine\\assets\\garu_outline.png");
 

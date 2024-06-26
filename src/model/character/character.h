@@ -14,17 +14,22 @@
 
 class Character {
 private:
-	std::string m_name{};
 	const int	m_id;
+
+	std::wstring m_name{};
+	glm::vec3 m_textColor{};
 	std::vector<std::unique_ptr<Texture2D>> m_textures{};
 
 public:
-	Character(std::string_view name);
-	Character(std::string_view name, Relations relationships);
+	Character(std::wstring name);
+	Character(std::wstring name, Relations relationships);
 
 	void addTexture(const char* texturePath);
+	
 	Texture2D* getTexture(int index);
 	int getId() { return m_id; }
+	std::wstring_view getName() { return m_name; }
+	glm::vec3 getTextColor() { return m_textColor; }
 
 	~Character();
 

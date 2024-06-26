@@ -10,11 +10,11 @@
 #include <string_view>
 #include <memory>
 
-Character::Character(std::string_view name) :
+Character::Character(std::wstring name) :
 	m_name{ name },
 	m_id{ IdGenerator<Character>::getId() } 
 {
-	std::cout << "constructing character " << m_name << std::endl;
+	std::wcout << "constructing character " << m_name << std::endl;
 }
 
 Texture2D* Character::getTexture(int index) {
@@ -27,13 +27,13 @@ void Character::addTexture(const char* texturePath) {
 }
 
 Character::~Character() {
-	std::cout << "deleting character " << m_name << std::endl;
+	std::wcout << "deleting character " << m_name << std::endl;
 }
 
 
 std::ostream& operator<<(std::ostream& out, Character& character) {
 	out << "Character:" << std::endl;
-	out << "\tname      - " << character.m_name << std::endl;
+	std::wcout << "\tname      - " << character.m_name << std::endl;
 	out << "\tid        - " << character.m_id << std::endl;
 
 	return out;

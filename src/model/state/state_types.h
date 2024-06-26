@@ -19,5 +19,19 @@ struct SpriteState {
 	float m_opacity	{ 0.0f };
 };
 
+//enum class TextAction {
+//	EMPTY,
+//	TYPING,
+//	COMPLETE
+//};
+
+struct TextState {
+	std::wstring_view m_speakerName{};
+	std::wstring_view m_line{};
+	glm::vec3 m_color{};
+};
+
+
+
 
 #endif // VN_STATE_TYPES_H

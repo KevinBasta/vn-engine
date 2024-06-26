@@ -1,4 +1,4 @@
-#ifndef STATE_SUBJECT_H
+﻿#ifndef STATE_SUBJECT_H
 #define STATE_SUBJECT_H
 
 #include "subject.h"
@@ -32,11 +32,6 @@ struct SceneCameraData {
 };
 */
 
-enum class TextState {
-	EMPTY,
-	TYPING,
-	COMPLETE
-};
 
 class StateSubject : public Subject {
 private:
@@ -49,6 +44,10 @@ public:
 public:
 	Chapter* currentChapter{ nullptr };
 	ChapterIterator iterator{ nullptr, 0 };
+
+	// keeping record of what chioces were made for
+	// safe file node traversal
+	std::vector<int> chapterChoicesRecord{};
 
 	void initIterator(ChapterIterator chapterIterator) {
 		iterator = chapterIterator;
@@ -96,28 +95,38 @@ public:
 	//
 	// Text
 	//
+	// TextAction m_textAction{ TextAction::EMPTY };
+	// TODO: can switch to string views if saved in model?
+	TextState m_textState{L"none", L"shirogane, 俺は", glm::vec3(81 / 255, 116 / 255, 150 / 255)};
 
-	TextState m_textState{ TextState::EMPTY };
-	std::string m_currentSpeaker{};
-	std::string m_currentText{};
-	// can switch to string views if saved in model?
+	void handle(ActionTextLine& action) {
+		
+		Character* character = m_model->getCharacterByID(action.m_characterID);
 
-	void updateCurrentText(std::string newSpeaker, std::string newText) {
-		m_currentSpeaker = newSpeaker;
-		m_currentText = newText;
-		m_textState = TextState::COMPLETE;
-
-		//m_stateDelta.push_back(StateDelta::TEXT);
-
-		std::cout << newSpeaker << " said: " << newText << std::endl;
-	}
-
-	void handle(ChapterNodeText& textAction) {
-
+		if (character != nullptr) {
+			m_textState.m_speakerName = character->getName();
+			m_textState.m_line = action.m_line;
+			m_textState.m_color = character->getTextColor();
+		}
+		else {
+			std::cout << "handle ActionTextLine failed" << std::endl;
+		}
+		
 
 		m_stateDelta.push_back(StateDelta::TEXT);
 	}
 
+	void handle(ActionTextOverrideSpeaker& action) {
+		m_textState.m_speakerName = action.m_speakerName;
+		
+		m_stateDelta.push_back(StateDelta::TEXT);
+	}
+
+	void handle(ActionTextOverrideColor& action) {
+		m_textState.m_color = action.m_textColor;
+		
+		m_stateDelta.push_back(StateDelta::TEXT);
+	}
 
 	//
 	// Background

@@ -67,7 +67,7 @@ public:
 
 public:
 
-	static int computeBreakIndex(std::wstring text, int startIndex, int maxWidth, float scale) {
+	static int computeBreakIndex(std::wstring_view text, int startIndex, int maxWidth, float scale) {
 		if (instance.get() == nullptr) {
 			instance = std::make_unique<TextTexture>();
 		}
@@ -77,7 +77,7 @@ public:
 		float x{ 0.0f };
 		float y{ 0.0f };
 
-		std::wstring::const_iterator c;
+		std::wstring_view::const_iterator c;
 		for (c = text.begin() + startIndex; c != text.end(); c++)
 		{
 			if (instance.get()->m_loadedTextChars.find(*c) == instance.get()->m_loadedTextChars.end()) {
@@ -107,7 +107,7 @@ public:
 			x += (ch.advance >> 6) * scale;
 			
 			if (*c == ' ') {
-				lastSpaceIndex = endIndex - 1;
+				lastSpaceIndex = endIndex;
 			}
 
 			endIndex++;
@@ -120,7 +120,7 @@ public:
 
 	// render line of text
 	// -------------------
-	static void draw(std::wstring text)
+	static void draw(std::wstring_view text)
 	{
 		if (instance.get() == nullptr) {
 			instance = std::make_unique<TextTexture>();
@@ -138,7 +138,7 @@ public:
 		glBindVertexArray(instance.get()->m_VAO);
 
 		// iterate through all characters
-		std::wstring::const_iterator c;
+		std::wstring_view::const_iterator c;
 		for (c = text.begin(); c != text.end(); c++)
 		{
 			if (instance.get()->m_loadedTextChars.find(*c) == instance.get()->m_loadedTextChars.end()) {

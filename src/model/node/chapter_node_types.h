@@ -34,12 +34,17 @@ struct ActionSpritePosition {
 //
 // Text Actions
 //
-struct ChapterNodeText {
-	int characterID{};
-	std::string line{};
+struct ActionTextLine {
+	int m_characterID{};
+	std::wstring m_line{};
+};
 
-	bool overrideSpeakerName{};
-	std::string speakerName{};
+struct ActionTextOverrideSpeaker {
+	std::wstring m_speakerName{};
+};
+
+struct ActionTextOverrideColor {
+	glm::vec3 m_textColor{};
 };
 
 

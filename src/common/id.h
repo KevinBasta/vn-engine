@@ -19,5 +19,4 @@ public:
 template <class T>
 int IdGenerator<T>::m_currentId{ 1 };
 
-
 #endif // VN_ID_H

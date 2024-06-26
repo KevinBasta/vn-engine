@@ -26,13 +26,27 @@ private:
 	// temp constructions here, will be done by engine/hooks
 	std::vector<std::vector<ChapterNodeActionType>> m_steps{ 
 		std::vector<ChapterNodeActionType>{ ChapterNodeActionType::CHANGE_BACKGROUND, ChapterNodeActionType::CHANGE_SPRITE },
-		std::vector<ChapterNodeActionType>{ ChapterNodeActionType::TYPE_TEXT, ChapterNodeActionType::CHANGE_SPRITE } 
+		std::vector<ChapterNodeActionType>{ ChapterNodeActionType::TYPE_TEXT, ChapterNodeActionType::CHANGE_SPRITE },
+		std::vector<ChapterNodeActionType>{ ChapterNodeActionType::TYPE_TEXT} 
 	};
 
 	typedef int StepIndex;
-	std::unordered_map<StepIndex, std::vector<ChapterNodeText>> m_textSteps{
-		{ 1, std::vector<ChapterNodeText>{{0, "hello, this is garu", false, ""}} }
+	
+	std::unordered_map<StepIndex, std::vector<ActionTextLine>> m_textLineSteps{
+		{ 1, std::vector<ActionTextLine>{{0, L"hello, this is garu"}} }
+	};	
+	
+	std::unordered_map<StepIndex, std::vector<ActionTextOverrideSpeaker>> m_textOverrideSpeakerSteps{
+		{ 2, std::vector<ActionTextOverrideSpeaker>{{L"???"}}}
 	};
+
+	std::unordered_map<StepIndex, std::vector<ActionTextOverrideColor>> m_textOverrideColorSteps{
+		{ 2, std::vector<ActionTextOverrideColor>{{glm::vec3(0.0f, 1.0f, 0.5f)}}}
+	};
+
+
+
+
 
 	std::unordered_map<StepIndex, std::vector<ActionSpriteTexture>> m_spriteTextureSteps{
 		{ 0, std::vector<ActionSpriteTexture>{{1, 0}} }
@@ -43,13 +57,15 @@ private:
 		{ 1, std::vector<ActionSpriteOpacity>{{1, 1.0f}} }
 	};
 
-
 	// TODO: consider a way to make the z index more intuative? maybe the background should be 
 	// set at a specific z index (or setable by user) then the rest of the z > than that 
 	// is usable for sprites?
 	std::unordered_map<StepIndex, std::vector<ActionSpritePosition>> m_spritePositionSteps{
 		{ 1, std::vector<ActionSpritePosition>{{1, 700.0f, -100.0f, -1.0f, 1.0f}} }
 	};
+
+
+
 
 	std::unordered_map<StepIndex, std::vector<ActionBackgroundTexture>> m_backgroundSteps{
 		{ 0, std::vector<ActionBackgroundTexture>{{0}} }
