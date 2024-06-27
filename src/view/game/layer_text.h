@@ -38,7 +38,8 @@ private:
 
 
 	}
-
+	// auto const joined = std::views::join(std::array{s1, s2});
+	// can join string if want to display text and name on one line
 	void drawText(std::wstring_view text, glm::vec3 color, float paddingBottom) {
 		//text = L"Hello, this is Garu. I've come from a far land. To meet brazazazaza.\n brazazaza Test Test Test how should line breaking work?";
 

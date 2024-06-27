@@ -10,11 +10,11 @@ This repository is in progress.
 ## Design patterns
 
 current:
-- `Observer pattern` for state_subject, model subject, game observer, engine observer
-- `Visitor pattern/injection` for sending down the state subject down to the model nodes
+- `Observer pattern` for state subject, model subject, game observer, engine observer
+- `Visitor pattern/injection` for sending down the state subject to the model nodes
 - `Iterator pattern` for iterating chapter, graph, and node
 - `singleton pattern` for text rendering, may change for multithreading
 
-- future additions:
+future additions:
 - `Command pattern` for menu commands
 - factory/builder for constructing the game model subject

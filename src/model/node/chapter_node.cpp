@@ -5,12 +5,25 @@
 #include "chapter_node_types.h"
 
 
+//
+// Step Handling
+// Sends data to the subject
+// Bool returns indicate if any step occured
+//
+
 template <class T>
-void ChapterNode::handleStep(StateSubject *stateSubject, StepIndex stepIndex, std::unordered_map<StepIndex, std::vector<T>>& stepMap)
+bool ChapterNode::handleStep(StateSubject *stateSubject, StepIndex stepIndex, std::unordered_map<StepIndex, std::vector<T>>& stepMap)
 {
+	bool hasStep{ false };
+
+	if (stateSubject == nullptr) {
+		return hasStep;
+	}
+
 	class std::unordered_map<StepIndex, std::vector<T>>::iterator concreteSteps = stepMap.find(stepIndex);
 
 	if (concreteSteps != stepMap.end()) {
+		hasStep = true;
 		class std::vector<T>::iterator iter;
 
 		for (iter = concreteSteps->second.begin(); iter < concreteSteps->second.end(); iter++)
@@ -18,47 +31,56 @@ void ChapterNode::handleStep(StateSubject *stateSubject, StepIndex stepIndex, st
 			stateSubject->handle(*iter);
 		}
 	}
+
+	return hasStep;
 }
 
-void ChapterNode::doStep(StateSubject* stateSubject, int stepIndex) {
-	// exectute every action in current iter step
+bool ChapterNode::doStep(StateSubject* stateSubject, int stepIndex) {
+	// Exectute every action in current iter step, order matters
+	bool stepExists{ false };
 
-	// TODO: NEEDS EXCEPTION HANDLING FOR OUT OF RANGE m_steps, m_spriteSteps, etc..
-	// TODO: CAN GET RID OF THE m_steps AND CHECK EVERY HASH MAP WITH HANDLESTEP
-	std::vector<ChapterNodeActionType>::iterator actionIter;
-	for (actionIter = m_steps[stepIndex].begin(); actionIter != m_steps[stepIndex].end(); actionIter++) {		
-		switch (*actionIter)
+	if (stateSubject == nullptr) {
+		return stepExists;
+	}
+
+	stepExists |= handleStep(stateSubject, stepIndex, m_textLineSteps);
+	stepExists |= handleStep(stateSubject, stepIndex, m_textOverrideSpeakerSteps);
+	stepExists |= handleStep(stateSubject, stepIndex, m_textOverrideColorSteps);
+
+	stepExists |= handleStep(stateSubject, stepIndex, m_spriteTextureSteps);
+	stepExists |= handleStep(stateSubject, stepIndex, m_spriteOpacitySteps);
+	stepExists |= handleStep(stateSubject, stepIndex, m_spritePositionSteps);
+	stepExists |= handleSubStep(stateSubject, stepIndex, 0, m_spriteAnimationSteps);
+	
+	stepExists |= handleStep(stateSubject, stepIndex, m_backgroundSteps);
+	
+	return stepExists;
+	// Notify called in state after iter step is called
+}
+
+
+
+//
+// Substep handling
+// Bool return indicates if a substep occured 
+//
+
+template <class T>
+bool ChapterNode::handleSubStep(StateSubject* stateSubject, StepIndex stepIndex, SubStepIndex subStepIndex, std::unordered_map<StepIndex, std::vector<T>>& stepMap)
+{
+	bool hasSubStep{ false };
+	class std::unordered_map<StepIndex, std::vector<T>>::iterator concreteSteps = stepMap.find(stepIndex);
+
+	if (concreteSteps != stepMap.end()) {
+		class std::vector<T>::iterator iter;
+
+		for (iter = concreteSteps->second.begin(); iter < concreteSteps->second.end(); iter++)
 		{
-		case ChapterNodeActionType::TYPE_TEXT:
-			handleStep(stateSubject, stepIndex, m_textLineSteps);
-			handleStep(stateSubject, stepIndex, m_textOverrideSpeakerSteps);
-			handleStep(stateSubject, stepIndex, m_textOverrideColorSteps);
-			break;
-		case ChapterNodeActionType::CHANGE_SPRITE:
-			handleStep(stateSubject, stepIndex, m_spriteTextureSteps);
-			handleStep(stateSubject, stepIndex, m_spriteOpacitySteps);
-			handleStep(stateSubject, stepIndex, m_spritePositionSteps);
-			handleStep(stateSubject, stepIndex, m_spriteAnimationSteps);
-			break;
-		case ChapterNodeActionType::CHANGE_BACKGROUND:
-			handleStep(stateSubject, stepIndex, m_backgroundSteps);
-			break;
-		default:
-			break;
+			// auto itet
 		}
 	}
 
-	// notify called in state after iter step is called
-}
-
-int ChapterNode::countSteps() {
-
-	return 0;
-}
-
-int ChapterNode::countSubsteps(int stepIndex) {
-
-	return 0;
+	return hasSubStep;
 }
 
 
@@ -66,22 +88,23 @@ void ChapterNode::doSubStep(StateSubject* stateSubject, int stepIndex, int subSt
 
 }
 
+
+
+
 NodeState ChapterNode::action(StateSubject* stateSubject, int stepIndex) 
 {
 	// TODO: Remove m_temp
 	//stateSubject->updateCurrentText("test speaker", m_temp);
 	std::cout << "test speaker" << " said: " << m_temp << std::endl;
+	bool stepDone = doStep(stateSubject, stepIndex);
+	std::cout << "step #" << stepIndex << std::endl;
+	std::cout << "step done? " << stepDone << std::endl;
 
-	if (stepIndex >= (m_steps.size())) {
-		return NodeState::NODE_END;
-	}
-	else if (stepIndex == (m_steps.size() - 1)) {
-		doStep(stateSubject, stepIndex);
-		return NodeState::NODE_END;
+	if (stepDone) {
+		return NodeState::NODE_STEP;
 	}
 	else {
-		doStep(stateSubject, stepIndex);
-		return NodeState::NODE_STEP;
+		return NodeState::NODE_END;
 	}
 }
 
@@ -91,15 +114,5 @@ NodeState ChapterNode::subAction(StateSubject* stateSubject, int stepIndex, int 
 	//stateSubject->updateCurrentText("test speaker", m_temp);
 	std::cout << "sub action" << std::endl;
 
-	if (stepIndex >= (m_steps.size())) {
-		return NodeState::NODE_END;
-	}
-	else if (stepIndex == (m_steps.size() - 1)) {
-		doStep(stateSubject, stepIndex);
-		return NodeState::NODE_END;
-	}
-	else {
-		doStep(stateSubject, stepIndex);
-		return NodeState::NODE_STEP;
-	}
+	return NodeState::NODE_END;
 }

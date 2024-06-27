@@ -27,6 +27,7 @@ public:
 			return m_latestAction;
 		}
 		
+		// TODO: nullptr handling
 		m_latestAction = m_node->action(stateSubject, m_currentStep);
 		m_currentStep++;
 

@@ -44,7 +44,12 @@ public:
 		if (stepResult == NodeState::NODE_END) {
 			bool nextNodeInit = pointToChild();
 			if (!nextNodeInit) {
+				std::cout << "GRAPH DONE" << std::endl;
 				return GraphState::GRAPH_END;
+			}
+			else {
+				// If the node is done, jump to the next node
+				return step(stateSubject);
 			}
 		}
 

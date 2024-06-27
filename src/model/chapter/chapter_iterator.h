@@ -72,6 +72,10 @@ public:
 				
 				return ChapterState::CHAPTERS_END;
 			}
+			else {
+				// TODO: dangerous for possible infinite recursion
+				return step(stateSubject);
+			}
 		}
 
 		return ChapterState::CHAPTER_STEP;

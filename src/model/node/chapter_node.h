@@ -24,17 +24,19 @@ enum class ChapterNodeActionType {
 class ChapterNode : public Node {
 private:
 	// temp constructions here, will be done by engine/hooks
-	std::vector<std::vector<ChapterNodeActionType>> m_steps{ 
+	/*std::vector<std::vector<ChapterNodeActionType>> m_steps{ 
 		std::vector<ChapterNodeActionType>{ ChapterNodeActionType::CHANGE_BACKGROUND, ChapterNodeActionType::CHANGE_SPRITE },
 		std::vector<ChapterNodeActionType>{ ChapterNodeActionType::TYPE_TEXT, ChapterNodeActionType::CHANGE_SPRITE },
 		std::vector<ChapterNodeActionType>{ ChapterNodeActionType::TYPE_TEXT },
 		std::vector<ChapterNodeActionType>{ ChapterNodeActionType::CHANGE_SPRITE }
-	};
+	};*/
 
 	typedef int StepIndex;
+	typedef int SubStepIndex;
 	
 	std::unordered_map<StepIndex, std::vector<ActionTextLine>> m_textLineSteps{
-		{ 1, std::vector<ActionTextLine>{{1, L"hello, this is garu"}} }
+		{ 1, std::vector<ActionTextLine>{{1, L"hello, this is garu"}} },
+		{ 2, std::vector<ActionTextLine>{{1, L"hello, this is NOT garu"}} }
 	};	
 	
 	std::unordered_map<StepIndex, std::vector<ActionTextOverrideSpeaker>> m_textOverrideSpeakerSteps{
@@ -66,7 +68,7 @@ private:
 	};
 	
 	std::unordered_map<StepIndex, std::vector<ActionSpriteAnimation>> m_spriteAnimationSteps{
-		{ 3, std::vector<ActionSpriteAnimation>{ {1, {{2.5f, 300.0f, 100.0f, -1.0f, 1.0f}}} } }
+		{ 2, std::vector<ActionSpriteAnimation>{ {1, {{2.5f, 300.0f, 100.0f, -1.0f, 1.0f}}} } }
 	};
 
 
@@ -79,13 +81,20 @@ private:
 	std::string m_text{};
 
 	template <class T>
-	void handleStep(StateSubject* stateSubject, StepIndex stepIndex, std::unordered_map<StepIndex, std::vector<T>>& stepMap);
+	bool handleStep(StateSubject* stateSubject, StepIndex stepIndex, std::unordered_map<StepIndex, std::vector<T>>& stepMap);
 
-	void doStep(StateSubject* stateSubject, int stepIndex);
+	bool doStep(StateSubject* stateSubject, int stepIndex);
+	
+
+	template <class T>
+	bool handleSubStep(StateSubject* stateSubject, StepIndex stepIndex, SubStepIndex subStepIndex, std::unordered_map<StepIndex, std::vector<T>>& stepMap);
 	void doSubStep(StateSubject* stateSubject, int stepIndex, int subStepIndex);
+	
 
-	int countSteps();
-	int countSubsteps(int stepIndex);
+	//template <class T>
+	//bool hasStep(StepIndex stepIndex, std::unordered_map<StepIndex, std::vector<T>>& stepMap);
+	//int countSteps();
+	//int countSubsteps(int stepIndex);
 
 	// pre actions (transitions, animations, etc..)
 	// body actions (text, animations, etc..)
