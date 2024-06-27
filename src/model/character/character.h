@@ -17,7 +17,7 @@ private:
 	const int	m_id;
 
 	std::wstring m_name{};
-	glm::vec3 m_textColor{};
+	glm::vec3 m_textColor{0.4f, 0.3f, 0.9f};
 	std::vector<std::unique_ptr<Texture2D>> m_textures{};
 
 public:

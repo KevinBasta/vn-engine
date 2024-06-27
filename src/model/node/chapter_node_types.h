@@ -6,7 +6,7 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include <string>
-
+#include <vector>
 
 //
 // Sprite Actions
@@ -28,6 +28,22 @@ struct ActionSpritePosition {
 	float m_yCoord	{ 0.0f };
 	float m_zCoord  { 0.0f };
 	float m_scale	{ 1.0f };
+};
+
+struct ActionSpriteKeyframes {
+	float m_transitionSeconds{ 0.0f };
+
+	float m_xCoord{ 0.0f };
+	float m_yCoord{ 0.0f };
+	float m_zCoord{ 0.0f };
+	float m_scale{ 1.0f };
+	float m_opacity{ 1.0f };
+};
+
+struct ActionSpriteAnimation {
+	int m_characterID{ 0 };
+
+	std::vector<ActionSpriteKeyframes> m_steps{};
 };
 
 

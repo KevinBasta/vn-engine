@@ -61,6 +61,11 @@ public:
 		// then clear state delta
 	}
 
+	// indicate that auto substeps (for animations) are present
+	bool inSubStep{ false };
+
+
+
 public:
 	// Delta tracking inquiry
 	// an array of enums describing what changed to allow an
@@ -88,22 +93,22 @@ public:
 	// Model specific state
 	// character textures and positions
 
-	// node id for saving if needed
+	// node ids for saving if needed
 	// chapter numb, load chapter if not by asking model
-
 	
 	//
 	// Text
 	//
 	// TextAction m_textAction{ TextAction::EMPTY };
 	// TODO: can switch to string views if saved in model?
-	TextState m_textState{L"none", L"shirogane, 俺は", glm::vec3(81 / 255, 116 / 255, 150 / 255)};
+	TextState m_textState{TextAction::EMPTY, L"none", L"shirogane, 俺は", glm::vec3(81.0f / 255, 116.0f / 255, 150.0f / 255)};
 
 	void handle(ActionTextLine& action) {
 		
 		Character* character = m_model->getCharacterByID(action.m_characterID);
 
 		if (character != nullptr) {
+			m_textState.m_currentState = TextAction::COMPLETE;
 			m_textState.m_speakerName = character->getName();
 			m_textState.m_line = action.m_line;
 			m_textState.m_color = character->getTextColor();
@@ -117,12 +122,14 @@ public:
 	}
 
 	void handle(ActionTextOverrideSpeaker& action) {
+		//m_textState.m_currentState = TextAction::COMPLETE;
 		m_textState.m_speakerName = action.m_speakerName;
 		
 		m_stateDelta.push_back(StateDelta::TEXT);
 	}
 
 	void handle(ActionTextOverrideColor& action) {
+		//m_textState.m_currentState = TextAction::COMPLETE;
 		m_textState.m_color = action.m_textColor;
 		
 		m_stateDelta.push_back(StateDelta::TEXT);
@@ -149,12 +156,10 @@ public:
 	//
 	// Characters
 	//
-	typedef int zIndex;
 	typedef int ID;
 	typedef std::unordered_map<ID, SpriteState> spriteRenderMap;
 	
 	spriteRenderMap m_spriteRenderData{};
-	//std::unordered_map<zIndex, ChapterNodeSprite*> m_spriteIndexData{}; // can be vector by index?
 
 	spriteRenderMap& getSpriteRenderData() {
 		return m_spriteRenderData;
@@ -168,18 +173,15 @@ public:
 		}
 	}
 
-	/*void setTempTexture(Texture2D* texture) {
-		m_tempTexture = texture;
-	}*/
-
 	void handle(ActionSpriteTexture& action) {
 		try {
-			SpriteState& state = m_spriteRenderData[action.m_characterID];
-
+			SpriteState& state = m_spriteRenderData.at(action.m_characterID);
+			
+			// TODO: further null and err checks needed
 			state.m_texture = m_model->getCharacterByID(action.m_characterID)->getTexture(action.m_textureIndex);
 		}
-		catch (...) {
-			std::cout << "handle ActionSpriteTexture failed" << std::endl;
+		catch (std::out_of_range) {
+			std::cerr << "ActionSpriteTexture::out_of_range" << std::endl;
 		}
 
 		m_stateDelta.push_back(StateDelta::SPRITE);
@@ -187,31 +189,34 @@ public:
 
 	void handle(ActionSpriteOpacity& action) {
 		try {
-			SpriteState& state = m_spriteRenderData[action.m_characterID];
-
-			state.m_opacity = action.m_opacity;
+			SpriteState& state = m_spriteRenderData.at(action.m_characterID);
+			state.m_position.m_opacity = action.m_opacity;
 		}
-		catch (...) {
-			std::cout << "handle ActionSpriteOpacity failed" << std::endl;
+		catch (std::out_of_range) {
+			std::cerr << "ActionSpriteOpacity::out_of_range" << std::endl;
 		}
-
+		
 		m_stateDelta.push_back(StateDelta::SPRITE);
 	}
 
 	void handle(ActionSpritePosition& action) {
 		try {
-			SpriteState& state = m_spriteRenderData[action.m_characterID];
+			SpriteState& state = m_spriteRenderData.at(action.m_characterID);
 
-			state.m_xCoord = action.m_xCoord;
-			state.m_yCoord = action.m_yCoord;
-			state.m_zCoord = action.m_zCoord;
-			state.m_scale = action.m_scale;
+			state.m_position.m_xCoord = action.m_xCoord;
+			state.m_position.m_yCoord = action.m_yCoord;
+			state.m_position.m_zCoord = action.m_zCoord;
+			state.m_position.m_scale = action.m_scale;
 		}
-		catch (...) {
-			std::cout << "handle ActionSpritePosition failed" << std::endl;
+		catch (std::out_of_range) {
+			std::cerr << "ActionSpritePosition::out_of_range" << std::endl;
 		}
 
 		m_stateDelta.push_back(StateDelta::SPRITE);
+	}
+
+	void handle(ActionSpriteAnimation& action) {
+
 	}
 
 public:

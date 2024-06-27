@@ -100,10 +100,13 @@ public:
 		std::unique_ptr<Character> garu{ std::make_unique<Character>(L"garu") };
 		std::unique_ptr<Character> brz{ std::make_unique<Character>(L"brazazaza") };
 
+		//std::cout << *(garu.get());
+
 		garu.get()->addTexture("C:\\Users\\Kevin\\Documents\\CS\\cpp\\visual-novel-engine\\visual_novel_engine\\assets\\garu_outline.png");
 
 		m_characters[garu.get()->getId()] = std::move(garu);
 		m_characters[brz.get()->getId()] = std::move(brz);
+
 	}
 
 	void initBackgrounds() {

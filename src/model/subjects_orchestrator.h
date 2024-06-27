@@ -24,6 +24,7 @@ public:
 		m_model->createChapterOne();
 
 		m_state->initIterator(m_model->iter(0));
+		m_state->initCharacterData();
 	}
 	
 	void loadGame() {

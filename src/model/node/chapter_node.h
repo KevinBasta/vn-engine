@@ -27,13 +27,14 @@ private:
 	std::vector<std::vector<ChapterNodeActionType>> m_steps{ 
 		std::vector<ChapterNodeActionType>{ ChapterNodeActionType::CHANGE_BACKGROUND, ChapterNodeActionType::CHANGE_SPRITE },
 		std::vector<ChapterNodeActionType>{ ChapterNodeActionType::TYPE_TEXT, ChapterNodeActionType::CHANGE_SPRITE },
-		std::vector<ChapterNodeActionType>{ ChapterNodeActionType::TYPE_TEXT} 
+		std::vector<ChapterNodeActionType>{ ChapterNodeActionType::TYPE_TEXT },
+		std::vector<ChapterNodeActionType>{ ChapterNodeActionType::CHANGE_SPRITE }
 	};
 
 	typedef int StepIndex;
 	
 	std::unordered_map<StepIndex, std::vector<ActionTextLine>> m_textLineSteps{
-		{ 1, std::vector<ActionTextLine>{{0, L"hello, this is garu"}} }
+		{ 1, std::vector<ActionTextLine>{{1, L"hello, this is garu"}} }
 	};	
 	
 	std::unordered_map<StepIndex, std::vector<ActionTextOverrideSpeaker>> m_textOverrideSpeakerSteps{
@@ -63,6 +64,10 @@ private:
 	std::unordered_map<StepIndex, std::vector<ActionSpritePosition>> m_spritePositionSteps{
 		{ 1, std::vector<ActionSpritePosition>{{1, 700.0f, -100.0f, -1.0f, 1.0f}} }
 	};
+	
+	std::unordered_map<StepIndex, std::vector<ActionSpriteAnimation>> m_spriteAnimationSteps{
+		{ 3, std::vector<ActionSpriteAnimation>{ {1, {{2.5f, 300.0f, 100.0f, -1.0f, 1.0f}}} } }
+	};
 
 
 
@@ -77,6 +82,10 @@ private:
 	void handleStep(StateSubject* stateSubject, StepIndex stepIndex, std::unordered_map<StepIndex, std::vector<T>>& stepMap);
 
 	void doStep(StateSubject* stateSubject, int stepIndex);
+	void doSubStep(StateSubject* stateSubject, int stepIndex, int subStepIndex);
+
+	int countSteps();
+	int countSubsteps(int stepIndex);
 
 	// pre actions (transitions, animations, etc..)
 	// body actions (text, animations, etc..)
@@ -87,6 +96,7 @@ public:
 	ChapterNode(std::string tempData) : Node(tempData) {}
 
 	NodeState action(StateSubject* stateSubject, int stepIndex);
+	NodeState subAction(StateSubject* stateSubject, int stepIndex, int subStepIndex);
 
 public:
 	// Engine operations

@@ -39,7 +39,7 @@ private:
 
 	}
 
-	void drawText(std::wstring_view speaker, std::wstring_view text, glm::vec3 color) {
+	void drawText(std::wstring_view text, glm::vec3 color, float paddingBottom) {
 		//text = L"Hello, this is Garu. I've come from a far land. To meet brazazazaza.\n brazazaza Test Test Test how should line breaking work?";
 
 		m_textShader.use();
@@ -56,7 +56,6 @@ private:
 
 		float paddingLeft{ 300.0f };
 		float paddingRight{ 300.0f };
-		float paddingBottom{ 150.0f };
 		int lastConsumedIndex{ 0 };
 
 		while (lastConsumedIndex < text.length() - 1) {
@@ -101,9 +100,14 @@ public:
 	}
 
 	void pollAndDraw() {
-		drawText(m_stateSubject->m_textState.m_speakerName, 
-				 m_stateSubject->m_textState.m_line,
-				 m_stateSubject->m_textState.m_color);
+		if (m_stateSubject->m_textState.m_currentState != TextAction::EMPTY) {
+			drawText(m_stateSubject->m_textState.m_speakerName,
+				m_stateSubject->m_textState.m_color,
+				200.0f);
+			drawText(m_stateSubject->m_textState.m_line,
+					 m_stateSubject->m_textState.m_color,
+					 150.0f);
+		}
 	}
 };
 

@@ -21,7 +21,7 @@ void ChapterNode::handleStep(StateSubject *stateSubject, StepIndex stepIndex, st
 }
 
 void ChapterNode::doStep(StateSubject* stateSubject, int stepIndex) {
-	// execture every action in current iter step
+	// exectute every action in current iter step
 
 	// TODO: NEEDS EXCEPTION HANDLING FOR OUT OF RANGE m_steps, m_spriteSteps, etc..
 	// TODO: CAN GET RID OF THE m_steps AND CHECK EVERY HASH MAP WITH HANDLESTEP
@@ -38,6 +38,7 @@ void ChapterNode::doStep(StateSubject* stateSubject, int stepIndex) {
 			handleStep(stateSubject, stepIndex, m_spriteTextureSteps);
 			handleStep(stateSubject, stepIndex, m_spriteOpacitySteps);
 			handleStep(stateSubject, stepIndex, m_spritePositionSteps);
+			handleStep(stateSubject, stepIndex, m_spriteAnimationSteps);
 			break;
 		case ChapterNodeActionType::CHANGE_BACKGROUND:
 			handleStep(stateSubject, stepIndex, m_backgroundSteps);
@@ -50,11 +51,45 @@ void ChapterNode::doStep(StateSubject* stateSubject, int stepIndex) {
 	// notify called in state after iter step is called
 }
 
+int ChapterNode::countSteps() {
+
+	return 0;
+}
+
+int ChapterNode::countSubsteps(int stepIndex) {
+
+	return 0;
+}
+
+
+void ChapterNode::doSubStep(StateSubject* stateSubject, int stepIndex, int subStepIndex) {
+
+}
+
 NodeState ChapterNode::action(StateSubject* stateSubject, int stepIndex) 
 {
 	// TODO: Remove m_temp
 	//stateSubject->updateCurrentText("test speaker", m_temp);
 	std::cout << "test speaker" << " said: " << m_temp << std::endl;
+
+	if (stepIndex >= (m_steps.size())) {
+		return NodeState::NODE_END;
+	}
+	else if (stepIndex == (m_steps.size() - 1)) {
+		doStep(stateSubject, stepIndex);
+		return NodeState::NODE_END;
+	}
+	else {
+		doStep(stateSubject, stepIndex);
+		return NodeState::NODE_STEP;
+	}
+}
+
+NodeState ChapterNode::subAction(StateSubject* stateSubject, int stepIndex, int subStepIndex)
+{
+	// TODO: Remove m_temp
+	//stateSubject->updateCurrentText("test speaker", m_temp);
+	std::cout << "sub action" << std::endl;
 
 	if (stepIndex >= (m_steps.size())) {
 		return NodeState::NODE_END;

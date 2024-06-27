@@ -15,14 +15,14 @@ void SpriteLayer::drawSprite(SpriteState& spriteState) {
 	glm::mat4 model = glm::mat4(1.0f);
 	//model = glm::translate(model, glm::vec3((static_cast<float>(m_window->width()) / 2) - (static_cast<float>(texture->width()) / 2), 0.0f, 0.0f));
 	model = glm::translate(model,
-		glm::vec3(spriteState.m_xCoord * m_window->scale(),
-			spriteState.m_yCoord * m_window->scale(),
-			spriteState.m_zCoord));
+		glm::vec3(spriteState.m_position.m_xCoord * m_window->scale(),
+				  spriteState.m_position.m_yCoord * m_window->scale(),
+				  spriteState.m_position.m_zCoord));
 
 	std::cout << "scale to view port" << scale << std::endl;
-	std::cout << "scale to view port" << spriteState.m_xCoord << std::endl;
-	std::cout << "scale to view port" << spriteState.m_yCoord << std::endl;
-	std::cout << "scale to view port" << spriteState.m_zCoord << std::endl;
+	std::cout << "scale to view port" << spriteState.m_position.m_xCoord << std::endl;
+	std::cout << "scale to view port" << spriteState.m_position.m_yCoord << std::endl;
+	std::cout << "scale to view port" << spriteState.m_position.m_zCoord << std::endl;
 	model = glm::scale(model, glm::vec3(scale, scale, 0.0f));
 
 	unsigned int modelLocation = glGetUniformLocation(m_defaultShader.ID(), "inModel");
@@ -53,7 +53,7 @@ void SpriteLayer::pollAndDraw() {
 
 	StateSubject::spriteRenderMap::iterator iter;
 	for (iter = data.begin(); iter != data.end(); iter++) {
-		if (iter->second.m_texture != nullptr && iter->second.m_opacity > 0.0f) {
+		if (iter->second.m_texture != nullptr && iter->second.m_position.m_opacity > 0.0f) {
 			drawSprite(iter->second);
 		}
 	}
