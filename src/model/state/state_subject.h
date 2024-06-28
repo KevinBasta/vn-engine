@@ -40,7 +40,7 @@ private:
 	ChapterIterator iterator{ nullptr, 0 };
 	
 	// indicate that auto substeps (for animations) are present
-	bool m_inSubStep{ false };
+	bool m_activeAutoAction{ false };
 
 	// keeping record of what chioces were made for
 	// safe file node traversal
@@ -56,6 +56,12 @@ public:
 	}
 
 	void action() {
+		if (inAutoAction()) {
+			seekAutoActions();
+			clearAutoAction();
+			return;
+		}
+
 		iterator.step(this);
 
 		// if state delta not empty
@@ -63,16 +69,12 @@ public:
 		// then clear state delta
 	}
 
-	void setSubStep() { m_inSubStep = true; }
-	void clearSubStep() { m_inSubStep = false; }
-	bool isInSubStep() { return m_inSubStep; }
+	void setAutoAction() { m_activeAutoAction = true; }
+	void clearAutoAction() { m_activeAutoAction = false; }
+	bool inAutoAction() { return m_activeAutoAction; }
 
-	void subAction() {
-		iterator.subStep(this);
-	}
-
-	void tickSubStep(float timePassed);
-
+	void tickAutoActions(float timePassed);
+	void seekAutoActions();
 
 	void appendChapterChoice(int choiceIndex) {
 		chapterChoicesRecord.push_back(choiceIndex);
@@ -170,8 +172,9 @@ public:
 	// Characters
 	//
 	typedef int ID;
+	typedef int stepIndex;
 	typedef std::unordered_map<ID, SpriteState> spriteRenderMap;
-	typedef std::unordered_map<ID, ActionSpriteKeyframe> spriteAnimationGoal;
+	typedef std::unordered_map<ID, std::pair<stepIndex, ActionSpriteAnimation>> spriteAnimationGoal;
 	
 	spriteRenderMap m_spriteRenderData{};
 	spriteAnimationGoal m_spriteAnimationGoal{};
@@ -181,7 +184,7 @@ public:
 	void handle(ActionSpriteTexture& action);
 	void handle(ActionSpriteOpacity& action);
 	void handle(ActionSpritePosition& action);
-	void handle(int characterID, ActionSpriteKeyframe& action);
+	void handle(int characterID, ActionSpriteAnimation& action);
 
 public:
 	// Save specific state

@@ -80,12 +80,6 @@ public:
 
 		return ChapterState::CHAPTER_STEP;
 	}
-
-	ChapterState subStep(StateSubject* stateSubject) {
-		GraphState state = m_graphIter.subStep(stateSubject);
-
-		return ChapterState::CHAPTER_STEP;
-	}
 };
 
 

@@ -54,7 +54,7 @@ void StateSubject::handle(ActionSpritePosition& action) {
 	m_stateDelta.push_back(StateDelta::SPRITE);
 }
 
-void StateSubject::handle(int characterID, ActionSpriteKeyframe& action) 
+void StateSubject::handle(int characterID, ActionSpriteAnimation& action)
 {
 	std::cout << "substep handling" << std::endl;
 	std::cout << "substep handling" << std::endl;
@@ -62,27 +62,36 @@ void StateSubject::handle(int characterID, ActionSpriteKeyframe& action)
 	std::cout << "substep handling" << std::endl;
 	std::cout << "substep handling" << std::endl;
 	std::cout << "substep handling" << std::endl;
-	m_spriteAnimationGoal[characterID] = action;
+	setAutoAction();
+	m_spriteAnimationGoal[characterID] = std::pair{ 0, action };
 
 }
 
-void StateSubject::tickSubStep(float timePassed) {
+void StateSubject::tickAutoActions(float timePassed) {
 	// proof of concept for character animation
-	
-	float fractionOfTimePassed = m_spriteAnimationGoal[1].m_transitionSeconds - timePassed;
+	std::cout << "tick auto actions" << std::endl;
+	std::cout << timePassed << std::endl;
+	float fractionOfTimePassed = m_spriteAnimationGoal[1].second.m_steps[m_spriteAnimationGoal[1].first].m_transitionSeconds / timePassed;
 
 	float currentX = m_spriteRenderData[1].m_position.m_xCoord;
-	float goalX = m_spriteAnimationGoal[1].m_xCoord;
+	float goalX = m_spriteAnimationGoal[1].second.m_steps[m_spriteAnimationGoal[1].first].m_xCoord;
+
+	std::cout << "x add: " << (std::max(currentX, goalX) - std::min(currentX, goalX)) / fractionOfTimePassed << std::endl;
 
 	m_spriteRenderData[1].m_position.m_xCoord += (std::max(currentX, goalX) - std::min(currentX, goalX)) / fractionOfTimePassed;
 
-	m_spriteAnimationGoal[1].m_transitionSeconds -= fractionOfTimePassed;
+	m_spriteAnimationGoal[1].second.m_steps[m_spriteAnimationGoal[1].first].m_transitionSeconds -= timePassed;
 
-	if (m_spriteRenderData[1].m_position.m_xCoord == m_spriteAnimationGoal[1].m_xCoord) {
-		clearSubStep();
+	if (m_spriteRenderData[1].m_position.m_xCoord >= m_spriteAnimationGoal[1].second.m_steps[m_spriteAnimationGoal[1].first].m_xCoord) {
+		clearAutoAction();
 	}
 }
 
+
+void StateSubject::seekAutoActions() {
+	// Go to end of all auto actions
+
+}
 
 //struct ActionSpriteKeyframe {
 //	float m_transitionSeconds{ 0.0f };

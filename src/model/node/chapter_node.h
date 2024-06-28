@@ -64,11 +64,11 @@ private:
 	// set at a specific z index (or setable by user) then the rest of the z > than that 
 	// is usable for sprites?
 	std::unordered_map<StepIndex, std::vector<ActionSpritePosition>> m_spritePositionSteps{
-		{ 1, std::vector<ActionSpritePosition>{{1, 700.0f, -100.0f, -1.0f, 1.0f}} }
+		{ 1, std::vector<ActionSpritePosition>{{1, 100.0f, -100.0f, -1.0f, 1.0f}} }
 	};
 	
 	std::unordered_map<StepIndex, std::vector<ActionSpriteAnimation>> m_spriteAnimationSteps{
-		{ 2, std::vector<ActionSpriteAnimation>{ {1, {{2.5f, 300.0f, 100.0f, -1.0f, 1.0f}}} } }
+		{ 2, std::vector<ActionSpriteAnimation>{ {1, {{0.5f, 1000.0f, 100.0f, -1.0f, 1.0f}}} } }
 	};
 
 
@@ -86,9 +86,8 @@ private:
 	
 
 	template <class T>
-	bool handleSubStep(StateSubject* stateSubject, StepIndex stepIndex, SubStepIndex subStepIndex, std::unordered_map<StepIndex, std::vector<T>>& stepMap);
-	bool handeSubStepSpecialized(StateSubject* stateSubject, ActionSpriteAnimation& action, SubStepIndex subStepIndex);
-	bool doSubStep(StateSubject* stateSubject, int stepIndex, int subStepIndex);
+	bool handleSubStep(StateSubject* stateSubject, StepIndex stepIndex, std::unordered_map<StepIndex, std::vector<T>>& stepMap);
+	bool handeSubStepSpecialized(StateSubject* stateSubject, ActionSpriteAnimation& action);
 	
 
 	//template <class T>

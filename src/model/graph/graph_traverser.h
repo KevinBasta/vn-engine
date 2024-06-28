@@ -56,16 +56,6 @@ public:
 		return GraphState::GRAPH_STEP;
 	}
 
-	GraphState subStep(StateSubject* stateSubject) {
-		if (m_curGraphState == GraphState::GRAPH_END) {
-			return m_curGraphState;
-		}
-
-		NodeState subStepResult = m_nodeIterator.subStep(stateSubject);
-
-		return GraphState::GRAPH_STEP;
-	}
-
 	/*void jumpToNode(int nodeId) {
 		Node* node{ m_curGraph->getNodeById(nodeId) };
 

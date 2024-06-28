@@ -71,7 +71,7 @@ public:
 	// std::vector<std::unique_ptr<Node>>& getChildren() { return m_children; }
 
 	virtual NodeState action(StateSubject* stateSubject, int stepIndex) = 0;
-	virtual NodeState subAction(StateSubject* stateSubject, int stepIndex, int subStepIndex) = 0;
+
 	//{
 		// pre
 		// ret = theaction();

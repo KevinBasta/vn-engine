@@ -54,6 +54,7 @@ bool ChapterNode::doStep(StateSubject* stateSubject, int stepIndex) {
 	stepExists |= handleStep(stateSubject, stepIndex, m_spriteTextureSteps);
 	stepExists |= handleStep(stateSubject, stepIndex, m_spriteOpacitySteps);
 	stepExists |= handleStep(stateSubject, stepIndex, m_spritePositionSteps);
+	stepExists |= handleSubStep(stateSubject, stepIndex, m_spriteAnimationSteps);
 	
 	stepExists |= handleStep(stateSubject, stepIndex, m_backgroundSteps);
 	
@@ -68,28 +69,20 @@ bool ChapterNode::doStep(StateSubject* stateSubject, int stepIndex) {
 // Bool return indicates if a substep occured 
 //
 
-bool ChapterNode::handeSubStepSpecialized(StateSubject* stateSubject, ActionSpriteAnimation& action, SubStepIndex subStepIndex) {
-
-	bool hasSubStep{ false };
-
+bool ChapterNode::handeSubStepSpecialized(StateSubject* stateSubject, ActionSpriteAnimation& action) {
 	if (stateSubject == nullptr) {
-		return hasSubStep;
+		return false;
 	}
 
-	if (subStepIndex > 0 && subStepIndex < action.m_steps.size()) {
-		hasSubStep = true;
-		stateSubject->setSubStep();
-		stateSubject->handle(action.m_characterID, action.m_steps[subStepIndex]);
-	}
+	stateSubject->handle(action.m_characterID, action);
 
-	return hasSubStep;
+	return true;
 }
 
 
 template <class T>
 bool ChapterNode::handleSubStep(StateSubject* stateSubject, 
 							    StepIndex stepIndex, 
-								SubStepIndex subStepIndex, 
 								std::unordered_map<StepIndex, std::vector<T>>& stepMap)
 {
 	bool hasSubStep{ false };
@@ -107,7 +100,7 @@ bool ChapterNode::handleSubStep(StateSubject* stateSubject,
 		// Execute all the actions within the step
 		for (action = stepLocation->second.begin(); action < stepLocation->second.end(); action++)
 		{
-			bool subStepExecuted = handeSubStepSpecialized(stateSubject, *action, subStepIndex);
+			bool subStepExecuted = handeSubStepSpecialized(stateSubject, *action);
 
 			if (subStepExecuted) {
 				hasSubStep = true;
@@ -117,21 +110,6 @@ bool ChapterNode::handleSubStep(StateSubject* stateSubject,
 
 	return hasSubStep;
 }
-
-
-bool ChapterNode::doSubStep(StateSubject* stateSubject, int stepIndex, int subStepIndex) {
-	bool subStepExists{ false };
-
-	if (stateSubject == nullptr) {
-		return subStepExists;
-	}
-
-	subStepExists |= handleSubStep(stateSubject, stepIndex, subStepIndex, m_spriteAnimationSteps);
-
-	return subStepExists;
-}
-
-
 
 
 
@@ -149,16 +127,4 @@ NodeState ChapterNode::action(StateSubject* stateSubject, int stepIndex)
 	}
 
 	return NodeState::NODE_END;
-}
-
-NodeState ChapterNode::subAction(StateSubject* stateSubject, int stepIndex, int subStepIndex)
-{
-	std::cout << "sub action" << std::endl;
-	bool subStepDone = doSubStep(stateSubject, stepIndex, subStepIndex);
-
-	if (subStepDone) {
-		return NodeState::NODE_SUBSTEP;
-	}
-
-	return NodeState::NODE_SUBSTEP_END;
 }

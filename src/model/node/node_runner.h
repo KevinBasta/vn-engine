@@ -15,7 +15,6 @@ class NodeRunner {
 private:
 	Node* m_node{ nullptr };
 	int m_currentStep{ 0 };
-	NodeSubStepRunner m_subStepRunner{ nullptr, 0 };
 	NodeState m_latestAction{ NodeState::NODE_NOT_STARTED };
 
 public:
@@ -33,23 +32,7 @@ public:
 		}
 
 		m_latestAction = m_node->action(stateSubject, m_currentStep);
-		
-		m_subStepRunner = NodeSubStepRunner{ m_node, m_currentStep };
-		NodeState subStepState = m_subStepRunner.subStep(stateSubject);
-
-		// should still increment when substep? might cause issues
 		m_currentStep++;
-
-
-		return m_latestAction;
-	}
-
-	NodeState subStep(StateSubject* stateSubject) {
-		if (m_latestAction == NodeState::NODE_SUBSTEP_END) {
-			return m_latestAction;
-		}
-		
-		m_latestAction = m_subStepRunner.subStep(stateSubject);
 
 		return m_latestAction;
 	}
