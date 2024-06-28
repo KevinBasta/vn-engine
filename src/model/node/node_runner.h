@@ -1,6 +1,7 @@
 #ifndef VN_NODE_ITERATOR_H
 #define VN_NODE_ITERATOR_H
 
+#include "node_substep_runner.h"
 #include "node.h"
 
 // Circular dependancy resolutions:
@@ -14,7 +15,7 @@ class NodeRunner {
 private:
 	Node* m_node{ nullptr };
 	int m_currentStep{ 0 };
-	int m_currentSubStep{ 0 };
+	NodeSubStepRunner m_subStepRunner{ nullptr, 0 };
 	NodeState m_latestAction{ NodeState::NODE_NOT_STARTED };
 
 public:
@@ -35,15 +36,7 @@ public:
 	}
 
 	NodeState subStep(StateSubject* stateSubject) {
-		if (m_latestAction == NodeState::NODE_END) {
-			return m_latestAction;
-		}
-
-		m_latestAction = m_node->subAction(stateSubject, m_currentStep, m_currentSubStep);
-		m_currentStep++;
-		m_currentSubStep++;
-
-		return m_latestAction;
+		
 	}
 };
 

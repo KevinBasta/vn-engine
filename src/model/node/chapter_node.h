@@ -82,13 +82,13 @@ private:
 
 	template <class T>
 	bool handleStep(StateSubject* stateSubject, StepIndex stepIndex, std::unordered_map<StepIndex, std::vector<T>>& stepMap);
-
 	bool doStep(StateSubject* stateSubject, int stepIndex);
 	
 
 	template <class T>
 	bool handleSubStep(StateSubject* stateSubject, StepIndex stepIndex, SubStepIndex subStepIndex, std::unordered_map<StepIndex, std::vector<T>>& stepMap);
-	void doSubStep(StateSubject* stateSubject, int stepIndex, int subStepIndex);
+	bool handeSubStepSpecialized(StateSubject* stateSubject, ActionSpriteAnimation& action, SubStepIndex subStepIndex);
+	bool doSubStep(StateSubject* stateSubject, int stepIndex, int subStepIndex);
 	
 
 	//template <class T>

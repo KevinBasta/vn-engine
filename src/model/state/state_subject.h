@@ -61,9 +61,22 @@ public:
 		// then clear state delta
 	}
 
+private:
 	// indicate that auto substeps (for animations) are present
-	bool inSubStep{ false };
+	bool m_inSubStep{ false };
 
+public:
+	void setSubStep() {
+		m_inSubStep = true;
+	}
+
+	void clearSubStep() {
+		m_inSubStep = false;
+	}
+
+	void subAction() {
+		iterator.subStep(this);
+	}
 
 
 public:
@@ -215,7 +228,7 @@ public:
 		m_stateDelta.push_back(StateDelta::SPRITE);
 	}
 
-	void handle(ActionSpriteAnimation& action) {
+	void handle(int characterID, ActionSpriteKeyframe& action) {
 
 	}
 

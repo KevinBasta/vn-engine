@@ -30,7 +30,7 @@ struct ActionSpritePosition {
 	float m_scale	{ 1.0f };
 };
 
-struct ActionSpriteKeyframes {
+struct ActionSpriteKeyframe {
 	float m_transitionSeconds{ 0.0f };
 
 	float m_xCoord{ 0.0f };
@@ -43,7 +43,7 @@ struct ActionSpriteKeyframes {
 struct ActionSpriteAnimation {
 	int m_characterID{ 0 };
 
-	std::vector<ActionSpriteKeyframes> m_steps{};
+	std::vector<ActionSpriteKeyframe> m_steps{};
 };
 
 

@@ -56,6 +56,10 @@ public:
 		return GraphState::GRAPH_STEP;
 	}
 
+	GraphState subStep(StateSubject* stateSubject) {
+
+	}
+
 	/*void jumpToNode(int nodeId) {
 		Node* node{ m_curGraph->getNodeById(nodeId) };
 
