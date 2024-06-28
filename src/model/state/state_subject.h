@@ -36,18 +36,20 @@ struct SceneCameraData {
 class StateSubject : public Subject {
 private:
 	ModelSubject* m_model{};
-
-public:
-	StateSubject(ModelSubject* modelSubject) : m_model{ modelSubject } {}
-	~StateSubject() {}
-
-public:
 	Chapter* currentChapter{ nullptr };
 	ChapterIterator iterator{ nullptr, 0 };
+	
+	// indicate that auto substeps (for animations) are present
+	bool m_inSubStep{ false };
 
 	// keeping record of what chioces were made for
 	// safe file node traversal
 	std::vector<int> chapterChoicesRecord{};
+
+
+public:
+	StateSubject(ModelSubject* modelSubject) : m_model{ modelSubject } {}
+	~StateSubject() {}
 
 	void initIterator(ChapterIterator chapterIterator) {
 		iterator = chapterIterator;
@@ -61,21 +63,19 @@ public:
 		// then clear state delta
 	}
 
-private:
-	// indicate that auto substeps (for animations) are present
-	bool m_inSubStep{ false };
-
-public:
-	void setSubStep() {
-		m_inSubStep = true;
-	}
-
-	void clearSubStep() {
-		m_inSubStep = false;
-	}
+	void setSubStep() { m_inSubStep = true; }
+	void clearSubStep() { m_inSubStep = false; }
+	bool isInSubStep() { return m_inSubStep; }
 
 	void subAction() {
 		iterator.subStep(this);
+	}
+
+	void tickSubStep(float timePassed);
+
+
+	void appendChapterChoice(int choiceIndex) {
+		chapterChoicesRecord.push_back(choiceIndex);
 	}
 
 
@@ -171,66 +171,17 @@ public:
 	//
 	typedef int ID;
 	typedef std::unordered_map<ID, SpriteState> spriteRenderMap;
+	typedef std::unordered_map<ID, ActionSpriteKeyframe> spriteAnimationGoal;
 	
 	spriteRenderMap m_spriteRenderData{};
+	spriteAnimationGoal m_spriteAnimationGoal{};
+	spriteRenderMap& getSpriteRenderData() { return m_spriteRenderData; }
+	void initCharacterData();
 
-	spriteRenderMap& getSpriteRenderData() {
-		return m_spriteRenderData;
-	}
-
-	void initCharacterData() {
-		const ModelSubject::characterMap& characterMap = m_model->getCharacters();
-
-		for (auto iter = characterMap.begin(); iter != characterMap.end(); iter++) {
-			m_spriteRenderData[iter->first] = SpriteState{};
-		}
-	}
-
-	void handle(ActionSpriteTexture& action) {
-		try {
-			SpriteState& state = m_spriteRenderData.at(action.m_characterID);
-			
-			// TODO: further null and err checks needed
-			state.m_texture = m_model->getCharacterByID(action.m_characterID)->getTexture(action.m_textureIndex);
-		}
-		catch (std::out_of_range) {
-			std::cerr << "ActionSpriteTexture::out_of_range" << std::endl;
-		}
-
-		m_stateDelta.push_back(StateDelta::SPRITE);
-	}
-
-	void handle(ActionSpriteOpacity& action) {
-		try {
-			SpriteState& state = m_spriteRenderData.at(action.m_characterID);
-			state.m_position.m_opacity = action.m_opacity;
-		}
-		catch (std::out_of_range) {
-			std::cerr << "ActionSpriteOpacity::out_of_range" << std::endl;
-		}
-		
-		m_stateDelta.push_back(StateDelta::SPRITE);
-	}
-
-	void handle(ActionSpritePosition& action) {
-		try {
-			SpriteState& state = m_spriteRenderData.at(action.m_characterID);
-
-			state.m_position.m_xCoord = action.m_xCoord;
-			state.m_position.m_yCoord = action.m_yCoord;
-			state.m_position.m_zCoord = action.m_zCoord;
-			state.m_position.m_scale = action.m_scale;
-		}
-		catch (std::out_of_range) {
-			std::cerr << "ActionSpritePosition::out_of_range" << std::endl;
-		}
-
-		m_stateDelta.push_back(StateDelta::SPRITE);
-	}
-
-	void handle(int characterID, ActionSpriteKeyframe& action) {
-
-	}
+	void handle(ActionSpriteTexture& action);
+	void handle(ActionSpriteOpacity& action);
+	void handle(ActionSpritePosition& action);
+	void handle(int characterID, ActionSpriteKeyframe& action);
 
 public:
 	// Save specific state

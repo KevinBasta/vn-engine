@@ -27,16 +27,31 @@ public:
 		if (m_latestAction == NodeState::NODE_END) {
 			return m_latestAction;
 		}
-		
-		// TODO: nullptr handling
+
+		if (m_node == nullptr || stateSubject == nullptr) {
+			return m_latestAction;
+		}
+
 		m_latestAction = m_node->action(stateSubject, m_currentStep);
+		
+		m_subStepRunner = NodeSubStepRunner{ m_node, m_currentStep };
+		NodeState subStepState = m_subStepRunner.subStep(stateSubject);
+
+		// should still increment when substep? might cause issues
 		m_currentStep++;
+
 
 		return m_latestAction;
 	}
 
 	NodeState subStep(StateSubject* stateSubject) {
+		if (m_latestAction == NodeState::NODE_SUBSTEP_END) {
+			return m_latestAction;
+		}
 		
+		m_latestAction = m_subStepRunner.subStep(stateSubject);
+
+		return m_latestAction;
 	}
 };
 

@@ -2,6 +2,7 @@
 #define VN_STATE_TYPES_H
 
 #include "texture.h"
+#include "chapter_node_types.h"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>

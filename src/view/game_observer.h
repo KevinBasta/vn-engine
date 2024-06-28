@@ -60,11 +60,13 @@ public:
 				m_rerenderContext = true;
 			}
 
-			if (m_rerenderContext) {
-			
+			if (m_rerenderContext || m_stateSubject->isInSubStep()) {
 				glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 				glClear(GL_COLOR_BUFFER_BIT);
-				
+
+				if (m_stateSubject->isInSubStep()) {
+					m_stateSubject->tickSubStep(deltaTime);
+				}
 
 				m_context.draw();
 

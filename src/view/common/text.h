@@ -113,7 +113,7 @@ public:
 			endIndex++;
 		}
 
-		std::cout << "End index: " << endIndex << " " << std::endl;
+		//std::cout << "End index: " << endIndex << " " << std::endl;
 
 		return endIndex;
 	}

@@ -85,7 +85,7 @@ private:
 			lastConsumedIndex = endIndex;
 
 			paddingBottom -= 50.0f;
-			std::cout << "Next start index: " << lastConsumedIndex << std::endl;
+			//std::cout << "Next start index: " << lastConsumedIndex << std::endl;
 		}
 
 

@@ -19,10 +19,10 @@ void SpriteLayer::drawSprite(SpriteState& spriteState) {
 				  spriteState.m_position.m_yCoord * m_window->scale(),
 				  spriteState.m_position.m_zCoord));
 
-	std::cout << "scale to view port" << scale << std::endl;
-	std::cout << "scale to view port" << spriteState.m_position.m_xCoord << std::endl;
-	std::cout << "scale to view port" << spriteState.m_position.m_yCoord << std::endl;
-	std::cout << "scale to view port" << spriteState.m_position.m_zCoord << std::endl;
+	//std::cout << "scale to view port" << scale << std::endl;
+	//std::cout << "scale to view port" << spriteState.m_position.m_xCoord << std::endl;
+	//std::cout << "scale to view port" << spriteState.m_position.m_yCoord << std::endl;
+	//std::cout << "scale to view port" << spriteState.m_position.m_zCoord << std::endl;
 	model = glm::scale(model, glm::vec3(scale, scale, 0.0f));
 
 	unsigned int modelLocation = glGetUniformLocation(m_defaultShader.ID(), "inModel");
