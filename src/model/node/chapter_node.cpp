@@ -54,65 +54,14 @@ bool ChapterNode::doStep(StateSubject* stateSubject, int stepIndex) {
 	stepExists |= handleStep(stateSubject, stepIndex, m_spriteTextureSteps);
 	stepExists |= handleStep(stateSubject, stepIndex, m_spriteOpacitySteps);
 	stepExists |= handleStep(stateSubject, stepIndex, m_spritePositionSteps);
-	stepExists |= handleSubStep(stateSubject, stepIndex, m_spriteAnimationSteps);
+	stepExists |= handleStep(stateSubject, stepIndex, m_spriteAnimationSteps);
+	//stepExists |= handleStep(stateSubject, stepIndex, m_spriteGenericAnimationSteps);
 	
 	stepExists |= handleStep(stateSubject, stepIndex, m_backgroundSteps);
 	
 	return stepExists;
 	// Notify called in state after iter step is called
 }
-
-
-
-//
-// Substep handling
-// Bool return indicates if a substep occured 
-//
-
-bool ChapterNode::handeSubStepSpecialized(StateSubject* stateSubject, ActionSpriteAnimation& action) {
-	if (stateSubject == nullptr) {
-		return false;
-	}
-
-	stateSubject->handle(action.m_characterID, action);
-
-	return true;
-}
-
-
-template <class T>
-bool ChapterNode::handleSubStep(StateSubject* stateSubject, 
-							    StepIndex stepIndex, 
-								std::unordered_map<StepIndex, std::vector<T>>& stepMap)
-{
-	bool hasSubStep{ false };
-
-	if (stateSubject == nullptr) {
-		return hasSubStep;
-	}
-
-	class std::unordered_map<StepIndex, std::vector<T>>::iterator stepLocation = stepMap.find(stepIndex);
-
-	// Check if the step exsists for this type of action
-	if (stepLocation != stepMap.end()) {
-		class std::vector<T>::iterator action;
-
-		// Execute all the actions within the step
-		for (action = stepLocation->second.begin(); action < stepLocation->second.end(); action++)
-		{
-			bool subStepExecuted = handeSubStepSpecialized(stateSubject, *action);
-
-			if (subStepExecuted) {
-				hasSubStep = true;
-			}
-		}
-	}
-
-	return hasSubStep;
-}
-
-
-
 
 
 NodeState ChapterNode::action(StateSubject* stateSubject, int stepIndex) 

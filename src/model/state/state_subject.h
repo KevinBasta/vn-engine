@@ -57,8 +57,9 @@ public:
 
 	void action() {
 		if (inAutoAction()) {
-			seekAutoActions();
+			endAutoActions();
 			clearAutoAction();
+			notify();
 			return;
 		}
 
@@ -74,7 +75,7 @@ public:
 	bool inAutoAction() { return m_activeAutoAction; }
 
 	void tickAutoActions(float timePassed);
-	void seekAutoActions();
+	void endAutoActions();
 
 	void appendChapterChoice(int choiceIndex) {
 		chapterChoicesRecord.push_back(choiceIndex);
@@ -174,17 +175,18 @@ public:
 	typedef int ID;
 	typedef int stepIndex;
 	typedef std::unordered_map<ID, SpriteState> spriteRenderMap;
-	typedef std::unordered_map<ID, std::pair<stepIndex, ActionSpriteAnimation>> spriteAnimationGoal;
+	typedef std::list<std::pair<stepIndex, ActionSpriteAnimation>> activeSpriteAnimations;
 	
 	spriteRenderMap m_spriteRenderData{};
-	spriteAnimationGoal m_spriteAnimationGoal{};
+	activeSpriteAnimations m_activeSpriteAnimations{};
 	spriteRenderMap& getSpriteRenderData() { return m_spriteRenderData; }
 	void initCharacterData();
 
 	void handle(ActionSpriteTexture& action);
 	void handle(ActionSpriteOpacity& action);
 	void handle(ActionSpritePosition& action);
-	void handle(int characterID, ActionSpriteAnimation& action);
+	void handle(ActionSpriteAnimation action);
+	bool tick(std::pair<stepIndex, ActionSpriteAnimation>& action, float timePassed);
 
 public:
 	// Save specific state

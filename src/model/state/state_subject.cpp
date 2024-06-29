@@ -54,43 +54,102 @@ void StateSubject::handle(ActionSpritePosition& action) {
 	m_stateDelta.push_back(StateDelta::SPRITE);
 }
 
-void StateSubject::handle(int characterID, ActionSpriteAnimation& action)
+void StateSubject::handle(ActionSpriteAnimation action)
 {
 	std::cout << "substep handling" << std::endl;
-	std::cout << "substep handling" << std::endl;
-	std::cout << "substep handling" << std::endl;
-	std::cout << "substep handling" << std::endl;
-	std::cout << "substep handling" << std::endl;
-	std::cout << "substep handling" << std::endl;
-	setAutoAction();
-	m_spriteAnimationGoal[characterID] = std::pair{ 0, action };
 
+	setAutoAction();
+	m_activeSpriteAnimations.push_back(std::pair{ 0, action });
+}
+
+// return true if animation is done, false otherwise
+bool StateSubject::tick(std::pair<stepIndex, ActionSpriteAnimation>& action, float timePassed) {
+	auto& currentAction { action.second.m_steps[action.first] };
+	auto& characterState{ m_spriteRenderData[action.second.m_characterID] };
+
+	float fractionOfTimePassed = currentAction.m_transitionSeconds / timePassed;
+
+	float currentX = characterState.m_position.m_xCoord;
+	float goalX = currentAction.m_xCoord;
+
+	float delta = (std::max(currentX, goalX) - std::min(currentX, goalX)) / fractionOfTimePassed;
+	//std::cout << "delta: " << delta << std::endl;
+
+	if (currentX < goalX) {
+		characterState.m_position.m_xCoord += delta;
+	}
+	else {
+		characterState.m_position.m_xCoord -= delta;
+	}
+
+	currentAction.m_transitionSeconds -= timePassed;
+
+	std::cout << "abs: " << std::abs(characterState.m_position.m_xCoord - currentAction.m_xCoord) << std::endl;
+	if (std::abs(characterState.m_position.m_xCoord - currentAction.m_xCoord) <= 5.0f) {
+		characterState.m_position.m_xCoord = currentAction.m_xCoord;
+		if (action.second.m_steps.size() - 1 < action.first + 1) {
+			return true;
+		}
+		else {
+			action.first++;
+		}
+	}
+
+	return false;
 }
 
 void StateSubject::tickAutoActions(float timePassed) {
 	// proof of concept for character animation
-	std::cout << "tick auto actions" << std::endl;
-	std::cout << timePassed << std::endl;
-	float fractionOfTimePassed = m_spriteAnimationGoal[1].second.m_steps[m_spriteAnimationGoal[1].first].m_transitionSeconds / timePassed;
+	//std::cout << "tick auto actions" << std::endl;
+	//std::cout << timePassed << std::endl;
+	bool anyActive{ false };
 
-	float currentX = m_spriteRenderData[1].m_position.m_xCoord;
-	float goalX = m_spriteAnimationGoal[1].second.m_steps[m_spriteAnimationGoal[1].first].m_xCoord;
+	for (auto animation{ m_activeSpriteAnimations.begin() }; animation != m_activeSpriteAnimations.end(); animation++) {
+		bool done = tick(*animation, timePassed);
+		
+		if (done) {
+			// Iterator invalidated when item erased, so go to next item
+			animation = m_activeSpriteAnimations.erase(animation);
+			if (animation == m_activeSpriteAnimations.end()) {
+				break;
+			}
+		}
+		else {
+			anyActive = true;
+		}
+	}
+	
+	//m_spriteRenderData[1].m_position.m_xCoord += (std::max(currentX, goalX) - std::min(currentX, goalX)) / fractionOfTimePassed;
 
-	std::cout << "x add: " << (std::max(currentX, goalX) - std::min(currentX, goalX)) / fractionOfTimePassed << std::endl;
+	//m_spriteAnimationGoal[1].second.m_steps[m_spriteAnimationGoal[1].first].m_transitionSeconds -= timePassed;
 
-	m_spriteRenderData[1].m_position.m_xCoord += (std::max(currentX, goalX) - std::min(currentX, goalX)) / fractionOfTimePassed;
-
-	m_spriteAnimationGoal[1].second.m_steps[m_spriteAnimationGoal[1].first].m_transitionSeconds -= timePassed;
-
-	if (m_spriteRenderData[1].m_position.m_xCoord >= m_spriteAnimationGoal[1].second.m_steps[m_spriteAnimationGoal[1].first].m_xCoord) {
+	if (anyActive == false) {
 		clearAutoAction();
+		// increase the spriteanimalgoal.first
+		// if that step does not exist, delete this auto action.
+		// check if any auto actions ran this tick. If none, then clear the auto action.
 	}
 }
 
 
-void StateSubject::seekAutoActions() {
+void StateSubject::endAutoActions() {
 	// Go to end of all auto actions
+	for (auto animation{ m_activeSpriteAnimations.begin() }; animation != m_activeSpriteAnimations.end(); animation++) {
+		auto action = *animation;
+		
+		auto& characterState{ m_spriteRenderData[action.second.m_characterID] };
 
+		for (int i{ action.first }; i < action.second.m_steps.size(); i++) {
+			auto& currentAction{ action.second.m_steps[i] };
+			characterState.m_position.m_xCoord = currentAction.m_xCoord;
+			std::cout << characterState.m_position.m_xCoord << std::endl;;
+		}
+
+		animation = m_activeSpriteAnimations.erase(animation);
+		if (animation == m_activeSpriteAnimations.end()) {
+			break;
+		}
+	}
 }
 
 //struct ActionSpriteKeyframe {

@@ -10,7 +10,16 @@
 
 //
 // Sprite Actions
-// 
+//
+enum class SpriteProperty {
+	NONE,
+	XPOS,
+	YPOS,
+	ZPOS,
+	SCALE,
+	OPACITY
+};
+
 struct ActionSpriteOpacity {
 	int m_characterID{ 0 };
 	float m_opacity{ 0.0f };
@@ -30,6 +39,12 @@ struct ActionSpritePosition {
 	float m_scale	{ 1.0f };
 };
 
+
+
+// Have separate ones for different values? 
+// like ActionSpriteAnimationX for moving the x axis?
+// allows for decoupling of the m_transitionSeconds
+// but increased objects significantly
 struct ActionSpriteKeyframe {
 	float m_transitionSeconds{ 0.0f };
 
@@ -44,6 +59,19 @@ struct ActionSpriteAnimation {
 	int m_characterID{ 0 };
 
 	std::vector<ActionSpriteKeyframe> m_steps{};
+};
+
+
+struct ActionSpriteKeyframeGeneric {
+	float m_transitionSeconds{ 0.0f };
+	float m_value{ 0.0f };
+};
+
+struct ActionSpriteAnimationGeneric {
+	int m_characterID{ 0 };
+	SpriteProperty m_stepType{ SpriteProperty::NONE };
+
+	std::vector<ActionSpriteKeyframeGeneric> m_steps{};
 };
 
 
