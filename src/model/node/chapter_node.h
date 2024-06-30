@@ -70,9 +70,9 @@ private:
 		{ 1, std::vector<ActionSpritePosition>{{1, 100.0f, -100.0f, -1.0f, 1.0f}} }
 	};
 	
-	std::unordered_map<StepIndex, std::vector<ActionSpriteAnimation>> m_spriteAnimationSteps{
-		{ 2, std::vector<ActionSpriteAnimation>{ {1, {{0.5f, 1000.0f, 100.0f, -1.0f, 1.0f}, {0.5f, 10.0f, 100.0f, -1.0f, 1.0f}}} } }
-	};
+	/*std::unordered_map<StepIndex, std::vector<ActionSpriteAnimation>> m_spriteAnimationSteps{
+		{ 2, std::vector<ActionSpriteAnimation>{ {1, {{0.5f, 100.0f, 100.0f, -1.0f, 1.0f}, {0.5f, 10.0f, 100.0f, -1.0f, 1.0f}}} } }
+	};*/
 	
 	std::unordered_map<StepIndex, std::vector<ActionSpriteAnimationGeneric>> m_spriteGenericAnimationSteps {
 		{ 2, std::vector<ActionSpriteAnimationGeneric>{ {1, SpriteProperty::XPOS, {{0.5f, 1000.0f}, {1.0f, 10.0f}} },

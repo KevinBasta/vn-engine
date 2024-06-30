@@ -175,18 +175,20 @@ public:
 	typedef int ID;
 	typedef int stepIndex;
 	typedef std::unordered_map<ID, SpriteState> spriteRenderMap;
-	typedef std::list<std::pair<stepIndex, ActionSpriteAnimation>> activeSpriteAnimations;
+	typedef std::list<std::pair<stepIndex, ActionSpriteAnimationGeneric>> activeSpriteAnimationsMap;
 	
 	spriteRenderMap m_spriteRenderData{};
-	activeSpriteAnimations m_activeSpriteAnimations{};
+	activeSpriteAnimationsMap m_activeSpriteAnimations{};
 	spriteRenderMap& getSpriteRenderData() { return m_spriteRenderData; }
 	void initCharacterData();
 
 	void handle(ActionSpriteTexture& action);
 	void handle(ActionSpriteOpacity& action);
 	void handle(ActionSpritePosition& action);
-	void handle(ActionSpriteAnimation action);
-	bool tick(std::pair<stepIndex, ActionSpriteAnimation>& action, float timePassed);
+	void handle(ActionSpriteAnimationGeneric& action);
+	bool tickSpriteAnimations(float timePassed);
+	bool tick(float& characterValue, std::pair<stepIndex, ActionSpriteAnimationGeneric>& animation, float timePassed);
+	bool endSpriteAnimations();
 
 public:
 	// Save specific state

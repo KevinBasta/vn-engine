@@ -43,6 +43,8 @@ private:
 	void drawText(std::wstring_view text, glm::vec3 color, float paddingBottom) {
 		//text = L"Hello, this is Garu. I've come from a far land. To meet brazazazaza.\n brazazaza Test Test Test how should line breaking work?";
 
+		// TODO: gracefully handle empty text variable. A crash occurs in that case at the moment.
+
 		m_textShader.use();
 		
 		glUniform3f(glGetUniformLocation(m_textShader.ID(), "inTextColor"), color.x, color.y, color.z);

@@ -54,8 +54,8 @@ bool ChapterNode::doStep(StateSubject* stateSubject, int stepIndex) {
 	stepExists |= handleStep(stateSubject, stepIndex, m_spriteTextureSteps);
 	stepExists |= handleStep(stateSubject, stepIndex, m_spriteOpacitySteps);
 	stepExists |= handleStep(stateSubject, stepIndex, m_spritePositionSteps);
-	stepExists |= handleStep(stateSubject, stepIndex, m_spriteAnimationSteps);
-	//stepExists |= handleStep(stateSubject, stepIndex, m_spriteGenericAnimationSteps);
+	//stepExists |= handleStep(stateSubject, stepIndex, m_spriteAnimationSteps);
+	stepExists |= handleStep(stateSubject, stepIndex, m_spriteGenericAnimationSteps);
 	
 	stepExists |= handleStep(stateSubject, stepIndex, m_backgroundSteps);
 	
