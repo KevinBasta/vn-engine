@@ -187,7 +187,7 @@ public:
 	void handle(ActionSpritePosition& action);
 	void handle(ActionSpriteAnimationGeneric& action);
 	bool tickSpriteAnimations(float timePassed);
-	bool tick(float& characterValue, std::pair<stepIndex, ActionSpriteAnimationGeneric>& animation, float timePassed);
+	bool tick(std::pair<stepIndex, ActionSpriteAnimationGeneric>& animation, float timePassed);
 	bool endSpriteAnimations();
 
 public:

@@ -64,7 +64,7 @@ void StateSubject::handle(ActionSpriteAnimationGeneric& action)
 
 
 // return true if animation is done, false otherwise
-bool StateSubject::tick(float& characterValue, std::pair<stepIndex, ActionSpriteAnimationGeneric>& animation, float timePassed) {
+bool StateSubject::tick(std::pair<stepIndex, ActionSpriteAnimationGeneric>& animation, float timePassed) {
 	if (animation.first > animation.second.m_steps.size() - 1) {
 		return true;
 	}
@@ -72,25 +72,44 @@ bool StateSubject::tick(float& characterValue, std::pair<stepIndex, ActionSprite
 	auto& animationStepIndex{ animation.first };
 	auto& currentAction{ animation.second.m_steps[animation.first] };
 
+	auto& characterState{ m_spriteRenderData[animation.second.m_characterID] };
+	float* currentValue{ nullptr };
+	float goalValue = (currentAction.m_value);
+
+	switch (animation.second.m_stepType) {
+		case (SpriteProperty::XPOS):
+			currentValue = &(characterState.m_position.m_xCoord);
+			break;
+		case (SpriteProperty::YPOS):
+			currentValue = &(characterState.m_position.m_yCoord);
+			break;
+		default:
+			break;
+	}
+
+	// End animation if the current value is a nullptr
+	if (currentValue == nullptr) {
+		return true;
+	}
+
 	float fractionOfTimePassed = currentAction.m_transitionSeconds / timePassed;
 
-	float currentX = characterValue;
-	float goalX = currentAction.m_value;
+	float delta = (std::max(*currentValue, goalValue) - std::min(*currentValue, goalValue)) / fractionOfTimePassed;
 
-	float delta = (std::max(currentX, goalX) - std::min(currentX, goalX)) / fractionOfTimePassed;
-
-	if (currentX < goalX) {
-		characterValue += delta;
+	if (*currentValue < goalValue) {
+		*currentValue += delta;
 	}
 	else {
-		characterValue -= delta;
+		*currentValue -= delta;
 	}
 
 	currentAction.m_transitionSeconds -= timePassed;
 
-	if (std::abs(characterValue - currentAction.m_value) <= 5.0f && currentAction.m_transitionSeconds < 0.001f) {
+	// If the character value state is close enough to the goal value and the transition seconds left is low
+	// Then set the character value state to teh goal state and set the goal to the next step or end the animation
+	if (std::abs(*currentValue - currentAction.m_value) <= 5.0f && currentAction.m_transitionSeconds < 0.001f) {
 		
-		characterValue = currentAction.m_value;
+		*currentValue = currentAction.m_value;
 		
 		if (animationStepIndex + 1 > animation.second.m_steps.size() - 1) {
 			return true;
@@ -108,33 +127,24 @@ bool StateSubject::tickSpriteAnimations(float timePassed) {
 	bool animationsActive{ false };
 
 	auto animation{ m_activeSpriteAnimations.begin() };
-	for (; animation != m_activeSpriteAnimations.end(); animation++) {
+	for (; animation != m_activeSpriteAnimations.end();) {
 		auto& obj{ *animation };
-		bool done{ false };
 		auto& characterState{ m_spriteRenderData[obj.second.m_characterID] };
 
-
-		switch (obj.second.m_stepType) {
-			case (SpriteProperty::XPOS):
-				done = tick(characterState.m_position.m_xCoord, obj, timePassed);
-				break;
-			case (SpriteProperty::YPOS):
-				done = tick(characterState.m_position.m_yCoord, obj, timePassed);
-				break;
-			default:
-				break;
-		}
+		bool done{ tick(obj, timePassed) };
 
 		if (done) {
 			// Iterator invalidated when item erased, so go to next item
-			// TODO: THIS MIGHT HAVE A BUG, CHECK RETURN OF ERASE
+			std::cout << "ERASED AN ENTRY" << std::endl;
 			animation = m_activeSpriteAnimations.erase(animation);
 			if (animation == m_activeSpriteAnimations.end()) {
 				break;
 			}
 		}
 		else {
+			// Go to next item manually
 			animationsActive = true;
+			animation++;
 		}
 	}
 
@@ -142,7 +152,7 @@ bool StateSubject::tickSpriteAnimations(float timePassed) {
 }
 
 bool StateSubject::endSpriteAnimations() {
-	std::cout << "endSpriteAnimations called " << std::endl;
+	//std::cout << "endSpriteAnimations called " << std::endl;
 	auto animation{ m_activeSpriteAnimations.begin() };
 	for (; animation != m_activeSpriteAnimations.end(); animation++) {
 		auto& obj{ *animation };
@@ -152,13 +162,13 @@ bool StateSubject::endSpriteAnimations() {
 		switch (obj.second.m_stepType) {
 			case (SpriteProperty::XPOS):
 			{
-				std::cout << "XPOS ANIMATION TERMINATION!!!!!!!!!!!!!!!" << std::endl;
+				std::cout << "XPOS END SPRITE ANIMATION" << std::endl;
 				characterPos.m_xCoord = endValue;
 				break;
 			}
 			case (SpriteProperty::YPOS):
 			{
-				std::cout << "YPOS ANIMATION TERMINATION!!!!!!!!!!!!!!!" << std::endl;
+				std::cout << "YPOS END SPRITE ANIMATION" << std::endl;
 				characterPos.m_yCoord = endValue;
 				break;
 			}
@@ -177,22 +187,13 @@ bool StateSubject::endSpriteAnimations() {
 
 
 void StateSubject::tickAutoActions(float timePassed) {
-	// proof of concept for character animation
-	//std::cout << "tick auto actions" << std::endl;
-	//std::cout << timePassed << std::endl;
 	bool anyActive{ false };
 
 	anyActive |= tickSpriteAnimations(timePassed);
 	
-	//m_spriteRenderData[1].m_position.m_xCoord += (std::max(currentX, goalX) - std::min(currentX, goalX)) / fractionOfTimePassed;
-
-	//m_spriteAnimationGoal[1].second.m_steps[m_spriteAnimationGoal[1].first].m_transitionSeconds -= timePassed;
-
+	// Check if any auto actions ran this tick. If none, then clear the auto action.
 	if (anyActive == false) {
 		clearAutoAction();
-		// increase the spriteanimalgoal.first
-		// if that step does not exist, delete this auto action.
-		// check if any auto actions ran this tick. If none, then clear the auto action.
 	}
 }
 
@@ -200,30 +201,4 @@ void StateSubject::tickAutoActions(float timePassed) {
 void StateSubject::endAutoActions() {
 	// Go to end of all auto actions
 	endSpriteAnimations();
-
 }
-
-//struct ActionSpriteKeyframe {
-//	float m_transitionSeconds{ 0.0f };
-//
-//	float m_xCoord{ 0.0f };
-//	float m_yCoord{ 0.0f };
-//	float m_zCoord{ 0.0f };
-//	float m_scale{ 1.0f };
-//	float m_opacity{ 1.0f };
-//};
-//
-//struct SpritePosition {
-//	float m_xCoord{ 0.0f };
-//	float m_yCoord{ 0.0f };
-//	float m_zCoord{ 0.0f };
-//
-//	float m_scale{ 1.0f };
-//	float m_opacity{ 1.0f };
-//};
-//
-//struct SpriteState {
-//	Texture2D* m_texture{ nullptr };
-//
-//	SpritePosition m_position{};
-//};

@@ -76,7 +76,7 @@ private:
 	
 	std::unordered_map<StepIndex, std::vector<ActionSpriteAnimationGeneric>> m_spriteGenericAnimationSteps {
 		{ 2, std::vector<ActionSpriteAnimationGeneric>{ {1, SpriteProperty::XPOS, {{0.5f, 1000.0f}, {1.0f, 10.0f}} },
-														{1, SpriteProperty::YPOS, {{0.3f, 500.0f} , {1.0f, 10.0f}} } 
+														{1, SpriteProperty::YPOS, {{0.5f, 500.0f} , {1.0f, 10.0f}} } 
 													  }
 		}
 	};
