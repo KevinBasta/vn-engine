@@ -8,6 +8,12 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+enum class StateDelta {
+	TEXT,
+	BACKGROUND,
+	SPRITE
+};
+
 struct SpritePosition {
 	float m_xCoord{ 0.0f };
 	float m_yCoord{ 0.0f };

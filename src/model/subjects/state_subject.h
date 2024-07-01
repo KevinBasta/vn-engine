@@ -5,7 +5,6 @@
 
 #include "vn_engine.h"
 #include "texture.h"
-#include "state_delta.h"
 #include "state_types.h"
 #include "chapter_node_types.h"
 

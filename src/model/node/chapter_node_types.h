@@ -1,12 +1,15 @@
 #ifndef VN_CHAPTER_NODE_TYPES_H
 #define VN_CHAPTER_NODE_TYPES_H
 
+#include "texture.h"
+
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
 #include <string>
 #include <vector>
+#include <list>
 
 //
 // Sprite Actions
@@ -45,21 +48,21 @@ struct ActionSpritePosition {
 // like ActionSpriteAnimationX for moving the x axis?
 // allows for decoupling of the m_transitionSeconds
 // but increased objects significantly
-struct ActionSpriteKeyframe {
-	float m_transitionSeconds{ 0.0f };
-
-	float m_xCoord{ 0.0f };
-	float m_yCoord{ 0.0f };
-	float m_zCoord{ 0.0f };
-	float m_scale{ 1.0f };
-	float m_opacity{ 1.0f };
-};
-
-struct ActionSpriteAnimation {
-	int m_characterID{ 0 };
-
-	std::vector<ActionSpriteKeyframe> m_steps{};
-};
+//struct ActionSpriteKeyframe {
+//	float m_transitionSeconds{ 0.0f };
+//
+//	float m_xCoord{ 0.0f };
+//	float m_yCoord{ 0.0f };
+//	float m_zCoord{ 0.0f };
+//	float m_scale{ 1.0f };
+//	float m_opacity{ 1.0f };
+//};
+//
+//struct ActionSpriteAnimation {
+//	int m_characterID{ 0 };
+//
+//	std::vector<ActionSpriteKeyframe> m_steps{};
+//};
 
 
 struct ActionSpriteKeyframeGeneric {
@@ -98,5 +101,31 @@ struct ActionTextOverrideColor {
 struct ActionBackgroundTexture{
 	int backgroundIndex{};
 };
+
+
+//
+// Node child picking action
+//
+
+
+enum class ChoiceStyle {
+	LIST_TEXT_AREA,
+	LIST_MID_SCREEN,
+	TILES_MID_SCREEN
+};
+
+struct ChoiceProperties {
+	int m_nodeID{};
+
+	std::wstring m_displayText{};
+	//Texture2D m_texture{}; // for tiles mid screen
+};
+
+struct ActionPickChild {
+	ChoiceStyle m_style{};
+
+	//std::list<int, ChoiceProperties> m_choices{};
+};
+
 
 #endif // VN_CHAPTER_NODE_TYPES_H

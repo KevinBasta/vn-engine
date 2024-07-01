@@ -4,6 +4,7 @@
 #include "window.h"
 #include "shader.h"
 #include "texture.h"
+#include "state_types.h"
 #include "state_subject.h"
 #include "text.h"
 

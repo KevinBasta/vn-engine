@@ -1,7 +1,6 @@
 #ifndef VN_NODE_ITERATOR_H
 #define VN_NODE_ITERATOR_H
 
-#include "node_substep_runner.h"
 #include "node.h"
 
 // Circular dependancy resolutions:

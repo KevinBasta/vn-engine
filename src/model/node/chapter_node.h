@@ -4,7 +4,6 @@
 #include "node.h"
 
 #include "character.h"
-#include "model_common.h"
 #include "chapter_node_types.h"
 
 #include <string>
@@ -53,6 +52,9 @@ private:
 
 
 
+	// TODO: consider a way to make the z index more intuative? maybe the background should be 
+	// set at a specific z index (or setable by user) then the rest of the z > than that 
+	// is usable for sprites?
 
 	std::unordered_map<StepIndex, std::vector<ActionSpriteTexture>> m_spriteTextureSteps{
 		{ 0, std::vector<ActionSpriteTexture>{{1, 0}} }
@@ -63,41 +65,32 @@ private:
 		{ 1, std::vector<ActionSpriteOpacity>{{1, 1.0f}} }
 	};
 
-	// TODO: consider a way to make the z index more intuative? maybe the background should be 
-	// set at a specific z index (or setable by user) then the rest of the z > than that 
-	// is usable for sprites?
 	std::unordered_map<StepIndex, std::vector<ActionSpritePosition>> m_spritePositionSteps{
 		{ 1, std::vector<ActionSpritePosition>{{1, 100.0f, -100.0f, -1.0f, 1.0f}} }
 	};
 	
-	/*std::unordered_map<StepIndex, std::vector<ActionSpriteAnimation>> m_spriteAnimationSteps{
-		{ 2, std::vector<ActionSpriteAnimation>{ {1, {{0.5f, 100.0f, 100.0f, -1.0f, 1.0f}, {0.5f, 10.0f, 100.0f, -1.0f, 1.0f}}} } }
-	};*/
-	
 	std::unordered_map<StepIndex, std::vector<ActionSpriteAnimationGeneric>> m_spriteGenericAnimationSteps {
-		{ 2, std::vector<ActionSpriteAnimationGeneric>{ {1, SpriteProperty::XPOS, {{0.5f, 1000.0f}, {1.0f, 10.0f}} },
-														{1, SpriteProperty::YPOS, {{0.5f, 500.0f} , {1.0f, 10.0f}} } 
+		{ 2, std::vector<ActionSpriteAnimationGeneric>{ {1, SpriteProperty::XPOS, {{0.1f, 1000.0f}, {0.2f, 10.0f}} },
+														{1, SpriteProperty::YPOS, {{0.1f, 500.0f} , {0.2f, 10.0f}} } 
 													  }
 		}
 	};
 
 
 
-
 	std::unordered_map<StepIndex, std::vector<ActionBackgroundTexture>> m_backgroundSteps{
 		{ 0, std::vector<ActionBackgroundTexture>{{0}} }
 	};
+
+
+	//Action
+
 	
 	std::string m_text{};
 
 	template <class T>
 	bool handleStep(StateSubject* stateSubject, StepIndex stepIndex, std::unordered_map<StepIndex, std::vector<T>>& stepMap);
 	bool doStep(StateSubject* stateSubject, int stepIndex);
-
-	//template <class T>
-	//bool hasStep(StepIndex stepIndex, std::unordered_map<StepIndex, std::vector<T>>& stepMap);
-	//int countSteps();
-	//int countSubsteps(int stepIndex);
 
 	// pre actions (transitions, animations, etc..)
 	// body actions (text, animations, etc..)
@@ -108,7 +101,6 @@ public:
 	ChapterNode(std::string tempData) : Node(tempData) {}
 
 	NodeState action(StateSubject* stateSubject, int stepIndex);
-	NodeState subAction(StateSubject* stateSubject, int stepIndex, int subStepIndex);
 
 public:
 	// Engine operations

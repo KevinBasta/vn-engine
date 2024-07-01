@@ -23,7 +23,6 @@
 #include <crtdbg.h>
 
 void testCore() {
-
 	//initRelations();
 
 	/*for (auto it = std::begin(g_characters); it != std::end(g_characters); ++it) {
@@ -40,6 +39,8 @@ void testCore() {
 }
 
 void memCheck() {
+	std::cout << "checking normal operation" << std::endl;
+
 	// load opengl
 	VnWindow window{};
 	window.load();

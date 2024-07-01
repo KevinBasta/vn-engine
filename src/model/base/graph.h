@@ -3,7 +3,6 @@
 #define GRAPH_H
 
 #include "node.h"
-#include "model_common.h"
 
 #include <memory>
 #include <iostream>

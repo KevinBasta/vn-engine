@@ -4,7 +4,7 @@
 #include "window.h"
 #include "shader.h"
 #include "texture.h"
-#include "state_delta.h"
+#include "state_types.h"
 #include "state_subject.h"
 
 #define TEMP_VERTEX_PATH	"C:\\Users\\Kevin\\Documents\\CS\\cpp\\visual-novel-engine\\visual_novel_engine\\src\\view\\glsl\\defaultVertex.glsl"

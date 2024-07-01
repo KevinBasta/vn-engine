@@ -22,29 +22,49 @@ add_executable (
 	"external/imgui/backends/imgui_impl_glfw.h"
 
 	# main program
-	"vn_engine.cpp"
+	"src/vn_engine.cpp"
 
 	# common
 	"src/common/timer.cpp"
+	"src/common/timer.h"
 	"src/common/id.cpp"
+	"src/common/id.h"
 
 	# model
-	"src/model/subject.h"
-	"src/model/state/state_subject.h"
-	"src/model/model/model_subject.h"
-	"src/model/subjects_orchestrator.h" 
-	"src/model/model_common.h"
-
-	"src/model/character/character.cpp"
-	"src/model/character/relation_types.cpp" 
-	"src/model/character/relation.cpp"
+	"src/model/base/chapter.cpp"
+	"src/model/base/chapter.h"
+	"src/model/base/graph.cpp"
+	"src/model/base/graph.h"
+	"src/model/base/node.cpp"
+	"src/model/base/node.h"
+	"src/model/base/node_children.cpp"
+	"src/model/base/node_children.h"
 	
-	"src/model/chapter/chapter.cpp"
-	"src/model/graph/graph.cpp"
-	"src/model/node/node.cpp"
-	"src/model/node/node_children.cpp" 
-	"src/model/node/chapter_node.cpp" 
-	"src/model/node/chapter_node.h" 
+	"src/model/character/character.cpp"
+	"src/model/character/character.h"
+	"src/model/character/relation_types.cpp" 
+	"src/model/character/relation_types.h" 
+	"src/model/character/relation.cpp"
+	"src/model/character/relation.h"
+	
+	"src/model/iterators/chapter_iterator.cpp"
+	"src/model/iterators/chapter_iterator.h"
+	"src/model/iterators/graph_traverser.cpp"
+	"src/model/iterators/graph_traverser.h"
+	"src/model/iterators/node_runner.cpp"
+	"src/model/iterators/node_runner.h"
+
+	"src/model/node/chapter_node.cpp"
+	"src/model/node/chapter_node.h"
+
+	"src/model/subjects/model_subject.cpp"
+	"src/model/subjects/model_subject.h"
+	"src/model/subjects/state_subject.cpp"
+	"src/model/subjects/state_subject.h"
+
+	"src/model/state_types.h"
+	"src/model/subject.h"
+	"src/model/subjects_orchestrator.h"
 
 	"src/model/savefile/json/json_lexer.cpp"
 	"src/model/savefile/json/json_token.cpp"
@@ -70,22 +90,28 @@ add_executable (
 	"src/view/game/window.cpp" 
 	"src/view/game/window.h" 
 	"src/view/gameloop.h" 
- "src/model/graph/graph_traverser.cpp" "src/model/graph/graph_traverser.h" "src/model/node/node_runner.h" "src/model/node/node_runner.cpp" "src/model/chapter/chapter_iterator.cpp" "src/model/chapter/chapter_iterator.h" "src/model/model/model_subject.cpp" "src/view/common/text.h" "src/view/common/text.cpp" "src/view/game/layer_background.h" "src/view/game/layer_sprite.cpp" "src/view/game/layer_sprite.h" "src/view/game/layer_background.cpp" "src/model/state/state_delta.h" "src/model/node/chapter_node_types.h" "src/model/state/state_types.h" "src/view/game/layer_text.cpp" "src/view/game/layer_text.h" "src/model/node/node_substep_runner.h" "src/model/node/node_substep_runner.cpp" "src/model/state/state_subject.cpp")
+	"src/view/common/text.h"
+	"src/view/common/text.cpp"
+	"src/view/game/layer_background.h"
+	"src/view/game/layer_sprite.cpp"
+	"src/view/game/layer_sprite.h"
+	"src/view/game/layer_background.cpp"
+	"src/view/game/layer_text.cpp"
+	"src/view/game/layer_text.h"
+)
 
 target_include_directories(
 	"vn_engine"
 	PUBLIC
-	""
+	"src/"
 	"src/common"
 	"src/model"
-	"src/model/chapter"
+	"src/model/base"
 	"src/model/character"
-	"src/model/graph"
+	"src/model/iterators"
 	"src/model/node"
 	"src/model/savefile"
-	"src/model/model"
-	"src/model/state"
-	"src/runtime"
+	"src/model/subjects"
 	"src/view"
 	"src/view/common"
 	"src/view/engine"

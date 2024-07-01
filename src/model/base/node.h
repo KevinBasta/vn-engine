@@ -6,8 +6,6 @@
 #include "node_children.h"
 #include "character.h"
 
-#include "model_common.h"
-
 #include <vector>
 #include <string>
 #include <iostream>
@@ -18,10 +16,7 @@ enum class NodeState {
 	NODE_NOT_STARTED,
 	NODE_STEP,
 	NODE_CHOICE,
-	NODE_END,
-
-	NODE_SUBSTEP,
-	NODE_SUBSTEP_END,
+	NODE_END
 };
 
 
