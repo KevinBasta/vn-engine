@@ -6,8 +6,8 @@
 #include "texture.h"
 #include "state_subject.h"
 
-#define TEMP_VERTEX_PATH	"C:\\Users\\Kevin\\Documents\\CS\\cpp\\visual-novel-engine\\visual_novel_engine\\src\\view\\glsl\\defaultVertex.glsl"
-#define TEMP_FRAGMENT_PATH	"C:\\Users\\Kevin\\Documents\\CS\\cpp\\visual-novel-engine\\visual_novel_engine\\src\\view\\glsl\\defaultFragment.glsl"
+#define TEMP_VERTEX_PATH	BASE_PATH"\\src\\view\\glsl\\defaultVertex.glsl"
+#define TEMP_FRAGMENT_PATH	BASE_PATH"\\src\\view\\glsl\\defaultFragment.glsl"
 
 class BackgroundLayer {
 private:

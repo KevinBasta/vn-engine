@@ -23,8 +23,8 @@
 #include <iostream>
 #include <unordered_map>
 
-#define TEMP_TEXT_VERTEX_SHADER		"C:\\Users\\Kevin\\Documents\\CS\\cpp\\visual-novel-engine\\visual_novel_engine\\src\\view\\glsl\\textVertex.glsl"
-#define TEMP_TEXT_FRAGMENT_SHADER	"C:\\Users\\Kevin\\Documents\\CS\\cpp\\visual-novel-engine\\visual_novel_engine\\src\\view\\glsl\\textFragment.glsl"
+#define TEMP_TEXT_VERTEX_SHADER		BASE_PATH"\\src\\view\\glsl\\textVertex.glsl"
+#define TEMP_TEXT_FRAGMENT_SHADER	BASE_PATH"\\src\\view\\glsl\\textFragment.glsl"
 
 class TextLayer {
 private:

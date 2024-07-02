@@ -6,6 +6,7 @@ cmake_minimum_required (VERSION 3.8)
 
 project("vn_engine")
 set(CMAKE_CXX_STANDARD 20)
+add_definitions(-DBASE_PATH=\"${CMAKE_CURRENT_SOURCE_DIR}\")
 
 add_executable (
 	"vn_engine"
@@ -72,39 +73,43 @@ add_executable (
 	"src/model/savefile/json/json_expr.cpp"
 
 	# view
-	"src/view/observer.h" 
-	"src/view/game_observer.h" 
-	"src/view/engine_observer.h" 
-	"src/view/common/shader.cpp" 
-	"src/view/common/texture.cpp"
-
-	"src/view/engine/engine.cpp"
-
-	"local_test/old/camera.cpp" 
-	"src/view/game/frame.cpp" 
+	"src/view/base/window.cpp" 
+	"src/view/base/window.h"
+	"src/view/base/texture.cpp"
+	"src/view/base/texture.h"
+	"src/view/base/text.cpp"
+	"src/view/base/text.h"
+	"src/view/base/shader.cpp"
+	"src/view/base/shader.h"
 	
+	"src/view/engine/engine.cpp"
+	"src/view/engine/engine.h"
+
 	"src/view/game/context.cpp"
 	"src/view/game/context.h"
 	"src/view/game/controller.cpp"
-	"src/view/game/controller.h" 
-	"src/view/game/window.cpp" 
-	"src/view/game/window.h" 
-	"src/view/gameloop.h" 
-	"src/view/common/text.h"
-	"src/view/common/text.cpp"
-	"src/view/game/layer_background.h"
-	"src/view/game/layer_sprite.cpp"
-	"src/view/game/layer_sprite.h"
-	"src/view/game/layer_background.cpp"
-	"src/view/game/layer_text.cpp"
-	"src/view/game/layer_text.h"
+	"src/view/game/controller.h"
+
+	"src/view/layers/layer_background.cpp"
+	"src/view/layers/layer_background.h"
+	"src/view/layers/layer_sprite.cpp"
+	"src/view/layers/layer_sprite.h"
+	"src/view/layers/layer_text.cpp"
+	"src/view/layers/layer_text.h"
+
+	"src/view/observer.h" 
+	"src/view/game_observer.h" 
+	"src/view/engine_observer.h" 
+	"src/view/game_loop.h"
 )
 
 target_include_directories(
 	"vn_engine"
 	PUBLIC
+	
 	"src/"
 	"src/common"
+	
 	"src/model"
 	"src/model/base"
 	"src/model/character"
@@ -112,10 +117,12 @@ target_include_directories(
 	"src/model/node"
 	"src/model/savefile"
 	"src/model/subjects"
+
 	"src/view"
-	"src/view/common"
+	"src/view/base"
 	"src/view/engine"
 	"src/view/game"
+	"src/view/layers"
 )
 
 # Avoid warnings/errors from libraries 

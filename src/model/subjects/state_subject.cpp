@@ -97,17 +97,27 @@ bool StateSubject::tick(std::pair<stepIndex, ActionSpriteAnimationGeneric>& anim
 	float delta = (std::max(*currentValue, goalValue) - std::min(*currentValue, goalValue)) / fractionOfTimePassed;
 
 	if (*currentValue < goalValue) {
-		*currentValue += delta;
+		if (*currentValue + delta > goalValue) {
+			*currentValue = goalValue;
+		}
+		else {
+			*currentValue += delta;
+		}
 	}
 	else {
-		*currentValue -= delta;
+		if (*currentValue - delta < goalValue) {
+			*currentValue = goalValue;
+		}
+		else {
+			*currentValue -= delta;
+		}
 	}
 
 	currentAction.m_transitionSeconds -= timePassed;
 
 	// If the character value state is close enough to the goal value and the transition seconds left is low
 	// Then set the character value state to teh goal state and set the goal to the next step or end the animation
-	if (std::abs(*currentValue - currentAction.m_value) <= 5.0f && currentAction.m_transitionSeconds < 0.001f) {
+	if (std::abs(*currentValue - currentAction.m_value) <= 5.0f && currentAction.m_transitionSeconds < 0.1f) {
 		
 		*currentValue = currentAction.m_value;
 		

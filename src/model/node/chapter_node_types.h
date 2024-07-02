@@ -103,6 +103,8 @@ struct ActionBackgroundTexture{
 };
 
 
+
+
 //
 // Node child picking action
 //
@@ -111,20 +113,18 @@ struct ActionBackgroundTexture{
 enum class ChoiceStyle {
 	LIST_TEXT_AREA,
 	LIST_MID_SCREEN,
-	TILES_MID_SCREEN
 };
 
 struct ChoiceProperties {
 	int m_nodeID{};
 
 	std::wstring m_displayText{};
-	//Texture2D m_texture{}; // for tiles mid screen
 };
 
 struct ActionPickChild {
 	ChoiceStyle m_style{};
 
-	//std::list<int, ChoiceProperties> m_choices{};
+	std::list<ChoiceProperties> m_choices{};
 };
 
 

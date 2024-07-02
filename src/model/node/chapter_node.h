@@ -37,12 +37,12 @@ private:
 		{ 0, std::vector<ActionTextLine>{{1, L"\t\t\t"}} },
 		{ 1, std::vector<ActionTextLine>{{1, L"hello, this is garu"}} },
 		{ 2, std::vector<ActionTextLine>{{1, L"hello, this is NOT garu"}} },
-		{ 3, std::vector<ActionTextLine>{{1, L"hello, this is a potato"}} }
+		//{ 3, std::vector<ActionTextLine>{{1, L"hello, this is a potato"}} }
 	};	
 	
 	std::unordered_map<StepIndex, std::vector<ActionTextOverrideSpeaker>> m_textOverrideSpeakerSteps{
 		{ 2, std::vector<ActionTextOverrideSpeaker>{{L"???"}}},
-		{ 3, std::vector<ActionTextOverrideSpeaker>{{L"potato man"}}}
+		//{ 3, std::vector<ActionTextOverrideSpeaker>{{L"potato man"}}}
 	};
 
 	std::unordered_map<StepIndex, std::vector<ActionTextOverrideColor>> m_textOverrideColorSteps{
@@ -70,8 +70,8 @@ private:
 	};
 	
 	std::unordered_map<StepIndex, std::vector<ActionSpriteAnimationGeneric>> m_spriteGenericAnimationSteps {
-		{ 2, std::vector<ActionSpriteAnimationGeneric>{ {1, SpriteProperty::XPOS, {{0.1f, 1000.0f}, {0.2f, 10.0f}} },
-														{1, SpriteProperty::YPOS, {{0.1f, 500.0f} , {0.2f, 10.0f}} } 
+		{ 2, std::vector<ActionSpriteAnimationGeneric>{ {1, SpriteProperty::XPOS, {{0.1f, 1000.0f}, {0.2f, 100.0f}} },
+														{1, SpriteProperty::YPOS, {{0.1f, 200.0f} , {0.2f, -100.0f}} } 
 													  }
 		}
 	};
@@ -83,7 +83,7 @@ private:
 	};
 
 
-	//Action
+	ActionPickChild m_pickChildStep{};
 
 	
 	std::string m_text{};

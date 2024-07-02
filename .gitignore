@@ -1,5 +1,6 @@
 out/*
 .vs/*
 a.out
-assets/*
-fonts/*
+test_assets/*.ttc
+test_assets/*.ttf
+test_assets/test.jpg

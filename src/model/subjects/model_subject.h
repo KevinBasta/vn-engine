@@ -18,8 +18,8 @@
 #include <memory>
 
 
-#define TEMP_BACKGROUND "C:\\Users\\Kevin\\Documents\\CS\\cpp\\visual-novel-engine\\visual_novel_engine\\assets\\test.jpg"
-
+#define TEMP_BACKGROUND_TEXTURE BASE_PATH"\\test_assets\\test.jpg"
+#define TEMP_SPRITE_TEXTURE		BASE_PATH"\\test_assets\\garu_outline.png"
 
 // Circular dependancy resolutions:
 class ChapterIterator;
@@ -102,7 +102,7 @@ public:
 
 		//std::cout << *(garu.get());
 
-		garu.get()->addTexture("C:\\Users\\Kevin\\Documents\\CS\\cpp\\visual-novel-engine\\visual_novel_engine\\assets\\garu_outline.png");
+		garu.get()->addTexture(TEMP_SPRITE_TEXTURE);
 
 		m_characters[garu.get()->getId()] = std::move(garu);
 		m_characters[brz.get()->getId()] = std::move(brz);
@@ -110,7 +110,7 @@ public:
 	}
 
 	void initBackgrounds() {
-		std::unique_ptr<Texture2D> background_0{ std::make_unique<Texture2D>(TEMP_BACKGROUND) };
+		std::unique_ptr<Texture2D> background_0{ std::make_unique<Texture2D>(TEMP_BACKGROUND_TEXTURE) };
 		m_backgrounds.push_back(std::move(background_0));
 	}
 

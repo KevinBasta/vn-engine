@@ -11,7 +11,7 @@
 #include "model_subject.h"
 #include "state_subject.h"
 
-#include "gameloop.h"
+#include "game_loop.h"
 #include "game_observer.h"
 #include "engine_observer.h"
 
@@ -40,6 +40,8 @@ void testCore() {
 
 void memCheck() {
 	std::cout << "checking normal operation" << std::endl;
+
+	std::cout << BASE_PATH << std::endl;
 
 	// load opengl
 	VnWindow window{};
