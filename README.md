@@ -2,6 +2,10 @@
 
 This repository is in progress.
 
+## Running locally
+- Currently external dependancies are used as submodules in the "external" directory. This means that cloning the repository and running cmake is all that is needed. In the future something like vcpkg will be used instead of submodules.
+- Navigate to the "test/assets" folder and follow the readme.md instructions there to add needed assets.
+
 ## Class variable prefixes
 - `m_` denotes member variable
 - `g_` denotes global variable

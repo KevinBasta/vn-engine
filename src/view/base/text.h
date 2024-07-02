@@ -18,7 +18,7 @@
 #include <unordered_map>
 #include <memory>
 
-#define TEMP_FONT_PATH				BASE_PATH"\\test_assets\\BIZ-UDGothicB.ttc"
+#define TEMP_FONT_PATH				BASE_PATH"\\test\\assets\\BIZ-UDGothicB.ttc"
 
 class TextTexture {
 private:

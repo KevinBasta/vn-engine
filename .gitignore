@@ -1,6 +1,9 @@
-out/*
+
 .vs/*
+out/*
+
 a.out
-test_assets/*.ttc
-test_assets/*.ttf
-test_assets/test.jpg
+
+*.ttc
+*.ttf
+test.jpg
