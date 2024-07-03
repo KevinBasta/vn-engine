@@ -19,7 +19,6 @@ public:
 	void attatch(Observer* observer) {
 		if (observer != nullptr) {
 			m_observers.push_back(observer);
-			m_observers.begin();
 			std::cout << "attatched" << std::endl;
 		}
 	}

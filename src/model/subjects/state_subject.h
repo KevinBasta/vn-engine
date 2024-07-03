@@ -38,14 +38,6 @@ private:
 	Chapter* currentChapter{ nullptr };
 	ChapterIterator iterator{ nullptr, 0 };
 	
-	// indicate that auto substeps (for animations) are present
-	bool m_activeAutoAction{ false };
-
-	// keeping record of what chioces were made for
-	// safe file node traversal
-	std::vector<int> chapterChoicesRecord{};
-
-
 public:
 	StateSubject(ModelSubject* modelSubject) : m_model{ modelSubject } {}
 	~StateSubject() {}
@@ -69,6 +61,11 @@ public:
 		// then clear state delta
 	}
 
+
+public:
+	// indicate that auto substeps (for animations) are present
+	bool m_activeAutoAction{ false };
+
 	void setAutoAction() { m_activeAutoAction = true; }
 	void clearAutoAction() { m_activeAutoAction = false; }
 	bool inAutoAction() { return m_activeAutoAction; }
@@ -76,8 +73,14 @@ public:
 	void tickAutoActions(float timePassed);
 	void endAutoActions();
 
+
+public:
+	// keeping record of what chioces were made for
+	// safe file node traversal
+	std::vector<int> m_chapterChoicesRecord{};
+
 	void appendChapterChoice(int choiceIndex) {
-		chapterChoicesRecord.push_back(choiceIndex);
+		m_chapterChoicesRecord.push_back(choiceIndex);
 	}
 
 

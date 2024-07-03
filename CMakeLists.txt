@@ -6,7 +6,7 @@ cmake_minimum_required (VERSION 3.8)
 
 project("vn_engine")
 set(CMAKE_CXX_STANDARD 20)
-add_definitions(-DBASE_PATH=\"${CMAKE_CURRENT_SOURCE_DIR}\")
+add_definitions(-DVN_BASE_PATH=\"${CMAKE_CURRENT_SOURCE_DIR}\")
 
 add_executable (
 	"vn_engine"

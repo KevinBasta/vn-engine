@@ -6,8 +6,8 @@
 #include "texture.h"
 #include "state_subject.h"
 
-#define TEMP_VERTEX_PATH	BASE_PATH"\\src\\view\\glsl\\defaultVertex.glsl"
-#define TEMP_FRAGMENT_PATH	BASE_PATH"\\src\\view\\glsl\\defaultFragment.glsl"
+#define TEMP_VERTEX_PATH	VN_BASE_PATH"/src/view/glsl/defaultVertex.glsl"
+#define TEMP_FRAGMENT_PATH	VN_BASE_PATH"/src/view/glsl/defaultFragment.glsl"
 
 class BackgroundLayer {
 private:

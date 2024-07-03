@@ -20,7 +20,9 @@
 #include <filesystem>
 #include <memory>
 
+#ifdef _WIN32
 #include <crtdbg.h>
+#endif
 
 void testCore() {
 	//initRelations();
@@ -41,7 +43,7 @@ void testCore() {
 void memCheck() {
 	std::cout << "checking normal operation" << std::endl;
 
-	std::cout << BASE_PATH << std::endl;
+	std::cout << VN_BASE_PATH << std::endl;
 
 	// load opengl
 	VnWindow window{};
@@ -89,8 +91,9 @@ int main()
 	
 	std::cout << "End of program" << std::endl;
 
-
-	// Check for memory leaks. Does not account for global variables or static variables.
+#ifdef _WIN32
+	std::cout << "RUNNING MEMORY LEAK CHECK" << std::endl;
+	// Check for memory leaks.
 	_CrtSetReportMode(_CRT_WARN, _CRTDBG_MODE_FILE);
 	_CrtSetReportFile(_CRT_WARN, _CRTDBG_FILE_STDOUT);
 	_CrtSetReportMode(_CRT_ERROR, _CRTDBG_MODE_FILE);
@@ -101,6 +104,8 @@ int main()
 
 	//bool test = _CrtDumpMemoryLeaks();
 	//std::cout << ((test == 1) ? "MEMORY LEAK PRESENT" : "NO MEMORY LEAK DETECTED") << std::endl;
-	//int* test = new int;
+#endif
+
+
 	return 0;
 }

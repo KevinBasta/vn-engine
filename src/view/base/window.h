@@ -178,6 +178,10 @@ public:
 
 		glfwSetWindowSize(m_window, startWidth, startHeight);
 
+#ifdef __APPLE__
+		glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+#endif
+
 		std::cout << "OpenGL " << GLVersion.major << "." << GLVersion.minor << std::endl;
 	}
 

@@ -18,8 +18,8 @@
 #include <memory>
 
 
-#define TEMP_BACKGROUND_TEXTURE BASE_PATH"\\test\\assets\\test.jpg"
-#define TEMP_SPRITE_TEXTURE		BASE_PATH"\\test\\assets\\garu_outline.png"
+#define TEMP_BACKGROUND_TEXTURE VN_BASE_PATH"/test/assets/test.jpg"
+#define TEMP_SPRITE_TEXTURE		VN_BASE_PATH"/test/assets/garu_outline.png"
 
 // Circular dependancy resolutions:
 class ChapterIterator;

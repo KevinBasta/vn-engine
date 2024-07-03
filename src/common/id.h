@@ -9,7 +9,10 @@ private:
 
 public:
 	IdGenerator() = delete;
-	IdGenerator(int i) : m_currentId{ i } {};
+
+	static void setId(int i) {
+		m_currentId = i;
+	}
 
 	static const int getId() {
 		return m_currentId++;

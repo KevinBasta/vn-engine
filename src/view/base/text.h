@@ -18,7 +18,7 @@
 #include <unordered_map>
 #include <memory>
 
-#define TEMP_FONT_PATH				BASE_PATH"\\test\\assets\\BIZ-UDGothicB.ttc"
+#define TEMP_FONT_PATH VN_BASE_PATH"/test/assets/BIZUDGothic-Bold.ttf"
 
 class TextTexture {
 private:
@@ -182,4 +182,4 @@ public:
 
 };
 
-#endif VN_TEXT_H
+#endif //VN_TEXT_H

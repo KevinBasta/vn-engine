@@ -14,22 +14,16 @@
 //
 // Sprite Actions
 //
-enum class SpriteProperty {
-	NONE,
-	XPOS,
-	YPOS,
-	ZPOS,
-	SCALE,
-	OPACITY
-};
 
 struct ActionSpriteOpacity {
 	int m_characterID{ 0 };
+
 	float m_opacity{ 0.0f };
 };
 
 struct ActionSpriteTexture {
 	int m_characterID{ 0 };
+
 	int m_textureIndex{ 0 };
 };
 
@@ -64,6 +58,14 @@ struct ActionSpritePosition {
 //	std::vector<ActionSpriteKeyframe> m_steps{};
 //};
 
+enum class SpriteProperty {
+	NONE,
+	XPOS,
+	YPOS,
+	ZPOS,
+	SCALE,
+	OPACITY
+};
 
 struct ActionSpriteKeyframeGeneric {
 	float m_transitionSeconds{ 0.0f };
