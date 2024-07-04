@@ -46,13 +46,13 @@ public:
 
 	void run() {
 		// Gameloop
-		float deltaTime = 0.0f;
-		float lastFrame = 0.0f;
+		double deltaTime = 0.0f;
+		double lastFrame = 0.0f;
 
 		while (!glfwWindowShouldClose(m_window->get())) {
 			m_controller.processInput();
 
-			float currentFrame = glfwGetTime();
+			double currentFrame = glfwGetTime();
 			deltaTime = currentFrame - lastFrame;
 			lastFrame = currentFrame;
 

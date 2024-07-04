@@ -77,12 +77,24 @@ public:
 public:
 	// keeping record of what chioces were made for
 	// safe file node traversal
+	bool m_activeChoice{ false };
+	ActionChooseNode* m_nodeChoices{ nullptr };
+
 	std::vector<int> m_chapterChoicesRecord{};
 
 	void appendChapterChoice(int choiceIndex) {
 		m_chapterChoicesRecord.push_back(choiceIndex);
 	}
 
+	void chooseNode(int nodeId) {
+
+	}
+
+	void handle(ActionChooseNode& action) {
+		m_activeChoice = true;
+
+		m_nodeChoices = &action;
+	}
 
 public:
 	// Delta tracking inquiry
@@ -191,6 +203,16 @@ public:
 	bool tickSpriteAnimations(float timePassed);
 	bool tick(std::pair<stepIndex, ActionSpriteAnimationGeneric>& animation, float timePassed);
 	bool endSpriteAnimations();
+
+
+
+
+public:
+	// clear non-presistent state
+	void nodeEndActions() {
+		m_textState.m_speakerName = L"";
+		m_textState.m_line = L"";
+	}
 
 public:
 	// Save specific state

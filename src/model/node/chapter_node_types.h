@@ -117,16 +117,24 @@ enum class ChoiceStyle {
 	LIST_MID_SCREEN,
 };
 
-struct ChoiceProperties {
+
+/*struct ChoiceTileProperties {
+	int m_nodeID{};
+
+	std::wstring m_displayText{};
+	Texture2D* m_displayTexture{};
+};*/
+
+struct ChoiceTextProperties {
 	int m_nodeID{};
 
 	std::wstring m_displayText{};
 };
 
-struct ActionPickChild {
+struct ActionChooseNode {
 	ChoiceStyle m_style{};
 
-	std::list<ChoiceProperties> m_choices{};
+	std::list<ChoiceTextProperties> m_choices{};
 };
 
 

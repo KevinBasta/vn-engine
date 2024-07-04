@@ -45,6 +45,10 @@ private:
 		//text = L"Hello, this is Garu. I've come from a far land. To meet brazazazaza.\n brazazaza Test Test Test how should line breaking work?";
 
 		// TODO: gracefully handle empty text variable. A crash occurs in that case at the moment.
+		if (text == L"") {
+			return;
+		}
+
 
 		m_textShader.use();
 		

@@ -8,48 +8,47 @@
 
 #include <string>
 #include <vector>
+#include <list>
 #include <unordered_map>
 
 class StateSubject;
 
 //class chaternodestep
 enum class ChapterNodeActionType {
-	TYPE_TEXT,
-	CHANGE_SPRITE,
-	CHANGE_BACKGROUND,
-	MOVE_SPRITE,
+	BACKGROUND,
+	SPRITE,
+	TEXT,
+	CHOICE,
 };
 
 class ChapterNode : public Node {
 private:
-	// temp constructions here, will be done by engine/hooks
-	/*std::vector<std::vector<ChapterNodeActionType>> m_steps{ 
-		std::vector<ChapterNodeActionType>{ ChapterNodeActionType::CHANGE_BACKGROUND, ChapterNodeActionType::CHANGE_SPRITE },
-		std::vector<ChapterNodeActionType>{ ChapterNodeActionType::TYPE_TEXT, ChapterNodeActionType::CHANGE_SPRITE },
-		std::vector<ChapterNodeActionType>{ ChapterNodeActionType::TYPE_TEXT },
-		std::vector<ChapterNodeActionType>{ ChapterNodeActionType::CHANGE_SPRITE }
-	};*/
+	// TODO: need to determine what keeps it's state between steps and nodes and what doesn't 
+	// (e.g. text is only retained in node, when a new node comes, the text state is reset)
+
+	// temp data for testing here, will be done by engine/hooks
+	std::vector<std::vector<ChapterNodeActionType>> m_steps{ 
+		{ ChapterNodeActionType::BACKGROUND, ChapterNodeActionType::SPRITE },
+		{ ChapterNodeActionType::TEXT, ChapterNodeActionType::SPRITE },
+		{ ChapterNodeActionType::TEXT, ChapterNodeActionType::SPRITE },
+		{ ChapterNodeActionType::CHOICE } // can auto make this for engine
+	};
 
 	typedef int StepIndex;
 	typedef int SubStepIndex;
 	
-	std::unordered_map<StepIndex, std::vector<ActionTextLine>> m_textLineSteps{
-		{ 0, std::vector<ActionTextLine>{{1, L"\t\t\t"}} },
-		{ 1, std::vector<ActionTextLine>{{1, L"hello, this is garu"}} },
-		{ 2, std::vector<ActionTextLine>{{1, L"hello, this is NOT garu"}} },
-		//{ 3, std::vector<ActionTextLine>{{1, L"hello, this is a potato"}} }
-	};	
-	
-	std::unordered_map<StepIndex, std::vector<ActionTextOverrideSpeaker>> m_textOverrideSpeakerSteps{
-		{ 2, std::vector<ActionTextOverrideSpeaker>{{L"???"}}},
-		//{ 3, std::vector<ActionTextOverrideSpeaker>{{L"potato man"}}}
-	};
+	//
+	// Background actions
+	//
 
-	std::unordered_map<StepIndex, std::vector<ActionTextOverrideColor>> m_textOverrideColorSteps{
-		{ 2, std::vector<ActionTextOverrideColor>{{glm::vec3(0.0f, 1.0f, 0.5f)}}}
+	std::unordered_map<StepIndex, ActionBackgroundTexture> m_backgroundSteps{
+		{ 0, {0} }
 	};
 
 
+	//
+	// Sprite actions
+	//
 
 
 	// TODO: consider a way to make the z index more intuative? maybe the background should be 
@@ -58,8 +57,8 @@ private:
 
 	std::unordered_map<StepIndex, std::vector<ActionSpriteTexture>> m_spriteTextureSteps{
 		{ 0, std::vector<ActionSpriteTexture>{{1, 0}} }
-	};	
-	
+	};
+
 	std::unordered_map<StepIndex, std::vector<ActionSpriteOpacity>> m_spriteOpacitySteps{
 		{ 0, std::vector<ActionSpriteOpacity>{{1, 0.0f}} },
 		{ 1, std::vector<ActionSpriteOpacity>{{1, 1.0f}} }
@@ -68,29 +67,59 @@ private:
 	std::unordered_map<StepIndex, std::vector<ActionSpritePosition>> m_spritePositionSteps{
 		{ 1, std::vector<ActionSpritePosition>{{1, 100.0f, -100.0f, -1.0f, 1.0f}} }
 	};
-	
-	std::unordered_map<StepIndex, std::vector<ActionSpriteAnimationGeneric>> m_spriteGenericAnimationSteps {
+
+	std::unordered_map<StepIndex, std::vector<ActionSpriteAnimationGeneric>> m_spriteGenericAnimationSteps{
 		{ 2, std::vector<ActionSpriteAnimationGeneric>{ {1, SpriteProperty::XPOS, {{0.1f, 1000.0f}, {0.2f, 100.0f}} },
-														{1, SpriteProperty::YPOS, {{0.1f, 200.0f} , {0.2f, -100.0f}} } 
+														{1, SpriteProperty::YPOS, {{0.1f, 200.0f} , {0.2f, -100.0f}} }
 													  }
 		}
 	};
 
 
+	//
+	// Text actions
+	//
 
-	std::unordered_map<StepIndex, std::vector<ActionBackgroundTexture>> m_backgroundSteps{
-		{ 0, std::vector<ActionBackgroundTexture>{{0}} }
+	std::unordered_map<StepIndex, std::vector<ActionTextLine>> m_textLineSteps{
+		{ 1, {{1, L"hello, this is garu"}} },
+		{ 2, {{1, L"hello, this is NOT garu"}} },
+		//{ 3, std::vector<ActionTextLine>{{1, L"hello, this is a potato"}} }
+	};	
+	
+	std::unordered_map<StepIndex, ActionTextOverrideSpeaker> m_textOverrideSpeakerSteps{
+		{ 2, {L"???"}},
+		//{ 3, std::vector<ActionTextOverrideSpeaker>{{L"potato man"}}}
 	};
 
-
-	ActionPickChild m_pickChildStep{};
+	std::unordered_map<StepIndex, ActionTextOverrideColor> m_textOverrideColorSteps{
+		{ 2, {glm::vec3(0.0f, 1.0f, 0.5f)}}
+	};
 
 	
-	std::string m_text{};
+	//
+	// Bond mutation actions
+	//
+
+
+	//
+	// Child picker step
+	//
+
+	ActionChooseNode m_pickChildStep{};
+
+
+
+
+	bool doStep(StateSubject* stateSubject, int stepIndex);
+	
+	template <class T>
+	bool handleStep(StateSubject* stateSubject, T& step);
+
+	template <class T>
+	bool handleStep(StateSubject* stateSubject, StepIndex stepIndex, std::unordered_map<StepIndex, T>& stepMap);
 
 	template <class T>
 	bool handleStep(StateSubject* stateSubject, StepIndex stepIndex, std::unordered_map<StepIndex, std::vector<T>>& stepMap);
-	bool doStep(StateSubject* stateSubject, int stepIndex);
 
 	// pre actions (transitions, animations, etc..)
 	// body actions (text, animations, etc..)
@@ -105,6 +134,7 @@ public:
 public:
 	// Engine operations
 	void addStep() {}
+	void updateTotalSteps() {}
 
 public:
 	virtual void print(bool printChildren) {

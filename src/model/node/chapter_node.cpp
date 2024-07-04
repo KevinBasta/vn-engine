@@ -4,12 +4,54 @@
 #include "state_subject.h"
 #include "chapter_node_types.h"
 
+#include <list>
+#include <vector>
+#include <unordered_map>
+#include <iterator>
+
 
 //
 // Step Handling
 // Sends data to the subject
 // Bool returns indicate if any step occured
 //
+
+template <class T>
+bool ChapterNode::handleStep(StateSubject* stateSubject,
+							 T& step)
+{
+	if (stateSubject == nullptr) {
+		return false;
+	}
+
+	stateSubject->handle(step);
+
+	return true;
+}
+
+
+template <class T>
+bool ChapterNode::handleStep(StateSubject* stateSubject,
+	StepIndex stepIndex,
+	std::unordered_map<StepIndex, T>& stepMap)
+{
+	bool hasStep{ false };
+
+	if (stateSubject == nullptr) {
+		return hasStep;
+	}
+
+	class std::unordered_map<StepIndex, T>::iterator stepLocation = stepMap.find(stepIndex);
+
+	// Check if the step exsists for this type of action
+	if (stepLocation != stepMap.end()) {
+		hasStep = true;
+
+		stateSubject->handle(stepLocation->second);
+	}
+
+	return hasStep;
+}
 
 template <class T>
 bool ChapterNode::handleStep(StateSubject *stateSubject,
@@ -44,20 +86,44 @@ bool ChapterNode::doStep(StateSubject* stateSubject, int stepIndex) {
 	bool stepExists{ false };
 
 	if (stateSubject == nullptr) {
-		return stepExists;
+		return false;
 	}
 
-	stepExists |= handleStep(stateSubject, stepIndex, m_textLineSteps);
-	stepExists |= handleStep(stateSubject, stepIndex, m_textOverrideSpeakerSteps);
-	stepExists |= handleStep(stateSubject, stepIndex, m_textOverrideColorSteps);
+	if (stepIndex >= m_steps.size()) {
+		return false;
+	}
+	
+	std::vector<ChapterNodeActionType>& steps{ m_steps[stepIndex] };
+	std::vector<ChapterNodeActionType>::iterator step { steps.begin() };
 
-	stepExists |= handleStep(stateSubject, stepIndex, m_spriteTextureSteps);
-	stepExists |= handleStep(stateSubject, stepIndex, m_spriteOpacitySteps);
-	stepExists |= handleStep(stateSubject, stepIndex, m_spritePositionSteps);
-	stepExists |= handleStep(stateSubject, stepIndex, m_spriteGenericAnimationSteps);
-	
-	stepExists |= handleStep(stateSubject, stepIndex, m_backgroundSteps);
-	
+	for (; step != steps.end(); step++) {
+		switch (*step) {
+		case (ChapterNodeActionType::BACKGROUND):
+			stepExists |= handleStep(stateSubject, stepIndex, m_backgroundSteps);
+
+			break;
+		case (ChapterNodeActionType::SPRITE):
+			stepExists |= handleStep(stateSubject, stepIndex, m_spriteTextureSteps);
+			stepExists |= handleStep(stateSubject, stepIndex, m_spriteOpacitySteps);
+			stepExists |= handleStep(stateSubject, stepIndex, m_spritePositionSteps);
+			stepExists |= handleStep(stateSubject, stepIndex, m_spriteGenericAnimationSteps);
+
+			break;
+		case (ChapterNodeActionType::TEXT):
+			stepExists |= handleStep(stateSubject, stepIndex, m_textLineSteps);
+			stepExists |= handleStep(stateSubject, stepIndex, m_textOverrideSpeakerSteps);
+			stepExists |= handleStep(stateSubject, stepIndex, m_textOverrideColorSteps);
+
+			break;
+		case (ChapterNodeActionType::CHOICE):
+			stepExists |= handleStep(stateSubject, m_pickChildStep);
+			
+			break;
+		default:
+			break;
+		}
+	}
+
 	return stepExists;
 	// Notify called in state after iter step is called
 }
@@ -67,13 +133,17 @@ NodeState ChapterNode::action(StateSubject* stateSubject, int stepIndex)
 {
 	// TODO: Remove m_temp
 	std::cout << "test speaker" << " said: " << m_temp << std::endl;
-	bool stepDone = doStep(stateSubject, stepIndex);
-	std::cout << "step #" << stepIndex << " " << (stepDone ? "completed" : "not completed") << std::endl;
 
-	if (stepDone) {
+	if (stepIndex < m_steps.size()) {
+		bool stepDone = doStep(stateSubject, stepIndex);
+
 		return NodeState::NODE_STEP;
-	} 
-	//else if (m_children.size() > 1)
+	}
+
+	std::cout << "step #" << stepIndex << std::endl;
+	stateSubject->nodeEndActions();
+
+	//std::cout << "step #" << stepIndex << " " << (stepDone ? "completed" : "not completed") << std::endl;
 
 	return NodeState::NODE_END;
 }
