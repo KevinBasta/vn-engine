@@ -42,12 +42,12 @@ private:
 	// auto const joined = std::views::join(std::array{s1, s2});
 	// can join string if want to display text and name on one line
 	void drawText(std::wstring_view text, glm::vec3 color, float paddingBottom) {
-		//text = L"Hello, this is Garu. I've come from a far land. To meet brazazazaza.\n brazazaza Test Test Test how should line breaking work?";
 
 		// TODO: gracefully handle empty text variable. A crash occurs in that case at the moment.
 		if (text == L"") {
 			return;
 		}
+
 
 
 		m_textShader.use();
@@ -65,6 +65,8 @@ private:
 		float paddingLeft{ 300.0f };
 		float paddingRight{ 300.0f };
 		int lastConsumedIndex{ 0 };
+		std::wstring testText = L"Hello, this is Garu. I've come from a far land. To meet brazazazaza.\n brazazaza Test Test Test how should line breaking work?";
+		TextTexture::fitLineToScreen(testText, m_window->width() - ((paddingLeft + paddingRight) * m_window->scale()), m_window->scale() * scale);
 
 		while (lastConsumedIndex < text.length() - 1) {
 			glm::mat4 model = glm::mat4(1.0f);
@@ -108,7 +110,7 @@ public:
 	}
 
 	void pollAndDraw() {
-		if (m_stateSubject->m_textState.m_currentState != TextAction::EMPTY) {
+		if (m_stateSubject->m_textState.m_render != false) {
 			drawText(m_stateSubject->m_textState.m_speakerName,
 				m_stateSubject->m_textState.m_color,
 				200.0f);

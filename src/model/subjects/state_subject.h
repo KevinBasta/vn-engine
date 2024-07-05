@@ -131,23 +131,27 @@ public:
 	//
 	// TextAction m_textAction{ TextAction::EMPTY };
 	// TODO: can switch to string views if saved in model?
-	TextState m_textState{TextAction::EMPTY, L"none", L"shirogane, 俺は", glm::vec3(81.0f / 255, 116.0f / 255, 150.0f / 255)};
+	TextState m_textState{false, L"", L"", glm::vec3()};
+
+	void resetTextState() {
+		m_textState = { false, L"", L"", glm::vec3() };
+	}
 
 	void handle(ActionTextLine& action) {
+		
+		m_textState.m_line = action.m_line;
 		
 		Character* character = m_model->getCharacterByID(action.m_characterID);
 
 		if (character != nullptr) {
-			m_textState.m_currentState = TextAction::COMPLETE;
 			m_textState.m_speakerName = character->getName();
-			m_textState.m_line = action.m_line;
 			m_textState.m_color = character->getTextColor();
 		}
 		else {
-			std::cout << "handle ActionTextLine failed" << std::endl;
+			std::cout << "handle ActionTextLine half failed" << std::endl;
 		}
 		
-
+		
 		m_stateDelta.push_back(StateDelta::TEXT);
 	}
 
@@ -162,6 +166,12 @@ public:
 		//m_textState.m_currentState = TextAction::COMPLETE;
 		m_textState.m_color = action.m_textColor;
 		
+		m_stateDelta.push_back(StateDelta::TEXT);
+	}
+
+	void handle(ActionTextRender& action) {
+		m_textState.m_render = action.m_render;
+
 		m_stateDelta.push_back(StateDelta::TEXT);
 	}
 
@@ -210,8 +220,7 @@ public:
 public:
 	// clear non-presistent state
 	void nodeEndActions() {
-		m_textState.m_speakerName = L"";
-		m_textState.m_line = L"";
+		resetTextState();
 	}
 
 public:

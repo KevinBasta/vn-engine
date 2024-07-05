@@ -22,7 +22,13 @@
 
 class TextTexture {
 private:
-	static std::unique_ptr<TextTexture> instance;
+	static std::unique_ptr<TextTexture> m_instance;
+
+	static void checkInstance() {
+		if (m_instance.get() == nullptr) {
+			m_instance = std::make_unique<TextTexture>();
+		}
+	}
 
 private:
 	struct textChar {
@@ -66,11 +72,107 @@ public:
 	}
 
 public:
+	// TODO: can have differnet instances based on size of glyph
+	// in menu can have "small", "medium", and "large" option for text
+	// each corrosponds to a different instance
+
+	// TODO: determine if different (multiple) instances (of the same size) can 
+	// be used for multithreading
+
+	/**
+	 * Creates a vector of string views containing the exact substrings
+	 */
+	static std::vector<std::wstring_view> fitLineToScreen(std::wstring_view text, int maxWidth, float scale) {
+		checkInstance();
+
+		TextTexture* instance{ m_instance.get() };
+		
+		std::vector<std::wstring_view> fittedLines{};
+
+		int startIndex{ 0 };
+		int endIndex{ 0 };
+
+		std::wstring_view::const_iterator c{ text.begin() };
+		
+		while (c != text.end()) {
+			float x{ 0.0f };
+			float y{ 0.0f };
+			int lastSpaceIndex{ startIndex };
+	
+			if (c + 1 == text.end()) {
+				break;
+			}
+			else {
+				c++;
+				endIndex++;
+			}
+
+			// Skip any non-display characters
+			while (endIndex < text.length() - 1) {
+				wchar_t currentChar{ text[endIndex] };
+
+				if (currentChar == ' ' || currentChar == '\n') {
+					endIndex++;
+					if (c + 1 == text.end()) {
+						break;
+					}
+					else {
+						c++;
+					}
+				}
+				else {
+					break;
+				}
+			}
+
+			for (; c != text.end(); c++)
+			{
+				if (instance->m_loadedTextChars.find(*c) == instance->m_loadedTextChars.end()) {
+					instance->loadCharacter(*c);
+				}
+
+				textChar ch = instance->m_loadedTextChars[*c];
+
+				if ((x + (ch.advance >> 6) * scale) > maxWidth) {
+					if (*c != ' ') {
+						endIndex = lastSpaceIndex;
+					}
+
+					break;
+				}
+
+				if (*c == '\n') {
+					break;
+				}
+
+				float xpos = x + ch.bearing.x * scale;
+				float ypos = y - (ch.size.y - ch.bearing.y) * scale;
+
+				float w = ch.size.x * scale;
+				float h = ch.size.y * scale;
+
+				x += (ch.advance >> 6) * scale;
+
+				if (*c == ' ') {
+					lastSpaceIndex = endIndex;
+				}
+
+				endIndex++;
+			}
+
+			fittedLines.push_back(text.substr(startIndex, endIndex));
+			startIndex = endIndex;
+		}
+
+		for (auto line : fittedLines) {
+			std::wcout << line << std::endl;
+		}
+
+		return fittedLines;
+	}
 
 	static int computeBreakIndex(std::wstring_view text, int startIndex, int maxWidth, float scale) {
-		if (instance.get() == nullptr) {
-			instance = std::make_unique<TextTexture>();
-		}
+		checkInstance();
 
 		int endIndex{ startIndex };
 		int lastSpaceIndex{ startIndex };
@@ -80,11 +182,11 @@ public:
 		std::wstring_view::const_iterator c;
 		for (c = text.begin() + startIndex; c != text.end(); c++)
 		{
-			if (instance.get()->m_loadedTextChars.find(*c) == instance.get()->m_loadedTextChars.end()) {
-				instance.get()->loadCharacter(*c);
+			if (m_instance.get()->m_loadedTextChars.find(*c) == m_instance.get()->m_loadedTextChars.end()) {
+				m_instance.get()->loadCharacter(*c);
 			}
 
-			textChar ch = instance.get()->m_loadedTextChars[*c];
+			textChar ch = m_instance.get()->m_loadedTextChars[*c];
 
 			if ((x + (ch.advance >> 6) * scale) > maxWidth) {
 				if (*c != ' ') {
@@ -122,9 +224,7 @@ public:
 	// -------------------
 	static void draw(std::wstring_view text)
 	{
-		if (instance.get() == nullptr) {
-			instance = std::make_unique<TextTexture>();
-		}
+		checkInstance();
 		
 		float scale{ 1.0f };
 		float x{ 0.0f };
@@ -135,18 +235,18 @@ public:
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 		glActiveTexture(GL_TEXTURE0);
-		glBindVertexArray(instance.get()->m_VAO);
+		glBindVertexArray(m_instance.get()->m_VAO);
 
 		// iterate through all characters
 		std::wstring_view::const_iterator c;
 		for (c = text.begin(); c != text.end(); c++)
 		{
-			if (instance.get()->m_loadedTextChars.find(*c) == instance.get()->m_loadedTextChars.end()) {
-				instance.get()->loadCharacter(*c);
+			if (m_instance.get()->m_loadedTextChars.find(*c) == m_instance.get()->m_loadedTextChars.end()) {
+				m_instance.get()->loadCharacter(*c);
 				std::cout << "char loaded: " << static_cast<uint32_t>(*c) << std::endl;
 			}
 
-			textChar ch = instance.get()->m_loadedTextChars[*c];
+			textChar ch = m_instance.get()->m_loadedTextChars[*c];
 
 			float xpos = x + ch.bearing.x * scale;
 			float ypos = y - (ch.size.y - ch.bearing.y) * scale;
@@ -166,7 +266,7 @@ public:
 			// render glyph texture over quad
 			glBindTexture(GL_TEXTURE_2D, ch.textureID);
 			// update content of VBO memory
-			glBindBuffer(GL_ARRAY_BUFFER, instance.get()->m_VBO);
+			glBindBuffer(GL_ARRAY_BUFFER, m_instance.get()->m_VBO);
 			glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices); // be sure to use glBufferSubData and not glBufferData
 
 			glBindBuffer(GL_ARRAY_BUFFER, 0);

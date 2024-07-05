@@ -83,6 +83,10 @@ struct ActionSpriteAnimationGeneric {
 //
 // Text Actions
 //
+struct ActionTextRender {
+	bool m_render{ false };
+};
+
 struct ActionTextLine {
 	int m_characterID{};
 	std::wstring m_line{};

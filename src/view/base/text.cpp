@@ -3,7 +3,7 @@
 
 #include <memory>
 
-std::unique_ptr<TextTexture> TextTexture::instance{ nullptr };
+std::unique_ptr<TextTexture> TextTexture::m_instance{ nullptr };
 
 int TextTexture::initFreeType() {
 	// All functions return a value different than 0 whenever an error occurred

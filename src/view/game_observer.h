@@ -68,7 +68,7 @@ public:
 					m_stateSubject->tickAutoActions(deltaTime);
 				}
 
-				m_context.draw();
+				m_context.drawLayers();
 
 				glfwSwapBuffers(m_window->get());
 

@@ -80,9 +80,14 @@ private:
 	// Text actions
 	//
 
-	std::unordered_map<StepIndex, std::vector<ActionTextLine>> m_textLineSteps{
-		{ 1, {{1, L"hello, this is garu"}} },
-		{ 2, {{1, L"hello, this is NOT garu"}} },
+	std::unordered_map<StepIndex, ActionTextRender> m_textRenderSteps{
+		{ 0, { false } },
+		{ 1, { true } },
+	};
+
+	std::unordered_map<StepIndex, ActionTextLine> m_textLineSteps {
+		{ 1, {1, L"hello, this is garu"} },
+		{ 2, {1, L"hello, this is NOT garu"} },
 		//{ 3, std::vector<ActionTextLine>{{1, L"hello, this is a potato"}} }
 	};	
 	

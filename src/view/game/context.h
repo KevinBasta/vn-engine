@@ -9,6 +9,7 @@
 #include "layer_background.h"
 #include "layer_sprite.h"
 #include "layer_text.h"
+#include "layer_choice.h"
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -20,15 +21,27 @@ public:
 	BackgroundLayer m_backgroundLayer;
 	SpriteLayer	m_spriteLayer;
 	TextLayer m_textLayer;
+	ChoiceLayer m_choiceLayer;
 	Shader m_defaultShader;
 
 public:
 	GameContext(VnWindow* window, StateSubject* stateSubject);
 	
-	void draw() {
+	void drawLayers() {
+		
 		m_backgroundLayer.pollAndDraw();
+		
 		m_spriteLayer.pollAndDraw();
+		
 		m_textLayer.pollAndDraw();
+		
+		if (m_stateSubject->m_activeChoice) {
+
+		}
+		else {
+		
+		}
+
 	};
 
 	//void reloadShaders();

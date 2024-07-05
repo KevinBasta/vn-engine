@@ -101,7 +101,7 @@ add_executable (
 	"src/view/game_observer.h" 
 	"src/view/engine_observer.h" 
 	"src/view/game_loop.h"
-)
+ "src/view/layers/layer_choice.cpp" "src/view/layers/layer_choice.h")
 
 target_include_directories(
 	"vn_engine"

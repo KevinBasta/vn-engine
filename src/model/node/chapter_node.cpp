@@ -110,6 +110,7 @@ bool ChapterNode::doStep(StateSubject* stateSubject, int stepIndex) {
 
 			break;
 		case (ChapterNodeActionType::TEXT):
+			stepExists |= handleStep(stateSubject, stepIndex, m_textRenderSteps);
 			stepExists |= handleStep(stateSubject, stepIndex, m_textLineSteps);
 			stepExists |= handleStep(stateSubject, stepIndex, m_textOverrideSpeakerSteps);
 			stepExists |= handleStep(stateSubject, stepIndex, m_textOverrideColorSteps);

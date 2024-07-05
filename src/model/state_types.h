@@ -29,14 +29,17 @@ struct SpriteState {
 	SpritePosition m_position{};
 };
 
-enum class TextAction {
-	EMPTY,
-	TYPING,
-	COMPLETE
-};
+//For typing animation
+//enum class TextAction {
+//	NONE,
+//	TYPING,
+//	COMPLETE
+//};
 
 struct TextState {
-	TextAction m_currentState{};
+	bool m_render{ false };
+	//TextAction m_currentState{};
+
 	std::wstring_view m_speakerName{};
 	std::wstring_view m_line{};
 	glm::vec3 m_color{};
