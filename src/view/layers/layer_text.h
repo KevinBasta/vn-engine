@@ -65,40 +65,22 @@ private:
 		float paddingLeft{ 300.0f };
 		float paddingRight{ 300.0f };
 		int lastConsumedIndex{ 0 };
-		std::wstring testText = L"Hello, this is Garu. I've come from a far land. To meet brazazazaza.\n brazazaza Test Test Test how should line breaking work?";
-		TextTexture::fitLineToScreen(testText, m_window->width() - ((paddingLeft + paddingRight) * m_window->scale()), m_window->scale() * scale);
+		
+		//std::wstring testText = L"Hello, this is Garu. I've come from a far land. To meet brazazazaza. brazazaza Test Test Test how should line breaking work?";
+		
+		std::vector<std::wstring_view> lines{ TextTexture::fittedScreenLines(text, m_window->width() - ((paddingLeft + paddingRight) * m_window->scale()), m_window->scale() * scale) };
 
-		while (lastConsumedIndex < text.length() - 1) {
+		std::vector<std::wstring_view>::iterator line{ lines.begin() };
+		for (; line != lines.end(); line++) {
 			glm::mat4 model = glm::mat4(1.0f);
 			model = glm::translate(model, glm::vec3(paddingLeft * m_window->scale(), paddingBottom * m_window->scale(), -1.0f));
 			model = glm::scale(model, glm::vec3(m_window->scale() * scale, m_window->scale() * scale, 0.0f));
 			glUniformMatrix4fv(glGetUniformLocation(m_textShader.ID(), "inModel"), 1, GL_FALSE, glm::value_ptr(model));
 
-			int endIndex = TextTexture::computeBreakIndex(text, lastConsumedIndex, m_window->width() - ((paddingLeft + paddingRight) * m_window->scale()), m_window->scale() * scale);
-			TextTexture::draw(text.substr(lastConsumedIndex, endIndex - lastConsumedIndex));
-			
-			// Skip any non-display characters
-			while (endIndex < text.length() - 1) {
-				wchar_t c{ text[endIndex] };
-
-				//std::cout << int(c) << std::endl;
-
-				if (c == ' ' || c == '\n') {
-					endIndex++;
-				}
-				else {
-					break;
-				}
-			}
-
-			lastConsumedIndex = endIndex;
+			TextTexture::draw(*line);
 
 			paddingBottom -= 50.0f;
-			//std::cout << "Next start index: " << lastConsumedIndex << std::endl;
 		}
-
-
-
 	}
 
 public:

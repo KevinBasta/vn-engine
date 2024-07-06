@@ -83,14 +83,14 @@ int TextTexture::loadCharacter(const wchar_t charInput) {
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 	// now store character for later use
-	textChar character = {
+	CharTextrueData character = {
 		texture,
 		glm::ivec2(m_face->glyph->bitmap.width, m_face->glyph->bitmap.rows),
 		glm::ivec2(m_face->glyph->bitmap_left, m_face->glyph->bitmap_top),
 		static_cast<unsigned int>(m_face->glyph->advance.x)
 	};
 
-	m_loadedTextChars.insert(std::pair<wchar_t, textChar>(charInput, character));
+	m_loadedTextChars.insert(std::pair<wchar_t, CharTextrueData>(charInput, character));
 
 	glBindTexture(GL_TEXTURE_2D, 0);
 

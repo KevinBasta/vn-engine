@@ -31,14 +31,14 @@ private:
 	}
 
 private:
-	struct textChar {
+	struct CharTextrueData {
 		unsigned int textureID;
 		glm::ivec2 size;
 		glm::ivec2 bearing;
 		unsigned int advance;
 	};
 
-	std::unordered_map<wchar_t, textChar> m_loadedTextChars{};
+	std::unordered_map<wchar_t, CharTextrueData> m_loadedTextChars{};
 
 private: 
 	FT_Library m_ft{};
@@ -79,123 +79,35 @@ public:
 	// TODO: determine if different (multiple) instances (of the same size) can 
 	// be used for multithreading
 
-	/**
-	 * Creates a vector of string views containing the exact substrings
-	 */
-	static std::vector<std::wstring_view> fitLineToScreen(std::wstring_view text, int maxWidth, float scale) {
-		checkInstance();
 
-		TextTexture* instance{ m_instance.get() };
-		
-		std::vector<std::wstring_view> fittedLines{};
-
-		int startIndex{ 0 };
-		int endIndex{ 0 };
-
-		std::wstring_view::const_iterator c{ text.begin() };
-		
-		while (c != text.end()) {
-			float x{ 0.0f };
-			float y{ 0.0f };
-			int lastSpaceIndex{ startIndex };
-	
-			if (c + 1 == text.end()) {
-				break;
-			}
-			else {
-				c++;
-				endIndex++;
-			}
-
-			// Skip any non-display characters
-			while (endIndex < text.length() - 1) {
-				wchar_t currentChar{ text[endIndex] };
-
-				if (currentChar == ' ' || currentChar == '\n') {
-					endIndex++;
-					if (c + 1 == text.end()) {
-						break;
-					}
-					else {
-						c++;
-					}
-				}
-				else {
-					break;
-				}
-			}
-
-			for (; c != text.end(); c++)
-			{
-				if (instance->m_loadedTextChars.find(*c) == instance->m_loadedTextChars.end()) {
-					instance->loadCharacter(*c);
-				}
-
-				textChar ch = instance->m_loadedTextChars[*c];
-
-				if ((x + (ch.advance >> 6) * scale) > maxWidth) {
-					if (*c != ' ') {
-						endIndex = lastSpaceIndex;
-					}
-
-					break;
-				}
-
-				if (*c == '\n') {
-					break;
-				}
-
-				float xpos = x + ch.bearing.x * scale;
-				float ypos = y - (ch.size.y - ch.bearing.y) * scale;
-
-				float w = ch.size.x * scale;
-				float h = ch.size.y * scale;
-
-				x += (ch.advance >> 6) * scale;
-
-				if (*c == ' ') {
-					lastSpaceIndex = endIndex;
-				}
-
-				endIndex++;
-			}
-
-			fittedLines.push_back(text.substr(startIndex, endIndex));
-			startIndex = endIndex;
-		}
-
-		for (auto line : fittedLines) {
-			std::wcout << line << std::endl;
-		}
-
-		return fittedLines;
-	}
-
+	// TODO: can remove the y calculations in this function
 	static int computeBreakIndex(std::wstring_view text, int startIndex, int maxWidth, float scale) {
 		checkInstance();
 
-		int endIndex{ startIndex };
-		int lastSpaceIndex{ startIndex };
+		TextTexture* instance{ m_instance.get() };
+
+		int count{ 0 };
+		int lastSpaceCount{ 0 };
 		float x{ 0.0f };
 		float y{ 0.0f };
 
 		std::wstring_view::const_iterator c;
 		for (c = text.begin() + startIndex; c != text.end(); c++)
 		{
-			if (m_instance.get()->m_loadedTextChars.find(*c) == m_instance.get()->m_loadedTextChars.end()) {
-				m_instance.get()->loadCharacter(*c);
+			if (instance->m_loadedTextChars.find(*c) == instance->m_loadedTextChars.end()) {
+				instance->loadCharacter(*c);
 			}
 
-			textChar ch = m_instance.get()->m_loadedTextChars[*c];
+			const CharTextrueData& ch{ instance->m_loadedTextChars[*c] };
 
 			if ((x + (ch.advance >> 6) * scale) > maxWidth) {
 				if (*c != ' ') {
-					endIndex = lastSpaceIndex;
+					count = lastSpaceCount;
 				}
 
 				break;
 			}
-			
+
 			if (*c == '\n') {
 				break;
 			}
@@ -205,20 +117,61 @@ public:
 
 			float w = ch.size.x * scale;
 			float h = ch.size.y * scale;
-			
+
 			x += (ch.advance >> 6) * scale;
-			
+
 			if (*c == ' ') {
-				lastSpaceIndex = endIndex;
+				lastSpaceCount = count;
 			}
 
-			endIndex++;
+			count++;
 		}
 
-		//std::cout << "End index: " << endIndex << " " << std::endl;
-
-		return endIndex;
+		return count;
 	}
+
+	/**
+	 * Creates a vector of string views containing the exact substrings
+	 */
+	static std::vector<std::wstring_view> fittedScreenLines(std::wstring_view text, int maxWidth, float scale) {
+		checkInstance();
+
+		TextTexture* instance{ m_instance.get() };
+		
+		std::vector<std::wstring_view> fittedLines{};
+
+		int startIndex{ 0 };
+		int lineLength{ 0 };
+		
+		while (startIndex < text.length()) {
+
+ 			// Skip any non-display characters
+			while (startIndex < text.length() - 1) {
+				wchar_t currentChar{ text[startIndex] };
+
+				if (currentChar == ' ' || currentChar == '\n') {
+					startIndex++;
+					//std::cout << "skip" << std::endl;
+				}
+				else {
+					break;
+				}
+			}
+
+			lineLength = computeBreakIndex(text, startIndex, maxWidth, scale);
+
+			fittedLines.push_back(text.substr(startIndex, lineLength));
+			startIndex = startIndex + lineLength;
+		}
+
+		/*for (auto line : fittedLines) {
+			std::wcout << line;
+			std::wcout << "00" << std::endl;
+		}*/
+
+		return fittedLines;
+	}
+
 
 	// render line of text
 	// -------------------
@@ -243,10 +196,10 @@ public:
 		{
 			if (m_instance.get()->m_loadedTextChars.find(*c) == m_instance.get()->m_loadedTextChars.end()) {
 				m_instance.get()->loadCharacter(*c);
-				std::cout << "char loaded: " << static_cast<uint32_t>(*c) << std::endl;
+				//std::cout << "char loaded: " << static_cast<uint32_t>(*c) << std::endl;
 			}
 
-			textChar ch = m_instance.get()->m_loadedTextChars[*c];
+			CharTextrueData& ch{ m_instance.get()->m_loadedTextChars[*c] };
 
 			float xpos = x + ch.bearing.x * scale;
 			float ypos = y - (ch.size.y - ch.bearing.y) * scale;
