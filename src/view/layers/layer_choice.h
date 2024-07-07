@@ -70,9 +70,6 @@ public:
 	}
 
 	void pollAndDraw() {
-
-		
-
 		if (m_stateSubject->m_activeChoice == true) {
 			ActionChooseNode* choices{ m_stateSubject->getNodeChoices() };
 
@@ -91,6 +88,7 @@ public:
 				}
 
 				drawChoice(choice.m_displayText, color, paddingBottom);
+				index++;
 			}
 		}
 	}

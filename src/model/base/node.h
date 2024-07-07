@@ -60,6 +60,7 @@ public:
 	int getId() { return m_id; }
 	Node* getParent() { return m_parent; } // TODO: can have multiple parents? hence must change
 	Node* getChildByIndex(int childIndex);
+	Node* getChildById(int childId);
 	int getChildrenAmount();
 
 	// Return children to display data from them for user to pick based on that

@@ -30,6 +30,7 @@ public:
 
 	int size();
 	void addChild(Node* parent, Node* child);
+	Node* getChildById(int childId);
 	Node* getChildByIndex(int index);
 	Node* operator[](int index);
 	std::vector<Node*>& getChildrenView();

@@ -31,7 +31,7 @@ private:
 		{ ChapterNodeActionType::BACKGROUND, ChapterNodeActionType::SPRITE },
 		{ ChapterNodeActionType::TEXT, ChapterNodeActionType::SPRITE },
 		{ ChapterNodeActionType::TEXT, ChapterNodeActionType::SPRITE },
-		{ ChapterNodeActionType::CHOICE } // can auto make this for engine
+		{ ChapterNodeActionType::CHOICE } // can auto add this for engine
 	};
 
 	typedef int StepIndex;
@@ -110,9 +110,7 @@ private:
 	// Child picker step
 	//
 
-	ActionChooseNode m_pickChildStep{};
-
-
+	ActionChooseNode m_pickChildStep{ ChoiceStyle::LIST_TEXT_AREA, {{3, L"second first-level node"}, {4, L"third first-level node"}, {2, L"first first-level node"}}};
 
 
 	bool doStep(StateSubject* stateSubject, int stepIndex);

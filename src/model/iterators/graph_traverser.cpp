@@ -1,6 +1,7 @@
 
 #include "graph.h"
 #include "graph_traverser.h"
+#include "state_subject.h"
 
 #include <iostream>
 
@@ -21,12 +22,22 @@ bool GraphTraverser::pointToGraphHead() {
 }
 
 bool GraphTraverser::pointToChild(StateSubject* stateSubject) {
-	// handle no children case
-	if (!m_curNode) {
+	// TODO: handle no children case
+	if (m_curNode == nullptr || stateSubject == nullptr) {
 		return false;
 	}
 
-	Node* child = m_curNode->getChildByIndex(0);
+	Node* child{ nullptr };
+	
+	if (stateSubject->m_activeChoice) {
+		child = m_curNode->getChildById(stateSubject->getChoiceId());
+		stateSubject->recordAndDisableChoice();
+	}
+	
+	if (child == nullptr) {
+		// TODO: should get any child not visited yet, with fall back to 0
+		child = m_curNode->getChildByIndex(0);
+	}
 
 	if (child) {
 		m_curNode = child;

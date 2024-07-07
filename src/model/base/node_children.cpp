@@ -51,6 +51,23 @@ void NodeChildren::addChild(Node* parent, Node* child) {
 	updateChildrenViewer();
 }
 
+Node* NodeChildren::getChildById(int childId) {
+	Node* child{ nullptr };
+
+	for (Node* childIter : m_childrenViewer) {
+		if (childIter == nullptr) {
+			continue;
+		}
+
+		if (childIter->getId() == childId) {
+			child = childIter;
+			break;
+		}
+	}
+
+	return child;
+}
+
 Node* NodeChildren::getChildByIndex(int index) {
 	Node* child{ nullptr };
 	

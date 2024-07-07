@@ -83,8 +83,8 @@ public:
 
 	std::vector<int> m_chapterChoicesRecord{};
 
-	void appendChapterChoice(int choiceIndex) {
-		m_chapterChoicesRecord.push_back(choiceIndex);
+	void appendChapterChoice() {
+		m_chapterChoicesRecord.push_back(getChoiceId());
 	}
 
 	ActionChooseNode* getNodeChoices() {
@@ -93,6 +93,25 @@ public:
 
 	void chooseNode(int nodeId) {
 
+	}
+
+	int getChoiceId() {
+		if (m_activeChoice == false || m_nodeChoices == nullptr) {
+			return 0;
+		}
+
+		if (m_currentChoiceIndex < 0 || m_currentChoiceIndex >= m_nodeChoices->m_choices.size()) {
+			return 0;
+		}
+
+		return m_nodeChoices->m_choices[m_currentChoiceIndex].m_nodeID;
+	}
+
+	void recordAndDisableChoice() {
+		appendChapterChoice();
+		m_activeChoice = false;
+		m_nodeChoices = nullptr;
+		m_currentChoiceIndex = 0;
 	}
 
 	void handle(ActionChooseNode& action) {

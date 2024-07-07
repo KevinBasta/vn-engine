@@ -42,7 +42,7 @@ public:
 		NodeState stepResult = m_nodeIterator.step(stateSubject);
 
 		if (stepResult == NodeState::NODE_END) {
-			bool nextNodeInit = pointToChild(StateSubject* stateSubject);
+			bool nextNodeInit = pointToChild(stateSubject);
 			if (!nextNodeInit) {
 				std::cout << "GRAPH DONE" << std::endl;
 				return GraphState::GRAPH_END;

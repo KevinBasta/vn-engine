@@ -38,6 +38,10 @@ Node* Node::getChildByIndex(int childIndex) {
 	return m_children[childIndex];
 }
 
+Node* Node::getChildById(int childId) {
+	return m_children.getChildById(childId);
+}
+
 void Node::addChild(Node* child) {
 	m_children.addChild(this, child);
 }
