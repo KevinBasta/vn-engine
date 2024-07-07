@@ -24,7 +24,7 @@ private:
 private:
 	// flase for fail, true for success
 	bool pointToGraphHead();
-	bool pointToChild(int childIndex = 0);
+	bool pointToChild(StateSubject* stateSubject);
 
 	// TODO: implement point to parent
 	bool pointToParent(int parentID);
@@ -42,7 +42,7 @@ public:
 		NodeState stepResult = m_nodeIterator.step(stateSubject);
 
 		if (stepResult == NodeState::NODE_END) {
-			bool nextNodeInit = pointToChild();
+			bool nextNodeInit = pointToChild(StateSubject* stateSubject);
 			if (!nextNodeInit) {
 				std::cout << "GRAPH DONE" << std::endl;
 				return GraphState::GRAPH_END;

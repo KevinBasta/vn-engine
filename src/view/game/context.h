@@ -33,13 +33,12 @@ public:
 		
 		m_spriteLayer.pollAndDraw();
 		
-		m_textLayer.pollAndDraw();
 		
 		if (m_stateSubject->m_activeChoice) {
-
+			m_choiceLayer.pollAndDraw();
 		}
 		else {
-		
+			m_textLayer.pollAndDraw();
 		}
 
 	};

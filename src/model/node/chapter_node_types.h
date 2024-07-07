@@ -138,7 +138,14 @@ struct ChoiceTextProperties {
 struct ActionChooseNode {
 	ChoiceStyle m_style{};
 
-	std::list<ChoiceTextProperties> m_choices{};
+	// TODO: add support for not displaying already visited node
+	// The usecase being nodes that branch off and loop back to explore multiple loop paths
+	// Would need to figure out how to move forward after all the loop nodes are done
+	// maybe something like not origianlly displaying the one non-loop path forward then using it at the end
+	// would need the default move-forward behavior to be any node that is not visited. Otherwise the 0th node or error out?
+	// but erroring out needs to be recoverable somehow 
+	// bool m_doNotDisplayVisited{};
+	std::vector<ChoiceTextProperties> m_choices{};
 };
 
 

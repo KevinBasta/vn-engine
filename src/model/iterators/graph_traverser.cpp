@@ -20,13 +20,13 @@ bool GraphTraverser::pointToGraphHead() {
 	return true;
 }
 
-bool GraphTraverser::pointToChild(int childIndex) {
+bool GraphTraverser::pointToChild(StateSubject* stateSubject) {
 	// handle no children case
 	if (!m_curNode) {
 		return false;
 	}
 
-	Node* child = m_curNode->getChildByIndex(childIndex);
+	Node* child = m_curNode->getChildByIndex(0);
 
 	if (child) {
 		m_curNode = child;

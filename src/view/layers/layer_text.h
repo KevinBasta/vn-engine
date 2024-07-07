@@ -15,9 +15,6 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include <ft2build.h>
-#include FT_FREETYPE_H
-
 #include <string>
 #include <string_view>
 #include <iostream>
@@ -32,13 +29,6 @@ private:
 	StateSubject* m_stateSubject{ nullptr };
 	Shader m_textShader;
 
-	void drawBackground(Texture2D* texture) {
-		if (texture == nullptr) {
-			return;
-		}
-
-
-	}
 	// auto const joined = std::views::join(std::array{s1, s2});
 	// can join string if want to display text and name on one line
 	void drawText(std::wstring_view text, glm::vec3 color, float paddingBottom) {
@@ -47,8 +37,6 @@ private:
 		if (text == L"") {
 			return;
 		}
-
-
 
 		m_textShader.use();
 		

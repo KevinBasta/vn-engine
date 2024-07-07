@@ -79,11 +79,16 @@ public:
 	// safe file node traversal
 	bool m_activeChoice{ false };
 	ActionChooseNode* m_nodeChoices{ nullptr };
+	int m_currentChoiceIndex{ 0 };
 
 	std::vector<int> m_chapterChoicesRecord{};
 
 	void appendChapterChoice(int choiceIndex) {
 		m_chapterChoicesRecord.push_back(choiceIndex);
+	}
+
+	ActionChooseNode* getNodeChoices() {
+		return m_nodeChoices;
 	}
 
 	void chooseNode(int nodeId) {
