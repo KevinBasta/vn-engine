@@ -5,14 +5,34 @@
 #include "state_subject.h"
 
 static bool sg_leftButtonReleaseEvent{ false };
+static bool sg_upKeyButtonReleaseEvent{ false };
+static bool sg_downKeyButtonReleaseEvent{ false };
+static bool sg_enterKeyButtonReleaseEvent{ false };
 
 void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
 {
+
 	if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_RELEASE) {
 		sg_leftButtonReleaseEvent = true;
 	}
 }
 
+
+void keyPressCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
+	// Can use GLFW_PRESS here because after first call it will be GLFW_REPEAT
+	if (key == GLFW_KEY_UP && action == GLFW_PRESS) {
+		sg_upKeyButtonReleaseEvent = true;
+	}
+
+	if (key == GLFW_KEY_DOWN && action == GLFW_PRESS) {
+		sg_downKeyButtonReleaseEvent = true;
+	}
+	
+	if (key == GLFW_KEY_ENTER && action == GLFW_PRESS) {
+		sg_enterKeyButtonReleaseEvent = true;
+	}
+}
 
 class GameController {
 private:
@@ -25,6 +45,7 @@ public:
 		m_stateSubject{ stateSubject }
 	{
 		glfwSetMouseButtonCallback(window->get(), mouseButtonCallback);
+		glfwSetKeyCallback(window->get(), keyPressCallback);
 	}
 
 	void processInput() {
@@ -40,7 +61,10 @@ private:
 
 		if (sg_leftButtonReleaseEvent) {
 			//m_stateSubject->updateCurrentText("lol", "test");
-			m_stateSubject->action();
+			if (m_stateSubject->isChoiceActive() == false) {
+				m_stateSubject->action();
+			}
+
 			sg_leftButtonReleaseEvent = false;
 		}
 
@@ -58,6 +82,25 @@ private:
 		if (glfwGetKey(m_window->get(), GLFW_KEY_ESCAPE) == GLFW_PRESS) {
 			// open menu?
 			glfwSetWindowShouldClose(m_window->get(), true);
+		}
+
+		if (sg_upKeyButtonReleaseEvent) {
+			if (m_stateSubject->isChoiceActive()) {
+				m_stateSubject->chooseUpChoice();
+				sg_upKeyButtonReleaseEvent = false;
+			}
+		}
+
+		if (sg_downKeyButtonReleaseEvent) {
+			if (m_stateSubject->isChoiceActive()) {
+				m_stateSubject->chooseDownChoice();
+				sg_downKeyButtonReleaseEvent = false;
+			}
+		}
+
+		if (sg_enterKeyButtonReleaseEvent) {
+			m_stateSubject->action();
+			sg_enterKeyButtonReleaseEvent = false;
 		}
 
 		if (glfwGetKey(m_window->get(), GLFW_KEY_R) == GLFW_PRESS) {

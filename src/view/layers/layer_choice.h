@@ -70,7 +70,7 @@ public:
 	}
 
 	void pollAndDraw() {
-		if (m_stateSubject->m_activeChoice == true) {
+		if (m_stateSubject->isChoiceActive()) {
 			ActionChooseNode* choices{ m_stateSubject->getNodeChoices() };
 
 			if (choices == nullptr) {
