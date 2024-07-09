@@ -43,7 +43,7 @@ void NodeChildren::addChild(Node* parent, Node* child) {
 	else {
 		// May eliminate the m_isOwned property since can check if parent is set
 		child->setOwned(true);
-		child->setParent(parent);
+		child->setParent(parent); // TODO: change to "add parent" and "remove parent" on unlink
 		
 		addOwnedChild(child);
 	}

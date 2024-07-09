@@ -55,12 +55,8 @@ public:
 
 private:
 	void processMouse() {
-		if (glfwGetKey(m_window->get(), GLFW_KEY_W) == GLFW_PRESS) {
-			std::cout << "w pressed" << std::endl;
-		}
-
+		// Do a state step on left click
 		if (sg_leftButtonReleaseEvent) {
-			//m_stateSubject->updateCurrentText("lol", "test");
 			if (m_stateSubject->isChoiceActive() == false) {
 				m_stateSubject->action();
 			}
@@ -68,39 +64,53 @@ private:
 			sg_leftButtonReleaseEvent = false;
 		}
 
+		// TODO: to add support for clicking the node children choices, need to
+		// 1. save the poisition/bounds in the choice layer after each redraw
+		// 2. give the controller a pointer to the context or the choice layer to get those positions/bounds
+
 		//if (glfwGetMouseButton(m_window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
-		//	// Move state forward
-		//	std::cout << "LEFT MOUSE BUTTON PRESSED!" << std::endl;
 		//}
 
 		//if (m_leftMouseButtonWasPressedLastFrame && glfwGetMouseButton(m_window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_RELEASE) {
-		//	m_stateSubject->updateCurrentText("lol", "test");
 		//}
 	}
 
 	void processKeyboard() {
 		if (glfwGetKey(m_window->get(), GLFW_KEY_ESCAPE) == GLFW_PRESS) {
-			// open menu?
+			// TODO: open menu?
 			glfwSetWindowShouldClose(m_window->get(), true);
 		}
 
+		// Do a state step on enter press (picking a node child if choice is active)
+		if (sg_enterKeyButtonReleaseEvent) {
+			m_stateSubject->action();
+			sg_enterKeyButtonReleaseEvent = false;
+		}
+		
+
+		// Change node child choice index with up and down arrows
 		if (sg_upKeyButtonReleaseEvent) {
 			if (m_stateSubject->isChoiceActive()) {
 				m_stateSubject->chooseUpChoice();
-				sg_upKeyButtonReleaseEvent = false;
 			}
+			
+			sg_upKeyButtonReleaseEvent = false;
 		}
 
 		if (sg_downKeyButtonReleaseEvent) {
 			if (m_stateSubject->isChoiceActive()) {
 				m_stateSubject->chooseDownChoice();
-				sg_downKeyButtonReleaseEvent = false;
 			}
+			
+			sg_downKeyButtonReleaseEvent = false;
 		}
 
-		if (sg_enterKeyButtonReleaseEvent) {
-			m_stateSubject->action();
-			sg_enterKeyButtonReleaseEvent = false;
+
+
+
+
+		if (glfwGetKey(m_window->get(), GLFW_KEY_W) == GLFW_PRESS) {
+			std::cout << "w pressed" << std::endl;
 		}
 
 		if (glfwGetKey(m_window->get(), GLFW_KEY_R) == GLFW_PRESS) {
