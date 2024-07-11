@@ -18,6 +18,7 @@ public:
 	{
 		m_model->initCharacters();
 		m_model->initBackgrounds();
+		m_model->initRelationTypes();
 	}
 
 	void newGame() {

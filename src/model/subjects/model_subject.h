@@ -114,12 +114,14 @@ public:
 		m_backgrounds.push_back(std::move(background_0));
 	}
 
-	//void initRelations() {
-	//	RelationTypes::addRelationType("friendship");
-	//	RelationTypes::addRelationType("respect");
-	//	RelationTypes::addRelationType("hatred");
-	//	// RelationTypes::print();
+	void initRelationTypes() {
+		RelationTypes::addRelationType("friendship");
+		RelationTypes::addRelationType("respect");
+		RelationTypes::addRelationType("hatred");
+		RelationTypes::print();
+	}
 
+	//void initRelations() {
 	//	Character* garu = m_characters[0].get();
 	//	Relations& garuRelations = (*garu).getRelationsObject();
 
