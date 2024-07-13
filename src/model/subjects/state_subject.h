@@ -9,6 +9,7 @@
 #include "chapter_node_types.h"
 
 #include "character.h"
+#include "relation.h"
 //#include "chapter.h"
 //#include "graph.h"
 //#include "graph_iterator.h"
@@ -242,11 +243,17 @@ public:
 
 
 	//
+	// Common Typedefs
+	//
+	typedef int characterId;
+
+	//
 	// Characters
 	//
-	typedef int ID;
 	typedef int stepIndex;
-	typedef std::unordered_map<ID, SpriteState> spriteRenderMap;
+	// TODO: allow multiple sprites for one character
+	// TODO: rethink sprite system. perhaps a central sprite manager
+	typedef std::unordered_map<characterId, SpriteState> spriteRenderMap;
 	typedef std::list<std::pair<stepIndex, ActionSpriteAnimationGeneric>> activeSpriteAnimationsMap;
 	
 	spriteRenderMap m_spriteRenderData{};
@@ -262,8 +269,20 @@ public:
 	bool tick(std::pair<stepIndex, ActionSpriteAnimationGeneric>& animation, float timePassed);
 	bool endSpriteAnimations();
 
+	//
+	// Bonds/Relationships
+	//
+	typedef std::vector<Relations> characterRelations;
+	
+	characterRelations m_characterRelationsData{};
 
+	void initCharacterRelations() {
 
+	}
+
+	void handle() {
+
+	}
 
 public:
 	// clear non-presistent state

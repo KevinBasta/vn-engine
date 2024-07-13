@@ -104,12 +104,30 @@ struct ActionTextOverrideColor {
 //
 // Background Actions
 //
-struct ActionBackgroundTexture{
+struct ActionBackgroundTexture {
 	int backgroundIndex{};
 };
 
 
+//
+// Bonds/Relationship Actions
+//
+struct ActionAddBond {
+	int m_characterOneId{};
+	int m_characterTwoId{};
+	int m_relationTypeId{};
+	int m_relationAddValue{};
+};
 
+struct ChoiceBondProperties {
+	int m_nodeId{};
+
+	std::vector<ActionAddBond> m_bondActions{};
+};
+
+struct ActionChooseNodeBond {
+	std::vector<ChoiceBondProperties> m_choiceBondActions{};
+};
 
 //
 // Node child picking action
@@ -133,6 +151,8 @@ struct ChoiceTextProperties {
 	int m_nodeID{};
 
 	std::wstring m_displayText{};
+
+	//bool m_bondAction{ false };
 };
 
 struct ActionChooseNode {

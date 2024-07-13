@@ -23,7 +23,7 @@ void RelationTypes::addRelationType(std::string relationName, int id) {
  * Raises an exception otherwise.
  */
 int RelationTypes::getRelationId(std::string relationName) {
-	// PI (potential improvement) with: https://en.cppreference.com/w/cpp/container/unordered_map/find to pass string_view
+	// TODO: Improvement with: https://en.cppreference.com/w/cpp/container/unordered_map/find to pass string_view
 	std::unordered_map<RelationName, RelationId>::const_iterator relationType{ relationTypes.find(relationName) };
 	
 	if (relationType != relationTypes.end()) {

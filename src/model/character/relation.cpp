@@ -8,57 +8,70 @@
 #include <unordered_map>
 #include <iostream>
 
-Relations::Relations() : m_relationships{} {
+bool Relations::addRelationship(int characterId) {
+	auto [relationshipEntry, result] = m_relationships.insert(std::make_pair(characterId, RelationToValueMap{}));
 
-};
+	return result;
+}
+
+int Relations::getCharacterRelation(int characterId, int relationId) {
+	CharacterToRelationMap::iterator relationWithCharacter{ m_relationships.find(characterId) };
+
+	if (relationWithCharacter == m_relationships.end()) {
+		return 0;
+	}
+
+	RelationToValueMap::iterator relationValue{ relationWithCharacter->second.find(relationId) };
+
+	if (relationValue == relationWithCharacter->second.end()) {
+		return 0;
+	}
+
+	return relationWithCharacter->second[relationId];
+}
+
+bool Relations::setCharacterRelation(int characterId, int relationId, int amount) {
+	CharacterToRelationMap::iterator relationWithCharacter{ m_relationships.find(characterId) };
+
+	if (relationWithCharacter == m_relationships.end()) {
+		bool relationshipInit{ addRelationship(characterId) };
+
+		if (!relationshipInit) {
+			return false;
+		}
+	}
+	
+	relationWithCharacter->second[relationId] = amount;
+	return true;
+}
+
+bool Relations::addCharacterRelation(int characterId, int relationId, int amountToAdd) {
+	CharacterToRelationMap::iterator relationWithCharacter{ m_relationships.find(characterId) };
+	
+	if (relationWithCharacter == m_relationships.end()) {
+		bool relationshipInit{ addRelationship(characterId) };
+
+		if (!relationshipInit) {
+			return false;
+		}
+
+		relationWithCharacter->second[relationId] = 0;
+	}
+	
+	relationWithCharacter->second[relationId] += amountToAdd;
+	return true;
+}
 
 std::ostream& operator<<(std::ostream& out, Relations& relation) {
 	out << "Relations:" << std::endl;
 
 	for (auto characterRelations : relation.m_relationships) {
 		out << "\tcharacter id: " << characterRelations.first << std::endl;
-		
+
 		for (auto relationValues : characterRelations.second) {
 			out << "\t\trelation id: " << relationValues.first << " relation value: " << relationValues.second << std::endl;
 		}
 	}
 
 	return out;
-}
-
-void Relations::addCharacterRelation(int characterId, int relationId, int amountToAdd) {
-	CharacterToRelationMap::iterator relationWithCharacter = m_relationships.find(characterId);
-	
-	if (relationWithCharacter != m_relationships.end()) {
-		// If the character is already in the relation map
-
-		RelationToValueMap::iterator relationshipEntry = relationWithCharacter->second.find(relationId);
-			
-		if (relationshipEntry != relationWithCharacter->second.end()) {
-			// If relation type entry exists, add onto it
-			relationshipEntry->second += amountToAdd;
-		}
-		else {
-			// If relation type entry does not exist, create it
-			relationWithCharacter->second.insert(std::make_pair(relationId, amountToAdd));
-		}
-	}
-	else {
-		// If the character is not in the relation map
-
-		// Initilize the relationship with the character
-		auto [relationshipEntry, result] = m_relationships.insert(std::make_pair(characterId, RelationToValueMap{}));
-		
-		if (result) {
-			// Add the relation id and value
-			auto [relationTypeEntry, result] = relationshipEntry->second.insert(std::make_pair(relationId, amountToAdd));
-			
-			if (!result) {
-				std::cout << "error adding character relation type and amount" << std::endl;
-			}
-		}
-		else {
-			std::cout << "error adding character relationship" << std::endl;
-		}
-	}
 }
