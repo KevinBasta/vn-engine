@@ -245,16 +245,16 @@ public:
 	//
 	// Common Typedefs
 	//
-	typedef int characterId;
+	using characterId = int;
 
 	//
 	// Characters
 	//
-	typedef int stepIndex;
+	using stepIndex = int;
 	// TODO: allow multiple sprites for one character
 	// TODO: rethink sprite system. perhaps a central sprite manager
-	typedef std::unordered_map<characterId, SpriteState> spriteRenderMap;
-	typedef std::list<std::pair<stepIndex, ActionSpriteAnimationGeneric>> activeSpriteAnimationsMap;
+	using spriteRenderMap = std::unordered_map<characterId, SpriteState>;
+	using activeSpriteAnimationsMap = std::list<std::pair<stepIndex, ActionSpriteAnimationGeneric>>;
 	
 	spriteRenderMap m_spriteRenderData{};
 	activeSpriteAnimationsMap m_activeSpriteAnimations{};
@@ -272,7 +272,7 @@ public:
 	//
 	// Bonds/Relationships
 	//
-	typedef std::vector<Relations> characterRelations;
+	using characterRelations = std::vector<Relations>;
 	
 	characterRelations m_characterRelationsData{};
 

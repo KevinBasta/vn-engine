@@ -27,8 +27,8 @@ class ChapterIterator;
 class ModelSubject : public Subject {
 public:
 	// This class is only for creating the chapters and characters. The current would actually be stored in the stat
-	typedef int ID;
-	typedef std::unordered_map<ID, std::unique_ptr<Character>> characterMap;
+	using ID = int;
+	using characterMap = std::unordered_map<ID, std::unique_ptr<Character>> ;
 	
 	std::vector<std::unique_ptr<Chapter>>	m_chapters{};
 	characterMap m_characters{};

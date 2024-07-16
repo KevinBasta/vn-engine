@@ -42,6 +42,7 @@ public:
 public:
 	// Usecase: viewing old nodes or loading from save file
 	Node* getNodeById(int nodeId);
+	GraphTraverser getNodeById(std::vector<int>& grpahPath, int nodeId);
 
 private:
 	// Recursive function only for use with getNodeById

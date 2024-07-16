@@ -17,6 +17,7 @@
 class Texture2D {
 private:
 	// Opengl specific IDs
+	const int m_vnId{};
 	GLuint m_textureID{};
 	GLuint m_VAO{};
 
@@ -44,7 +45,8 @@ public:
 	~Texture2D();
 	void draw();
 
-	GLuint ID()  const { return m_textureID; }
+	GLuint openglId() const { return m_textureID; }
+	int vnId() const { return m_vnId; }
 	int width()  const { return m_width; }
 	int height() const { return m_height; }
 	float getScaleToViewport(VnWindow* window);

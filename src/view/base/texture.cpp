@@ -1,6 +1,7 @@
 
 #include <filesystem> 
 
+#include "id.h"
 #include "texture.h"
 #include "window.h"
 
@@ -16,7 +17,9 @@
 
 #include <utility>
 
-Texture2D::Texture2D(const char* filepath) {
+Texture2D::Texture2D(const char* filepath):
+	m_vnId { IdGenerator<Texture2D>::getId() }
+{
 	if (filepath == nullptr) {
 		return;
 	}

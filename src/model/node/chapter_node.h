@@ -34,8 +34,8 @@ private:
 		{ ChapterNodeActionType::CHOICE } // can auto add this for engine
 	};
 
-	typedef int StepIndex;
-	typedef int SubStepIndex;
+	using StepIndex = int;
+	using SubStepIndex = int;
 	
 	//
 	// Background actions

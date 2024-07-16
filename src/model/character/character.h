@@ -14,7 +14,7 @@
 
 class Character {
 private:
-	const int	m_id;
+	const int	m_id{};
 
 	std::wstring m_name{};
 	glm::vec3 m_textColor{0.4f, 0.3f, 0.9f};
