@@ -20,7 +20,7 @@ private:
 	int m_id{};
 
 public:
-	Chapter() {};
+	Chapter() : m_graph{ std::make_unique<Graph>() } {};
 
 	// Setters
 	//void addCharacter(Character& character) { m_characterSceneData[character] = character; };

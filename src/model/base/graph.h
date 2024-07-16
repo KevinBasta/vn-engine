@@ -25,6 +25,10 @@ class Graph {
 private:
 	std::unique_ptr<Node> m_head{};
 	Node* m_targetSearchNode{ nullptr };
+	
+public:
+	Graph() { std::cout << "constructing graph" << std::endl; }
+	~Graph() { std::cout << "destructing graph" << std::endl; }
 
 public:
 // Game Operations:

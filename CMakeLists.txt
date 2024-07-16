@@ -101,7 +101,7 @@ add_executable (
 	"src/view/game_observer.h" 
 	"src/view/engine_observer.h" 
 	"src/view/game_loop.h"
- "src/view/layers/layer_choice.cpp" "src/view/layers/layer_choice.h" "src/view/layers/layer_transition.h" "src/view/layers/layer_transition.cpp" "src/view/base/texture_manager.h" "src/view/base/texture_manager.cpp")
+ "src/view/layers/layer_choice.cpp" "src/view/layers/layer_choice.h" "src/view/layers/layer_transition.h" "src/view/layers/layer_transition.cpp" "src/view/base/texture_manager.h" "src/view/base/texture_manager.cpp" "src/model/builders/chapter_node_builder.h" "src/model/builders/chapter_builder.h" "src/model/builders/character_builder.h" "src/model/builders/relation_builder.h")
 
 target_include_directories(
 	"vn_engine"

@@ -12,17 +12,12 @@
 #include <unordered_map>
 
 class StateSubject;
-
-//class chaternodestep
-enum class ChapterNodeActionType {
-	BACKGROUND,
-	SPRITE,
-	TEXT,
-	CHOICE,
-};
+class ChapterNodeBuilder;
 
 class ChapterNode : public Node {
 private:
+	friend class ChapterNodeBuilder;
+	
 	// TODO: need to determine what keeps it's state between steps and nodes and what doesn't 
 	// (e.g. text is only retained in node, when a new node comes, the text state is reset)
 

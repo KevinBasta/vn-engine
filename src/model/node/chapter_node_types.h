@@ -11,6 +11,13 @@
 #include <vector>
 #include <list>
 
+enum class ChapterNodeActionType {
+	BACKGROUND,
+	SPRITE,
+	TEXT,
+	CHOICE,
+};
+
 //
 // Sprite Actions
 //
