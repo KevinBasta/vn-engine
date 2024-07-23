@@ -4,21 +4,37 @@
 #include "chapter_node.h"
 #include "chapter_node_types.h"
 
-class ChapterNodeBuilder {
+#include "node_builder.h"
+
+class ChapterNodeBuilder : NodeBuilder {
 private: 
-	ChapterNode* m_node{};
+	ChapterNode* m_nodeDerived{};
 
 public:
-	ChapterNodeBuilder() : m_node{ new ChapterNode } {}
-	ChapterNodeBuilder(ChapterNode* node) : m_node{ node } {}
+	ChapterNodeBuilder() :
+		NodeBuilder{ nullptr },
+		m_nodeDerived{ nullptr }
+	{
+		ChapterNode* node { new ChapterNode };
+
+		m_nodeBase = node;
+		m_nodeDerived = node;
+	}
+
+	ChapterNodeBuilder(ChapterNode* node) :
+		NodeBuilder{ node },
+		m_nodeDerived{ node } 
+	{
+	
+	}
 
 private:
 	void insertAction(int stepIndex, ChapterNodeActionType stepType) {
-		if (!m_node) { return; }
+		if (!m_nodeDerived) { return; }
 		if (stepIndex < 0) { return; }
 
 
-		for (int i{ m_node->m_steps.size() - 1 }; i < stepIndex; i++) {
+		for (int i{ m_nodeDerived->m_steps.size() - 1 }; i < stepIndex; i++) {
 			//insertStep()
 		}
 
@@ -31,8 +47,6 @@ private:
 	void insertStep(int stepIndex) {
 
 	}
-
-
 
 	void removeStep(int stepIndex) {
 

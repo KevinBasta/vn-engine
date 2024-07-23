@@ -46,6 +46,15 @@ void Node::addChild(Node* child) {
 	m_children.addChild(this, child);
 }
 
+void Node::removeChild(Node* child) {
+	m_children.removeChild(this, child);
+};
+
+void Node::refreshChildren() {
+	m_children.refreshChildren();
+};
+
+
 int Node::getChildrenAmount() {
 	return m_children.size(); 
 }
@@ -67,16 +76,16 @@ void Node::print(bool printChildren, int indentLevel) {
 		// Only print the children of the owned children. Otherwise will have
 		// duplicate prints and possible infinite loops. Will need to temporarily 
 		// relax the node children interface
-		std::vector<std::unique_ptr<Node>>& ownedChildren = m_children.getOwnedChildren();
-		for (size_t i = 0; i < ownedChildren.size(); i++) {
-			ownedChildren[i].get()->print(printChildren, indentLevel + 1);
+		std::list<std::unique_ptr<Node>>& ownedChildren = m_children.getOwnedChildren();
+		for (auto& child : ownedChildren) {
+			child.get()->print(printChildren, indentLevel + 1);
 		}
-
-		std::vector<Node*>& referencedChildren = m_children.getReferencedChildren();
-		for (size_t i = 0; i < referencedChildren.size(); i++) {
-			referencedChildren[i]->print(false, indentLevel + 1);
+		
+		std::list<Node*>& referencedChildren = m_children.getReferencedChildren();
+		for (auto& child : referencedChildren) {
+			child->print(false, indentLevel + 1);
 		}
-
+		
 		for (int i = 0; i < indentLevel; i++) { std::cout << '\t'; };
 		std::cout << "}" << std::endl;
 	}

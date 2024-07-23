@@ -4,13 +4,13 @@
 
 #include "id.h"
 #include "node_children.h"
+#include "node_parents.h"
 #include "character.h"
 
 #include <vector>
 #include <string>
 #include <iostream>
 #include <memory>
-
 
 enum class NodeState {
 	NODE_NOT_STARTED,
@@ -19,10 +19,11 @@ enum class NodeState {
 	NODE_END
 };
 
-
 class StateSubject;
 class NodeChildren;
+class NodeParents;
 class NodeRunner;
+class NodeBuilder;
 /*
  * A story node, should have side effects on characters?
  * Can contain a normal text, characters, positions, player talking, etc..
@@ -30,11 +31,17 @@ class NodeRunner;
  * Maybe node subtypes
  */
 class Node {
+private:
+	friend class NodeBuilder;
+
 protected:
 	int m_id{};
-	bool m_isOwned{};
-	Node* m_parent{};
+	
+	// For the purposes of traversal 
+	NodeParents m_parents{};
 	NodeChildren m_children{};
+
+	// Temp
 	std::string m_temp{};
 
 public:
@@ -46,19 +53,19 @@ public:
 public:
 // Engine Operations:
 	// Usecase: Connect a node to a different parent
-	bool isOwned() { return m_isOwned; }
-	void setOwned(bool owned) { m_isOwned = owned; }
-
-	void setParent(Node* parent) { m_parent = parent; }
+	bool isOwned() { return m_parents.hasOwner(); }
+	void addParent(Node* parent) { m_parents.addParent(parent, this); }
+	void removeParent(Node* parent) { m_parents.removeParent(parent, this); }
 
 	void addChild(Node* child);
-	void removeChild(int childId);
-
+	void removeChild(Node* child);
+	void refreshChildren();
 
 public:
 // Game Operations:
 	int getId() { return m_id; }
-	Node* getParent() { return m_parent; } // TODO: can have multiple parents? hence must change
+	Node* getParentByIndex(int parentIndex);
+	Node* getParentById(int parentId);
 	Node* getChildByIndex(int childIndex);
 	Node* getChildById(int childId);
 	int getChildrenAmount();
