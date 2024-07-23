@@ -1,3 +1,3 @@
 #include "node_stray.h"
 
-std::list<Node*> NodeStray::m_chapterNodes{};
+std::unique_ptr<NodeStray> NodeStray::m_instance{ nullptr };

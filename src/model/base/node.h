@@ -59,7 +59,7 @@ public:
 
 	void addChild(Node* child);
 	void removeChild(Node* child);
-	void refreshChildren();
+	void makeReferencedChildOwned(Node* node);
 
 public:
 // Game Operations:

@@ -35,7 +35,7 @@ public:
 
 	void addChild(Node* parent, Node* child);
 	void removeChild(Node* parent, Node* child);
-	void refreshChildren();
+	void makeReferencedChildOwned(Node* child);
 
 	int size();
 	Node* getChildById(int childId);

@@ -115,7 +115,8 @@ add_executable (
 	"src/model/builders/node_builder.h" 
 	"src/model/base/node_parents.h" 
 	"src/model/base/node_parents.cpp" 
-	"src/model/base/node_stray.h" "src/model/base/node_stray.cpp")
+	"src/model/base/node_stray.h" 
+	"src/model/base/node_stray.cpp")
 
 target_include_directories(
 	"vn_engine"

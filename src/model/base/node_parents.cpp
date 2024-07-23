@@ -29,7 +29,7 @@ void NodeParents::removeParent(Node* parent, Node* currentNode) {
 			// Set the 0th parent as the new owner
 			m_owner = m_parents.front();
 
-			m_owner->refreshChildren();
+			m_owner->makeReferencedChildOwned(currentNode);
 		}
 	}
 }

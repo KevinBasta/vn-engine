@@ -53,36 +53,32 @@ void NodeChildren::addChild(Node* parent, Node* child) {
 bool NodeChildren::removeOwnedChild(Node* child) {
 	if (child == nullptr) { return false; }
 
-	Node* listChild{ nullptr };
+	std::list<std::unique_ptr<Node>>::iterator listChild{
+		std::find_if(m_ownedChildren.begin(), m_ownedChildren.end(), [&] (std::unique_ptr<Node>& node) { return node.get() == child; })
+	};
+	
+	if (listChild != m_ownedChildren.end()) {
+		// Remove the unique ptr without deleting the object
+		(*listChild).release();
 
-	for (std::unique_ptr<Node>& nodeUniquePtr : m_ownedChildren) {
-		if (nodeUniquePtr.get() == child) {
-			listChild = nodeUniquePtr.release();
-
-			// Not sure if this works
-			m_ownedChildren.remove(nodeUniquePtr);
-			break;
-		}
+		m_ownedChildren.erase(listChild);
+		return true;
 	}
 
-	return (listChild != nullptr);
+	return false;
 }
 
 bool NodeChildren::removeReferencedChild(Node* child) {
 	if (child == nullptr) { return false; }
 
-	Node* listChild{ nullptr };
+	std::list<Node*>::iterator listChild{ std::find(m_referencedChildren.begin(), m_referencedChildren.end(), child) };
 
-	for (Node* node : m_referencedChildren) {
-		if (node == child) {
-			listChild = node;
-
-			m_referencedChildren.remove(node);
-			break;
-		}
+	if (listChild != m_referencedChildren.end()) {
+		m_referencedChildren.erase(listChild);
+		return true;
 	}
 
-	return (listChild != nullptr);
+	return false;
 }
 
 void NodeChildren::removeChild(Node* parent, Node* child) {
@@ -98,19 +94,15 @@ void NodeChildren::removeChild(Node* parent, Node* child) {
 	}
 }
 
-void NodeChildren::refreshChildren() {
-	std::vector<Node*> ownerlessChildren{};
-	
-	// if a child is referenced but has no owner, then become the new owner
-	for (Node* node : m_referencedChildren) {
-		if (node->isOwned() == false) {
-			ownerlessChildren.push_back(node);
-		}
-	}
+void NodeChildren::makeReferencedChildOwned(Node* child) {
+	if (child == nullptr) { return; }
 
-	for (Node* node : ownerlessChildren) {
-		m_referencedChildren.remove(node);
-		addOwnedChild(node);
+	// if the child is referenced but has no owner, then become the new owner
+	if (std::find(m_referencedChildren.begin(), m_referencedChildren.end(), child) != m_referencedChildren.end()) {
+		if (child->isOwned() == false) {
+			m_referencedChildren.remove(child);
+			addOwnedChild(child);
+		}
 	}
 }
 

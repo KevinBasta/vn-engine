@@ -50,8 +50,8 @@ void Node::removeChild(Node* child) {
 	m_children.removeChild(this, child);
 };
 
-void Node::refreshChildren() {
-	m_children.refreshChildren();
+void Node::makeReferencedChildOwned(Node* node) {
+	m_children.makeReferencedChildOwned(node);
 };
 
 

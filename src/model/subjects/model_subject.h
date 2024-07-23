@@ -82,6 +82,7 @@ public:
 		chapterOneChild1->addChild(chapterOneChild4);
 		chapterOneChild1->addChild(chapterOneChild2);
 		chapterOneChild2->addChild(chapterOneChild5);
+		chapterOneChild2->removeChild(chapterOneChild5);
 
 		//chapterOneChild4->addChild(chapterOneChild5);
 		// chapterOneHead->addChild(chapterOneHead); TODO: unhandled case yet cycle
