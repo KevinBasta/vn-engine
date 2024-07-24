@@ -16,6 +16,7 @@
 
 #include "node_builder.h"
 #include "chapter_node_builder.h"
+#include "character_builder.h"
 
 #include <vector>
 #include <memory>
@@ -88,6 +89,7 @@ public:
 		ChapterNodeBuilder{ twoone }.addChild(threeone);
 		
 		ChapterNodeBuilder{ oneone }.removeChild(threeone);
+		ChapterNodeBuilder{ oneone }.removeChild(threeone);
 
 		//chapterOneChild4->addChild(chapterOneChild5);
 		// chapterOneHead->addChild(chapterOneHead); TODO: unhandled case yet cycle
@@ -101,16 +103,15 @@ public:
 	}
 
 	void initCharacters() {
-		std::unique_ptr<Character> garu{ std::make_unique<Character>(L"garu") };
-		std::unique_ptr<Character> brz{ std::make_unique<Character>(L"brazazaza") };
+		CharacterBuilder garu{};
+		garu.setName(L"Garu");
+		garu.addTexture(TEMP_SPRITE_TEXTURE);
 
-		//std::cout << *(garu.get());
+		CharacterBuilder brz{};
+		brz.setName(L"Brazazaza");
 
-		garu.get()->addTexture(TEMP_SPRITE_TEXTURE);
-
-		m_characters[garu.get()->getId()] = std::move(garu);
-		m_characters[brz.get()->getId()] = std::move(brz);
-
+		m_characters[garu.get()->getId()] = std::unique_ptr<Character>{ garu.get() };
+		m_characters[brz.get()->getId()] = std::unique_ptr<Character>{ brz.get() };
 	}
 
 	void initBackgrounds() {

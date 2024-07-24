@@ -17,12 +17,13 @@
 
 #include <utility>
 
-Texture2D::Texture2D(const char* filepath):
+Texture2D::Texture2D(std::string filepath):
 	m_vnId { IdGenerator<Texture2D>::getId() }
 {
-	if (filepath == nullptr) {
+	// TODO: check if file exsists
+	/*if (filepath == nullptr) {
 		return;
-	}
+	}*/
 
 	createTexture(filepath);
 	createVAO();
@@ -49,7 +50,7 @@ void Texture2D::draw() {
 	// TODO: unbind texture???
 };
 
-void Texture2D::createTexture(const char* filepath) {
+void Texture2D::createTexture(std::string filepath) {
 	std::filesystem::path path{ filepath };
 
 	glGenTextures(1, &m_textureID);
@@ -66,7 +67,7 @@ void Texture2D::createTexture(const char* filepath) {
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 	// load and geneate the texture
-	unsigned char* data = stbi_load(filepath, &m_width, &m_height, &m_nrChannels, 0);
+	unsigned char* data = stbi_load(filepath.c_str(), &m_width, &m_height, &m_nrChannels, 0);
 
 	// load with RGB or RGBA depending on extention
 	if (data) {

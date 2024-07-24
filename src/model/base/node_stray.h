@@ -21,6 +21,7 @@ private:
 	std::list<Node*> m_chapterNodes{};
 
 public:
+	// TODO: constructor can be private
 	NodeStray() : m_chapterNodes{} {
 
 	}

@@ -11,25 +11,42 @@
 
 class TextureManager {
 private:
+	static std::unique_ptr<TextureManager> m_instance;
+
+	static void checkInstance() {
+		if (m_instance.get() == nullptr) {
+			m_instance = std::make_unique<TextureManager>();
+		}
+	}
+
+private:
 	using textureId = int;
 	using idToTextureMap = std::unordered_map<textureId, std::unique_ptr<Texture2D>>;
 
 	idToTextureMap m_textureMap{};
 
 public:
-	int registerTexture(const char* path) {
+	static int registerTexture(std::string path) {
+		checkInstance();
+		
+		TextureManager* manager{ m_instance.get() };
+
 		std::unique_ptr<Texture2D> texture{ std::make_unique<Texture2D>(path) };
 		textureId id{ texture.get()->vnId() };
 
-		m_textureMap[id] = std::move(texture);
+		manager->m_textureMap[id] = std::move(texture);
 
 		return id;
 	}
 
-	Texture2D* getTexture(int id) {
-		idToTextureMap::iterator iter{ m_textureMap.find(id) };
+	static Texture2D* getTexture(int id) {
+		checkInstance();
 
-		if (iter == m_textureMap.end()) {
+		TextureManager* manager{ m_instance.get() };
+
+		idToTextureMap::iterator iter{ manager->m_textureMap.find(id) };
+
+		if (iter == manager->m_textureMap.end()) {
 			return nullptr;
 		}
 

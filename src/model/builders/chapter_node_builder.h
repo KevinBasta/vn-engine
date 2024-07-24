@@ -35,7 +35,6 @@ public:
 		NodeBuilder{ node },
 		m_nodeDerived{ node } 
 	{
-	
 	}
 
 	ChapterNode* get() {

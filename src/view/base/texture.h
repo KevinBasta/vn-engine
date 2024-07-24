@@ -34,14 +34,14 @@ private:
 	bool m_generatedVAO{ false };
 
 private:
-	void createTexture(const char* filepath);
+	void createTexture(std::string filepath);
 	void deleteTexture();
 	
 	void createVAO();
 	void deleteVAO();
 
 public:
-	Texture2D(const char* filepath);
+	Texture2D(std::string filepath);
 	~Texture2D();
 	void draw();
 

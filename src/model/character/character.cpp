@@ -10,26 +10,38 @@
 #include <string_view>
 #include <memory>
 
-Character::Character(std::wstring name) :
-	m_name{ name },
+Character::Character() :
 	m_id{ IdGenerator<Character>::getId() } 
 {
-	std::wcout << "constructing character " << m_name << std::endl;
-}
-
-Texture2D* Character::getTexture(int index) {
-	// TODO: handle negative index?
-	return m_textures[index].get();
-}
-
-void Character::addTexture(const char* texturePath) {
-	m_textures.push_back(std::make_unique<Texture2D>(texturePath));
+	std::wcout << "constructing character" << std::endl;
 }
 
 Character::~Character() {
 	std::wcout << "deleting character " << m_name << std::endl;
 }
 
+Character::textureId Character::getTextureId(int textureIndex) {
+	if (textureIndex < 0 || textureIndex >= m_texturePaths.size()) {
+		throw std::out_of_range{ "Texture index out of range" };
+	}
+
+	textureId returnId{ 0 };
+	std::string& texturePath{ m_texturePaths[textureIndex] };
+
+	runtimeTextureMap::iterator textureEntry{ m_textureLookup.find(texturePath) };
+
+	if (textureEntry != m_textureLookup.end()) {
+		returnId = textureEntry->second;
+	}
+	else {
+		textureId id{ TextureManager::registerTexture(texturePath) };
+
+		m_textureLookup[texturePath] = id;
+		returnId = id;
+	}
+
+	return returnId;
+}
 
 std::ostream& operator<<(std::ostream& out, Character& character) {
 	out << "Character:" << std::endl;
