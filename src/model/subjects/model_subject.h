@@ -70,30 +70,29 @@ public:
 		Graph* chapterOneGraph{ new Graph() };
 
 		// Can inital all nodes as strays then mark the head node as not a stray with a member variable?
-		ChapterNodeBuilder chapterOneHead{ ChapterNodeBuilder{ "head node" } };
-		ChapterNodeBuilder chapterOneChild1{ ChapterNodeBuilder{ "level 1 child node 1!" } };
-		ChapterNodeBuilder chapterOneChild2{ ChapterNodeBuilder{ "level 1 child node 2!" } };
-		ChapterNodeBuilder chapterOneChild3{ ChapterNodeBuilder{ "level 1 child node 3!" } };
-		ChapterNodeBuilder chapterOneChild4{ ChapterNodeBuilder{ "level 2 child node 1!" } };
-		ChapterNodeBuilder chapterOneChild5{ ChapterNodeBuilder{ "level 2 child node 2!" } };
+		ChapterNode* head{ new ChapterNode("head node") };
 
-		chapterOneHead.addChild(chapterOneChild1.get());
-		chapterOneHead.addChild(chapterOneChild2.get());
-		chapterOneHead.addChild(chapterOneChild3.get());
+		ChapterNode* oneone{ new ChapterNode("one one node") };
+		ChapterNode* onetwo{ new ChapterNode("one two node") };
+		
+		ChapterNode* twoone{ new ChapterNode("two one node") };
+		ChapterNode* twotwo{ new ChapterNode("two two node") };
 
-		chapterOneChild1.addChild(chapterOneChild4.get());
-		chapterOneChild1.addChild(chapterOneChild2.get());
+		ChapterNode* threeone{ new ChapterNode("three one node") };
 
-		chapterOneChild2.addChild(chapterOneChild5.get());
-		chapterOneChild2.removeChild(chapterOneChild5.get());
-		chapterOneChild2.addChild(chapterOneChild5.get());
+		ChapterNodeBuilder{ head }.addChild(oneone);
+		ChapterNodeBuilder{ head }.addChild(onetwo);
+		ChapterNodeBuilder{ oneone }.addChild(twoone);
+		ChapterNodeBuilder{ oneone }.addChild(twotwo);
+		ChapterNodeBuilder{ oneone }.addChild(threeone);
+		ChapterNodeBuilder{ twoone }.addChild(threeone);
+		
+		ChapterNodeBuilder{ oneone }.removeChild(threeone);
 
 		//chapterOneChild4->addChild(chapterOneChild5);
 		// chapterOneHead->addChild(chapterOneHead); TODO: unhandled case yet cycle
 
-		//chapterOneHead->addCharacter(m_characters[0].get());
-
-		chapterOneGraph->setHeadNode(chapterOneHead.get());
+		chapterOneGraph->setHeadNode(head);
 
 		chapterOne->setGraph(chapterOneGraph);
 

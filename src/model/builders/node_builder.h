@@ -24,10 +24,14 @@ public:
 
 	}
 
+private:
 	//
-	// Engine Operations
+	// Private Internal operations
 	//
-	
+
+	friend class NodeChildren;
+	friend class NodeParents;
+
 	bool isOwned() { 
 		if (m_nodeBase == nullptr) { return false; }
 		
@@ -46,6 +50,16 @@ public:
 		m_nodeBase->m_parents.removeParent(parent, m_nodeBase);
 	}
 
+	void makeReferencedChildOwned(Node* child) {
+		if (m_nodeBase == nullptr) { return; }
+
+		m_nodeBase->m_children.makeReferencedChildOwned(child);
+	}
+
+public:
+	//
+	// Public Interface (for engine and savefiles)
+	//
 
 	void addChild(Node* child) { 
 		if (m_nodeBase == nullptr) { return; }
@@ -58,13 +72,6 @@ public:
 	
 		m_nodeBase->m_children.removeChild(m_nodeBase, child);
 	}
-
-	void makeReferencedChildOwned(Node* child) { 
-		if (m_nodeBase == nullptr) { return; }
-		
-		m_nodeBase->m_children.makeReferencedChildOwned(child);
-	}
-
 };
 
 

@@ -102,10 +102,8 @@ void NodeChildren::makeReferencedChildOwned(Node* child) {
 
 	// if the child is referenced but has no owner, then become the new owner
 	if (std::find(m_referencedChildren.begin(), m_referencedChildren.end(), child) != m_referencedChildren.end()) {
-		if (NodeBuilder{ child }.isOwned() == false) {
-			m_referencedChildren.remove(child);
-			addOwnedChild(child);
-		}
+		m_referencedChildren.remove(child);
+		addOwnedChild(child);
 	}
 }
 
