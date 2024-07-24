@@ -51,17 +51,6 @@ public:
 	NodeRunner iter();
 
 public:
-// Engine Operations:
-	// Usecase: Connect a node to a different parent
-	bool isOwned() { return m_parents.hasOwner(); }
-	void addParent(Node* parent) { m_parents.addParent(parent, this); }
-	void removeParent(Node* parent) { m_parents.removeParent(parent, this); }
-
-	void addChild(Node* child);
-	void removeChild(Node* child);
-	void makeReferencedChildOwned(Node* node);
-
-public:
 // Game Operations:
 	int getId() { return m_id; }
 	Node* getParentByIndex(int parentIndex);
@@ -69,9 +58,6 @@ public:
 	Node* getChildByIndex(int childIndex);
 	Node* getChildById(int childId);
 	int getChildrenAmount();
-
-	// Return children to display data from them for user to pick based on that
-	// std::vector<std::unique_ptr<Node>>& getChildren() { return m_children; }
 
 	virtual NodeState action(StateSubject* stateSubject, int stepIndex) = 0;
 

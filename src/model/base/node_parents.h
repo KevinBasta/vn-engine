@@ -4,10 +4,12 @@
 #include <list>
 
 class Node;
+class NodeBuilder;
 
 class NodeParents {
 private:
 	friend class Node;
+	friend class NodeBuilder;
 
 	// For the purposes of freeing the child
 	Node* m_owner{};

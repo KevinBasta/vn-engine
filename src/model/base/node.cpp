@@ -33,7 +33,6 @@ Node::~Node() {
 	std::cout << "Destructing NODE: " << m_temp << std::endl;
 }
 
-
 Node* Node::getChildByIndex(int childIndex) {
 	return m_children[childIndex];
 }
@@ -41,19 +40,6 @@ Node* Node::getChildByIndex(int childIndex) {
 Node* Node::getChildById(int childId) {
 	return m_children.getChildById(childId);
 }
-
-void Node::addChild(Node* child) {
-	m_children.addChild(this, child);
-}
-
-void Node::removeChild(Node* child) {
-	m_children.removeChild(this, child);
-};
-
-void Node::makeReferencedChildOwned(Node* node) {
-	m_children.makeReferencedChildOwned(node);
-};
-
 
 int Node::getChildrenAmount() {
 	return m_children.size(); 

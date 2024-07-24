@@ -17,7 +17,8 @@ current:
 - `Observer pattern` for state subject, model subject, game observer, engine observer
 - `Visitor pattern/injection` for sending down the state subject to the model nodes
 - `Iterator pattern` for iterating chapter, graph, and node
-- `singleton pattern` for text rendering, may change for multithreading
+- `singleton pattern` for node strays and text rendering (may change for multithreading)
+- `builder pattern` for constructing nodes and characters
 
 future additions:
 - `Command pattern` for menu commands

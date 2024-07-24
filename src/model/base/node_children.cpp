@@ -1,6 +1,7 @@
 
 #include "node_children.h"
 #include "node.h"
+#include "node_builder.h"
 
 #include <algorithm>
 #include <vector>
@@ -38,14 +39,16 @@ void NodeChildren::addReferencedChild(Node* node) {
 }
 
 void NodeChildren::addChild(Node* parent, Node* child) {
-	if (child->isOwned()) {
+	if (parent == nullptr || child == nullptr) { return; }
+
+	if (NodeBuilder{ child }.isOwned()) {
 		addReferencedChild(child);
 	}
 	else {
 		addOwnedChild(child);
 	}
 
-	child->addParent(parent);
+	NodeBuilder{ child }.addParent(parent);
 
 	updateChildrenViewer();
 }
@@ -88,7 +91,7 @@ void NodeChildren::removeChild(Node* parent, Node* child) {
 	bool isReferenced{ removeReferencedChild(child) };
 
 	if (isOwned || isReferenced) {
-		child->removeParent(parent);
+		NodeBuilder{ child }.removeParent(parent);
 
 		updateChildrenViewer();
 	}
@@ -99,7 +102,7 @@ void NodeChildren::makeReferencedChildOwned(Node* child) {
 
 	// if the child is referenced but has no owner, then become the new owner
 	if (std::find(m_referencedChildren.begin(), m_referencedChildren.end(), child) != m_referencedChildren.end()) {
-		if (child->isOwned() == false) {
+		if (NodeBuilder{ child }.isOwned() == false) {
 			m_referencedChildren.remove(child);
 			addOwnedChild(child);
 		}

@@ -14,6 +14,9 @@
 #include "relation.h"
 #include "relation_types.h"
 
+#include "node_builder.h"
+#include "chapter_node_builder.h"
+
 #include <vector>
 #include <memory>
 
@@ -66,30 +69,31 @@ public:
 
 		Graph* chapterOneGraph{ new Graph() };
 
-		ChapterNode* chapterOneHead{ new ChapterNode("the head node!") };
-		ChapterNode* chapterOneChild1{ new ChapterNode("level 1 child node 1!") };
-		ChapterNode* chapterOneChild2{ new ChapterNode("level 1 child node 2!") };
-		ChapterNode* chapterOneChild3{ new ChapterNode("level 1 child node 3!") };
+		// Can inital all nodes as strays then mark the head node as not a stray with a member variable?
+		ChapterNodeBuilder chapterOneHead{ ChapterNodeBuilder{ "head node" } };
+		ChapterNodeBuilder chapterOneChild1{ ChapterNodeBuilder{ "level 1 child node 1!" } };
+		ChapterNodeBuilder chapterOneChild2{ ChapterNodeBuilder{ "level 1 child node 2!" } };
+		ChapterNodeBuilder chapterOneChild3{ ChapterNodeBuilder{ "level 1 child node 3!" } };
+		ChapterNodeBuilder chapterOneChild4{ ChapterNodeBuilder{ "level 2 child node 1!" } };
+		ChapterNodeBuilder chapterOneChild5{ ChapterNodeBuilder{ "level 2 child node 2!" } };
 
-		ChapterNode* chapterOneChild4{ new ChapterNode("level 2 child node 1!") };
+		chapterOneHead.addChild(chapterOneChild1.get());
+		chapterOneHead.addChild(chapterOneChild2.get());
+		chapterOneHead.addChild(chapterOneChild3.get());
 
-		ChapterNode* chapterOneChild5{ new ChapterNode("level 2 child node 2!") };
+		chapterOneChild1.addChild(chapterOneChild4.get());
+		chapterOneChild1.addChild(chapterOneChild2.get());
 
-		chapterOneHead->addChild(chapterOneChild1);
-		chapterOneHead->addChild(chapterOneChild2);
-		chapterOneHead->addChild(chapterOneChild3);
-
-		chapterOneChild1->addChild(chapterOneChild4);
-		chapterOneChild1->addChild(chapterOneChild2);
-		chapterOneChild2->addChild(chapterOneChild5);
-		chapterOneChild2->removeChild(chapterOneChild5);
+		chapterOneChild2.addChild(chapterOneChild5.get());
+		chapterOneChild2.removeChild(chapterOneChild5.get());
+		chapterOneChild2.addChild(chapterOneChild5.get());
 
 		//chapterOneChild4->addChild(chapterOneChild5);
 		// chapterOneHead->addChild(chapterOneHead); TODO: unhandled case yet cycle
 
 		//chapterOneHead->addCharacter(m_characters[0].get());
 
-		chapterOneGraph->setHeadNode(chapterOneHead);
+		chapterOneGraph->setHeadNode(chapterOneHead.get());
 
 		chapterOne->setGraph(chapterOneGraph);
 

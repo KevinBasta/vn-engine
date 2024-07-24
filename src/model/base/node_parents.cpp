@@ -1,10 +1,15 @@
 #include "node.h"
 #include "node_parents.h"
 #include "node_stray.h"
+#include "node_builder.h"
 
 void NodeParents::addParent(Node* parent, Node* currentNode) {
 	if (parent == nullptr) { return; }
 
+	if (m_parents.size() == 0) {
+		NodeStray::removeStray(currentNode);
+	}
+	
 	if (m_owner == nullptr) {
 		m_owner = parent;
 	}
@@ -29,7 +34,7 @@ void NodeParents::removeParent(Node* parent, Node* currentNode) {
 			// Set the 0th parent as the new owner
 			m_owner = m_parents.front();
 
-			m_owner->makeReferencedChildOwned(currentNode);
+			NodeBuilder{ m_owner }.makeReferencedChildOwned(currentNode);
 		}
 	}
 }

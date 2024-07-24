@@ -6,7 +6,7 @@
 
 #include "node_builder.h"
 
-class ChapterNodeBuilder : NodeBuilder {
+class ChapterNodeBuilder : public NodeBuilder {
 private: 
 	ChapterNode* m_nodeDerived{};
 
@@ -21,6 +21,16 @@ public:
 		m_nodeDerived = node;
 	}
 
+	ChapterNodeBuilder(std::string text) :
+		NodeBuilder{ nullptr },
+		m_nodeDerived{ nullptr }
+	{
+		ChapterNode* node{ new ChapterNode(text) };
+
+		m_nodeBase = node;
+		m_nodeDerived = node;
+	}
+
 	ChapterNodeBuilder(ChapterNode* node) :
 		NodeBuilder{ node },
 		m_nodeDerived{ node } 
@@ -28,15 +38,31 @@ public:
 	
 	}
 
+	ChapterNode* get() {
+		return m_nodeDerived;
+	}
+
+public:
+	// 
+	// Action adding interface
+	//
+
+
+
+
+
+
+
+
 private:
 	void insertAction(int stepIndex, ChapterNodeActionType stepType) {
 		if (!m_nodeDerived) { return; }
 		if (stepIndex < 0) { return; }
 
 
-		for (int i{ m_nodeDerived->m_steps.size() - 1 }; i < stepIndex; i++) {
+		//for (int i{ m_nodeDerived->m_steps.size() - 1 }; i < stepIndex; i++) {
 			//insertStep()
-		}
+		//}
 
 	}
 

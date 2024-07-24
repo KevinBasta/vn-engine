@@ -8,6 +8,13 @@ class NodeBuilder {
 protected:
 	Node* m_nodeBase{ nullptr };
 
+private:
+	void nullCheck() {
+		if (m_nodeBase == nullptr) {
+			//throw 
+		}
+	}
+
 public:
 	NodeBuilder() = delete;
 
@@ -17,14 +24,46 @@ public:
 
 	}
 
-	// Usecase: Connect a node to a different parent
+	//
+	// Engine Operations
+	//
 	
+	bool isOwned() { 
+		if (m_nodeBase == nullptr) { return false; }
+		
+		return m_nodeBase->m_parents.hasOwner();
+	}
 
-	void setParent(Node* parent) { }
-	void addChild(Node* child);
-	void removeChild(int childId);
+	void addParent(Node* parent) { 
+		if (m_nodeBase == nullptr) { return; }
+		
+		m_nodeBase->m_parents.addParent(parent, m_nodeBase);
+	}
+
+	void removeParent(Node* parent) { 
+		if (m_nodeBase == nullptr) { return; }
+
+		m_nodeBase->m_parents.removeParent(parent, m_nodeBase);
+	}
 
 
+	void addChild(Node* child) { 
+		if (m_nodeBase == nullptr) { return; }
+		
+		m_nodeBase->m_children.addChild(m_nodeBase, child);
+	}
+
+	void removeChild(Node* child) { 
+		if (m_nodeBase == nullptr) { return; }
+	
+		m_nodeBase->m_children.removeChild(m_nodeBase, child);
+	}
+
+	void makeReferencedChildOwned(Node* child) { 
+		if (m_nodeBase == nullptr) { return; }
+		
+		m_nodeBase->m_children.makeReferencedChildOwned(child);
+	}
 
 };
 

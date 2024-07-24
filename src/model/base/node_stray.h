@@ -3,6 +3,10 @@
 
 #include "node.h"
 
+#include <list>
+#include <memory>
+#include <iostream>
+
 class NodeStray {
 private:
 	static std::unique_ptr<NodeStray> m_instance;
@@ -23,6 +27,7 @@ public:
 
 	~NodeStray() {
 		for (Node* node : m_chapterNodes) {
+			std::cout << "deleting node stray: " << node->getId() << std::endl;
 			delete node;
 		}
 	}
