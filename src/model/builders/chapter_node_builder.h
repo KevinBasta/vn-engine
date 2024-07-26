@@ -46,6 +46,10 @@ public:
 	// Action adding interface
 	//
 
+	template <class T>
+	void addStep(int stepIndex, std::unordered_map <int, T> object) {
+		
+	}
 
 
 

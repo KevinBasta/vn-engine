@@ -2,10 +2,12 @@
 #ifndef VN_ID_H
 #define VN_ID_H
 
+using id = int;
+
 template <class T>
 class IdGenerator {
 private:
-	static int m_currentId;
+	static id m_currentId;
 
 public:
 	IdGenerator() = delete;

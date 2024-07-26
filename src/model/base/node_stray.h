@@ -7,6 +7,8 @@
 #include <memory>
 #include <iostream>
 
+// TODO: When a new node is made add it to here, then remove it when it's attatched to a parent
+
 class NodeStray {
 private:
 	static std::unique_ptr<NodeStray> m_instance;

@@ -24,6 +24,8 @@ public:
 
 	}
 
+	//TODO: virtual destructor
+
 private:
 	//
 	// Private Internal operations

@@ -17,7 +17,7 @@ void StateSubject::handle(ActionSpriteTexture& action) {
 		SpriteState& state = m_spriteRenderData.at(action.m_characterID);
 
 		// TODO: further null and err checks needed
-		state.m_texture = TextureManager::getTexture(m_model->getCharacterByID(action.m_characterID)->getTextureId(action.m_textureIndex));
+		state.m_texture = TextureManager::getTexture(m_model->getCharacterByID(action.m_characterID)->getTextureIdByIndex(action.m_textureIndex));
 	}
 	catch (std::out_of_range) {
 		std::cerr << "ActionSpriteTexture::out_of_range" << std::endl;

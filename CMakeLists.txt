@@ -60,10 +60,10 @@ add_executable (
 
 	"src/model/subjects/model_subject.cpp"
 	"src/model/subjects/model_subject.h"
-	"src/model/subjects/state_subject.cpp"
-	"src/model/subjects/state_subject.h"
+	"src/model/state/state_subject.cpp"
+	"src/model/state/state_subject.h"
 
-	"src/model/state_types.h"
+	"src/model/state/state_types.h"
 	"src/model/subject.h"
 	"src/model/subjects_orchestrator.h"
 
@@ -116,7 +116,7 @@ add_executable (
 	"src/model/base/node_parents.h" 
 	"src/model/base/node_parents.cpp" 
 	"src/model/base/node_stray.h" 
-	"src/model/base/node_stray.cpp")
+	"src/model/base/node_stray.cpp" "src/model/state/state_text.h" "src/model/state/state_background.h" "src/model/state/state_sprites.h" "src/model/stores/texture_store.h"  "src/model/stores/texture_store.cpp")
 
 target_include_directories(
 	"vn_engine"
@@ -133,6 +133,8 @@ target_include_directories(
 	"src/model/savefile"
 	"src/model/subjects"
 	"src/model/builders"
+	"src/model/state"
+	"src/model/stores"
 
 	"src/view"
 	"src/view/base"

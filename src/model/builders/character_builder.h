@@ -31,7 +31,7 @@ public:
 	void addTexture(std::string path) {
 		if (m_character == nullptr) { return; }
 
-		m_character->m_texturePaths.push_back(path);
+		m_character->m_textrues.addTexture(path);
 	}
 
 	Character* get() {
