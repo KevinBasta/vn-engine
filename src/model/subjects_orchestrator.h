@@ -8,24 +8,22 @@
 
 class SubjectsOrchestrator {
 private:
-	ModelSubject* m_model{};
 	StateSubject* m_state{};
 
 public:
-	SubjectsOrchestrator(ModelSubject* model, StateSubject* state) :
-		m_model{model},
+	SubjectsOrchestrator(StateSubject* state) :
 		m_state{state}
 	{
-		m_model->initCharacters();
-		m_model->initBackgrounds();
-		m_model->initRelationTypes();
+		ModelSubject::initCharacters();
+		ModelSubject::initBackgrounds();
+		ModelSubject::initRelationTypes();
 	}
 
 	void newGame() {
-		m_model->createChapterOne();
+		ModelSubject::createChapterOne();
 
-		m_state->initIterator(m_model->iter(0));
-		m_state->initCharacterData();
+		m_state->initIterator(ModelSubject::iter(0));
+		m_state->newGame();
 	}
 	
 	void loadGame() {

@@ -5,8 +5,14 @@
 
 #include "vn_engine.h"
 #include "texture.h"
-#include "state_types.h"
 #include "chapter_node_types.h"
+
+#include "state_dialogue.h"
+#include "state_sprites.h"
+#include "state_background.h"
+#include "state_relations.h"
+#include "state_choices.h"
+#include "state_types.h"
 
 #include "character.h"
 #include "relation.h"
@@ -35,12 +41,11 @@ struct SceneCameraData {
 
 class StateSubject : public Subject {
 private:
-	ModelSubject* m_model{};
 	Chapter* currentChapter{ nullptr };
 	ChapterIterator iterator{ nullptr, 0 };
 	
 public:
-	StateSubject(ModelSubject* modelSubject) : m_model{ modelSubject } {}
+	StateSubject() {}
 	~StateSubject() {}
 
 	void initIterator(ChapterIterator chapterIterator) {
@@ -62,6 +67,17 @@ public:
 		// then clear state delta
 	}
 
+	void nodeEndActions() {
+		// clear non-presistent state
+		m_dialogue.reset();
+	}
+
+
+	void newGame() {
+		m_dialogue.reset();
+		m_sprites.initCharacterData();
+	}
+
 
 public:
 	// indicate that auto substeps (for animations) are present
@@ -74,78 +90,9 @@ public:
 	void tickAutoActions(float timePassed);
 	void endAutoActions();
 
-
 public:
-	// keeping record of what chioces were made for
-	// safe file node traversal
-	bool m_activeChoice{ false };
-	ActionChooseNode* m_nodeChoices{ nullptr };
-	int m_currentChoiceIndex{ 0 };
-
-	std::vector<int> m_chapterChoicesRecord{};
-
-	bool isChoiceActive() {
-		return m_activeChoice;
-	}
-
-	void appendChapterChoice() {
-		m_chapterChoicesRecord.push_back(getChoiceId());
-	}
-
-	ActionChooseNode* getNodeChoices() {
-		return m_nodeChoices;
-	}
-
-	void chooseNode(int nodeId) {
-
-	}
-
-	void chooseUpChoice() {
-		int choice{ m_currentChoiceIndex - 1 };
-
-		if (choice >= 0 && choice < m_nodeChoices->m_choices.size()) {
-			m_currentChoiceIndex = choice;
-		}
-	
-		notify();
-	}
-
-	void chooseDownChoice() {
-		int choice{ m_currentChoiceIndex + 1 };
-
-		if (choice >= 0 && choice < m_nodeChoices->m_choices.size()) {
-			m_currentChoiceIndex = choice;
-		}
-
-		notify();
-	}
-
-	int getChoiceId() {
-		if (m_activeChoice == false || m_nodeChoices == nullptr) {
-			return 0;
-		}
-
-		if (m_currentChoiceIndex < 0 || m_currentChoiceIndex >= m_nodeChoices->m_choices.size()) {
-			return 0;
-		}
-
-		return m_nodeChoices->m_choices[m_currentChoiceIndex].m_nodeID;
-	}
-
-	void recordAndDisableChoice() {
-		appendChapterChoice();
-		m_activeChoice = false;
-		m_nodeChoices = nullptr;
-		m_currentChoiceIndex = 0;
-	}
-
-	void handle(ActionChooseNode& action) {
-		m_activeChoice = true;
-
-		m_nodeChoices = &action;
-	}
-
-public:
+	// TODO: remove, the entire scene/screen will have to be rerendred on any change anyways.
+	// Perhaps it can be kept to avoid things like update on bond mutation only, but that seems rare
 	// Delta tracking inquiry
 	// an array of enums describing what changed to allow an
 	// observer to fetch new data from only what changed
@@ -176,120 +123,31 @@ public:
 	// chapter numb, load chapter if not by asking model
 	
 	//
+	// Choices
+	//
+	StateChoices m_choices{this};
+
+	//
 	// Text
 	//
-	// TextAction m_textAction{ TextAction::EMPTY };
-	// TODO: can switch to string views if saved in model?
-	TextState m_textState{false, L"", L"", glm::vec3()};
-
-	void resetTextState() {
-		m_textState = { false, L"", L"", glm::vec3() };
-	}
-
-	void handle(ActionTextLine& action) {
-		
-		m_textState.m_line = action.m_line;
-		
-		Character* character = m_model->getCharacterByID(action.m_characterID);
-
-		if (character != nullptr) {
-			m_textState.m_speakerName = character->getName();
-			m_textState.m_color = character->getTextColor();
-		}
-		else {
-			std::cout << "handle ActionTextLine half failed" << std::endl;
-		}
-		
-		
-		m_stateDelta.push_back(StateDelta::TEXT);
-	}
-
-	void handle(ActionTextOverrideSpeaker& action) {
-		//m_textState.m_currentState = TextAction::COMPLETE;
-		m_textState.m_speakerName = action.m_speakerName;
-		
-		m_stateDelta.push_back(StateDelta::TEXT);
-	}
-
-	void handle(ActionTextOverrideColor& action) {
-		//m_textState.m_currentState = TextAction::COMPLETE;
-		m_textState.m_color = action.m_textColor;
-		
-		m_stateDelta.push_back(StateDelta::TEXT);
-	}
-
-	void handle(ActionTextRender& action) {
-		m_textState.m_render = action.m_render;
-
-		m_stateDelta.push_back(StateDelta::TEXT);
-	}
+	StateDialogue m_dialogue{};
 
 	//
 	// Background
 	//
-	
-	Texture2D* m_currentBackground{ nullptr };
-
-	void updateCurrentBackground(Texture2D* newBackground) {
-		m_currentBackground = newBackground;
-	}
-
-	void handle(ActionBackgroundTexture& backgroundAction) {
-		// TODO: Error handling
-		m_currentBackground = m_model->getBackgroundTexture(backgroundAction.backgroundIndex);
-
-		m_stateDelta.push_back(StateDelta::BACKGROUND);
-	}
-
-
-	//
-	// Common Typedefs
-	//
-	using characterId = int;
+	StateBackground m_background{};
 
 	//
 	// Characters
 	//
-	using stepIndex = int;
-	// TODO: allow multiple sprites for one character
-	// TODO: rethink sprite system. perhaps a central sprite manager
-	using spriteRenderMap = std::unordered_map<characterId, SpriteState>;
-	using activeSpriteAnimationsMap = std::list<std::pair<stepIndex, ActionSpriteAnimationGeneric>>;
-	
-	spriteRenderMap m_spriteRenderData{};
-	activeSpriteAnimationsMap m_activeSpriteAnimations{};
-	spriteRenderMap& getSpriteRenderData() { return m_spriteRenderData; }
-	void initCharacterData();
-
-	void handle(ActionSpriteTexture& action);
-	void handle(ActionSpriteOpacity& action);
-	void handle(ActionSpritePosition& action);
-	void handle(ActionSpriteAnimationGeneric& action);
-	bool tickSpriteAnimations(float timePassed);
-	bool tick(std::pair<stepIndex, ActionSpriteAnimationGeneric>& animation, float timePassed);
-	bool endSpriteAnimations();
+	StateSprites m_sprites{this};
 
 	//
 	// Bonds/Relationships
 	//
-	using characterRelations = std::vector<Relations>;
+	StateRelations m_relations{};
+
 	
-	characterRelations m_characterRelationsData{};
-
-	void initCharacterRelations() {
-
-	}
-
-	void handle() {
-
-	}
-
-public:
-	// clear non-presistent state
-	void nodeEndActions() {
-		resetTextState();
-	}
-
 public:
 	// Save specific state
 	// character relationships

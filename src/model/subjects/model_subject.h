@@ -25,14 +25,24 @@
 #define TEMP_BACKGROUND_TEXTURE VN_BASE_PATH"/test/assets/test.jpg"
 #define TEMP_SPRITE_TEXTURE		VN_BASE_PATH"/test/assets/garu_outline.png"
 
-// Circular dependancy resolutions:
 class ChapterIterator;
 
+/**
+ * For creating and owning chapters, characters, base relations, and other objects.
+ * The state subject refers to objects created by the model.
+ */
 class ModelSubject : public Subject {
+private:
+	static std::unique_ptr<ModelSubject> m_instance;
+
+	static void checkInstance() {
+		if (m_instance.get() == nullptr) {
+			m_instance = std::make_unique<ModelSubject>();
+		}
+	}
+
 public:
-	// This class is only for creating the chapters and characters. The current would actually be stored in the stat
-	using ID = int;
-	using characterMap = std::unordered_map<ID, std::unique_ptr<Character>> ;
+	using characterMap = std::unordered_map<id, std::unique_ptr<Character>> ;
 	
 	std::vector<std::unique_ptr<Chapter>>	m_chapters{};
 	characterMap m_characters{};
@@ -40,24 +50,40 @@ public:
 
 	std::list<Chapter*> m_chapterOrder{};
 
-	Chapter* getChapterByOrderIndex(int orderIndex) {
-		return m_chapters[0].get(); // TODO: reason for current cycle
+	static Chapter* getChapterByOrderIndex(int orderIndex) {
+		checkInstance();
+
+		ModelSubject* model{ m_instance.get() };
+		
+		return model->m_chapters[0].get(); // TODO: reason for current cycle
 	}
 
-	ChapterIterator iter(int chapterIndex);
+	static ChapterIterator iter(int chapterIndex);
 
 	// arr telling which chapters loaded, func to ckeck and load
 public:
-	Texture2D* getBackgroundTexture(int index) {
-		return m_backgrounds[index].get();
+	static Texture2D* getBackgroundTexture(int index) {
+		checkInstance();
+
+		ModelSubject* model = m_instance.get();
+		
+		return model->m_backgrounds[index].get();
 	}
 
-	const characterMap& getCharacters() {
-		return m_characters;
+	static const characterMap& getCharacters() {
+		checkInstance();
+
+		ModelSubject* model = m_instance.get();
+
+		return model->m_characters;
 	}
 
-	Character* getCharacterByID(int id) {
-		return m_characters[id].get();
+	static Character* getCharacterByID(int id) {
+		checkInstance();
+
+		ModelSubject* model = m_instance.get();
+
+		return model->m_characters[id].get();
 	}
 
 public:
@@ -65,7 +91,13 @@ public:
 	{
 	}
 
-	void createChapterOne() {
+public:
+
+	static void createChapterOne() {
+		checkInstance();
+
+		ModelSubject* model = m_instance.get();
+
 		Chapter* chapterOne = new Chapter{};
 
 		Graph* chapterOneGraph{ new Graph() };
@@ -98,11 +130,15 @@ public:
 
 		chapterOne->setGraph(chapterOneGraph);
 
-		m_chapters.push_back(std::unique_ptr<Chapter>(chapterOne));
+		model->m_chapters.push_back(std::unique_ptr<Chapter>(chapterOne));
 		//std::cout << chapterOneGraph << std::endl;
 	}
 
-	void initCharacters() {
+	static void initCharacters() {
+		checkInstance();
+
+		ModelSubject* model = m_instance.get();
+		
 		CharacterBuilder garu{};
 		garu.setName(L"Garu");
 		garu.addTexture(TEMP_SPRITE_TEXTURE);
@@ -110,49 +146,53 @@ public:
 		CharacterBuilder brz{};
 		brz.setName(L"Brazazaza");
 
-		m_characters[garu.get()->getId()] = std::unique_ptr<Character>{ garu.get() };
-		m_characters[brz.get()->getId()] = std::unique_ptr<Character>{ brz.get() };
+		model->m_characters[garu.get()->getId()] = std::unique_ptr<Character>{ garu.get() };
+		model->m_characters[brz.get()->getId()] = std::unique_ptr<Character>{ brz.get() };
 	}
 
-	void initBackgrounds() {
+	static void initBackgrounds() {
+		checkInstance();
+
+		ModelSubject* model = m_instance.get();
+		
 		std::unique_ptr<Texture2D> background_0{ std::make_unique<Texture2D>(TEMP_BACKGROUND_TEXTURE) };
-		m_backgrounds.push_back(std::move(background_0));
+		model->m_backgrounds.push_back(std::move(background_0));
 	}
 
-	void initRelationTypes() {
+	static void initRelationTypes() {
 		RelationTypes::addRelationType("friendship");
 		RelationTypes::addRelationType("respect");
 		RelationTypes::addRelationType("hatred");
 		RelationTypes::print();
 	}
 
-	//void initRelations() {
-	//	Character* garu = m_characters[0].get();
-	//	Relations& garuRelations = (*garu).getRelationsObject();
+	/*void initRelations() {
+		Character* garu = m_characters[0].get();
+		Relations& garuRelations = (*garu).getRelationsObject();
 
-	//	Character* brz = m_characters[1].get();
-	//	Relations& brzRelations = (*brz).getRelationsObject();
+		Character* brz = m_characters[1].get();
+		Relations& brzRelations = (*brz).getRelationsObject();
 
-	//	int friendshipId = 0; RelationTypes::getRelationId("friendship", friendshipId);
-	//	int respectId = 0;    RelationTypes::getRelationId("respect", respectId);
-	//	int hatredId = 0;     RelationTypes::getRelationId("hatred", hatredId);
+		int friendshipId = 0; RelationTypes::getRelationId("friendship", friendshipId);
+		int respectId = 0;    RelationTypes::getRelationId("respect", respectId);
+		int hatredId = 0;     RelationTypes::getRelationId("hatred", hatredId);
 
-	//	int garuId = garu->getId();
-	//	int brzId = brz->getId();
+		int garuId = garu->getId();
+		int brzId = brz->getId();
 
-	//	//std::cout << garuId << brzId << friendshipId << respectId << hatredId << std::endl;
+		//std::cout << garuId << brzId << friendshipId << respectId << hatredId << std::endl;
 
-	//	garuRelations.addCharacterRelation(brzId, friendshipId, 1);
-	//	//std::cout << garuRelations;
-	//	garuRelations.addCharacterRelation(brzId, hatredId, 20);
-	//	//std::cout << garuRelations;
-	//	garuRelations.addCharacterRelation(brzId, hatredId, 2);
-	//	//std::cout << garuRelations;
-	//	garuRelations.addCharacterRelation(brzId, hatredId, -10);
-	//	//std::cout << garuRelations;
+		garuRelations.addCharacterRelation(brzId, friendshipId, 1);
+		//std::cout << garuRelations;
+		garuRelations.addCharacterRelation(brzId, hatredId, 20);
+		//std::cout << garuRelations;
+		garuRelations.addCharacterRelation(brzId, hatredId, 2);
+		//std::cout << garuRelations;
+		garuRelations.addCharacterRelation(brzId, hatredId, -10);
+		//std::cout << garuRelations;
 
-	//	brzRelations.addCharacterRelation(garuId, respectId, 1);
-	//}
+		brzRelations.addCharacterRelation(garuId, respectId, 1);
+	}*/
 };
 
 #endif // MODEL_SUBJECT_H

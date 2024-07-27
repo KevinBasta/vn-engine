@@ -17,21 +17,23 @@
 //
 
 template <class T>
-bool ChapterNode::handleStep(StateSubject* stateSubject,
-							 T& step)
+bool ChapterNode::handleChoice(
+	StateSubject* stateSubject,
+	T& step)
 {
 	if (stateSubject == nullptr) {
 		return false;
 	}
 
-	stateSubject->handle(step);
+	stateSubject->m_choices.handle(step);
 
 	return true;
 }
 
 
 template <class T>
-bool ChapterNode::handleStep(StateSubject* stateSubject,
+bool ChapterNode::handleDialogue(
+	StateSubject* stateSubject,
 	StepIndex stepIndex,
 	std::unordered_map<StepIndex, T>& stepMap)
 {
@@ -47,16 +49,41 @@ bool ChapterNode::handleStep(StateSubject* stateSubject,
 	if (stepLocation != stepMap.end()) {
 		hasStep = true;
 
-		stateSubject->handle(stepLocation->second);
+		stateSubject->m_dialogue.handle(stepLocation->second);
 	}
 
 	return hasStep;
 }
 
 template <class T>
-bool ChapterNode::handleStep(StateSubject *stateSubject,
-							 StepIndex stepIndex, 
-							 std::unordered_map<StepIndex, std::vector<T>>& stepMap)
+bool ChapterNode::handleBackground(
+	StateSubject* stateSubject,
+	StepIndex stepIndex,
+	std::unordered_map<StepIndex, T>& stepMap)
+{
+	bool hasStep{ false };
+
+	if (stateSubject == nullptr) {
+		return hasStep;
+	}
+
+	class std::unordered_map<StepIndex, T>::iterator stepLocation = stepMap.find(stepIndex);
+
+	// Check if the step exsists for this type of action
+	if (stepLocation != stepMap.end()) {
+		hasStep = true;
+
+		stateSubject->m_background.handle(stepLocation->second);
+	}
+
+	return hasStep;
+}
+
+template <class T>
+bool ChapterNode::handleSprite(
+	StateSubject *stateSubject,
+	StepIndex stepIndex, 
+	std::unordered_map<StepIndex, std::vector<T>>& stepMap)
 {
 	bool hasStep{ false };
 
@@ -74,7 +101,7 @@ bool ChapterNode::handleStep(StateSubject *stateSubject,
 		// Execute all the actions within the step
 		for (action = stepLocation->second.begin(); action < stepLocation->second.end(); action++)
 		{
-			stateSubject->handle(*action);
+			stateSubject->m_sprites.handle(*action);
 		}
 	}
 
@@ -99,25 +126,25 @@ bool ChapterNode::doStep(StateSubject* stateSubject, int stepIndex) {
 	for (; step != steps.end(); step++) {
 		switch (*step) {
 		case (ChapterNodeActionType::BACKGROUND):
-			stepExists |= handleStep(stateSubject, stepIndex, m_backgroundSteps);
+			stepExists |= handleBackground(stateSubject, stepIndex, m_backgroundSteps);
 
 			break;
 		case (ChapterNodeActionType::SPRITE):
-			stepExists |= handleStep(stateSubject, stepIndex, m_spriteTextureSteps);
-			stepExists |= handleStep(stateSubject, stepIndex, m_spriteOpacitySteps);
-			stepExists |= handleStep(stateSubject, stepIndex, m_spritePositionSteps);
-			stepExists |= handleStep(stateSubject, stepIndex, m_spriteGenericAnimationSteps);
-
+			stepExists |= handleSprite(stateSubject, stepIndex, m_spriteTextureSteps);
+			stepExists |= handleSprite(stateSubject, stepIndex, m_spriteOpacitySteps);
+			stepExists |= handleSprite(stateSubject, stepIndex, m_spritePositionSteps);
+			stepExists |= handleSprite(stateSubject, stepIndex, m_spriteGenericAnimationSteps);
+			
 			break;
 		case (ChapterNodeActionType::TEXT):
-			stepExists |= handleStep(stateSubject, stepIndex, m_textRenderSteps);
-			stepExists |= handleStep(stateSubject, stepIndex, m_textLineSteps);
-			stepExists |= handleStep(stateSubject, stepIndex, m_textOverrideSpeakerSteps);
-			stepExists |= handleStep(stateSubject, stepIndex, m_textOverrideColorSteps);
+			stepExists |= handleDialogue(stateSubject, stepIndex, m_textRenderSteps);
+			stepExists |= handleDialogue(stateSubject, stepIndex, m_textLineSteps);
+			stepExists |= handleDialogue(stateSubject, stepIndex, m_textOverrideSpeakerSteps);
+			stepExists |= handleDialogue(stateSubject, stepIndex, m_textOverrideColorSteps);
 
 			break;
 		case (ChapterNodeActionType::CHOICE):
-			stepExists |= handleStep(stateSubject, m_pickChildStep);
+			stepExists |= handleChoice(stateSubject, m_pickChildStep);
 			
 			break;
 		default:

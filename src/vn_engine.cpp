@@ -50,12 +50,12 @@ void memCheck() {
 	window.load();
 	
 	// contains state of what chapter/node on and character relations and items
-	ModelSubject modelSubject{};
+
 
 	// contatins current game state
-	StateSubject stateSubject{&modelSubject};
+	StateSubject stateSubject{};
 
-	SubjectsOrchestrator subjectsOrchestrator{&modelSubject, &stateSubject};
+	SubjectsOrchestrator subjectsOrchestrator{&stateSubject};
 	subjectsOrchestrator.newGame();
 
 	// the vn game

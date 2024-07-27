@@ -80,12 +80,14 @@ public:
 	}
 
 	void pollAndDraw() {
-		if (m_stateSubject->m_textState.m_render != false) {
-			drawText(m_stateSubject->m_textState.m_speakerName,
-				m_stateSubject->m_textState.m_color,
+		TextState& state{ m_stateSubject->m_dialogue.get() };
+
+		if (state.m_render != false) {
+			drawText(state.m_speakerName,
+					 state.m_color,
 				200.0f);
-			drawText(m_stateSubject->m_textState.m_line,
-					 m_stateSubject->m_textState.m_color,
+			drawText(state.m_line,
+					 state.m_color,
 					 150.0f);
 		}
 	}

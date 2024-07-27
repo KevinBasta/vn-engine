@@ -57,7 +57,7 @@ private:
 	void processMouse() {
 		// Do a state step on left click
 		if (sg_leftButtonReleaseEvent) {
-			if (m_stateSubject->isChoiceActive() == false) {
+			if (m_stateSubject->m_choices.isChoiceActive() == false) {
 				m_stateSubject->action();
 			}
 
@@ -90,16 +90,16 @@ private:
 
 		// Change node child choice index with up and down arrows
 		if (sg_upKeyButtonReleaseEvent) {
-			if (m_stateSubject->isChoiceActive()) {
-				m_stateSubject->chooseUpChoice();
+			if (m_stateSubject->m_choices.isChoiceActive()) {
+				m_stateSubject->m_choices.chooseUpChoice();
 			}
 			
 			sg_upKeyButtonReleaseEvent = false;
 		}
 
 		if (sg_downKeyButtonReleaseEvent) {
-			if (m_stateSubject->isChoiceActive()) {
-				m_stateSubject->chooseDownChoice();
+			if (m_stateSubject->m_choices.isChoiceActive()) {
+				m_stateSubject->m_choices.chooseDownChoice();
 			}
 			
 			sg_downKeyButtonReleaseEvent = false;

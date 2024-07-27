@@ -116,7 +116,7 @@ add_executable (
 	"src/model/base/node_parents.h" 
 	"src/model/base/node_parents.cpp" 
 	"src/model/base/node_stray.h" 
-	"src/model/base/node_stray.cpp" "src/model/state/state_text.h" "src/model/state/state_background.h" "src/model/state/state_sprites.h" "src/model/stores/texture_store.h"  "src/model/stores/texture_store.cpp")
+	"src/model/base/node_stray.cpp" "src/model/state/state_dialogue.h" "src/model/state/state_background.h" "src/model/state/state_sprites.h" "src/model/stores/texture_store.h"  "src/model/stores/texture_store.cpp" "src/model/state/state_sprites.cpp" "src/model/state/state_choices.h" "src/model/state/state_choices.cpp")
 
 target_include_directories(
 	"vn_engine"

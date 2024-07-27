@@ -5,6 +5,7 @@
 #include "shader.h"
 #include "texture.h"
 #include "state_subject.h"
+#include "state_background.h"
 
 void BackgroundLayer::drawBackground(Texture2D* texture) {
 	if (texture == nullptr) {
@@ -40,7 +41,7 @@ void BackgroundLayer::drawBackground(Texture2D* texture) {
 }
 
 void BackgroundLayer::pollAndDraw() {
-	drawBackground(m_stateSubject->m_currentBackground);
+	drawBackground(m_stateSubject->m_background.m_currentBackground);
 
 	if (m_stateSubject->isInDelta(StateDelta::BACKGROUND)) {
 		std::cout << "BACKGROUND IN DELTA" << std::endl;

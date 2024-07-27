@@ -5,6 +5,7 @@
 #include "shader.h"
 #include "texture.h"
 #include "state_types.h"
+#include "state_sprites.h"
 #include "state_subject.h"
 
 void SpriteLayer::drawSprite(SpriteState& spriteState) {
@@ -49,9 +50,9 @@ void SpriteLayer::drawSprite(SpriteState& spriteState) {
 
 
 void SpriteLayer::pollAndDraw() {
-	StateSubject::spriteRenderMap& data = m_stateSubject->getSpriteRenderData();
+	StateSprites::spriteRenderMap& data = m_stateSubject->m_sprites.getSpriteRenderData();
 
-	StateSubject::spriteRenderMap::iterator iter;
+	StateSprites::spriteRenderMap::iterator iter;
 	for (iter = data.begin(); iter != data.end(); iter++) {
 		if (iter->second.m_texture != nullptr && iter->second.m_position.m_opacity > 0.0f) {
 			drawSprite(iter->second);

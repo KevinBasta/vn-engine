@@ -29,9 +29,9 @@ bool GraphTraverser::pointToChild(StateSubject* stateSubject) {
 
 	Node* child{ nullptr };
 	
-	if (stateSubject->m_activeChoice) {
-		child = m_curNode->getChildById(stateSubject->getChoiceId());
-		stateSubject->recordAndDisableChoice();
+	if (stateSubject->m_choices.m_activeChoice) {
+		child = m_curNode->getChildById(stateSubject->m_choices.getChoiceId());
+		stateSubject->m_choices.recordAndDisableChoice();
 	}
 	
 	if (child == nullptr) {
