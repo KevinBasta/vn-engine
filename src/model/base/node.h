@@ -38,7 +38,7 @@ protected:
 	int m_id{};
 	
 	// For the purposes of traversal 
-	NodeParents m_parents{};
+	NodeParents m_parents;
 	NodeChildren m_children{};
 
 	// Temp

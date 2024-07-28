@@ -5,6 +5,10 @@
 
 #include <iostream>
 
+NodeParents::NodeParents(Node* currentNode) {
+	NodeStray::addStray(currentNode);
+}
+
 void NodeParents::addParent(Node* parent, Node* currentNode) {
 	if (parent == nullptr) { return; }
 

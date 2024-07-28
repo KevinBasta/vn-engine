@@ -16,6 +16,7 @@ std::ostream& operator<<(std::ostream& out, Node& node) {
 
 Node::Node() : 
 	m_children{},
+	m_parents{this},
 	m_id{ IdGenerator<Node>::getId() }
 {
 
@@ -23,6 +24,7 @@ Node::Node() :
 
 Node::Node(std::string tempData) : 
 	m_children{}, 
+	m_parents{this},
 	m_id{ IdGenerator<Node>::getId() },
 	m_temp{ tempData }
 {

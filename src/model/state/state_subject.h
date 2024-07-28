@@ -78,14 +78,18 @@ public:
 		m_sprites.initCharacterData();
 	}
 
+	void loadSave() {
+
+	}
+
 
 public:
 	// indicate that auto substeps (for animations) are present
 	bool m_activeAutoAction{ false };
 
+	bool inAutoAction() { return m_activeAutoAction; }
 	void setAutoAction() { m_activeAutoAction = true; }
 	void clearAutoAction() { m_activeAutoAction = false; }
-	bool inAutoAction() { return m_activeAutoAction; }
 
 	void tickAutoActions(float timePassed);
 	void endAutoActions();
@@ -96,6 +100,7 @@ public:
 	// Delta tracking inquiry
 	// an array of enums describing what changed to allow an
 	// observer to fetch new data from only what changed
+	// MODIFIED: to allow more optimized rendering descision
 	
 	std::vector<StateDelta> m_stateDelta{};
 
@@ -116,38 +121,19 @@ public:
 	}
 
 public:
-	// Model specific state
-	// character textures and positions
-
-	// node ids for saving if needed
-	// chapter numb, load chapter if not by asking model
-	
-	//
-	// Choices
-	//
-	StateChoices m_choices{this};
-
-	//
-	// Text
-	//
+	// non-serialize critical (partial data may be saved for savefile thumbnails for example)
 	StateDialogue m_dialogue{};
-
-	//
-	// Background
-	//
 	StateBackground m_background{};
-
-	//
-	// Characters
-	//
 	StateSprites m_sprites{this};
 
-	//
-	// Bonds/Relationships
-	//
+	// half-serialize critical (partial data needs to be saved)
+	StateChoices m_choices{this};
+
+	// serialize critical (full data needs to be saved)
 	StateRelations m_relations{};
 
-	
+	// Other states: camera, main menu, in-game menu
+
 public:
 	// Save specific state
 	// character relationships

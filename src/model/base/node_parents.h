@@ -19,7 +19,7 @@ private:
 	std::list<Node*> m_parents{};
 
 private:
-	NodeParents() {}
+	NodeParents(Node* currentNode);
 
 	//
 	// Functions to only ever be called by node_children

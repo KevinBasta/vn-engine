@@ -15,19 +15,18 @@ private:
 
 	static void checkInstance() {
 		if (m_instance.get() == nullptr) {
-			m_instance = std::make_unique<NodeStray>();
+			NodeStray* stray{ new NodeStray };
+
+			m_instance.reset(stray);
 		}
 	}
 
 private:
 	std::list<Node*> m_chapterNodes{};
 
+	NodeStray() : m_chapterNodes{} {}
+
 public:
-	// TODO: constructor can be private
-	NodeStray() : m_chapterNodes{} {
-
-	}
-
 	~NodeStray() {
 		for (Node* node : m_chapterNodes) {
 			std::cout << "deleting node stray: " << node->getId() << std::endl;
@@ -36,6 +35,18 @@ public:
 	}
 
 public:
+	static void print() {
+		checkInstance();
+
+		NodeStray* instance{ m_instance.get() };
+
+		std::cout << "Node strays" << std::endl;
+		
+		for (Node* node : instance->m_chapterNodes) {
+			std::cout << node->getId() << std::endl;
+		}
+	}
+
 	static void addStray(Node* stray) {
 		checkInstance();
 

@@ -37,7 +37,9 @@ private:
 
 	static void checkInstance() {
 		if (m_instance.get() == nullptr) {
-			m_instance = std::make_unique<ModelSubject>();
+			ModelSubject* model{ new ModelSubject{} };
+
+			m_instance.reset(model);
 		}
 	}
 
@@ -86,12 +88,11 @@ public:
 		return model->m_characters[id].get();
 	}
 
-public:
-	ModelSubject()  
-	{
-	}
+private:
+	ModelSubject() {}
 
 public:
+	~ModelSubject() {}
 
 	static void createChapterOne() {
 		checkInstance();

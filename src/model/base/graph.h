@@ -3,6 +3,7 @@
 #define GRAPH_H
 
 #include "node.h"
+#include "node_stray.h"
 
 #include <memory>
 #include <iostream>
@@ -37,7 +38,7 @@ public:
 
 public:
 // Engine Operations:
-	void setHeadNode(Node* node) { m_head.reset(node); }
+	void setHeadNode(Node* node) { m_head.reset(node); NodeStray::removeStray(node); }
 	friend std::ostream& operator<<(std::ostream& out, Graph& graph);
 
 /* 
