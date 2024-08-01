@@ -3,10 +3,9 @@
 #define BASE_NODE_H
 
 #include "id.h"
-#include "node_children.h"
-#include "node_parents.h"
 #include "character.h"
 
+#include <set>
 #include <vector>
 #include <string>
 #include <iostream>
@@ -20,8 +19,6 @@ enum class NodeState {
 };
 
 class StateSubject;
-class NodeChildren;
-class NodeParents;
 class NodeRunner;
 class NodeBuilder;
 /*
@@ -38,26 +35,28 @@ protected:
 	int m_id{};
 	
 	// For the purposes of traversal 
-	NodeParents m_parents;
-	NodeChildren m_children{};
+	std::set<id> m_parents{};
+	std::set<id> m_children{};
 
 	// Temp
 	std::string m_temp{};
 
 public:
 	Node();
-	virtual ~Node();
 	Node(std::string tempData);
+	virtual ~Node();
 	NodeRunner iter();
 
 public:
 // Game Operations:
 	int getId() { return m_id; }
-	Node* getParentByIndex(int parentIndex);
-	Node* getParentById(int parentId);
-	Node* getChildByIndex(int childIndex);
-	Node* getChildById(int childId);
-	int getChildrenAmount();
+	
+	id getParentIdByIndex(int parentIndex);
+	id getParentIdById(int parentId);
+
+	int getChildrenAmount() { return m_children.size(); }
+	id getFirstChildId();
+	id getChildIdById(int childId);
 
 	virtual NodeState action(StateSubject* stateSubject, int stepIndex) = 0;
 

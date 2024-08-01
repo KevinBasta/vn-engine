@@ -1,80 +1,73 @@
 #ifndef VN_CHAPTER_ITERATOR_H
 #define VN_CHAPTER_ITERATOR_H
 
+#include "id.h"
 #include "chapter.h"
 
-#include "graph.h"
-#include "graph_traverser.h"
+#include "node.h"
+#include "node_runner.h"
 
 #include "model_subject.h"
-
 
 class StateSubject;
 
 enum class ChapterState {
 	CHAPTER_STEP,
-	CHAPTERS_END
+	CHAPTERS_END,
+	CHAPTER_ERR
 };
 
 class ChapterIterator {
 private:
 	ModelSubject*	m_model{ nullptr };
-	Chapter*		m_curChapter{ nullptr };
-	int				m_curChapterIndex{ 0 };
 	
-	Graph*			m_curGraph{ nullptr };
-	GraphTraverser	m_graphIter{ nullptr };
+	id m_curNodeId{};
+	Node* m_curNodePtr{ nullptr };
+	NodeRunner m_nodeRunner{ nullptr };
 
-	// flase for fail, true for success
-	bool initChapter(int chapterIndex) {
-		if (!m_model) {
-			return false;
-		}
-
-		m_curChapter = m_model->getChapterByOrderIndex(m_curChapterIndex);
-
-		if (!m_curChapter) {
-			return false;
-		}
-
-		m_curGraph = m_curChapter->getGraph();
-
-		if (!m_curGraph) {
-			return false;
-		}
-
-		m_graphIter = m_curGraph->iter();
+	id m_curChapterId{};
+	Chapter* m_curChapterPtr{ nullptr };
 	
-		return true;
-	}
-
 public:
-	ChapterIterator(ModelSubject* model, int chapterIndex) :
+	// TODO: iterator with no chapter id input, for new game cases (perhaps can still pass but pass the first chapter id)
+	ChapterIterator(ModelSubject* model, int chapterId) :
 		m_model{ model },
-		m_curChapterIndex{ chapterIndex }
+		m_curChapterId{ chapterId }
 	{
-		initChapter(m_curChapterIndex);
+		// Only for loading the chapter if it's not loaded, can move to first .step
+		// can make a special function to request the loading of it
+		ModelSubject::getChapterById(chapterId);
 	}
+
+	bool goToNextNode(StateSubject* stateSubject);
 
 	ChapterState step(StateSubject* stateSubject) {
-		// TODO: check graph iter containing a null graph
-		GraphState state = m_graphIter.step(stateSubject);
+		if (m_curChapterPtr == nullptr) {
+			m_curChapterPtr = ModelSubject::getChapterById(m_curChapterId);
+			if (m_curChapterPtr == nullptr) {
+				// TODO: throw exception instead??
+				return ChapterState::CHAPTER_ERR;
+			} 
+		}
 
-		if (m_model && (state == GraphState::GRAPH_END)) {
-			m_curChapterIndex++;
-			
-			bool nextChapterInit = initChapter(m_curChapterIndex);
-			if (!nextChapterInit) {
-				// Avoid future traversals
-				m_curChapter = nullptr;
-				m_curGraph = nullptr;
-				m_graphIter = GraphTraverser(nullptr);
-				
-				return ChapterState::CHAPTERS_END;
+		if (m_curNodePtr == nullptr) {
+			m_curNodeId = m_curChapterPtr->getHeadNodeId();
+			m_curNodePtr = ModelSubject::getNodeById(m_curChapterId);
+
+			if (m_curNodePtr == nullptr) {
+				// TODO: throw exception instead??
+				return ChapterState::CHAPTER_ERR;
 			}
-			else {
-				// TODO: dangerous for possible infinite recursion
-				return step(stateSubject);
+
+			m_nodeRunner = m_curNodePtr->iter();
+		}
+
+		NodeState state = m_nodeRunner.step(stateSubject);
+
+		if (state == NodeState::NODE_END) {
+			bool inNextNode{ goToNextNode(stateSubject) };
+			if (!inNextNode) {
+				return ChapterState::CHAPTERS_END;
 			}
 		}
 

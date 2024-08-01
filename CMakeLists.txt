@@ -34,12 +34,8 @@ add_executable (
 	# model
 	"src/model/base/chapter.cpp"
 	"src/model/base/chapter.h"
-	"src/model/base/graph.cpp"
-	"src/model/base/graph.h"
 	"src/model/base/node.cpp"
 	"src/model/base/node.h"
-	"src/model/base/node_children.cpp"
-	"src/model/base/node_children.h"
 	
 	"src/model/character/character.cpp"
 	"src/model/character/character.h"
@@ -50,8 +46,6 @@ add_executable (
 	
 	"src/model/iterators/chapter_iterator.cpp"
 	"src/model/iterators/chapter_iterator.h"
-	"src/model/iterators/graph_traverser.cpp"
-	"src/model/iterators/graph_traverser.h"
 	"src/model/iterators/node_runner.cpp"
 	"src/model/iterators/node_runner.h"
 
@@ -113,8 +107,6 @@ add_executable (
 	"src/model/builders/character_builder.h" 
 	"src/model/builders/relation_builder.h" 
 	"src/model/builders/node_builder.h" 
-	"src/model/base/node_parents.h" 
-	"src/model/base/node_parents.cpp" 
 	"src/model/base/node_stray.h" 
 	"src/model/base/node_stray.cpp" "src/model/state/state_dialogue.h" "src/model/state/state_background.h" "src/model/state/state_sprites.h" "src/model/stores/texture_store.h"  "src/model/stores/texture_store.cpp" "src/model/state/state_sprites.cpp" "src/model/state/state_choices.h" "src/model/state/state_choices.cpp")
 

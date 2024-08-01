@@ -25,54 +25,48 @@ public:
 	}
 
 	//TODO: virtual destructor
+	//virtual ~NodeBuilder();
 
 private:
 	//
-	// Private Internal operations
+	// Model File Loading Interface
 	//
 
-	friend class NodeChildren;
-	friend class NodeParents;
+	void addParent(id parentId) { 
+		if (m_nodeBase == nullptr) { return; }
 
-	bool isOwned() { 
-		if (m_nodeBase == nullptr) { return false; }
-		
-		return m_nodeBase->m_parents.hasOwner();
+		m_nodeBase->m_parents.insert(parentId);
 	}
 
-	void addParent(Node* parent) { 
+	void removeParent(id parentId) { 
+		if (m_nodeBase == nullptr) { return; }
+
+		m_nodeBase->m_parents.erase(parentId);
+	}
+
+	void addChild(id childId) {
 		if (m_nodeBase == nullptr) { return; }
 		
-		m_nodeBase->m_parents.addParent(parent, m_nodeBase);
+		m_nodeBase->m_children.insert(childId);
 	}
 
-	void removeParent(Node* parent) { 
+	void removeChild(id childId) { 
 		if (m_nodeBase == nullptr) { return; }
-
-		m_nodeBase->m_parents.removeParent(parent, m_nodeBase);
-	}
-
-	void makeReferencedChildOwned(Node* child) {
-		if (m_nodeBase == nullptr) { return; }
-
-		m_nodeBase->m_children.makeReferencedChildOwned(child);
+	
+		m_nodeBase->m_children.erase(childId);
 	}
 
 public:
 	//
-	// Public Interface (for engine and savefiles)
+	// Public Engine Interface
 	//
 
-	void addChild(Node* child) { 
-		if (m_nodeBase == nullptr) { return; }
-		
-		m_nodeBase->m_children.addChild(m_nodeBase, child);
+	void link(Node* secondNode) {
+
 	}
 
-	void removeChild(Node* child) { 
-		if (m_nodeBase == nullptr) { return; }
-	
-		m_nodeBase->m_children.removeChild(m_nodeBase, child);
+	void unlink(Node* secondNode) {
+
 	}
 };
 

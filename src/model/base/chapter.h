@@ -2,34 +2,35 @@
 #ifndef CHAPTER_H
 #define CHAPTER_H
 
-#include "graph.h"
-#include "character.h"
-#include "texture.h"
+#include "id.h"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include <unordered_map>
+#include <set>
+#include <string>
 #include <memory>
+
+class ChapterBuilder;
 
 class Chapter {
 private:
-	std::string m_name{};
-	std::unique_ptr<Graph> m_graph{};
-	int m_id{};
+	friend class ChapterBuilder;
+
+	std::wstring m_name{};
+	id m_headNodeId{};
+	id m_id{};
+
+	// For the purposes of traversal 
+	std::set<id> m_parents{};
+	std::set<id> m_children{};
 
 public:
-	Chapter() : m_graph{ std::make_unique<Graph>() } {};
+	Chapter() {}
 
-	// Setters
-	//void addCharacter(Character& character) { m_characterSceneData[character] = character; };
-
-	// Getters
-	void setGraph(Graph* graph) { m_graph = std::unique_ptr<Graph>(graph); }
-	Graph* getGraph() { return m_graph.get(); }
-
-
+	id getId() const { return m_id; }
+	id getHeadNodeId() const { return m_headNodeId; }
 };
 
 #endif // CHAPTER_H
