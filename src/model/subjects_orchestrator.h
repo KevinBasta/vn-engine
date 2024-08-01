@@ -21,7 +21,6 @@ public:
 
 	void newGame() {
 		ModelSubject::createChapterOne();
-
 		m_state->initIterator(ModelSubject::iter(0));
 		m_state->newGame();
 	}

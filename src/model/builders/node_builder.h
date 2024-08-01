@@ -27,7 +27,7 @@ public:
 	//TODO: virtual destructor
 	//virtual ~NodeBuilder();
 
-private:
+public:
 	//
 	// Model File Loading Interface
 	//
@@ -62,11 +62,17 @@ public:
 	//
 
 	void link(Node* secondNode) {
+		if (m_nodeBase == nullptr || secondNode == nullptr) { return; }
 
+		addChild(secondNode->getId());
+		NodeBuilder{ secondNode }.addParent(m_nodeBase->getId());
 	}
 
 	void unlink(Node* secondNode) {
+		if (m_nodeBase == nullptr || secondNode == nullptr) { return; }
 
+		removeChild(secondNode->getId());
+		NodeBuilder{ secondNode }.removeParent(m_nodeBase->getId());
 	}
 };
 

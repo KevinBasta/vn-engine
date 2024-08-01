@@ -78,7 +78,7 @@ public:
 			}
 
 			int index{ 0 };
-			int selected{ m_stateSubject->m_choices.m_currentChoiceIndex };
+			int selected{ m_stateSubject->m_choices.getChoiceIndex() };
 			float paddingBottom{ 200.0f };
 			for (ChoiceTextProperties& choice : choices->m_choices) {
 				glm::vec3 color{};

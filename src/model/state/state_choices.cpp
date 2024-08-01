@@ -7,6 +7,7 @@ void StateChoices::chooseUpChoice() {
 
 	if (choice >= 0 && choice < m_nodeChoices->m_choices.size()) {
 		m_currentChoiceIndex = choice;
+		updateChoiceId();
 	}
 
 	//TODO: null checks
@@ -18,6 +19,7 @@ void StateChoices::chooseDownChoice() {
 
 	if (choice >= 0 && choice < m_nodeChoices->m_choices.size()) {
 		m_currentChoiceIndex = choice;
+		updateChoiceId();
 	}
 
 	m_stateSubject->notify();

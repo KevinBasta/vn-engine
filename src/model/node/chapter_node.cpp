@@ -19,15 +19,25 @@
 template <class T>
 bool ChapterNode::handleChoice(
 	StateSubject* stateSubject,
-	T& step)
+	StepIndex stepIndex,
+	std::unordered_map<StepIndex, T>& stepMap)
 {
+	bool hasStep{ false };
+
 	if (stateSubject == nullptr) {
-		return false;
+		return hasStep;
 	}
 
-	stateSubject->m_choices.handle(step);
+	class std::unordered_map<StepIndex, T>::iterator stepLocation = stepMap.find(stepIndex);
 
-	return true;
+	// Check if the step exsists for this type of action
+	if (stepLocation != stepMap.end()) {
+		hasStep = true;
+
+		stateSubject->m_choices.handle(stepLocation->second);
+	}
+
+	return hasStep;
 }
 
 
@@ -144,7 +154,7 @@ bool ChapterNode::doStep(StateSubject* stateSubject, int stepIndex) {
 
 			break;
 		case (ChapterNodeActionType::CHOICE):
-			stepExists |= handleChoice(stateSubject, m_pickChildStep);
+			stepExists |= handleChoice(stateSubject, stepIndex, m_pickChildStep);
 			
 			break;
 		default:

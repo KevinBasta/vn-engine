@@ -119,22 +119,32 @@ struct ActionBackgroundTexture {
 //
 // Bonds/Relationship Actions
 //
-struct ActionAddBond {
+enum class RelationModification {
+	ADD,
+	SUBTRACT,
+	MULTIPLY,
+	DIVIDE
+};
+
+struct ActionRelationModify {
 	int m_characterOneId{};
 	int m_characterTwoId{};
+
 	int m_relationTypeId{};
-	int m_relationAddValue{};
+
+	RelationModification m_modificationType{};
+	int m_modificationValue{};
 };
 
-struct ChoiceBondProperties {
-	int m_nodeId{};
+//struct ChoiceBondProperties {
+//	int m_nodeId{};
+//
+//	std::vector<ActionAddBond> m_bondActions{};
+//};
 
-	std::vector<ActionAddBond> m_bondActions{};
-};
-
-struct ActionChooseNodeBond {
-	std::vector<ChoiceBondProperties> m_choiceBondActions{};
-};
+//struct ActionChooseNodeBond {
+//	std::vector<ChoiceBondProperties> m_choiceBondActions{};
+//};
 
 //
 // Node child picking action

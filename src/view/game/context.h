@@ -34,7 +34,7 @@ public:
 		m_spriteLayer.pollAndDraw();
 		
 		
-		if (m_stateSubject->m_choices.m_activeChoice) {
+		if (m_stateSubject->m_choices.isChoiceActive()) {
 			m_choiceLayer.pollAndDraw();
 		}
 		else {

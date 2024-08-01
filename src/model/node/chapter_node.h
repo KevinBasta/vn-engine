@@ -97,21 +97,30 @@ private:
 
 	
 	//
-	// Bond mutation actions
+	// Relation mutation actions
 	//
+
+	std::unordered_map<StepIndex, ActionRelationModify> m_relationshipModifySteps{
+		{0, {1, 2, 1, RelationModification::ADD, 10}}
+	};
+
+	//std::unordered_map<StepIndex,  
 
 
 	//
 	// Child picker step
 	//
 
-	ActionChooseNode m_pickChildStep{ ChoiceStyle::LIST_TEXT_AREA, {{3, L"second first-level node"}, {4, L"third first-level node"}, {2, L"first first-level node"}}};
+	std::unordered_map<StepIndex, ActionChooseNode> m_pickChildStep{
+		{3, { ChoiceStyle::LIST_TEXT_AREA, {{3, L"second first-level node"}, {4, L"third first-level node"}, {2, L"first first-level node"}}}}
+	};
+
 
 
 	bool doStep(StateSubject* stateSubject, int stepIndex);
 	
 	template <class T>
-	bool handleChoice(StateSubject* stateSubject, T& step);
+	bool handleChoice(StateSubject* stateSubject, StepIndex stepIndex, std::unordered_map<StepIndex, T>& stepMap);
 
 	template <class T>
 	bool handleDialogue(StateSubject* stateSubject, StepIndex stepIndex, std::unordered_map<StepIndex, T>& stepMap);

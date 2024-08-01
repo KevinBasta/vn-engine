@@ -159,13 +159,13 @@ public:
 
 		ChapterBuilder{ chapterOne }.setHeadNodeId(head);
 
-		//model->m_chapters.push_back(std::unique_ptr<Chapter>(chapterOne));
-		//model->m_nodes[head->getId()] = std::unique_ptr<ChapterNode>(head);
-		//model->m_nodes[oneone->getId()] = std::unique_ptr<ChapterNode>(oneone);
-		//model->m_nodes[onetwo->getId()] = std::unique_ptr<ChapterNode>(onetwo);
-		//model->m_nodes[twoone->getId()] = std::unique_ptr<ChapterNode>(twoone);
-		//model->m_nodes[twotwo->getId()] = std::unique_ptr<ChapterNode>(twotwo);
-		//model->m_nodes[threeone->getId()] = std::unique_ptr<ChapterNode>(threeone);
+		model->m_chapters.push_back(std::unique_ptr<Chapter>(chapterOne));
+		model->m_nodes[head->getId()] = std::unique_ptr<ChapterNode>(head);
+		model->m_nodes[oneone->getId()] = std::unique_ptr<ChapterNode>(oneone);
+		model->m_nodes[onetwo->getId()] = std::unique_ptr<ChapterNode>(onetwo);
+		model->m_nodes[twoone->getId()] = std::unique_ptr<ChapterNode>(twoone);
+		model->m_nodes[twotwo->getId()] = std::unique_ptr<ChapterNode>(twotwo);
+		model->m_nodes[threeone->getId()] = std::unique_ptr<ChapterNode>(threeone);
 		//std::cout << chapterOneGraph << std::endl;
 	}
 

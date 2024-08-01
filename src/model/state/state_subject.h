@@ -27,6 +27,7 @@
 
 #include <algorithm>
 #include <vector>
+#include <iostream>
 
 //std::unordered_map<Character&, CharacterSceneData> m_characterSceneData{};
 // background variable can be defined here too
@@ -60,7 +61,9 @@ public:
 			return;
 		}
 
-		iterator.step(this);
+		ChapterState result = iterator.step(this);
+
+		std::cout << "ITERATOR RESULT: " << result << std::endl;
 
 		// if state delta not empty
 		notify();

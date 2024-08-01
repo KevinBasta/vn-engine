@@ -9,6 +9,8 @@
 
 #include "model_subject.h"
 
+#include <iostream>
+
 class StateSubject;
 
 enum class ChapterState {
@@ -16,6 +18,26 @@ enum class ChapterState {
 	CHAPTERS_END,
 	CHAPTER_ERR
 };
+
+inline std::ostream& operator<<(std::ostream& out, const ChapterState value) {
+	switch (value)
+	{
+	case (ChapterState::CHAPTER_STEP):
+		out << "CHAPTER_STEP";
+		break;
+	case (ChapterState::CHAPTERS_END):
+		out << "CHAPTERS_END";
+		break;
+	case (ChapterState::CHAPTER_ERR):
+		out << "CHAPTER_ERR";
+		break;
+	default:
+		break;
+	}
+
+	return out;
+}
+
 
 class ChapterIterator {
 private:
@@ -36,43 +58,12 @@ public:
 	{
 		// Only for loading the chapter if it's not loaded, can move to first .step
 		// can make a special function to request the loading of it
-		ModelSubject::getChapterById(chapterId);
+		//ModelSubject::getChapterById(chapterId);
 	}
 
 	bool goToNextNode(StateSubject* stateSubject);
 
-	ChapterState step(StateSubject* stateSubject) {
-		if (m_curChapterPtr == nullptr) {
-			m_curChapterPtr = ModelSubject::getChapterById(m_curChapterId);
-			if (m_curChapterPtr == nullptr) {
-				// TODO: throw exception instead??
-				return ChapterState::CHAPTER_ERR;
-			} 
-		}
-
-		if (m_curNodePtr == nullptr) {
-			m_curNodeId = m_curChapterPtr->getHeadNodeId();
-			m_curNodePtr = ModelSubject::getNodeById(m_curChapterId);
-
-			if (m_curNodePtr == nullptr) {
-				// TODO: throw exception instead??
-				return ChapterState::CHAPTER_ERR;
-			}
-
-			m_nodeRunner = m_curNodePtr->iter();
-		}
-
-		NodeState state = m_nodeRunner.step(stateSubject);
-
-		if (state == NodeState::NODE_END) {
-			bool inNextNode{ goToNextNode(stateSubject) };
-			if (!inNextNode) {
-				return ChapterState::CHAPTERS_END;
-			}
-		}
-
-		return ChapterState::CHAPTER_STEP;
-	}
+	ChapterState step(StateSubject* stateSubject);
 };
 
 
