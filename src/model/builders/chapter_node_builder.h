@@ -42,6 +42,14 @@ public:
 	}
 
 public:
+	//
+	// Loading and saving node model files
+	//
+	void save();
+	void load();
+
+
+public:
 	// 
 	// Action adding interface
 	//

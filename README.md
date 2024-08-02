@@ -14,12 +14,13 @@ This repository is in progress.
 ## Design patterns
 
 current:
-- `Observer pattern` for state subject, model subject, game observer, engine observer
-- `Visitor pattern/injection` for sending down the state subject to the model nodes
-- `Iterator pattern` for iterating chapter, graph, and node
-- `singleton pattern` for node strays and text rendering (may change for multithreading)
-- `builder pattern` for constructing nodes and characters
+- `Observer` for state subject, model subject, game observer, engine observer
+- `Visitor/injection` for sending down the state subject to the model nodes
+- `Iterator` for iterating chapters and running nodes
+- `Singleton` for model subject, node strays and text rendering (may change for multithreading)
+- `Builder` for constructing nodes and characters
 
 future additions:
-- `Command pattern` for menu commands
-- factory/builder for constructing the game model subject
+- `Memento` for supporting undo operations
+- `Command` for menu commands
+- other

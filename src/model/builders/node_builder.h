@@ -74,6 +74,11 @@ public:
 		removeChild(secondNode->getId());
 		NodeBuilder{ secondNode }.removeParent(m_nodeBase->getId());
 	}
+
+public:
+	// TODO: maybe an interface to save the node base class
+	// portion to a file (same for loading) to be called by
+	// sub classes?
 };
 
 

@@ -64,6 +64,7 @@ public:
 	bool goToNextNode(StateSubject* stateSubject);
 
 	ChapterState step(StateSubject* stateSubject);
+	//ChapterState stepBack
 };
 
 

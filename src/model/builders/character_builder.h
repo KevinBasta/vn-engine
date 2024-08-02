@@ -37,6 +37,13 @@ public:
 	Character* get() {
 		return m_character;
 	}
+
+public:
+	//
+	// Loading and saving node model files
+	//
+	void save();
+	void load();
 };
 
 #endif // VN_CHARACTER_BUILDER_H

@@ -1,6 +1,7 @@
 #ifndef VN_CHAPTER_NODE_TYPES_H
 #define VN_CHAPTER_NODE_TYPES_H
 
+#include "id.h"
 #include "texture.h"
 
 #include <glm/glm.hpp>
@@ -126,14 +127,49 @@ enum class RelationModification {
 	DIVIDE
 };
 
-struct ActionRelationModify {
+struct RelationRequested {
 	int m_characterOneId{};
 	int m_characterTwoId{};
 
 	int m_relationTypeId{};
+};
 
+struct ActionRelationModify {
+	RelationRequested m_relationType{};
 	RelationModification m_modificationType{};
 	int m_modificationValue{};
+};
+
+
+
+enum class RelationComparisonOperator {
+	LESS_THAN,
+	LESS_THAN_OR_EQUAL,
+	GREATER_THAN,
+	GREATER_THAN_OR_EQUAL,
+	EQUAL
+};
+
+enum class RelationGroupingOperator {
+	NONE,
+	AND,
+	OR
+};
+
+struct ActionRelationCondition {
+	RelationRequested m_relationType{};
+	
+	RelationComparisonOperator m_comparisonOperator{};
+	int m_valueToCompare{};
+};
+
+struct ActionRelationConditionUnit {
+
+};
+
+struct ActionRelationNodeCondition {
+	id m_nodeID{};
+	std::vector<ActionRelationConditionUnit> m_conditions{};
 };
 
 //struct ChoiceBondProperties {
@@ -145,6 +181,9 @@ struct ActionRelationModify {
 //struct ActionChooseNodeBond {
 //	std::vector<ChoiceBondProperties> m_choiceBondActions{};
 //};
+
+
+
 
 //
 // Node child picking action
@@ -165,7 +204,7 @@ enum class ChoiceStyle {
 };*/
 
 struct ChoiceTextProperties {
-	int m_nodeID{};
+	id m_nodeID{};
 
 	std::wstring m_displayText{};
 
