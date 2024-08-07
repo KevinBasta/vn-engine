@@ -55,6 +55,8 @@ bool Relations::addCharacterRelation(int characterId, int relationId, int amount
 			return false;
 		}
 
+		relationWithCharacter = m_relationships.find(characterId);
+
 		relationWithCharacter->second[relationId] = 0;
 	}
 	

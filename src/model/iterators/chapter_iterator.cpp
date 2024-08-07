@@ -69,7 +69,7 @@ ChapterState ChapterIterator::step(StateSubject* stateSubject) {
 	}
 
 	if (stateSubject->m_choices.isChoiceActive()) {
-		stateSubject->m_choices.disableChoice();
+		stateSubject->m_choices.consumeChoice();
 	}
 
 	// TODO: abstract this to a different function so that when step is called again

@@ -59,6 +59,7 @@ public:
 	characterMap m_characters{};
 	std::vector<std::unique_ptr<Texture2D>> m_backgrounds{};
 
+
 	std::list<Chapter*> m_chapterOrder{};
 
 	static Chapter* getChapterById(id chapterId) {
@@ -183,6 +184,8 @@ public:
 
 		model->m_characters[garu.get()->getId()] = std::unique_ptr<Character>{ garu.get() };
 		model->m_characters[brz.get()->getId()] = std::unique_ptr<Character>{ brz.get() };
+
+		initBaseRelations();
 	}
 
 	static void initBackgrounds() {
@@ -201,21 +204,22 @@ public:
 		RelationTypes::print();
 	}
 
-	/*void initRelations() {
-		Character* garu = m_characters[0].get();
-		Relations& garuRelations = (*garu).getRelationsObject();
+	const std::vector<Relations> m_baseRelations;
 
-		Character* brz = m_characters[1].get();
-		Relations& brzRelations = (*brz).getRelationsObject();
+	static void initBaseRelations() {
+		checkInstance();
 
-		int friendshipId = 0; RelationTypes::getRelationId("friendship", friendshipId);
-		int respectId = 0;    RelationTypes::getRelationId("respect", respectId);
-		int hatredId = 0;     RelationTypes::getRelationId("hatred", hatredId);
+		ModelSubject* model = m_instance.get();
 
-		int garuId = garu->getId();
-		int brzId = brz->getId();
+		id garuId{ 1 };
+		id brzId{ 2 };
 
-		//std::cout << garuId << brzId << friendshipId << respectId << hatredId << std::endl;
+		Relations garuRelations{ 1 };
+		Relations brzRelations{ 2 };
+
+		int friendshipId = RelationTypes::getRelationId("friendship");
+		int respectId = RelationTypes::getRelationId("respect");
+		int hatredId = RelationTypes::getRelationId("hatred");
 
 		garuRelations.addCharacterRelation(brzId, friendshipId, 1);
 		//std::cout << garuRelations;
@@ -227,7 +231,14 @@ public:
 		//std::cout << garuRelations;
 
 		brzRelations.addCharacterRelation(garuId, respectId, 1);
-	}*/
+
+		std::cout << garuRelations;
+		std::cout << brzRelations;
+	}
+
+	static std::vector<Relations> getBaseRelations() {
+
+	}
 };
 
 #endif // MODEL_SUBJECT_H

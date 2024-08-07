@@ -15,7 +15,7 @@ private:
 	bool m_activeChoice{ false };
 	ActionChoice* m_choices{ nullptr };
 	ActionChoiceSetNextNode* m_choiceNextNode{ nullptr };
-	ActionChoiceModifyRelation* m_choiceModifyRelation{ nullptr };
+	ActionChoiceModifyRelation* m_choiceModifyRelations{ nullptr };
 
 	int m_currentChoiceIndex{ 0 };
 
@@ -44,13 +44,14 @@ public:
 		return m_nextNodeId;
 	}
 
-	void disableChoice() {
+	void consumeChoice() {
 		saveNextNodeId();
+		applyRelationModifications();
 		m_activeChoice = false;
 
 		m_choices = nullptr;
 		m_choiceNextNode = nullptr;
-		m_choiceModifyRelation = nullptr;
+		m_choiceModifyRelations = nullptr;
 	}
 
 	void recordNodeChildChoice(id nodeId) {
@@ -71,6 +72,8 @@ private:
 			m_nextNodeId = nodeId->second;
 		}
 	}
+
+	void applyRelationModifications();
 
 public:
 	//
@@ -112,7 +115,7 @@ public:
 	
 	void handle(ActionChoiceModifyRelation& action) {
 		std::cout << "NEXT NODE CHOICE RELATION SET" << std::endl;
-		m_choiceModifyRelation = &action;
+		m_choiceModifyRelations = &action;
 	}
 
 };

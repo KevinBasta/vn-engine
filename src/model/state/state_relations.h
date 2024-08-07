@@ -1,17 +1,22 @@
 #ifndef VN_STATE_RELATIONS_H
 #define VN_STATE_RELATIONS_H
 
+#include "model_subject.h"
+
 class StateRelations {
 public:
-	using characterRelations = std::vector<Relations>;
-
-	characterRelations m_characterRelationsData{};
+	std::vector<Relations> m_characterRelationsData{};
 
 	void initCharacterRelations() {
-
+		m_characterRelationsData = ModelSubject::getBaseRelations();
 	}
 
-	void handle() {
+
+public:
+	//
+	// Node interface
+	//
+	void handle(ActionRelationModify& action) {
 
 	}
 };

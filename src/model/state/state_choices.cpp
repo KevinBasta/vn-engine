@@ -25,3 +25,15 @@ void StateChoices::chooseDownChoice() {
 		m_stateSubject->notify();
 	}
 }
+
+void StateChoices::applyRelationModifications() {
+	if (m_choiceModifyRelations == nullptr || m_stateSubject == nullptr) { return; }
+
+	auto modificationsIter{ m_choiceModifyRelations->m_relationModifications.find(m_currentChoiceIndex) };
+
+	if (modificationsIter != m_choiceModifyRelations->m_relationModifications.end()) {
+		for (auto modification : modificationsIter->second) {
+			m_stateSubject->m_relations.handle(modification);
+		}
+	}
+}

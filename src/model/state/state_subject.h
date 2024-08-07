@@ -46,6 +46,20 @@ private:
 	ChapterIterator iterator{ nullptr, 0 };
 	
 public:
+	// non-serialize critical (partial data may be saved for savefile thumbnails for example)
+	StateDialogue m_dialogue{};
+	StateBackground m_background{};
+	StateSprites m_sprites{ this };
+
+	// half-serialize critical (partial data needs to be saved)
+	StateChoices m_choices{ this };
+
+	// serialize critical (full data needs to be saved)
+	StateRelations m_relations{};
+
+	// Other states: camera, main menu, in-game menu
+
+public:
 	StateSubject() {}
 	~StateSubject() {}
 
@@ -97,6 +111,16 @@ public:
 	void tickAutoActions(float timePassed);
 	void endAutoActions();
 
+
+public:
+	// Save specific state
+	// character relationships
+	// character items
+
+public:
+	// User input specific state
+	//bool m_menuOpened{ false };
+
 public:
 	// TODO: remove, the entire scene/screen will have to be rerendred on any change anyways.
 	// Perhaps it can be kept to avoid things like update on bond mutation only, but that seems rare
@@ -104,7 +128,7 @@ public:
 	// an array of enums describing what changed to allow an
 	// observer to fetch new data from only what changed
 	// MODIFIED: to allow more optimized rendering descision
-	
+
 	std::vector<StateDelta> m_stateDelta{};
 
 	void addStateDelta(StateDelta stateDelta) {
@@ -122,30 +146,6 @@ public:
 
 		return false;
 	}
-
-public:
-	// non-serialize critical (partial data may be saved for savefile thumbnails for example)
-	StateDialogue m_dialogue{};
-	StateBackground m_background{};
-	StateSprites m_sprites{this};
-
-	// half-serialize critical (partial data needs to be saved)
-	StateChoices m_choices{this};
-
-	// serialize critical (full data needs to be saved)
-	StateRelations m_relations{};
-
-	// Other states: camera, main menu, in-game menu
-
-public:
-	// Save specific state
-	// character relationships
-	// character items
-
-public:
-	// User input specific state
-	//bool m_menuOpened{ false };
-
 
 };
 

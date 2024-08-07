@@ -14,9 +14,9 @@ public:
 	SubjectsOrchestrator(StateSubject* state) :
 		m_state{state}
 	{
-		ModelSubject::initCharacters();
-		ModelSubject::initBackgrounds();
 		ModelSubject::initRelationTypes();
+		ModelSubject::initBackgrounds();
+		ModelSubject::initCharacters();
 	}
 
 	void newGame() {
