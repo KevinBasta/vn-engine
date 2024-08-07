@@ -13,26 +13,71 @@ private:
 	StateSubject* m_stateSubject{ nullptr };
 
 	bool m_activeChoice{ false };
-	ActionChooseNode* m_nodeChoices{ nullptr };
+	ActionChoice* m_choices{ nullptr };
+	ActionChoiceSetNextNode* m_choiceNextNode{ nullptr };
+	ActionChoiceModifyRelation* m_choiceModifyRelation{ nullptr };
 
 	int m_currentChoiceIndex{ 0 };
-	id m_currentChoiceId{ 0 };
+
+	bool m_nextNodeIdSet{ false };
+	id m_nextNodeId{ 0 };
 
 public:
 	StateChoices(StateSubject* stateSubject) : m_stateSubject{ stateSubject } {}
 	
-public:
+private:
 	//
-	// Keep record of what chioces were made for save file
+	// Keep record of what choices were made for save file
 	//
 	std::vector<int> m_chapterChoicesRecord{};
 
-	void appendChapterChoice() {
-		m_chapterChoicesRecord.push_back(getChoiceId());
+public:
+	//
+	// Iterator interface
+	// 
+
+	bool hasNextNodeId() {
+		return m_nextNodeIdSet;
+	}
+
+	id getChoiceNodeId() {
+		return m_nextNodeId;
+	}
+
+	void disableChoice() {
+		saveNextNodeId();
+		m_activeChoice = false;
+
+		m_choices = nullptr;
+		m_choiceNextNode = nullptr;
+		m_choiceModifyRelation = nullptr;
+	}
+
+	void recordNodeChildChoice(id nodeId) {
+		m_chapterChoicesRecord.push_back(nodeId);
+	}
+
+private:
+	//
+	// Iterator interface helpers
+	// 
+	void saveNextNodeId() {
+		if (m_choiceNextNode == nullptr) { return; }
+
+		auto nodeId{ m_choiceNextNode->m_nodeId.find(m_currentChoiceIndex) };
+
+		if (nodeId != m_choiceNextNode->m_nodeId.end()) {
+			m_nextNodeIdSet = true;
+			m_nextNodeId = nodeId->second;
+		}
 	}
 
 public:
-	
+	//
+	// View and Controller interface
+	//
+	void chooseUpChoice();
+	void chooseDownChoice();
 
 	bool isChoiceActive() {
 		return m_activeChoice;
@@ -42,48 +87,34 @@ public:
 		return m_currentChoiceIndex;
 	}
 
-	ActionChooseNode* getNodeChoices() {
-		return m_nodeChoices;
-	}
-
-	void recordAndDisableChoice() {
-		appendChapterChoice();
-		m_activeChoice = false;
-		m_nodeChoices = nullptr;
+	ActionChoice* getChoices() {
+		return m_choices;
 	}
 
 public:
 	//
-	// Controller interface
+	// Node interface
 	//
-	void chooseUpChoice();
-	void chooseDownChoice();
-	void updateChoiceId() {
-		if (m_activeChoice == false || m_nodeChoices == nullptr) {
-			m_currentChoiceId = 0;
-			return;
-		}
-
-		if (m_currentChoiceIndex < 0 || m_currentChoiceIndex >= m_nodeChoices->m_choices.size()) {
-			m_currentChoiceId = 0;
-			return;
-		}
-
-		m_currentChoiceId = m_nodeChoices->m_choices[m_currentChoiceIndex].m_nodeID;
-	}
-
-	id getChoiceId() {
-		return m_currentChoiceId;
-	}
-
-	void handle(ActionChooseNode& action) {
+	void handle(ActionChoice& action) {
 		m_activeChoice = true;
 
-		m_nodeChoices = &action;
+		m_choices = &action;
 
 		m_currentChoiceIndex = 0;
-		updateChoiceId();
+		m_nextNodeIdSet = false;
+		m_nextNodeId = 0;
 	}
+
+	void handle(ActionChoiceSetNextNode& action) {
+		std::cout << "NEXT NODE CHOICE ACTION SET" << std::endl;
+		m_choiceNextNode = &action;
+	}
+	
+	void handle(ActionChoiceModifyRelation& action) {
+		std::cout << "NEXT NODE CHOICE RELATION SET" << std::endl;
+		m_choiceModifyRelation = &action;
+	}
+
 };
 
 #endif // VN_STATE_CHOICES_H

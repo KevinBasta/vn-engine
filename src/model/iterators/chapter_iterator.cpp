@@ -19,8 +19,10 @@ bool ChapterIterator::goToNextNode(StateSubject* stateSubject) {
 		Node* child{ nullptr };
 		id    childId{ 0 };
 		
-		childId = stateSubject->m_choices.getChoiceId();
-		child = ModelSubject::getNodeById(childId);
+		if (stateSubject->m_choices.hasNextNodeId()) {
+			childId = stateSubject->m_choices.getChoiceNodeId();
+			child = ModelSubject::getNodeById(childId);
+		}
 
 		if (child == nullptr) {
 			// TODO: handle exceptions
@@ -30,6 +32,10 @@ bool ChapterIterator::goToNextNode(StateSubject* stateSubject) {
 		}
 
 		if (child) {
+			if (m_curNodePtr->getChildrenAmount() > 1) {
+				stateSubject->m_choices.recordNodeChildChoice(childId);
+			}
+			
 			m_curNodeId = childId;
 			m_curNodePtr = child;
 			m_nodeRunner = m_curNodePtr->iter();
@@ -63,7 +69,7 @@ ChapterState ChapterIterator::step(StateSubject* stateSubject) {
 	}
 
 	if (stateSubject->m_choices.isChoiceActive()) {
-		stateSubject->m_choices.recordAndDisableChoice();
+		stateSubject->m_choices.disableChoice();
 	}
 
 	// TODO: abstract this to a different function so that when step is called again
@@ -76,6 +82,7 @@ ChapterState ChapterIterator::step(StateSubject* stateSubject) {
 			return ChapterState::CHAPTERS_END;
 		}
 		else {
+			// TODO: check return?
 			step(stateSubject);
 		}
 	}

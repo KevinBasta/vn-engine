@@ -154,8 +154,10 @@ bool ChapterNode::doStep(StateSubject* stateSubject, int stepIndex) {
 
 			break;
 		case (ChapterNodeActionType::CHOICE):
-			stepExists |= handleChoice(stateSubject, stepIndex, m_pickChildStep);
-			
+			stepExists |= handleChoice(stateSubject, stepIndex, m_choiceTextOption);
+			stepExists |= handleChoice(stateSubject, stepIndex, m_choiceSetNextNode);
+			stepExists |= handleChoice(stateSubject, stepIndex, m_choiceRelationModifications);
+
 			break;
 		default:
 			break;

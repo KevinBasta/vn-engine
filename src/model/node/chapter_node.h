@@ -104,19 +104,32 @@ private:
 		{0, {1, 2, 1, RelationModification::ADD, 10}}
 	};
 
-	//std::unordered_map<StepIndex,  
-
-
-	//
-	// Child picker step
-	//
-
-	std::unordered_map<StepIndex, ActionChooseNode> m_pickChildStep{
-		{3, { ChoiceStyle::LIST_TEXT_AREA, {{3, L"second first-level node"}, {4, L"third first-level node"}, {2, L"first first-level node"}}}}
+	std::unordered_map <StepIndex, std::vector<ActionRelationSetNextNode>> m_relationshipChooseNode{
+		//{0, {1, {}}}
 	};
 
 
+	//
+	// Choice step
+	//
 
+	std::unordered_map<StepIndex, ActionChoice> m_choiceTextOption {
+		{3, { ChoiceStyle::LIST_TEXT_AREA, {L"second first-level node", L"third first-level node", L"first first-level node"}}}
+	};
+	
+	std::unordered_map<StepIndex, ActionChoiceSetNextNode> m_choiceSetNextNode {
+		{ 3, { {{0, 3}, {1, 4}, {2, 2}} } }
+	};
+
+
+	std::unordered_map<StepIndex, ActionChoiceModifyRelation> m_choiceRelationModifications {
+		{3, { { {0, { {{1, 2, 1}, RelationModification::ADD, 100} } }}}}
+	};
+
+
+	//
+	// Handlers
+	//
 	bool doStep(StateSubject* stateSubject, int stepIndex);
 	
 	template <class T>

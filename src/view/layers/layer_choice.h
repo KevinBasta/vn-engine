@@ -71,7 +71,7 @@ public:
 
 	void pollAndDraw() {
 		if (m_stateSubject->m_choices.isChoiceActive()) {
-			ActionChooseNode* choices{ m_stateSubject->m_choices.getNodeChoices() };
+			ActionChoice* choices{ m_stateSubject->m_choices.getChoices() };
 
 			if (choices == nullptr) {
 				return;
@@ -80,14 +80,14 @@ public:
 			int index{ 0 };
 			int selected{ m_stateSubject->m_choices.getChoiceIndex() };
 			float paddingBottom{ 200.0f };
-			for (ChoiceTextProperties& choice : choices->m_choices) {
+			for (std::wstring_view choice : choices->m_choices) {
 				glm::vec3 color{};
 				
 				if (index == selected) {
 					color = { 1.0f, 0.0f, 0.0f };
 				}
 
-				drawChoice(choice.m_displayText, color, paddingBottom);
+				drawChoice(choice, color, paddingBottom);
 				index++;
 			}
 		}

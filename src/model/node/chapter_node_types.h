@@ -11,6 +11,7 @@
 #include <string>
 #include <vector>
 #include <list>
+#include <unordered_map>
 
 enum class ChapterNodeActionType {
 	BACKGROUND,
@@ -120,6 +121,8 @@ struct ActionBackgroundTexture {
 //
 // Bonds/Relationship Actions
 //
+
+// Modify a relationship
 enum class RelationModification {
 	ADD,
 	SUBTRACT,
@@ -140,8 +143,7 @@ struct ActionRelationModify {
 	int m_modificationValue{};
 };
 
-
-
+// Relation condition (single)
 enum class RelationComparisonOperator {
 	LESS_THAN,
 	LESS_THAN_OR_EQUAL,
@@ -150,68 +152,67 @@ enum class RelationComparisonOperator {
 	EQUAL
 };
 
+
+struct ActionRelationCondition {
+	RelationRequested m_relationType{};
+	
+	RelationComparisonOperator m_comparisonOperator{};
+	// Value is on the right side i.e. (relationValue operator m_valueToCompare)
+	int m_valueToCompare{};
+};
+
+
+// Relation condition (grouping)
 enum class RelationGroupingOperator {
 	NONE,
 	AND,
 	OR
 };
 
-struct ActionRelationCondition {
-	RelationRequested m_relationType{};
-	
-	RelationComparisonOperator m_comparisonOperator{};
-	int m_valueToCompare{};
-};
-
 struct ActionRelationConditionUnit {
-
+	std::vector<ActionRelationCondition> m_conditions{};
+	RelationGroupingOperator m_operator{};
 };
 
-struct ActionRelationNodeCondition {
+// Set next node based on matching relation conditions
+struct ActionRelationSetNextNode {
 	id m_nodeID{};
+	
+	// If any of these conditions are ture, then the node is picked
 	std::vector<ActionRelationConditionUnit> m_conditions{};
 };
-
-//struct ChoiceBondProperties {
-//	int m_nodeId{};
-//
-//	std::vector<ActionAddBond> m_bondActions{};
-//};
-
-//struct ActionChooseNodeBond {
-//	std::vector<ChoiceBondProperties> m_choiceBondActions{};
-//};
-
-
 
 
 //
 // Node child picking action
 //
 
+using ChoiceIndex = int;
+
+struct ActionChoiceModifyRelation {
+	std::unordered_map<ChoiceIndex, std::vector<ActionRelationModify>> m_relationModifications{};
+};
+
+struct ActionChoiceSetNextNode {
+	std::unordered_map<ChoiceIndex, id> m_nodeId{};
+};
+
+
+//
+// Choice Interface
+//
 
 enum class ChoiceStyle {
 	LIST_TEXT_AREA,
 	LIST_MID_SCREEN,
 };
 
-
 /*struct ChoiceTileProperties {
-	int m_nodeID{};
-
 	std::wstring m_displayText{};
 	Texture2D* m_displayTexture{};
 };*/
 
-struct ChoiceTextProperties {
-	id m_nodeID{};
-
-	std::wstring m_displayText{};
-
-	//bool m_bondAction{ false };
-};
-
-struct ActionChooseNode {
+struct ActionChoice {
 	ChoiceStyle m_style{};
 
 	// TODO: add support for not displaying already visited node
@@ -221,7 +222,7 @@ struct ActionChooseNode {
 	// would need the default move-forward behavior to be any node that is not visited. Otherwise the 0th node or error out?
 	// but erroring out needs to be recoverable somehow 
 	// bool m_doNotDisplayVisited{};
-	std::vector<ChoiceTextProperties> m_choices{};
+	std::vector<std::wstring> m_choices{};
 };
 
 
