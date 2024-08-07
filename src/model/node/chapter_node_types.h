@@ -18,6 +18,7 @@ enum class ChapterNodeActionType {
 	SPRITE,
 	TEXT,
 	CHOICE,
+	RELATION,
 };
 
 //
@@ -124,6 +125,7 @@ struct ActionBackgroundTexture {
 
 // Modify a relationship
 enum class RelationModification {
+	SET,
 	ADD,
 	SUBTRACT,
 	MULTIPLY,
@@ -138,10 +140,11 @@ struct RelationRequested {
 };
 
 struct ActionRelationModify {
-	RelationRequested m_relationType{};
+	RelationRequested m_relation{};
 	RelationModification m_modificationType{};
 	int m_modificationValue{};
 };
+
 
 // Relation condition (single)
 enum class RelationComparisonOperator {
@@ -151,7 +154,6 @@ enum class RelationComparisonOperator {
 	GREATER_THAN_OR_EQUAL,
 	EQUAL
 };
-
 
 struct ActionRelationCondition {
 	RelationRequested m_relationType{};
@@ -174,11 +176,11 @@ struct ActionRelationConditionUnit {
 	RelationGroupingOperator m_operator{};
 };
 
-// Set next node based on matching relation conditions
 struct ActionRelationSetNextNode {
+	// Set next node based on matching relation conditions
 	id m_nodeID{};
 	
-	// If any of these conditions are ture, then the node is picked
+	// These conditions are ORed
 	std::vector<ActionRelationConditionUnit> m_conditions{};
 };
 

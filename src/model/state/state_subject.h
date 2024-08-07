@@ -15,7 +15,7 @@
 #include "state_types.h"
 
 #include "character.h"
-#include "relation.h"
+#include "relations.h"
 //#include "chapter.h"
 //#include "graph.h"
 //#include "graph_iterator.h"
@@ -92,6 +92,7 @@ public:
 
 	void newGame() {
 		m_dialogue.reset();
+		m_relations.reset();
 		m_sprites.initCharacterData();
 	}
 

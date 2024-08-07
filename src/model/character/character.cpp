@@ -3,7 +3,6 @@
 #include "texture.h"
 #include "id.h"
 #include "character.h"
-#include "relation.h"
 
 #include <iostream>
 #include <string>

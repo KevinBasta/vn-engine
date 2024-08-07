@@ -133,16 +133,10 @@ private:
 	bool doStep(StateSubject* stateSubject, int stepIndex);
 	
 	template <class T>
-	bool handleChoice(StateSubject* stateSubject, StepIndex stepIndex, std::unordered_map<StepIndex, T>& stepMap);
+	bool handle(StateSubject* stateSubject, StepIndex stepIndex, std::unordered_map<StepIndex, T>& stepMap);
 
 	template <class T>
-	bool handleDialogue(StateSubject* stateSubject, StepIndex stepIndex, std::unordered_map<StepIndex, T>& stepMap);
-
-	template <class T>
-	bool handleBackground(StateSubject* stateSubject, StepIndex stepIndex, std::unordered_map<StepIndex, T>& stepMap);
-
-	template <class T>
-	bool handleSprite(StateSubject* stateSubject, StepIndex stepIndex, std::unordered_map<StepIndex, std::vector<T>>& stepMap);
+	bool handle(StateSubject* stateSubject, StepIndex stepIndex, std::unordered_map<StepIndex, std::vector<T>>& stepMap);
 
 	// pre actions (transitions, animations, etc..)
 	// body actions (text, animations, etc..)

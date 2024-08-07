@@ -9,13 +9,14 @@
 #include "chapter_node.h"
 #include "chapter.h"
 
-#include "relation.h"
+#include "relations.h"
 #include "relation_types.h"
 
 #include "node_builder.h"
 #include "chapter_node_builder.h"
 #include "character_builder.h"
 #include "chapter_builder.h"
+#include "relations_builder.h"
 
 #include <vector>
 #include <unordered_map>
@@ -204,7 +205,7 @@ public:
 		RelationTypes::print();
 	}
 
-	const std::vector<Relations> m_baseRelations;
+	std::unordered_map<id, std::unique_ptr<Relations>> m_baseRelations{};
 
 	static void initBaseRelations() {
 		checkInstance();
@@ -214,30 +215,33 @@ public:
 		id garuId{ 1 };
 		id brzId{ 2 };
 
-		Relations garuRelations{ 1 };
-		Relations brzRelations{ 2 };
+		RelationsBuilder garuRelations{ };
+		RelationsBuilder brzRelations{ };
 
 		int friendshipId = RelationTypes::getRelationId("friendship");
 		int respectId = RelationTypes::getRelationId("respect");
 		int hatredId = RelationTypes::getRelationId("hatred");
 
-		garuRelations.addCharacterRelation(brzId, friendshipId, 1);
-		//std::cout << garuRelations;
-		garuRelations.addCharacterRelation(brzId, hatredId, 20);
-		//std::cout << garuRelations;
-		garuRelations.addCharacterRelation(brzId, hatredId, 2);
-		//std::cout << garuRelations;
-		garuRelations.addCharacterRelation(brzId, hatredId, -10);
-		//std::cout << garuRelations;
+		garuRelations.setRelationValue(brzId, friendshipId, 1);
+		garuRelations.setRelationValue(brzId, hatredId, 20);
+		garuRelations.setRelationValue(brzId, hatredId, 2);
+		garuRelations.setRelationValue(brzId, hatredId, -10);
+		
+		brzRelations.setRelationValue(garuId, respectId, 1);
 
-		brzRelations.addCharacterRelation(garuId, respectId, 1);
+		std::cout << *garuRelations.get();
+		std::cout << *brzRelations.get();
 
-		std::cout << garuRelations;
-		std::cout << brzRelations;
+		model->m_baseRelations[garuId] = std::unique_ptr<Relations>{ garuRelations.get() };
+		model->m_baseRelations[brzId] = std::unique_ptr<Relations>{ brzRelations.get() };
 	}
 
-	static std::vector<Relations> getBaseRelations() {
+	static const std::unordered_map<id, std::unique_ptr<Relations>>& getBaseRelations() {
+		checkInstance();
 
+		ModelSubject* model = m_instance.get();
+
+		return model->m_baseRelations;
 	}
 };
 

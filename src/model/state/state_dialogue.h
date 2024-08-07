@@ -8,9 +8,10 @@
 class StateDialogue {
 	// TODO add text style type for background translusent black for character thoughts
 	// TextAction m_textAction{ TextAction::EMPTY };
-public:
+private:
 	TextState m_dialogueState{ false, L"", L"", glm::vec3() };
 
+public:
 	TextState& get() {
 		return m_dialogueState;
 	}
@@ -19,8 +20,11 @@ public:
 		m_dialogueState = { false, L"", L"", glm::vec3() };
 	}
 
+public:
+	//
+	// Node interface
+	//
 	void handle(ActionTextLine& action) {
-
 		m_dialogueState.m_line = action.m_line;
 
 		Character* character = ModelSubject::getCharacterByID(action.m_characterID);
@@ -32,29 +36,18 @@ public:
 		else {
 			std::cout << "handle ActionTextLine half failed" << std::endl;
 		}
-
-
-		//m_stateDelta.push_back(StateDelta::TEXT);
 	}
 
 	void handle(ActionTextOverrideSpeaker& action) {
-		//m_textState.m_currentState = TextAction::COMPLETE;
 		m_dialogueState.m_speakerName = action.m_speakerName;
-
-		//m_stateDelta.push_back(StateDelta::TEXT);
 	}
 
 	void handle(ActionTextOverrideColor& action) {
-		//m_textState.m_currentState = TextAction::COMPLETE;
 		m_dialogueState.m_color = action.m_textColor;
-
-		//m_stateDelta.push_back(StateDelta::TEXT);
 	}
 
 	void handle(ActionTextRender& action) {
 		m_dialogueState.m_render = action.m_render;
-
-		//m_stateDelta.push_back(StateDelta::TEXT);
 	}
 };
 

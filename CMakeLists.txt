@@ -41,8 +41,8 @@ add_executable (
 	"src/model/character/character.h"
 	"src/model/character/relation_types.cpp" 
 	"src/model/character/relation_types.h" 
-	"src/model/character/relation.cpp"
-	"src/model/character/relation.h"
+	"src/model/character/relations.cpp"
+	"src/model/character/relations.h"
 	
 	"src/model/iterators/chapter_iterator.cpp"
 	"src/model/iterators/chapter_iterator.h"
@@ -105,7 +105,7 @@ add_executable (
 	"src/model/builders/chapter_node_builder.h" 
 	"src/model/builders/chapter_builder.h" 
 	"src/model/builders/character_builder.h" 
-	"src/model/builders/relation_builder.h" 
+	"src/model/builders/relations_builder.h" 
 	"src/model/builders/node_builder.h" 
 	"src/model/base/node_stray.h" 
 	"src/model/base/node_stray.cpp" "src/model/state/state_dialogue.h" "src/model/state/state_background.h" "src/model/state/state_sprites.h" "src/model/stores/texture_store.h"  "src/model/stores/texture_store.cpp" "src/model/state/state_sprites.cpp" "src/model/state/state_choices.h" "src/model/state/state_choices.cpp")
