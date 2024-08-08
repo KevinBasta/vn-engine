@@ -127,11 +127,11 @@ bool ChapterNode::doStep(StateSubject* stateSubject, int stepIndex) {
 
 			break;
 		case (ChapterNodeActionType::RELATION):
-			//stepExists |= handleRelation(stateSubject, stepIndex, )
+			stepExists |= handle(stateSubject, stepIndex, m_relationshipModifySteps);
+			stepExists |= handle(stateSubject, stepIndex, m_relationshipChooseNode);
 
 			break;
 		case (ChapterNodeActionType::CHOICE):
-			//std::function<void(ActionChoice&)> callback = stateSubject->m_choices.handle<ActionChoice>;
 			stepExists |= handle(stateSubject, stepIndex, m_choiceTextOption);
 			stepExists |= handle(stateSubject, stepIndex, m_choiceSetNextNode);
 			stepExists |= handle(stateSubject, stepIndex, m_choiceRelationModifications);

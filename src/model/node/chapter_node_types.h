@@ -178,7 +178,7 @@ struct ActionRelationConditionUnit {
 
 struct ActionRelationSetNextNode {
 	// Set next node based on matching relation conditions
-	id m_nodeID{};
+	id m_nodeId{};
 	
 	// These conditions are ORed
 	std::vector<ActionRelationConditionUnit> m_conditions{};

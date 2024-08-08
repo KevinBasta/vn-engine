@@ -23,6 +23,12 @@ private:
 	id m_nextNodeId{ 0 };
 
 public:
+	void setNextNodeId(id nextNodeId) {
+		m_nextNodeIdSet = true;
+		m_nextNodeId = nextNodeId;
+	}
+
+public:
 	StateChoices(StateSubject* stateSubject) : m_stateSubject{ stateSubject } {}
 	
 private:

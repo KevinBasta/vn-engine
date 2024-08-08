@@ -23,7 +23,7 @@ private:
 
 	// temp data for testing here, will be done by engine/hooks
 	std::vector<std::vector<ChapterNodeActionType>> m_steps{ 
-		{ ChapterNodeActionType::BACKGROUND, ChapterNodeActionType::SPRITE },
+		{ ChapterNodeActionType::BACKGROUND, ChapterNodeActionType::SPRITE, ChapterNodeActionType::RELATION },
 		{ ChapterNodeActionType::TEXT, ChapterNodeActionType::SPRITE },
 		{ ChapterNodeActionType::TEXT, ChapterNodeActionType::SPRITE },
 		{ ChapterNodeActionType::CHOICE } // can auto add this for engine
@@ -101,7 +101,7 @@ private:
 	//
 
 	std::unordered_map<StepIndex, ActionRelationModify> m_relationshipModifySteps{
-		{0, {1, 2, 1, RelationModification::ADD, 10}}
+		{0, {{1, 2, 1}, RelationModification::ADD, 10}}
 	};
 
 	std::unordered_map <StepIndex, std::vector<ActionRelationSetNextNode>> m_relationshipChooseNode{

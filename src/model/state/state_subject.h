@@ -55,7 +55,7 @@ public:
 	StateChoices m_choices{ this };
 
 	// serialize critical (full data needs to be saved)
-	StateRelations m_relations{};
+	StateRelations m_relations{ this };
 
 	// Other states: camera, main menu, in-game menu
 

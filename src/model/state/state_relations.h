@@ -9,7 +9,13 @@
 
 class StateRelations {
 private:
+	StateSubject* m_stateSubject{ nullptr };
 	std::unordered_map<id, std::unique_ptr<Relations>> m_characterRelationsData{};
+
+	bool eval(ActionRelationConditionUnit& conditionUnit) {
+
+		return false;
+	}
 
 	void print() {
 		for (auto& [characterId, relationUniquePtr] : m_characterRelationsData) {
@@ -18,6 +24,8 @@ private:
 	}
 
 public:
+	StateRelations(StateSubject* stateSubject) : m_stateSubject{ stateSubject } {}
+
 	void reset() {
 		m_characterRelationsData.clear();
 
@@ -51,6 +59,8 @@ public:
 		
 		print();
 	}
+
+	void handle(ActionRelationSetNextNode& action);
 };
 
 
