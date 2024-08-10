@@ -17,10 +17,11 @@
  */
 
 class Relations {
+public:
+	using RelationValue = int;
 private:
 	using CharacterId	= id;
 	using RelationId	= id;
-	using RelationValue = int;
 	using RelationToValueMap = std::unordered_map<RelationId, RelationValue>;
 	using CharacterToRelationMap = std::unordered_map<CharacterId, RelationToValueMap>;
 

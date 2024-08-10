@@ -155,25 +155,30 @@ enum class RelationComparisonOperator {
 	EQUAL
 };
 
-struct ActionRelationCondition {
-	RelationRequested m_relationType{};
-	
+struct RelationValueComparison {
+	RelationRequested m_relation{};
+	int m_valueToCompare{}; // Value is on the right side i.e. (relationValue operator m_valueToCompare)
 	RelationComparisonOperator m_comparisonOperator{};
-	// Value is on the right side i.e. (relationValue operator m_valueToCompare)
-	int m_valueToCompare{};
+};
+
+struct RelationRelationComparison {
+	RelationRequested m_relationOne{};
+	RelationRequested m_relationTwo{};
+	RelationComparisonOperator m_comparisonOperator{};
 };
 
 
 // Relation condition (grouping)
 enum class RelationGroupingOperator {
-	NONE,
 	AND,
 	OR
 };
 
-struct ActionRelationConditionUnit {
-	std::vector<ActionRelationCondition> m_conditions{};
+struct RelationConditionUnit {
 	RelationGroupingOperator m_operator{};
+	std::vector<RelationValueComparison> m_relationValueConditions{};
+	std::vector<RelationRelationComparison> m_relationRelationConditions{};
+	std::vector<RelationConditionUnit> m_conditionUnits{};
 };
 
 struct ActionRelationSetNextNode {
@@ -181,7 +186,7 @@ struct ActionRelationSetNextNode {
 	id m_nodeId{};
 	
 	// These conditions are ORed
-	std::vector<ActionRelationConditionUnit> m_conditions{};
+	std::vector<RelationConditionUnit> m_conditions{};
 };
 
 
