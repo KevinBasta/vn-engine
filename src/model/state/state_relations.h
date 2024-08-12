@@ -40,15 +40,15 @@ public:
 	}
 
 public:
-	void save() {}
-	void load() {}
-
-public:
 	//
 	// Node interface
 	//
 	void handle(ActionRelationSetNextNode& action);
 	void handle(ActionRelationModify& action);
+
+public:
+	void save() {}
+	void load() {}
 };
 
 

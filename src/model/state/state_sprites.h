@@ -14,6 +14,14 @@ class StateSprites {
 private:
 	StateSubject* m_stateSubject{ nullptr };
 
+	using stepIndex = index;
+	
+	using spriteRenderMap = std::unordered_map<TextureIdentifier, SpriteState, TextureIdentifierHasher>;
+	spriteRenderMap m_spriteRenderData{};
+	
+	using activeSpriteAnimationsMap = std::list<std::pair<stepIndex, ActionSpriteAnimationGeneric>>;
+	activeSpriteAnimationsMap m_activeSpriteAnimations{};
+	
 public:
 	StateSprites(StateSubject* stateSubject) : m_stateSubject{ stateSubject } {}
 
@@ -22,34 +30,37 @@ public:
 		m_activeSpriteAnimations.clear();
 	}
 
-	using stepIndex = int;
-	
-	// TODO: allow multiple sprites for one character
-	// TODO: rethink sprite system. perhaps a central sprite manager
-	using spriteRenderMap = std::unordered_map<TextureIdentifier, SpriteState, TextureIdentifierHasher>;
-	using activeSpriteAnimationsMap = std::list<std::pair<stepIndex, ActionSpriteAnimationGeneric>>;
-
-	spriteRenderMap m_spriteRenderData{};
-	activeSpriteAnimationsMap m_activeSpriteAnimations{};
-	spriteRenderMap& getSpriteRenderData() { return m_spriteRenderData; }
-
+public:
+	//
+	// Node interface
+	//
 	void handle(ActionSpriteProperty& action);
 	void handle(ActionSpriteAnimationGeneric& action);
+	
+public:
+	//
+	// Auto actions interface
+	//
+	bool tickAutoActions(float timePassed);
+	void endAutoActions() { endSpriteAnimations(); }
+
+private:
+	//
+	// Auto action helpers
+	//
 	bool tick(std::pair<stepIndex, ActionSpriteAnimationGeneric>& animation, float timePassed);
 	bool tickSpriteAnimations(float timePassed);
 	bool endSpriteAnimations();
 
-	bool tickAutoActions(float timePassed) {
-		bool anyActive{ false };
+public:
+	//
+	// View interface
+	//
+	const spriteRenderMap& getSpriteRenderData() { return m_spriteRenderData; }
 
-		anyActive |= tickSpriteAnimations(timePassed);
-
-		return anyActive;
-	}
-
-	void endAutoActions() {
-		endSpriteAnimations();
-	}
+public:
+	void load() {}
+	void save() {}
 };
 
 #endif // VN_STATE_SPRITES_H

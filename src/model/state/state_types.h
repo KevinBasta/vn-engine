@@ -14,25 +14,13 @@ enum class StateDelta {
 	SPRITE
 };
 
-struct SpritePosition {
-	float m_xCoord{ 0.0f };
-	float m_yCoord{ 0.0f };
-	float m_zCoord{ 0.0f };
-
-	float m_scale{ 1.0f };
-	float m_opacity{ 1.0f };
-};
-
 struct SpriteState {
-	float m_xCoord{ 0.0f };
-	float m_yCoord{ 0.0f };
-	float m_zCoord{ 0.0f };
+	float m_xPos{ 0.0f };
+	float m_yPos{ 0.0f };
+	float m_zPos{ 0.0f };
 
 	float m_scale{ 1.0f };
 	float m_opacity{ 1.0f };
-
-	//TextureIdentifier m_textureVnId{};
-	//SpritePosition m_position{};
 };
 
 //For typing animation

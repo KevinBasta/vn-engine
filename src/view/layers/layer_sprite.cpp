@@ -8,7 +8,7 @@
 #include "state_sprites.h"
 #include "state_subject.h"
 
-void SpriteLayer::drawSprite(TextureIdentifier textureIdentifier, SpriteState& spriteState) {
+void SpriteLayer::drawSprite(const TextureIdentifier& textureIdentifier, const SpriteState& spriteState) {
 	m_defaultShader.use();
 
 	Texture2D* texture{ TextureManager::getTexture(textureIdentifier) };
@@ -22,9 +22,9 @@ void SpriteLayer::drawSprite(TextureIdentifier textureIdentifier, SpriteState& s
 	glm::mat4 model = glm::mat4(1.0f);
 	//model = glm::translate(model, glm::vec3((static_cast<float>(m_window->width()) / 2) - (static_cast<float>(texture->width()) / 2), 0.0f, 0.0f));
 	model = glm::translate(model,
-		glm::vec3(spriteState.m_xCoord * m_window->scale(),
-				  spriteState.m_yCoord * m_window->scale(),
-				  spriteState.m_zCoord));
+		glm::vec3(spriteState.m_xPos * m_window->scale(),
+				  spriteState.m_yPos * m_window->scale(),
+				  spriteState.m_zPos));
 
 	//std::cout << "scale to view port" << scale << std::endl;
 	//std::cout << "scale to view port" << spriteState.m_position.m_xCoord << std::endl;
@@ -56,10 +56,10 @@ void SpriteLayer::drawSprite(TextureIdentifier textureIdentifier, SpriteState& s
 
 
 void SpriteLayer::pollAndDraw() {
-	StateSprites::spriteRenderMap& data = m_stateSubject->m_sprites.getSpriteRenderData();
+	auto& data = m_stateSubject->m_sprites.getSpriteRenderData();
 
-	StateSprites::spriteRenderMap::iterator iter;
-	for (iter = data.begin(); iter != data.end(); iter++) {
+	auto iter = data.begin();
+	for (; iter != data.end(); iter++) {
 		if (iter->second.m_opacity > 0.0f) {
 			drawSprite(iter->first, iter->second);
 		}

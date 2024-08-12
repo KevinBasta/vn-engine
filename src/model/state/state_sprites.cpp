@@ -15,17 +15,17 @@ void StateSprites::handle(ActionSpriteProperty& action) {
 	{
 	case SpriteProperty::XPOS:
 	{
-		m_spriteRenderData[action.m_texture].m_xCoord = action.m_value;
+		m_spriteRenderData[action.m_texture].m_xPos = action.m_value;
 		break;
 	}
 	case SpriteProperty::YPOS:
 	{
-		m_spriteRenderData[action.m_texture].m_yCoord = action.m_value;
+		m_spriteRenderData[action.m_texture].m_yPos = action.m_value;
 		break;
 	}
 	case SpriteProperty::ZPOS:
 	{
-		m_spriteRenderData[action.m_texture].m_zCoord = action.m_value;
+		m_spriteRenderData[action.m_texture].m_zPos = action.m_value;
 		break;
 	}
 	case SpriteProperty::SCALE:
@@ -67,10 +67,10 @@ bool StateSprites::tick(std::pair<stepIndex, ActionSpriteAnimationGeneric>& anim
 
 	switch (animation.second.m_stepType) {
 	case (SpriteProperty::XPOS):
-		currentValue = &(characterState.m_xCoord);
+		currentValue = &(characterState.m_xPos);
 		break;
 	case (SpriteProperty::YPOS):
-		currentValue = &(characterState.m_yCoord);
+		currentValue = &(characterState.m_yPos);
 		break;
 	default:
 		break;
@@ -162,13 +162,13 @@ bool StateSprites::endSpriteAnimations() {
 		case (SpriteProperty::XPOS):
 		{
 			std::cout << "XPOS END SPRITE ANIMATION" << std::endl;
-			characterPos.m_xCoord = endValue;
+			characterPos.m_xPos = endValue;
 			break;
 		}
 		case (SpriteProperty::YPOS):
 		{
 			std::cout << "YPOS END SPRITE ANIMATION" << std::endl;
-			characterPos.m_yCoord = endValue;
+			characterPos.m_yPos = endValue;
 			break;
 		}
 		default:
@@ -182,4 +182,12 @@ bool StateSprites::endSpriteAnimations() {
 
 	// no return needed
 	return true;
+}
+
+bool StateSprites::tickAutoActions(float timePassed) {
+	bool anyActive{ false };
+
+	anyActive |= tickSpriteAnimations(timePassed);
+
+	return anyActive;
 }
