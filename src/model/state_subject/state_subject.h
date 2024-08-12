@@ -17,8 +17,6 @@
 #include "character.h"
 #include "relations.h"
 //#include "chapter.h"
-//#include "graph.h"
-//#include "graph_iterator.h"
 #include "chapter_iterator.h"
 #include "model_subject.h"
 
@@ -28,17 +26,6 @@
 #include <algorithm>
 #include <vector>
 #include <iostream>
-
-//std::unordered_map<Character&, CharacterSceneData> m_characterSceneData{};
-// background variable can be defined here too
-
-// Scene camera/projection data
-/*
-struct SceneCameraData {
-
-};
-*/
-
 
 class StateSubject : public Subject {
 private:
@@ -57,7 +44,7 @@ public:
 	// serialize critical (full data needs to be saved)
 	StateRelations m_relations{ this };
 
-	// Other states: camera, main menu, in-game menu, character items
+	// Other states: camera/projection data, main menu, in-game menu, character items
 
 public:
 	StateSubject() {}

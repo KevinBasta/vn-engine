@@ -58,7 +58,6 @@ public:
 	
 
 	std::unordered_map<id, std::unique_ptr<ChapterNode>> m_nodes{};
-	std::vector<std::unique_ptr<Texture2D>> m_backgrounds{};
 	std::vector<std::unique_ptr<Chapter>>	m_chapters{};
 
 	using CharacterMap = std::unordered_map<id, std::unique_ptr<Character>>;
@@ -105,14 +104,6 @@ public:
 
 	// arr telling which chapters loaded, func to ckeck and load
 public:
-	static Texture2D* getBackgroundTexture(int index) {
-		checkInstance();
-
-		ModelSubject* model = m_instance.get();
-		
-		return model->m_backgrounds[index].get();
-	}
-
 	static const CharacterMap& getCharacters() {
 		checkInstance();
 
@@ -205,6 +196,12 @@ public:
 		garuStore.setName(L"Garu Sprites");
 
 		model->m_textureStores[garuStore.get()->getId()] = std::unique_ptr<TextureStore>{ garuStore.get() };
+	
+		TextureStoreBuilder backgroundStore{};
+		backgroundStore.addTexture(TEMP_BACKGROUND_TEXTURE);
+		backgroundStore.setName(L"chapter one backgrounds");
+	
+		model->m_textureStores[backgroundStore.get()->getId()] = std::unique_ptr<TextureStore>{ backgroundStore.get() };
 	}
 
 	static void loadTexture(TextureIdentifier& textureId) {
@@ -220,15 +217,6 @@ public:
 		else {
 			// TODO: throw exception
 		}
-	}
-
-	static void initBackgrounds() {
-		checkInstance();
-
-		ModelSubject* model = m_instance.get();
-		
-		std::unique_ptr<Texture2D> background_0{ std::make_unique<Texture2D>(TEMP_BACKGROUND_TEXTURE) };
-		model->m_backgrounds.push_back(std::move(background_0));
 	}
 
 	static void initRelationTypes() {

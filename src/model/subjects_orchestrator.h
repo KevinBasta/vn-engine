@@ -15,7 +15,6 @@ public:
 		m_state{state}
 	{
 		ModelSubject::initRelationTypes();
-		ModelSubject::initBackgrounds();
 		ModelSubject::initCharacters();
 		ModelSubject::initTextureStores();
 	}

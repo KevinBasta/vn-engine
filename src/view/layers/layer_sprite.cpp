@@ -17,7 +17,7 @@ void SpriteLayer::drawSprite(const TextureIdentifier& textureIdentifier, const S
 		return;
 	}
 
-	float scale{ texture->getScaleToViewport(m_window) };
+	float scale{ texture->getScaleToViewport(m_window) * spriteState.m_scale };
 
 	glm::mat4 model = glm::mat4(1.0f);
 	//model = glm::translate(model, glm::vec3((static_cast<float>(m_window->width()) / 2) - (static_cast<float>(texture->width()) / 2), 0.0f, 0.0f));
@@ -47,6 +47,8 @@ void SpriteLayer::drawSprite(const TextureIdentifier& textureIdentifier, const S
 	unsigned int orthoLocation = glGetUniformLocation(m_defaultShader.ID(), "inOrtho");
 	glUniformMatrix4fv(orthoLocation, 1, GL_FALSE, glm::value_ptr(ortho));
 
+	unsigned int opacityLocation = glGetUniformLocation(m_defaultShader.ID(), "inOpacity");
+	glUniform1f(opacityLocation, spriteState.m_opacity);
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -56,9 +58,9 @@ void SpriteLayer::drawSprite(const TextureIdentifier& textureIdentifier, const S
 
 
 void SpriteLayer::pollAndDraw() {
-	auto& data = m_stateSubject->m_sprites.getSpriteRenderData();
+	auto& data{ m_stateSubject->m_sprites.getSpriteRenderData() };
 
-	auto iter = data.begin();
+	auto iter{ data.begin() };
 	for (; iter != data.end(); iter++) {
 		if (iter->second.m_opacity > 0.0f) {
 			drawSprite(iter->first, iter->second);

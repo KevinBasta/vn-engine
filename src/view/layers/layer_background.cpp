@@ -6,13 +6,16 @@
 #include "texture.h"
 #include "state_subject.h"
 #include "state_background.h"
+#include "chapter_node_types.h"
 
-void BackgroundLayer::drawBackground(Texture2D* texture) {
+void BackgroundLayer::drawBackground(TextureIdentifier& textureIdentifier) {
+	m_defaultShader.use();
+
+	Texture2D* texture{ TextureManager::getTexture(textureIdentifier) };
+
 	if (texture == nullptr) {
 		return;
 	}
-
-	m_defaultShader.use();
 
 	// can move to Texture2D
 	float scale{ texture->getScaleToViewport(m_window) };
@@ -36,6 +39,8 @@ void BackgroundLayer::drawBackground(Texture2D* texture) {
 	unsigned int orthoLocation = glGetUniformLocation(m_defaultShader.ID(), "inOrtho");
 	glUniformMatrix4fv(orthoLocation, 1, GL_FALSE, glm::value_ptr(ortho));
 
+	unsigned int opacityLocation = glGetUniformLocation(m_defaultShader.ID(), "inOpacity");
+	glUniform1f(opacityLocation, 1.0f);
 
 	texture->draw();
 }

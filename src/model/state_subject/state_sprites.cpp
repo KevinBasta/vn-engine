@@ -72,6 +72,15 @@ bool StateSprites::tick(std::pair<stepIndex, ActionSpriteAnimationGeneric>& anim
 	case (SpriteProperty::YPOS):
 		currentValue = &(characterState.m_yPos);
 		break;
+	case (SpriteProperty::ZPOS):
+		currentValue = &(characterState.m_zPos);
+		break;
+	case (SpriteProperty::SCALE):
+		currentValue = &(characterState.m_scale);
+		break;
+	case (SpriteProperty::OPACITY):
+		currentValue = &(characterState.m_opacity);
+		break;
 	default:
 		break;
 	}
@@ -169,6 +178,24 @@ bool StateSprites::endSpriteAnimations() {
 		{
 			std::cout << "YPOS END SPRITE ANIMATION" << std::endl;
 			characterPos.m_yPos = endValue;
+			break;
+		}
+		case (SpriteProperty::ZPOS):
+		{
+			std::cout << "ZPOS END SPRITE ANIMATION" << std::endl;
+			characterPos.m_zPos = endValue;
+			break;
+		}
+		case (SpriteProperty::SCALE):
+		{
+			std::cout << "SCALE END SPRITE ANIMATION" << std::endl;
+			characterPos.m_scale = endValue;
+			break;
+		}
+		case (SpriteProperty::OPACITY):
+		{
+			std::cout << "OPACITY END SPRITE ANIMATION" << std::endl;
+			characterPos.m_opacity = endValue;
 			break;
 		}
 		default:

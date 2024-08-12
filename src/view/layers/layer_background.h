@@ -5,6 +5,7 @@
 #include "shader.h"
 #include "texture.h"
 #include "state_subject.h"
+#include "chapter_node_types.h"
 
 #define TEMP_VERTEX_PATH	VN_BASE_PATH"/src/view/glsl/defaultVertex.glsl"
 #define TEMP_FRAGMENT_PATH	VN_BASE_PATH"/src/view/glsl/defaultFragment.glsl"
@@ -15,7 +16,7 @@ private:
 	Shader m_defaultShader;
 	StateSubject* m_stateSubject{ nullptr };
 
-	void drawBackground(Texture2D* texture);
+	void drawBackground(TextureIdentifier& texture);
 
 public:
 	BackgroundLayer(VnWindow* window, StateSubject* stateSubject) :

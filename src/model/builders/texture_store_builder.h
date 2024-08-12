@@ -51,6 +51,7 @@ public:
 
 	void replaceTexture(index pathIndex, std::string path) {
 		if (m_textureStore == nullptr) { return; }
+		// TODO: resize the array instead of exititing to allow for savefile building
 		if (pathIndex < 0 || pathIndex >= m_textureStore->m_texturePaths.size()) { return; }
 
 		// TODO: Validate the file path given is readable

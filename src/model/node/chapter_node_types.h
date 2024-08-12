@@ -102,7 +102,7 @@ struct ActionTextOverrideColor {
 // Background Actions
 //
 struct ActionBackgroundTexture {
-	int backgroundIndex{};
+	TextureIdentifier m_texture{};
 };
 
 

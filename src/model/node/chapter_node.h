@@ -37,7 +37,7 @@ private:
 	//
 
 	std::unordered_map<StepIndex, ActionBackgroundTexture> m_backgroundSteps{
-		{ 0, {0} }
+		{ 0, {2, 0} }
 	};
 
 
@@ -62,7 +62,9 @@ private:
 
 	std::unordered_map<StepIndex, std::vector<ActionSpriteAnimationGeneric>> m_spriteGenericAnimationSteps{
 		{ 2, std::vector<ActionSpriteAnimationGeneric>{ {{1, 0}, SpriteProperty::XPOS, {{0.1f, 1000.0f}, {0.2f, 100.0f}} },
-														{{1, 0}, SpriteProperty::YPOS, {{0.1f, 200.0f} , {0.2f, -100.0f}} }
+														{{1, 0}, SpriteProperty::YPOS, {{0.1f, 200.0f} , {0.2f, -100.0f}} },
+														{{1, 0}, SpriteProperty::OPACITY, {{3.0f, 0.0f}} },
+														{{1, 0}, SpriteProperty::SCALE, {{3.0f, 0.1f}} },
 													  }
 		}
 	};
