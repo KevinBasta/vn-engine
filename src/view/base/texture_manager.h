@@ -1,7 +1,9 @@
 #ifndef VN_TEXTURE_MANAGER_H
 #define VN_TEXTURE_MANAGER_H
 
+#include "id.h"
 #include "texture.h"
+#include "chapter_node_types.h"
 
 #include <memory>
 #include <unordered_map>
@@ -20,31 +22,41 @@ private:
 	}
 
 private:
-	using textureId = int;
-	using idToTextureMap = std::unordered_map<textureId, std::unique_ptr<Texture2D>>;
+	using idToTextureMap = std::unordered_map<TextureIdentifier, std::unique_ptr<Texture2D>, TextureIdentifierHasher>;
 
 	idToTextureMap m_textureMap{};
 
 public:
-	static int registerTexture(std::string path) {
+	static void registerTexture(TextureIdentifier textureIdentifier, std::string path) {
 		checkInstance();
 		
 		TextureManager* manager{ m_instance.get() };
 
 		std::unique_ptr<Texture2D> texture{ std::make_unique<Texture2D>(path) };
-		textureId id{ texture.get()->vnId() };
 
-		manager->m_textureMap[id] = std::move(texture);
-
-		return id;
+		manager->m_textureMap[textureIdentifier] = std::move(texture);
 	}
 
-	static Texture2D* getTexture(int id) {
+	static void unregisterTexture(TextureIdentifier textureIdentifier) {
 		checkInstance();
 
 		TextureManager* manager{ m_instance.get() };
 
-		idToTextureMap::iterator iter{ manager->m_textureMap.find(id) };
+		idToTextureMap::iterator iter{ manager->m_textureMap.find(textureIdentifier) };
+
+		if (iter == manager->m_textureMap.end()) {
+			return;
+		}
+
+		manager->m_textureMap.erase(iter);
+	}
+
+	static Texture2D* getTexture(TextureIdentifier textureIdentifier) {
+		checkInstance();
+
+		TextureManager* manager{ m_instance.get() };
+
+		idToTextureMap::iterator iter{ manager->m_textureMap.find(textureIdentifier) };
 
 		if (iter == manager->m_textureMap.end()) {
 			return nullptr;

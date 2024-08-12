@@ -3,11 +3,13 @@
 
 #include "subject.h"
 
+#include "index.h"
 #include "texture.h"
 #include "character.h"
 #include "node.h"
 #include "chapter_node.h"
 #include "chapter.h"
+#include "texture_store.h"
 
 #include "relations.h"
 #include "relation_types.h"
@@ -17,6 +19,7 @@
 #include "character_builder.h"
 #include "chapter_builder.h"
 #include "relations_builder.h"
+#include "texture_store_builder.h"
 
 #include <vector>
 #include <unordered_map>
@@ -52,13 +55,17 @@ private:
 	}
 
 public:
-	using characterMap = std::unordered_map<id, std::unique_ptr<Character>> ;
 	
 
 	std::unordered_map<id, std::unique_ptr<ChapterNode>> m_nodes{};
-	std::vector<std::unique_ptr<Chapter>>	m_chapters{};
-	characterMap m_characters{};
 	std::vector<std::unique_ptr<Texture2D>> m_backgrounds{};
+	std::vector<std::unique_ptr<Chapter>>	m_chapters{};
+
+	using CharacterMap = std::unordered_map<id, std::unique_ptr<Character>>;
+	CharacterMap m_characters{};
+	
+	using TextureStoreMap = std::unordered_map<id, std::unique_ptr<TextureStore>>;
+	TextureStoreMap m_textureStores{};
 
 
 	std::list<Chapter*> m_chapterOrder{};
@@ -106,7 +113,7 @@ public:
 		return model->m_backgrounds[index].get();
 	}
 
-	static const characterMap& getCharacters() {
+	static const CharacterMap& getCharacters() {
 		checkInstance();
 
 		ModelSubject* model = m_instance.get();
@@ -176,17 +183,43 @@ public:
 
 		ModelSubject* model = m_instance.get();
 		
-		CharacterBuilder garu{};
-		garu.setName(L"Garu");
-		garu.addTexture(TEMP_SPRITE_TEXTURE);
+		Character* garu = new Character();
+		CharacterBuilder{ garu }.setName(L"Garu");
 
 		CharacterBuilder brz{};
 		brz.setName(L"Brazazaza");
 
-		model->m_characters[garu.get()->getId()] = std::unique_ptr<Character>{ garu.get() };
+		model->m_characters[garu->getId()] = std::unique_ptr<Character>{ garu };
 		model->m_characters[brz.get()->getId()] = std::unique_ptr<Character>{ brz.get() };
 
 		initBaseRelations();
+	}
+
+	static void initTextureStores() {
+		checkInstance();
+
+		ModelSubject* model = m_instance.get();
+
+		TextureStoreBuilder garuStore{};
+		garuStore.addTexture(TEMP_SPRITE_TEXTURE);
+		garuStore.setName(L"Garu Sprites");
+
+		model->m_textureStores[garuStore.get()->getId()] = std::unique_ptr<TextureStore>{ garuStore.get() };
+	}
+
+	static void loadTexture(TextureIdentifier& textureId) {
+		checkInstance();
+
+		ModelSubject* model = m_instance.get();
+
+		auto iter{ model->m_textureStores.find(textureId.m_textureStoreId) };
+
+		if (iter != model->m_textureStores.end()) {
+			iter->second.get()->loadTexture(textureId.m_textureIndex);
+		}
+		else {
+			// TODO: throw exception
+		}
 	}
 
 	static void initBackgrounds() {

@@ -17,6 +17,7 @@ public:
 		ModelSubject::initRelationTypes();
 		ModelSubject::initBackgrounds();
 		ModelSubject::initCharacters();
+		ModelSubject::initTextureStores();
 	}
 
 	void newGame() {

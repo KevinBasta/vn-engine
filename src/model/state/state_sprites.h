@@ -11,26 +11,29 @@
 class StateSubject;
 
 class StateSprites {
-public:
+private:
 	StateSubject* m_stateSubject{ nullptr };
+
+public:
 	StateSprites(StateSubject* stateSubject) : m_stateSubject{ stateSubject } {}
 
-	using characterId = id;
+	void reset() {
+		m_spriteRenderData.clear();
+		m_activeSpriteAnimations.clear();
+	}
+
 	using stepIndex = int;
 	
 	// TODO: allow multiple sprites for one character
 	// TODO: rethink sprite system. perhaps a central sprite manager
-	using spriteRenderMap = std::unordered_map<characterId, SpriteState>;
+	using spriteRenderMap = std::unordered_map<TextureIdentifier, SpriteState, TextureIdentifierHasher>;
 	using activeSpriteAnimationsMap = std::list<std::pair<stepIndex, ActionSpriteAnimationGeneric>>;
 
 	spriteRenderMap m_spriteRenderData{};
 	activeSpriteAnimationsMap m_activeSpriteAnimations{};
 	spriteRenderMap& getSpriteRenderData() { return m_spriteRenderData; }
-	void initCharacterData();
 
-	void handle(ActionSpriteTexture& action);
-	void handle(ActionSpriteOpacity& action);
-	void handle(ActionSpritePosition& action);
+	void handle(ActionSpriteProperty& action);
 	void handle(ActionSpriteAnimationGeneric& action);
 	bool tick(std::pair<stepIndex, ActionSpriteAnimationGeneric>& animation, float timePassed);
 	bool tickSpriteAnimations(float timePassed);

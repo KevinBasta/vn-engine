@@ -19,10 +19,6 @@ Character::~Character() {
 	std::wcout << "deleting character " << m_name << std::endl;
 }
 
-TextureStore::textureId Character::getTextureIdByIndex(int textureIndex) {
-	return m_textrues.getTextureIdByIndex(textureIndex);
-}
-
 std::ostream& operator<<(std::ostream& out, Character& character) {
 	out << "Character:" << std::endl;
 	std::wcout << "\tname      - " << character.m_name << std::endl;

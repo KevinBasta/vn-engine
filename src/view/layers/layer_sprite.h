@@ -16,7 +16,7 @@ private:
 	Shader m_defaultShader;
 	StateSubject* m_stateSubject{ nullptr };
 
-	void drawSprite(SpriteState& spriteState);
+	void drawSprite(TextureIdentifier textureIdentifier, SpriteState& spriteState);
 
 public:
 	SpriteLayer(VnWindow* window, StateSubject* stateSubject):

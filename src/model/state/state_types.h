@@ -24,9 +24,15 @@ struct SpritePosition {
 };
 
 struct SpriteState {
-	Texture2D* m_texture{ nullptr };
-	
-	SpritePosition m_position{};
+	float m_xCoord{ 0.0f };
+	float m_yCoord{ 0.0f };
+	float m_zCoord{ 0.0f };
+
+	float m_scale{ 1.0f };
+	float m_opacity{ 1.0f };
+
+	//TextureIdentifier m_textureVnId{};
+	//SpritePosition m_position{};
 };
 
 //For typing animation

@@ -2,37 +2,43 @@
 #define VN_TEXTURE_STORE_H
 
 #include "id.h"
+#include "index.h"
 #include "texture_manager.h"
 
 #include <string>
 #include <string_view>
 #include <unordered_map>
+#include <set>
+#include <optional>
 #include <stdexcept>
 #include <filesystem>
+
+class TextureStoreBuilder;
 
 /**
  * A class to contain groups of textures
  */
 class TextureStore {
 public:
-	using textureId = id;
+	TextureStore() : m_id{ IdGenerator<TextureStore>::getId() } {}
+	TextureStore(id id) : m_id{ id } {}
 
 private:
-	using runtimeTextureMap = std::unordered_map<std::string_view, textureId>;
+	id m_id{};
+	std::wstring m_name{};
 
-	std::vector<std::string> m_texturePaths{};
-	runtimeTextureMap m_textureLookup{};
+	friend class TextureStoreBuilder;
+	
+	using compiletimePathVector = std::vector<std::optional<std::string>>;
+	compiletimePathVector m_texturePaths{};
+
+	using runtimeTextureSet = std::set<index>;
+	runtimeTextureSet m_loadedTextures{};
 
 public:
-	textureId getTextureIdByIndex(int textureIndex);
-	void addTexture(std::string path) {
-		// TODO: Validate the file path given is readable
-		if (!std::filesystem::exists(path)) {
-			return;
-		}
-
-		m_texturePaths.push_back(path);
-	}
+	id getId() { return m_id;  }
+	std::wstring_view getName() { return m_name; }
+	void loadTexture(index textureIndex);
 };
 
 #endif // VN_TEXTURE_STORE_H

@@ -57,7 +57,7 @@ public:
 	// serialize critical (full data needs to be saved)
 	StateRelations m_relations{ this };
 
-	// Other states: camera, main menu, in-game menu
+	// Other states: camera, main menu, in-game menu, character items
 
 public:
 	StateSubject() {}
@@ -89,34 +89,43 @@ public:
 		m_dialogue.reset();
 	}
 
+	void chapterEndActions() {
+		m_dialogue.reset();
+		m_sprites.reset();
+	}
 
+
+public:
+	//
+	// Menu operations
+	//
 	void newGame() {
 		m_dialogue.reset();
 		m_relations.reset();
-		m_sprites.initCharacterData();
+		m_sprites.reset();
 	}
 
 	void loadSave() {
 
 	}
 
-
-public:
-	// indicate that auto substeps (for animations) are present
+private: 
+	//
+	// Indicate that auto substeps (for animations) are present
+	//
 	bool m_activeAutoAction{ false };
 
+public:
+	// Interface for model and view
 	bool inAutoAction() { return m_activeAutoAction; }
 	void setAutoAction() { m_activeAutoAction = true; }
 	void clearAutoAction() { m_activeAutoAction = false; }
 
+	// Interface for view
 	void tickAutoActions(float timePassed);
 	void endAutoActions();
 
 
-public:
-	// Save specific state
-	// character relationships
-	// character items
 
 public:
 	// User input specific state

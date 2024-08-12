@@ -12,26 +12,24 @@ private:
 	Character* m_character{ nullptr };
 
 public:
-	CharacterBuilder() : m_character{ new Character{} } {}
-	CharacterBuilder(Character* character) : m_character{ character } {}
-	~CharacterBuilder() {}
+	CharacterBuilder() : m_character{ new Character{} } { std::cout << "CHARACTER BUILDRE CONSTRUCTOR" << std::endl; }
+	CharacterBuilder(Character* character) : m_character{ character } { std::cout << "CHARACTER BUILDRE CONSTRUCTOR" << std::endl; }
+	~CharacterBuilder() { std::cout << "CHARACTER BUILDER DESTRUCTOR" << std::endl; }
 
-	void setName(std::wstring name) {
-		if (m_character == nullptr) { return; }
+	CharacterBuilder& setName(std::wstring name) {
+		if (m_character == nullptr) { return *this; }
 
 		m_character->m_name = name;
+
+		return *this;
 	}
 
-	void setTextColor(glm::vec3 color) {
-		if (m_character == nullptr) { return; }
+	CharacterBuilder& setTextColor(glm::vec3 color) {
+		if (m_character == nullptr) { return *this; }
 
 		m_character->m_textColor = color;
-	}
-
-	void addTexture(std::string path) {
-		if (m_character == nullptr) { return; }
-
-		m_character->m_textrues.addTexture(path);
+		
+		return *this;
 	}
 
 	Character* get() {

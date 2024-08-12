@@ -2,6 +2,7 @@
 #define VN_CHAPTER_NODE_TYPES_H
 
 #include "id.h"
+#include "index.h"
 #include "texture.h"
 
 #include <glm/glm.hpp>
@@ -21,52 +22,11 @@ enum class ChapterNodeActionType {
 	RELATION,
 };
 
+
+
 //
 // Sprite Actions
 //
-
-struct ActionSpriteOpacity {
-	int m_characterID{ 0 };
-
-	float m_opacity{ 0.0f };
-};
-
-struct ActionSpriteTexture {
-	int m_characterID{ 0 };
-
-	int m_textureIndex{ 0 };
-};
-
-struct ActionSpritePosition {
-	int m_characterID{ 0 };
-	
-	float m_xCoord	{ 0.0f };
-	float m_yCoord	{ 0.0f };
-	float m_zCoord  { 0.0f };
-	float m_scale	{ 1.0f };
-};
-
-
-
-// Have separate ones for different values? 
-// like ActionSpriteAnimationX for moving the x axis?
-// allows for decoupling of the m_transitionSeconds
-// but increased objects significantly
-//struct ActionSpriteKeyframe {
-//	float m_transitionSeconds{ 0.0f };
-//
-//	float m_xCoord{ 0.0f };
-//	float m_yCoord{ 0.0f };
-//	float m_zCoord{ 0.0f };
-//	float m_scale{ 1.0f };
-//	float m_opacity{ 1.0f };
-//};
-//
-//struct ActionSpriteAnimation {
-//	int m_characterID{ 0 };
-//
-//	std::vector<ActionSpriteKeyframe> m_steps{};
-//};
 
 enum class SpriteProperty {
 	NONE,
@@ -77,17 +37,42 @@ enum class SpriteProperty {
 	OPACITY
 };
 
+struct TextureIdentifier {
+	id m_textureStoreId{ 0 };
+	index m_textureIndex{ 0 };
+
+	friend bool operator==(const TextureIdentifier& idOne, const TextureIdentifier& idTwo) {
+		return idOne.m_textureStoreId == idTwo.m_textureStoreId && idOne.m_textureIndex == idTwo.m_textureIndex;
+	}
+};
+
+struct TextureIdentifierHasher {
+	size_t operator()(const TextureIdentifier& textureIdentifier) const {
+		return std::hash<int>()(textureIdentifier.m_textureStoreId) ^ 
+			   (std::hash<int>()(textureIdentifier.m_textureIndex) << 1);
+	}
+};
+
+struct ActionSpriteProperty {
+	TextureIdentifier m_texture{};
+	SpriteProperty m_property{ SpriteProperty::NONE };
+
+	float m_value{ 1.0f };
+};
+
 struct ActionSpriteKeyframeGeneric {
 	float m_transitionSeconds{ 0.0f };
 	float m_value{ 0.0f };
 };
 
 struct ActionSpriteAnimationGeneric {
-	int m_characterID{ 0 };
+	TextureIdentifier m_texture{};
 	SpriteProperty m_stepType{ SpriteProperty::NONE };
 
 	std::vector<ActionSpriteKeyframeGeneric> m_steps{};
 };
+
+
 
 
 //
@@ -111,12 +96,16 @@ struct ActionTextOverrideColor {
 };
 
 
+
+
 //
 // Background Actions
 //
 struct ActionBackgroundTexture {
 	int backgroundIndex{};
 };
+
+
 
 
 //
@@ -188,6 +177,8 @@ struct ActionRelationSetNextNode {
 	// These conditions are ORed
 	std::vector<RelationConditionUnit> m_conditions{};
 };
+
+
 
 
 //

@@ -8,17 +8,23 @@
 #include "state_sprites.h"
 #include "state_subject.h"
 
-void SpriteLayer::drawSprite(SpriteState& spriteState) {
+void SpriteLayer::drawSprite(TextureIdentifier textureIdentifier, SpriteState& spriteState) {
 	m_defaultShader.use();
 
-	float scale{ spriteState.m_texture->getScaleToViewport(m_window) };
+	Texture2D* texture{ TextureManager::getTexture(textureIdentifier) };
+
+	if (texture == nullptr) {
+		return;
+	}
+
+	float scale{ texture->getScaleToViewport(m_window) };
 
 	glm::mat4 model = glm::mat4(1.0f);
 	//model = glm::translate(model, glm::vec3((static_cast<float>(m_window->width()) / 2) - (static_cast<float>(texture->width()) / 2), 0.0f, 0.0f));
 	model = glm::translate(model,
-		glm::vec3(spriteState.m_position.m_xCoord * m_window->scale(),
-				  spriteState.m_position.m_yCoord * m_window->scale(),
-				  spriteState.m_position.m_zCoord));
+		glm::vec3(spriteState.m_xCoord * m_window->scale(),
+				  spriteState.m_yCoord * m_window->scale(),
+				  spriteState.m_zCoord));
 
 	//std::cout << "scale to view port" << scale << std::endl;
 	//std::cout << "scale to view port" << spriteState.m_position.m_xCoord << std::endl;
@@ -45,7 +51,7 @@ void SpriteLayer::drawSprite(SpriteState& spriteState) {
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	spriteState.m_texture->draw();
+	texture->draw();
 }
 
 
@@ -54,8 +60,8 @@ void SpriteLayer::pollAndDraw() {
 
 	StateSprites::spriteRenderMap::iterator iter;
 	for (iter = data.begin(); iter != data.end(); iter++) {
-		if (iter->second.m_texture != nullptr && iter->second.m_position.m_opacity > 0.0f) {
-			drawSprite(iter->second);
+		if (iter->second.m_opacity > 0.0f) {
+			drawSprite(iter->first, iter->second);
 		}
 	}
 

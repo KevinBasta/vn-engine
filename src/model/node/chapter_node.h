@@ -50,22 +50,19 @@ private:
 	// set at a specific z index (or setable by user) then the rest of the z > than that 
 	// is usable for sprites?
 
-	std::unordered_map<StepIndex, std::vector<ActionSpriteTexture>> m_spriteTextureSteps{
-		{ 0, std::vector<ActionSpriteTexture>{{1, 0}} }
-	};
-
-	std::unordered_map<StepIndex, std::vector<ActionSpriteOpacity>> m_spriteOpacitySteps{
-		{ 0, std::vector<ActionSpriteOpacity>{{1, 0.0f}} },
-		{ 1, std::vector<ActionSpriteOpacity>{{1, 1.0f}} }
-	};
-
-	std::unordered_map<StepIndex, std::vector<ActionSpritePosition>> m_spritePositionSteps{
-		{ 1, std::vector<ActionSpritePosition>{{1, 100.0f, -100.0f, -1.0f, 1.0f}} }
+	std::unordered_map<StepIndex, std::vector<ActionSpriteProperty>> m_spriteTextureSteps{
+		{ 0, std::vector<ActionSpriteProperty>{ {{1, 0}, SpriteProperty::OPACITY, 0.0f}} },
+		{ 1, std::vector<ActionSpriteProperty>{ {{1, 0}, SpriteProperty::OPACITY, 1.0f},
+												{{1, 0}, SpriteProperty::XPOS, 100.0f},
+												{{1, 0}, SpriteProperty::YPOS, -100.0f},
+												{{1, 0}, SpriteProperty::ZPOS, -1.0f},
+												{{1, 0}, SpriteProperty::SCALE, 1.0f} }
+		}
 	};
 
 	std::unordered_map<StepIndex, std::vector<ActionSpriteAnimationGeneric>> m_spriteGenericAnimationSteps{
-		{ 2, std::vector<ActionSpriteAnimationGeneric>{ {1, SpriteProperty::XPOS, {{0.1f, 1000.0f}, {0.2f, 100.0f}} },
-														{1, SpriteProperty::YPOS, {{0.1f, 200.0f} , {0.2f, -100.0f}} }
+		{ 2, std::vector<ActionSpriteAnimationGeneric>{ {{1, 0}, SpriteProperty::XPOS, {{0.1f, 1000.0f}, {0.2f, 100.0f}} },
+														{{1, 0}, SpriteProperty::YPOS, {{0.1f, 200.0f} , {0.2f, -100.0f}} }
 													  }
 		}
 	};
