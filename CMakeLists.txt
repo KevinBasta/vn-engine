@@ -127,7 +127,7 @@ add_executable (
 	"src/view/layers/layer_transition.cpp" 
 	"src/view/base/texture_manager.h" 
 	"src/view/base/texture_manager.cpp" 
-)
+       "src/model/model_subject/model_textures.cpp" "src/model/model_subject/model_chapters.cpp" "src/model/model_subject/model_chapters.h" "src/model/model_subject/model_relations.h" "src/model/model_subject/model_realtions.cpp")
 
 target_include_directories(
 	"vn_engine"

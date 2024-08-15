@@ -14,13 +14,11 @@ public:
 	SubjectsOrchestrator(StateSubject* state) :
 		m_state{state}
 	{
-		ModelSubject::initRelationTypes();
+		ModelSubject::init();
 		ModelSubject::initCharacters();
-		ModelSubject::initTextureStores();
 	}
 
 	void newGame() {
-		ModelSubject::createChapterOne();
 		m_state->initIterator(ModelSubject::iter(0));
 		m_state->newGame();
 	}

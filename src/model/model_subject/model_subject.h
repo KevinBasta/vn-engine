@@ -14,6 +14,10 @@
 #include "relations.h"
 #include "relation_types.h"
 
+#include "model_chapters.h"
+#include "model_textures.h"
+#include "model_relations.h"
+
 #include "node_builder.h"
 #include "chapter_node_builder.h"
 #include "character_builder.h"
@@ -24,10 +28,6 @@
 #include <vector>
 #include <unordered_map>
 #include <memory>
-
-
-#define TEMP_BACKGROUND_TEXTURE VN_BASE_PATH"/test/assets/test.jpg"
-#define TEMP_SPRITE_TEXTURE		VN_BASE_PATH"/test/assets/garu_outline.png"
 
 class ChapterIterator;
 
@@ -46,58 +46,43 @@ class ModelSubject : public Subject {
 private:
 	static std::unique_ptr<ModelSubject> m_instance;
 
-	static void checkInstance() {
+	static ModelSubject* checkInstance() {
 		if (m_instance.get() == nullptr) {
 			ModelSubject* model{ new ModelSubject{} };
 
 			m_instance.reset(model);
 		}
+
+		return m_instance.get();
 	}
 
+	ModelChapters m_modelChapters{};
+	ModelTextures m_modelTextures{};
+	ModelRelations m_modelRelations{};
+
 public:
-	
-
-	std::unordered_map<id, std::unique_ptr<ChapterNode>> m_nodes{};
-	std::vector<std::unique_ptr<Chapter>>	m_chapters{};
-
 	using CharacterMap = std::unordered_map<id, std::unique_ptr<Character>>;
 	CharacterMap m_characters{};
-	
-	using TextureStoreMap = std::unordered_map<id, std::unique_ptr<TextureStore>>;
-	TextureStoreMap m_textureStores{};
 
+	static void init() {
+		ModelSubject* model = checkInstance();
 
-	std::list<Chapter*> m_chapterOrder{};
+		model->m_modelChapters.createChapterOne();
+		model->m_modelTextures.initTextureStores();
+		model->m_modelRelations.initRelationTypes();
+		model->m_modelRelations.initBaseRelations();
+	}
 
 	static Chapter* getChapterById(id chapterId) {
-		checkInstance();
-		
-		ModelSubject* model{ m_instance.get() };
-		// TODO: Load from model file if not loaded
-	
-		// TODO: this is temp for testing
-		return model->m_chapters[0].get();
+		ModelSubject* model = checkInstance();
+
+		return model->m_modelChapters.getChapterById(chapterId);
 	}
 
 	static Node* getNodeById(id nodeId) {
-		checkInstance();
+		ModelSubject* model = checkInstance();
 
-		ModelSubject* model{ m_instance.get() };
-
-		auto iter{ model->m_nodes.find(nodeId) };
-
-		if (iter == model->m_nodes.end()) {
-			// TODO: attempt to read the file
-			// BUT should already covered by prefetcher on a diff thread,
-			// so maybe check a vector containing the nodes currently loading
-			std::cout << "NODE NOT FOUND" << std::endl;
-			return nullptr;
-		}
-		else {
-			// return a pointer to the node
-			return iter->second.get();
-		}
-
+		return model->m_modelChapters.getNodeById(nodeId);
 	}
 
 	static ChapterIterator iter(int chapterIndex);
@@ -105,17 +90,13 @@ public:
 	// arr telling which chapters loaded, func to ckeck and load
 public:
 	static const CharacterMap& getCharacters() {
-		checkInstance();
-
-		ModelSubject* model = m_instance.get();
+		ModelSubject* model = checkInstance();
 
 		return model->m_characters;
 	}
 
 	static Character* getCharacterByID(int id) {
-		checkInstance();
-
-		ModelSubject* model = m_instance.get();
+		ModelSubject* model = checkInstance();
 
 		return model->m_characters[id].get();
 	}
@@ -126,53 +107,10 @@ private:
 public:
 	~ModelSubject() {}
 
-	static void createChapterOne() {
-		checkInstance();
-
-		ModelSubject* model = m_instance.get();
-
-		Chapter* chapterOne = new Chapter{};
-
-		// Can inital all nodes as strays then mark the head node as not a stray with a member variable?
-		ChapterNode* head{ new ChapterNode("head node") };
-
-		ChapterNode* oneone{ new ChapterNode("one one node") };
-		ChapterNode* onetwo{ new ChapterNode("one two node") };
-		
-		ChapterNode* twoone{ new ChapterNode("two one node") };
-		ChapterNode* twotwo{ new ChapterNode("two two node") };
-
-		ChapterNode* threeone{ new ChapterNode("three one node") };
-
-		ChapterNodeBuilder{ head }.link(oneone);
-		ChapterNodeBuilder{ head }.link(onetwo);
-		ChapterNodeBuilder{ oneone }.link(twoone);
-		ChapterNodeBuilder{ oneone }.link(twotwo);
-		ChapterNodeBuilder{ oneone }.link(threeone);
-		ChapterNodeBuilder{ twoone }.link(threeone);
-		
-		ChapterNodeBuilder{ oneone }.unlink(threeone);
-		ChapterNodeBuilder{ oneone }.unlink(threeone);
-
-		//chapterOneChild4->addChild(chapterOneChild5);
-		// chapterOneHead->addChild(chapterOneHead); TODO: unhandled case yet cycle
-
-		ChapterBuilder{ chapterOne }.setHeadNodeId(head);
-
-		model->m_chapters.push_back(std::unique_ptr<Chapter>(chapterOne));
-		model->m_nodes[head->getId()] = std::unique_ptr<ChapterNode>(head);
-		model->m_nodes[oneone->getId()] = std::unique_ptr<ChapterNode>(oneone);
-		model->m_nodes[onetwo->getId()] = std::unique_ptr<ChapterNode>(onetwo);
-		model->m_nodes[twoone->getId()] = std::unique_ptr<ChapterNode>(twoone);
-		model->m_nodes[twotwo->getId()] = std::unique_ptr<ChapterNode>(twotwo);
-		model->m_nodes[threeone->getId()] = std::unique_ptr<ChapterNode>(threeone);
-		//std::cout << chapterOneGraph << std::endl;
-	}
+	
 
 	static void initCharacters() {
-		checkInstance();
-
-		ModelSubject* model = m_instance.get();
+		ModelSubject* model = checkInstance();
 		
 		Character* garu = new Character();
 		CharacterBuilder{ garu }.setName(L"Garu");
@@ -182,87 +120,18 @@ public:
 
 		model->m_characters[garu->getId()] = std::unique_ptr<Character>{ garu };
 		model->m_characters[brz.get()->getId()] = std::unique_ptr<Character>{ brz.get() };
-
-		initBaseRelations();
-	}
-
-	static void initTextureStores() {
-		checkInstance();
-
-		ModelSubject* model = m_instance.get();
-
-		TextureStoreBuilder garuStore{};
-		garuStore.addTexture(TEMP_SPRITE_TEXTURE);
-		garuStore.setName(L"Garu Sprites");
-
-		model->m_textureStores[garuStore.get()->getId()] = std::unique_ptr<TextureStore>{ garuStore.get() };
-	
-		TextureStoreBuilder backgroundStore{};
-		backgroundStore.addTexture(TEMP_BACKGROUND_TEXTURE);
-		backgroundStore.setName(L"chapter one backgrounds");
-	
-		model->m_textureStores[backgroundStore.get()->getId()] = std::unique_ptr<TextureStore>{ backgroundStore.get() };
 	}
 
 	static void loadTexture(TextureIdentifier& textureId) {
-		checkInstance();
+		ModelSubject* model = checkInstance();
 
-		ModelSubject* model = m_instance.get();
-
-		auto iter{ model->m_textureStores.find(textureId.m_textureStoreId) };
-
-		if (iter != model->m_textureStores.end()) {
-			iter->second.get()->loadTexture(textureId.m_textureIndex);
-		}
-		else {
-			// TODO: throw exception
-		}
-	}
-
-	static void initRelationTypes() {
-		RelationTypes::addRelationType("friendship");
-		RelationTypes::addRelationType("respect");
-		RelationTypes::addRelationType("hatred");
-		RelationTypes::print();
-	}
-
-	std::unordered_map<id, std::unique_ptr<Relations>> m_baseRelations{};
-
-	static void initBaseRelations() {
-		checkInstance();
-
-		ModelSubject* model = m_instance.get();
-
-		id garuId{ 1 };
-		id brzId{ 2 };
-
-		RelationsBuilder garuRelations{ };
-		RelationsBuilder brzRelations{ };
-
-		int friendshipId = RelationTypes::getRelationId("friendship");
-		int respectId = RelationTypes::getRelationId("respect");
-		int hatredId = RelationTypes::getRelationId("hatred");
-
-		garuRelations.setRelationValue(brzId, friendshipId, 1);
-		garuRelations.setRelationValue(brzId, hatredId, 20);
-		garuRelations.setRelationValue(brzId, hatredId, 2);
-		garuRelations.setRelationValue(brzId, hatredId, -10);
-		
-		brzRelations.setRelationValue(garuId, respectId, 1);
-
-		std::cout << *garuRelations.get();
-		std::cout << *brzRelations.get();
-
-		model->m_baseRelations[garuId] = std::unique_ptr<Relations>{ garuRelations.get() };
-		model->m_baseRelations[brzId] = std::unique_ptr<Relations>{ brzRelations.get() };
+		model->m_modelTextures.loadTexture(textureId);
 	}
 
 	static const std::unordered_map<id, std::unique_ptr<Relations>>& getBaseRelations() {
-		checkInstance();
+		ModelSubject* model = checkInstance();
 
-		ModelSubject* model = m_instance.get();
-
-		return model->m_baseRelations;
+		return model->m_modelRelations.m_baseRelations;
 	}
 };
 
