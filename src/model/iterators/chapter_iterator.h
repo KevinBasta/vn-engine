@@ -40,20 +40,19 @@ inline std::ostream& operator<<(std::ostream& out, const ChapterState value) {
 
 
 class ChapterIterator {
-private:
-	ModelSubject*	m_model{ nullptr };
-	
+private:	
 	id m_curNodeId{};
 	Node* m_curNodePtr{ nullptr };
 	NodeRunner m_nodeRunner{ nullptr };
+
+
 
 	id m_curChapterId{};
 	Chapter* m_curChapterPtr{ nullptr };
 	
 public:
 	// TODO: iterator with no chapter id input, for new game cases (perhaps can still pass but pass the first chapter id)
-	ChapterIterator(ModelSubject* model, int chapterId) :
-		m_model{ model },
+	ChapterIterator(id chapterId) :
 		m_curChapterId{ chapterId }
 	{
 		// Only for loading the chapter if it's not loaded, can move to first .step

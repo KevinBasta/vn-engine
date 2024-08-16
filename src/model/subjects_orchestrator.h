@@ -15,7 +15,6 @@ public:
 		m_state{state}
 	{
 		ModelSubject::init();
-		ModelSubject::initCharacters();
 	}
 
 	void newGame() {

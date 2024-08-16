@@ -17,6 +17,7 @@
 #include "model_chapters.h"
 #include "model_textures.h"
 #include "model_relations.h"
+#include "model_characters.h"
 
 #include "node_builder.h"
 #include "chapter_node_builder.h"
@@ -42,8 +43,11 @@ class ChapterIterator;
  * For creating and owning chapters, characters, base relations, and other objects.
  * The state subject refers to objects created by the model.
  */
+
+// TODO: arr telling which chapters loaded, func to ckeck and load
 class ModelSubject : public Subject {
 private:
+	// Singleton helpers
 	static std::unique_ptr<ModelSubject> m_instance;
 
 	static ModelSubject* checkInstance() {
@@ -56,80 +60,62 @@ private:
 		return m_instance.get();
 	}
 
+private:
+	// Singleton state
+	ModelSubject() {}
+
 	ModelChapters m_modelChapters{};
 	ModelTextures m_modelTextures{};
 	ModelRelations m_modelRelations{};
+	ModelCharacters m_modelCharacters{};
 
 public:
-	using CharacterMap = std::unordered_map<id, std::unique_ptr<Character>>;
-	CharacterMap m_characters{};
+	~ModelSubject() {}
 
 	static void init() {
-		ModelSubject* model = checkInstance();
+		ModelSubject* model{ checkInstance() };
 
 		model->m_modelChapters.createChapterOne();
 		model->m_modelTextures.initTextureStores();
 		model->m_modelRelations.initRelationTypes();
 		model->m_modelRelations.initBaseRelations();
+		model->m_modelCharacters.initCharacters();
 	}
 
+	// Iterators
+	static ChapterIterator iter();
+	static ChapterIterator iter(id chapterId);
+
+	// Chapters and nodes
 	static Chapter* getChapterById(id chapterId) {
-		ModelSubject* model = checkInstance();
+		ModelSubject* model{ checkInstance() };
 
 		return model->m_modelChapters.getChapterById(chapterId);
 	}
 
 	static Node* getNodeById(id nodeId) {
-		ModelSubject* model = checkInstance();
+		ModelSubject* model{ checkInstance() };
 
 		return model->m_modelChapters.getNodeById(nodeId);
 	}
 
-	static ChapterIterator iter(int chapterIndex);
-
-	// arr telling which chapters loaded, func to ckeck and load
-public:
-	static const CharacterMap& getCharacters() {
-		ModelSubject* model = checkInstance();
-
-		return model->m_characters;
-	}
-
+	// Characters
 	static Character* getCharacterByID(int id) {
-		ModelSubject* model = checkInstance();
+		ModelSubject* model{ checkInstance() };
 
-		return model->m_characters[id].get();
+		return model->m_modelCharacters.getCharacterByID(id);
 	}
 
-private:
-	ModelSubject() {}
-
-public:
-	~ModelSubject() {}
-
-	
-
-	static void initCharacters() {
-		ModelSubject* model = checkInstance();
-		
-		Character* garu = new Character();
-		CharacterBuilder{ garu }.setName(L"Garu");
-
-		CharacterBuilder brz{};
-		brz.setName(L"Brazazaza");
-
-		model->m_characters[garu->getId()] = std::unique_ptr<Character>{ garu };
-		model->m_characters[brz.get()->getId()] = std::unique_ptr<Character>{ brz.get() };
-	}
-
+	// Textures
 	static void loadTexture(TextureIdentifier& textureId) {
-		ModelSubject* model = checkInstance();
+		ModelSubject* model{ checkInstance() };
 
 		model->m_modelTextures.loadTexture(textureId);
 	}
 
+	// Relations
 	static const std::unordered_map<id, std::unique_ptr<Relations>>& getBaseRelations() {
-		ModelSubject* model = checkInstance();
+		ModelSubject* model{ checkInstance() };
 
 		return model->m_modelRelations.m_baseRelations;
 	}

@@ -30,7 +30,7 @@
 class StateSubject : public Subject {
 private:
 	Chapter* currentChapter{ nullptr };
-	ChapterIterator iterator{ nullptr, 0 };
+	ChapterIterator iterator{ 0 };
 	
 public:
 	// non-serialize critical (partial data may be saved for savefile thumbnails for example)

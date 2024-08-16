@@ -51,7 +51,7 @@ void StateSprites::handle(ActionSpriteAnimationGeneric& action)
 	m_activeSpriteAnimations.push_back(std::pair{ 0, action });
 }
 
-
+// TODO: this is a little jerkey at the end of scale animations. perhaps allow time curve options.
 // return true if animation is done, false otherwise
 bool StateSprites::tick(std::pair<stepIndex, ActionSpriteAnimationGeneric>& animation, float timePassed) {
 	if (animation.first > animation.second.m_steps.size() - 1) {

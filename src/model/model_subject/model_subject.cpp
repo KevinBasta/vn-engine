@@ -1,13 +1,21 @@
 
+
+#include "id.h"
+
 #include "model_subject.h"
 #include "chapter_iterator.h"
 
 std::unique_ptr<ModelSubject> ModelSubject::m_instance{ nullptr };
 
-ChapterIterator ModelSubject::iter(int chapterIndex) {
-	checkInstance();
+ChapterIterator ModelSubject::iter() {
+	ModelSubject* model{ checkInstance() };
 
-	ModelSubject* model{ m_instance.get() };
+	// TODO: provide the id of the first chapter according to model load/save files
+	return ChapterIterator( 1 );
+}
 
-	return ChapterIterator(model, chapterIndex);
+ChapterIterator ModelSubject::iter(id chapterId) {
+	ModelSubject* model{ checkInstance() };
+
+	return ChapterIterator(chapterId);
 }
