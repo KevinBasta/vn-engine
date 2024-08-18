@@ -19,7 +19,6 @@
 #include "model_relations.h"
 #include "model_characters.h"
 
-#include "node_builder.h"
 #include "chapter_node_builder.h"
 #include "character_builder.h"
 #include "chapter_builder.h"

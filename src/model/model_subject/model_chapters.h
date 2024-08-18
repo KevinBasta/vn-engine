@@ -22,7 +22,6 @@ private:
 	std::list<Chapter*> m_chapterOrder{}; // TODO: remove, chapter class will be graph/tree
 
 	void createChapterOne() {
-		Chapter* chapterOne = new Chapter{};
 
 		// Can inital all nodes as strays then mark the head node as not a stray with a member variable?
 		ChapterNode* head{ new ChapterNode("head node") };
@@ -48,6 +47,7 @@ private:
 		//chapterOneChild4->addChild(chapterOneChild5);
 		// chapterOneHead->addChild(chapterOneHead); TODO: unhandled case yet cycle
 
+		Chapter* chapterOne = new Chapter{};
 		ChapterBuilder{ chapterOne }.setHeadNodeId(head);
 
 		m_chapters.push_back(std::unique_ptr<Chapter>(chapterOne));
@@ -57,6 +57,13 @@ private:
 		m_nodes[twoone->getId()] = std::unique_ptr<ChapterNode>(twoone);
 		m_nodes[twotwo->getId()] = std::unique_ptr<ChapterNode>(twotwo);
 		m_nodes[threeone->getId()] = std::unique_ptr<ChapterNode>(threeone);
+		
+		Chapter* chapterTwo = new Chapter{};
+		ChapterBuilder{ chapterTwo }.setHeadNodeId(head);
+
+		ChapterBuilder{ chapterOne }.link(chapterTwo);
+		m_chapters.push_back(std::unique_ptr<Chapter>(chapterTwo));
+
 		//std::cout << chapterOneGraph << std::endl;
 	}
 

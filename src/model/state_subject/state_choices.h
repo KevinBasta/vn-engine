@@ -23,38 +23,29 @@ private:
 	bool m_nextNodeIdSet{ false };
 	id m_nextNodeId{ 0 };
 
-private:
 	// Serializable
 	bool m_nextChapterIdSet{ false };
 	id m_nextChapterId{ 0 };
 
-public:
-	void setNextNodeId(id nextNodeId) {
-		m_nextNodeIdSet = true;
-		m_nextNodeId = nextNodeId;
-	}
+	// Keep record of what choices were made for save file
+	std::vector<int> m_nodeChoicesRecord{};
+	std::vector<int> m_chapterChoicesRecord{};
 
 public:
 	StateChoices(StateSubject* stateSubject) : m_stateSubject{ stateSubject } {}
-	
-private:
-	//
-	// Keep record of what choices were made for save file
-	//
-	std::vector<int> m_chapterChoicesRecord{};
+	~StateChoices() {}
 
 public:
 	//
 	// Iterator interface
 	// 
 
-	bool hasNextNodeId() {
-		return m_nextNodeIdSet;
-	}
-
-	id getChoiceNodeId() {
-		return m_nextNodeId;
-	}
+	bool hasNextNodeId() { return m_nextNodeIdSet; }
+	bool hasNextChapterId() { return m_nextChapterIdSet; }
+	id getChoiceNodeId() { return m_nextNodeId; }
+	id getChoiceChapterId() { return m_nextChapterId; }
+	void recordNodeChildChoice(id nodeId) { m_nodeChoicesRecord.push_back(nodeId); }
+	void recordChapterChildChoice(id chapterId) { m_chapterChoicesRecord.push_back(chapterId); }
 
 	void consumeChoice() {
 		applySetNextNodeId();
@@ -68,14 +59,7 @@ public:
 		m_choiceSetNextChapter = nullptr;
 	}
 
-	void recordNodeChildChoice(id nodeId) {
-		m_chapterChoicesRecord.push_back(nodeId);
-	}
-
 private:
-	//
-	// Helpers for iterator interface
-	// 
 	void applySetNextNodeId();
 	void applyRelationModifications();
 	void applySetNextChapterId();
@@ -87,17 +71,9 @@ public:
 	void chooseUpChoice();
 	void chooseDownChoice();
 
-	bool isChoiceActive() {
-		return m_activeChoice;
-	}
-
-	int getChoiceIndex() {
-		return m_currentChoiceIndex;
-	}
-
-	ActionChoice* getChoices() {
-		return m_choices;
-	}
+	bool isChoiceActive() { return m_activeChoice; }
+	int getChoiceIndex() { return m_currentChoiceIndex; }
+	ActionChoice* getChoices() { return m_choices; }
 
 public:
 	//
@@ -130,12 +106,18 @@ public:
 
 	void handle(ActionSetNextChapter& action) {
 		std::cout << "set next chapter" << std::endl;
-		m_nextChapterIdSet = true;
-		m_nextChapterId = action.m_chapterId;
+		setNextChapterId(action.m_chapterId);
+	}
+
+public:
+	void setNextNodeId(id nextNodeId) {
+		m_nextNodeIdSet = true;
+		m_nextNodeId = nextNodeId;
 	}
 
 	void setNextChapterId(id chapterId) {
-
+		m_nextChapterIdSet = true;
+		m_nextChapterId = chapterId;
 	}
 };
 

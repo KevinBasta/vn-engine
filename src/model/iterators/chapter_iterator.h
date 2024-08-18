@@ -45,8 +45,6 @@ private:
 	Node* m_curNodePtr{ nullptr };
 	NodeRunner m_nodeRunner{ nullptr };
 
-
-
 	id m_curChapterId{};
 	Chapter* m_curChapterPtr{ nullptr };
 	

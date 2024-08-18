@@ -15,7 +15,7 @@
 
 class ChapterBuilder;
 
-class Chapter : protected Linkable {
+class Chapter : public Linkable {
 private:
 	friend class ChapterBuilder;
 
