@@ -56,6 +56,10 @@ bool StateRelations::eval(RelationRelationComparison& condition) {
 bool StateRelations::eval(RelationConditionUnit& conditionUnit) {
 	switch (conditionUnit.m_operator)
 	{
+	case RelationGroupingOperator::NONE:
+	{
+		return true;
+	}
 	case RelationGroupingOperator::AND:
 	{
 		for (auto& condition : conditionUnit.m_relationValueConditions) {
@@ -115,6 +119,19 @@ void StateRelations::handle(ActionRelationSetNextNode& action) {
 
 		if (result) {
 			m_stateSubject->m_choices.setNextNodeId(action.m_nodeId);
+			break;
+		}
+	}
+}
+
+void StateRelations::handle(ActionRelationSetNextChapter& action) {
+	if (m_stateSubject == nullptr) { return; }
+	
+	for (auto condition : action.m_conditions) {
+		bool result = eval(condition);
+
+		if (result) {
+			m_stateSubject->m_choices.setNextChapterId(action.m_chapterId);
 			break;
 		}
 	}

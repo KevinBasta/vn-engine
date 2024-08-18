@@ -4,35 +4,35 @@
 #include "chapter_node.h"
 #include "chapter_node_types.h"
 
-#include "node_builder.h"
+#include "linkable_builder.h"
 
-class ChapterNodeBuilder : public NodeBuilder {
+class ChapterNodeBuilder : public LinkableBuilder {
 private: 
 	ChapterNode* m_nodeDerived{};
 
 public:
 	ChapterNodeBuilder() :
-		NodeBuilder{ nullptr },
+		LinkableBuilder{ nullptr },
 		m_nodeDerived{ nullptr }
 	{
 		ChapterNode* node { new ChapterNode };
 
-		m_nodeBase = node;
+		m_linkableObject = node;
 		m_nodeDerived = node;
 	}
 
 	ChapterNodeBuilder(std::string text) :
-		NodeBuilder{ nullptr },
+		LinkableBuilder{ nullptr },
 		m_nodeDerived{ nullptr }
 	{
 		ChapterNode* node{ new ChapterNode(text) };
 
-		m_nodeBase = node;
+		m_linkableObject = node;
 		m_nodeDerived = node;
 	}
 
 	ChapterNodeBuilder(ChapterNode* node) :
-		NodeBuilder{ node },
+		LinkableBuilder{ node },
 		m_nodeDerived{ node } 
 	{
 	}

@@ -159,6 +159,7 @@ struct RelationRelationComparison {
 
 // Relation condition (grouping)
 enum class RelationGroupingOperator {
+	NONE,
 	AND,
 	OR
 };
@@ -178,11 +179,19 @@ struct ActionRelationSetNextNode {
 	std::vector<RelationConditionUnit> m_conditions{};
 };
 
+struct ActionRelationSetNextChapter {
+	// Set next chapter based on matching relation conditions
+	id m_chapterId{};
+
+	// These conditions are ORed
+	std::vector<RelationConditionUnit> m_conditions{};
+};
+
 
 
 
 //
-// Node child picking action
+// Choice picking attached actions
 //
 
 using ChoiceIndex = int;
@@ -193,6 +202,10 @@ struct ActionChoiceModifyRelation {
 
 struct ActionChoiceSetNextNode {
 	std::unordered_map<ChoiceIndex, id> m_nodeId{};
+};
+
+struct ActionChoiceSetNextChapter {
+	std::unordered_map<ChoiceIndex, id> m_chapterId{};
 };
 
 
@@ -223,5 +236,14 @@ struct ActionChoice {
 	std::vector<std::wstring> m_choices{};
 };
 
+
+
+//
+// Direct next chapter picking
+//
+
+struct ActionSetNextChapter {
+	id m_chapterId{};
+};
 
 #endif // VN_CHAPTER_NODE_TYPES_H

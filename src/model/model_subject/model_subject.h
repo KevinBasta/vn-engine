@@ -50,7 +50,7 @@ private:
 	// Singleton helpers
 	static std::unique_ptr<ModelSubject> m_instance;
 
-	static ModelSubject* checkInstance() {
+	static ModelSubject* validateInstance() {
 		if (m_instance.get() == nullptr) {
 			ModelSubject* model{ new ModelSubject{} };
 
@@ -73,7 +73,7 @@ public:
 	~ModelSubject() {}
 
 	static void init() {
-		ModelSubject* model{ checkInstance() };
+		ModelSubject* model{ validateInstance() };
 
 		model->m_modelChapters.createChapterOne();
 		model->m_modelTextures.initTextureStores();
@@ -88,34 +88,34 @@ public:
 
 	// Chapters and nodes
 	static Chapter* getChapterById(id chapterId) {
-		ModelSubject* model{ checkInstance() };
+		ModelSubject* model{ validateInstance() };
 
 		return model->m_modelChapters.getChapterById(chapterId);
 	}
 
 	static Node* getNodeById(id nodeId) {
-		ModelSubject* model{ checkInstance() };
+		ModelSubject* model{ validateInstance() };
 
 		return model->m_modelChapters.getNodeById(nodeId);
 	}
 
 	// Characters
 	static Character* getCharacterByID(int id) {
-		ModelSubject* model{ checkInstance() };
+		ModelSubject* model{ validateInstance() };
 
 		return model->m_modelCharacters.getCharacterByID(id);
 	}
 
 	// Textures
 	static void loadTexture(TextureIdentifier& textureId) {
-		ModelSubject* model{ checkInstance() };
+		ModelSubject* model{ validateInstance() };
 
 		model->m_modelTextures.loadTexture(textureId);
 	}
 
 	// Relations
 	static const std::unordered_map<id, std::unique_ptr<Relations>>& getBaseRelations() {
-		ModelSubject* model{ checkInstance() };
+		ModelSubject* model{ validateInstance() };
 
 		return model->m_modelRelations.m_baseRelations;
 	}

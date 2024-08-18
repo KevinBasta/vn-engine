@@ -26,10 +26,14 @@ template<> struct stateHelper<ActionTextOverrideColor>		{ static constexpr auto 
 
 template<> struct stateHelper<ActionRelationModify>			{ static constexpr auto handler = &StateSubject::m_relations; };
 template<> struct stateHelper<ActionRelationSetNextNode>	{ static constexpr auto handler = &StateSubject::m_relations; };
+template<> struct stateHelper<ActionRelationSetNextChapter>	{ static constexpr auto handler = &StateSubject::m_relations; };
 
+template<> struct stateHelper<ActionSetNextChapter>			{ static constexpr auto handler = &StateSubject::m_choices; };
 template<> struct stateHelper<ActionChoice>					{ static constexpr auto handler = &StateSubject::m_choices; };
 template<> struct stateHelper<ActionChoiceSetNextNode>		{ static constexpr auto handler = &StateSubject::m_choices; };
 template<> struct stateHelper<ActionChoiceModifyRelation>	{ static constexpr auto handler = &StateSubject::m_choices; };
+template<> struct stateHelper<ActionChoiceSetNextChapter>	{ static constexpr auto handler = &StateSubject::m_choices; };
+
 
 //
 // Step Handling
@@ -125,12 +129,15 @@ bool ChapterNode::doStep(StateSubject* stateSubject, int stepIndex) {
 		case (ChapterNodeActionType::RELATION):
 			stepExists |= handle(stateSubject, stepIndex, m_relationshipModifySteps);
 			stepExists |= handle(stateSubject, stepIndex, m_relationshipChooseNode);
+			//stepExists |= handle(stateSubject, stepIndex, m_relationshipChooseChapter);
 
 			break;
 		case (ChapterNodeActionType::CHOICE):
+			stepExists |= handle(stateSubject, stepIndex, m_setNextChapter);
 			stepExists |= handle(stateSubject, stepIndex, m_choiceTextOption);
 			stepExists |= handle(stateSubject, stepIndex, m_choiceSetNextNode);
 			stepExists |= handle(stateSubject, stepIndex, m_choiceRelationModifications);
+			stepExists |= handle(stateSubject, stepIndex, m_choiceSetNextChapter);
 
 			break;
 		default:

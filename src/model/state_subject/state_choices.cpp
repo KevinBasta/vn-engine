@@ -26,6 +26,28 @@ void StateChoices::chooseDownChoice() {
 	}
 }
 
+void StateChoices::applySetNextNodeId() {
+	if (m_choiceSetNextNode == nullptr) { return; }
+
+	auto nodeId{ m_choiceSetNextNode->m_nodeId.find(m_currentChoiceIndex) };
+
+	if (nodeId != m_choiceSetNextNode->m_nodeId.end()) {
+		m_nextNodeIdSet = true;
+		m_nextNodeId = nodeId->second;
+	}
+}
+
+void StateChoices::applySetNextChapterId() {
+	if (m_choiceSetNextChapter == nullptr) { return; }
+
+	auto chapterId{ m_choiceSetNextChapter->m_chapterId.find(m_currentChoiceIndex) };
+
+	if (chapterId != m_choiceSetNextChapter->m_chapterId.end()) {
+		m_nextChapterIdSet = true;
+		m_nextChapterId = chapterId->second;
+	}
+}
+
 void StateChoices::applyRelationModifications() {
 	if (m_choiceModifyRelations == nullptr || m_stateSubject == nullptr) { return; }
 
@@ -37,3 +59,4 @@ void StateChoices::applyRelationModifications() {
 		}
 	}
 }
+

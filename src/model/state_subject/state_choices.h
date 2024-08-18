@@ -14,13 +14,19 @@ private:
 
 	bool m_activeChoice{ false };
 	ActionChoice* m_choices{ nullptr };
-	ActionChoiceSetNextNode* m_choiceNextNode{ nullptr };
+	ActionChoiceSetNextNode* m_choiceSetNextNode{ nullptr };
 	ActionChoiceModifyRelation* m_choiceModifyRelations{ nullptr };
+	ActionChoiceSetNextChapter* m_choiceSetNextChapter{ nullptr };
 
 	int m_currentChoiceIndex{ 0 };
 
 	bool m_nextNodeIdSet{ false };
 	id m_nextNodeId{ 0 };
+
+private:
+	// Serializable
+	bool m_nextChapterIdSet{ false };
+	id m_nextChapterId{ 0 };
 
 public:
 	void setNextNodeId(id nextNodeId) {
@@ -51,13 +57,15 @@ public:
 	}
 
 	void consumeChoice() {
-		saveNextNodeId();
+		applySetNextNodeId();
 		applyRelationModifications();
-		m_activeChoice = false;
+		applySetNextChapterId();
 
+		m_activeChoice = false;
 		m_choices = nullptr;
-		m_choiceNextNode = nullptr;
+		m_choiceSetNextNode = nullptr;
 		m_choiceModifyRelations = nullptr;
+		m_choiceSetNextChapter = nullptr;
 	}
 
 	void recordNodeChildChoice(id nodeId) {
@@ -66,20 +74,11 @@ public:
 
 private:
 	//
-	// Iterator interface helpers
+	// Helpers for iterator interface
 	// 
-	void saveNextNodeId() {
-		if (m_choiceNextNode == nullptr) { return; }
-
-		auto nodeId{ m_choiceNextNode->m_nodeId.find(m_currentChoiceIndex) };
-
-		if (nodeId != m_choiceNextNode->m_nodeId.end()) {
-			m_nextNodeIdSet = true;
-			m_nextNodeId = nodeId->second;
-		}
-	}
-
+	void applySetNextNodeId();
 	void applyRelationModifications();
+	void applySetNextChapterId();
 
 public:
 	//
@@ -115,15 +114,29 @@ public:
 	}
 
 	void handle(ActionChoiceSetNextNode& action) {
-		std::cout << "NEXT NODE CHOICE ACTION SET" << std::endl;
-		m_choiceNextNode = &action;
+		std::cout << "pick next node based on choice" << std::endl;
+		m_choiceSetNextNode = &action;
 	}
 	
 	void handle(ActionChoiceModifyRelation& action) {
-		std::cout << "NEXT NODE CHOICE RELATION SET" << std::endl;
+		std::cout << "modify relations based on choice" << std::endl;
 		m_choiceModifyRelations = &action;
 	}
 
+	void handle(ActionChoiceSetNextChapter& action) {
+		std::cout << "pick next chapter based on choice" << std::endl;
+		m_choiceSetNextChapter = &action;
+	}
+
+	void handle(ActionSetNextChapter& action) {
+		std::cout << "set next chapter" << std::endl;
+		m_nextChapterIdSet = true;
+		m_nextChapterId = action.m_chapterId;
+	}
+
+	void setNextChapterId(id chapterId) {
+
+	}
 };
 
 #endif // VN_STATE_CHOICES_H

@@ -103,10 +103,13 @@ private:
 		{0, {{1, 2, 1}, RelationModification::ADD, 10}}
 	};
 
-	std::unordered_map <StepIndex, std::vector<ActionRelationSetNextNode>> m_relationshipChooseNode{
+	std::unordered_map <StepIndex, std::vector<ActionRelationSetNextNode>> m_relationshipChooseNode {
 		//{0, {1, {}}}
 	};
 
+	std::unordered_map<StepIndex, std::vector<ActionRelationSetNextChapter>> m_relationshipChooseChapter{
+
+	};
 
 	//
 	// Choice step
@@ -123,6 +126,19 @@ private:
 
 	std::unordered_map<StepIndex, ActionChoiceModifyRelation> m_choiceRelationModifications {
 		{3, { { {0, { {{1, 2, 1}, RelationModification::ADD, 100} } }}}}
+	};
+
+	std::unordered_map<StepIndex, ActionChoiceSetNextChapter> m_choiceSetNextChapter{
+
+	};
+
+
+	//
+	// Direct next chapter set
+ 	//
+
+	std::unordered_map<StepIndex, ActionSetNextChapter> m_setNextChapter{
+
 	};
 
 

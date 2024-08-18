@@ -45,6 +45,7 @@ public:
 	//
 	void handle(ActionRelationSetNextNode& action);
 	void handle(ActionRelationModify& action);
+	void handle(ActionRelationSetNextChapter& action);
 
 public:
 	void save() {}

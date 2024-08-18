@@ -3,6 +3,7 @@
 #define CHAPTER_H
 
 #include "id.h"
+#include "linkable.h"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -14,17 +15,15 @@
 
 class ChapterBuilder;
 
-class Chapter {
+class Chapter : protected Linkable {
 private:
 	friend class ChapterBuilder;
 
-	std::wstring m_name{};
-	id m_headNodeId{};
 	id m_id{};
-
-	// For the purposes of traversal 
-	std::set<id> m_parents{};
-	std::set<id> m_children{};
+	std::wstring m_name{};
+	
+	// First node in the graph
+	id m_headNodeId{};
 
 public:
 	Chapter() {}
