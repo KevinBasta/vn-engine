@@ -118,7 +118,7 @@ void StateRelations::handle(ActionRelationSetNextNode& action) {
 		bool result = eval(condition);
 
 		if (result) {
-			m_stateSubject->m_choices.setNextNodeId(action.m_nodeId);
+			m_stateSubject->m_nextNode.set(action.m_nodeId);
 			break;
 		}
 	}
@@ -131,7 +131,7 @@ void StateRelations::handle(ActionRelationSetNextChapter& action) {
 		bool result = eval(condition);
 
 		if (result) {
-			m_stateSubject->m_choices.setNextChapterId(action.m_chapterId);
+			m_stateSubject->m_nextChapter.set(action.m_chapterId);
 			break;
 		}
 	}

@@ -18,12 +18,14 @@ private:
 	friend class ModelSubject;
 
 	std::unordered_map<id, std::unique_ptr<ChapterNode>> m_nodes{};
-	std::vector<std::unique_ptr<Chapter>>	m_chapters{};
+	std::unordered_map<id, std::unique_ptr<Chapter>> m_chapters{};
 	std::list<Chapter*> m_chapterOrder{}; // TODO: remove, chapter class will be graph/tree
 
 	void createChapterOne() {
 
 		// Can inital all nodes as strays then mark the head node as not a stray with a member variable?
+		Chapter* chapterOne = new Chapter{};
+
 		ChapterNode* head{ new ChapterNode("head node") };
 
 		ChapterNode* oneone{ new ChapterNode("one one node") };
@@ -44,13 +46,12 @@ private:
 		ChapterNodeBuilder{ oneone }.unlink(threeone);
 		ChapterNodeBuilder{ oneone }.unlink(threeone);
 
+
 		//chapterOneChild4->addChild(chapterOneChild5);
 		// chapterOneHead->addChild(chapterOneHead); TODO: unhandled case yet cycle
-
-		Chapter* chapterOne = new Chapter{};
 		ChapterBuilder{ chapterOne }.setHeadNodeId(head);
 
-		m_chapters.push_back(std::unique_ptr<Chapter>(chapterOne));
+		m_chapters.insert(std::pair{ chapterOne->getId(), std::unique_ptr<Chapter>(chapterOne)});
 		m_nodes[head->getId()] = std::unique_ptr<ChapterNode>(head);
 		m_nodes[oneone->getId()] = std::unique_ptr<ChapterNode>(oneone);
 		m_nodes[onetwo->getId()] = std::unique_ptr<ChapterNode>(onetwo);
@@ -59,10 +60,13 @@ private:
 		m_nodes[threeone->getId()] = std::unique_ptr<ChapterNode>(threeone);
 		
 		Chapter* chapterTwo = new Chapter{};
-		ChapterBuilder{ chapterTwo }.setHeadNodeId(head);
+		ChapterNode* fourone = ChapterNodeBuilder{ "four one node" }.get();
+		m_nodes[fourone->getId()] = std::unique_ptr<ChapterNode>(fourone);
+		ChapterBuilder{ chapterTwo }.setHeadNodeId(fourone);
 
 		ChapterBuilder{ chapterOne }.link(chapterTwo);
-		m_chapters.push_back(std::unique_ptr<Chapter>(chapterTwo));
+
+		m_chapters.insert(std::pair{ chapterTwo->getId(), std::unique_ptr<Chapter>(chapterTwo)});
 
 		//std::cout << chapterOneGraph << std::endl;
 	}
@@ -71,7 +75,13 @@ private:
 		// TODO: Load from model file if not loaded
 
 		// TODO: this is temp for testing
-		return m_chapters[0].get();
+		auto iter{ m_chapters.find(chapterId) };
+
+		if (iter != m_chapters.end()) {
+			return iter->second.get();
+		} 
+		
+		return nullptr;
 	}
 
 	Node* getNodeById(id nodeId) {
@@ -81,7 +91,6 @@ private:
 			// TODO: attempt to read the file
 			// BUT should already covered by prefetcher on a diff thread,
 			// so maybe check a vector containing the nodes currently loading
-			std::cout << "NODE NOT FOUND" << std::endl;
 			return nullptr;
 		}
 		else {

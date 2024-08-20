@@ -20,43 +20,30 @@ private:
 
 	int m_currentChoiceIndex{ 0 };
 
-	bool m_nextNodeIdSet{ false };
-	id m_nextNodeId{ 0 };
-
-	// Serializable
-	bool m_nextChapterIdSet{ false };
-	id m_nextChapterId{ 0 };
-
-	// Keep record of what choices were made for save file
-	std::vector<int> m_nodeChoicesRecord{};
-	std::vector<int> m_chapterChoicesRecord{};
-
 public:
 	StateChoices(StateSubject* stateSubject) : m_stateSubject{ stateSubject } {}
 	~StateChoices() {}
+
+	void reset() {
+		m_currentChoiceIndex = 0;
+		m_activeChoice = false;
+		m_choices = nullptr;
+		m_choiceSetNextNode = nullptr;
+		m_choiceModifyRelations = nullptr;
+		m_choiceSetNextChapter = nullptr;
+	}
 
 public:
 	//
 	// Iterator interface
 	// 
 
-	bool hasNextNodeId() { return m_nextNodeIdSet; }
-	bool hasNextChapterId() { return m_nextChapterIdSet; }
-	id getChoiceNodeId() { return m_nextNodeId; }
-	id getChoiceChapterId() { return m_nextChapterId; }
-	void recordNodeChildChoice(id nodeId) { m_nodeChoicesRecord.push_back(nodeId); }
-	void recordChapterChildChoice(id chapterId) { m_chapterChoicesRecord.push_back(chapterId); }
-
-	void consumeChoice() {
+	void applyChoice() {
 		applySetNextNodeId();
 		applyRelationModifications();
 		applySetNextChapterId();
 
-		m_activeChoice = false;
-		m_choices = nullptr;
-		m_choiceSetNextNode = nullptr;
-		m_choiceModifyRelations = nullptr;
-		m_choiceSetNextChapter = nullptr;
+		reset();
 	}
 
 private:
@@ -81,12 +68,9 @@ public:
 	//
 	void handle(ActionChoice& action) {
 		m_activeChoice = true;
+		m_currentChoiceIndex = 0;
 
 		m_choices = &action;
-
-		m_currentChoiceIndex = 0;
-		m_nextNodeIdSet = false;
-		m_nextNodeId = 0;
 	}
 
 	void handle(ActionChoiceSetNextNode& action) {
@@ -102,22 +86,6 @@ public:
 	void handle(ActionChoiceSetNextChapter& action) {
 		std::cout << "pick next chapter based on choice" << std::endl;
 		m_choiceSetNextChapter = &action;
-	}
-
-	void handle(ActionSetNextChapter& action) {
-		std::cout << "set next chapter" << std::endl;
-		setNextChapterId(action.m_chapterId);
-	}
-
-public:
-	void setNextNodeId(id nextNodeId) {
-		m_nextNodeIdSet = true;
-		m_nextNodeId = nextNodeId;
-	}
-
-	void setNextChapterId(id chapterId) {
-		m_nextChapterIdSet = true;
-		m_nextChapterId = chapterId;
 	}
 };
 

@@ -25,6 +25,7 @@ public:
 	id getId() { return m_id; }
 	int getChildrenAmount() { return m_children.size(); }
 	id getFirstChildId();
+	bool hasChild(id childId);
 };
 
 #endif // VN_LINKABLE_OBJECT_H

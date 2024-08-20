@@ -13,6 +13,8 @@
 #include "state_relations.h"
 #include "state_choices.h"
 #include "state_types.h"
+#include "state_next_node.h"
+#include "state_next_chapter.h"
 
 #include "character.h"
 #include "relations.h"
@@ -30,7 +32,7 @@
 class StateSubject : public Subject {
 private:
 	Chapter* currentChapter{ nullptr };
-	ChapterIterator iterator{ 0 };
+	ChapterIterator iterator{};
 	
 public:
 	// non-serialize critical (partial data may be saved for savefile thumbnails for example)
@@ -40,6 +42,9 @@ public:
 
 	// half-serialize critical (partial data needs to be saved)
 	StateChoices m_choices{ this };
+	StateNextNode m_nextNode{};
+	StateNextChapter m_nextChapter{};
+
 
 	// serialize critical (full data needs to be saved)
 	StateRelations m_relations{ this };
@@ -74,11 +79,16 @@ public:
 	void nodeEndActions() {
 		// clear non-presistent state
 		m_dialogue.reset();
+		m_choices.reset();
+		m_nextNode.reset();
 	}
 
 	void chapterEndActions() {
 		m_dialogue.reset();
 		m_sprites.reset();
+		m_choices.reset();
+		m_nextNode.reset();
+		m_nextChapter.reset();
 	}
 
 
@@ -87,9 +97,13 @@ public:
 	// Menu operations
 	//
 	void newGame() {
-		m_dialogue.reset();
 		m_relations.reset();
+		
+		m_dialogue.reset();
 		m_sprites.reset();
+		m_choices.reset();
+		m_nextNode.reset();
+		m_nextChapter.reset();
 	}
 
 	void loadSave() {

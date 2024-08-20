@@ -86,6 +86,10 @@ public:
 	static ChapterIterator iter(id chapterId);
 
 	// Chapters and nodes
+	static id getFirstChapterId() {
+		return 1;
+	}
+
 	static Chapter* getChapterById(id chapterId) {
 		ModelSubject* model{ validateInstance() };
 

@@ -9,6 +9,7 @@
 
 #include "model_subject.h"
 
+#include <optional>
 #include <iostream>
 
 class StateSubject;
@@ -38,29 +39,48 @@ inline std::ostream& operator<<(std::ostream& out, const ChapterState value) {
 	return out;
 }
 
-
 class ChapterIterator {
 private:	
-	id m_curNodeId{};
-	Node* m_curNodePtr{ nullptr };
-	NodeRunner m_nodeRunner{ nullptr };
-
-	id m_curChapterId{};
-	Chapter* m_curChapterPtr{ nullptr };
+	std::optional<id> m_chapterId{};
+	Chapter*		  m_chapterPtr{ nullptr };
 	
+	std::optional<id>	m_nodeId{};
+	Node*				m_nodePtr{ nullptr };
+	NodeRunner			m_nodeRunner{ nullptr };
+
+	bool m_goToNextNode{ false };
+
+	void defaultChapterId();
+	void updateChapterPtr();
+	void defaultNodeId();
+	void updateNodePtr();
+
 public:
 	// TODO: iterator with no chapter id input, for new game cases (perhaps can still pass but pass the first chapter id)
+	ChapterIterator():
+		m_chapterId{ 1 }
+	{
+		 // To request from model
+	}
+	
 	ChapterIterator(id chapterId) :
-		m_curChapterId{ chapterId }
+		m_chapterId{ chapterId }
 	{
 		// Only for loading the chapter if it's not loaded, can move to first .step
 		// can make a special function to request the loading of it
 		//ModelSubject::getChapterById(chapterId);
 	}
 
-	bool goToNextNode(StateSubject* stateSubject);
+	ChapterIterator(id chapterId, id nodeId) :
+		m_chapterId{ chapterId },
+		m_nodeId{ nodeId }
+	{
 
+	}
+
+	bool goToNextNode(StateSubject* stateSubject);
 	ChapterState step(StateSubject* stateSubject);
+
 	//ChapterState stepBack
 };
 

@@ -41,8 +41,8 @@ public:
 				(*iter)->update();
 			}
 		}
-		std::cout << "m_observers address: " << &m_observers << std::endl;
-		std::cout << "notification occured for " << m_observers.size() << " observers" << std::endl;
+		//std::cout << "m_observers address: " << &m_observers << std::endl;
+		std::cout << "notification occured for " << m_observers.size() << " observers" << std::endl << std::endl;
 	}
 };
 

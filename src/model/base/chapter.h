@@ -19,7 +19,6 @@ class Chapter : public Linkable {
 private:
 	friend class ChapterBuilder;
 
-	id m_id{};
 	std::wstring m_name{};
 	
 	// First node in the graph
@@ -27,8 +26,6 @@ private:
 
 public:
 	Chapter() {}
-
-	id getId() const { return m_id; }
 	id getHeadNodeId() const { return m_headNodeId; }
 };
 

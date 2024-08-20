@@ -20,9 +20,9 @@ private:
 	bool eval(RelationConditionUnit& conditionUnit);
 
 	void print() {
-		for (auto& [characterId, relationUniquePtr] : m_characterRelationsData) {
+		/*for (auto& [characterId, relationUniquePtr] : m_characterRelationsData) {
 			std::cout << *relationUniquePtr.get();
-		}
+		}*/
 	}
 
 public:

@@ -77,6 +77,7 @@ private:
 	std::unordered_map<StepIndex, ActionTextRender> m_textRenderSteps{
 		{ 0, { false } },
 		{ 1, { true } },
+		{ 3, { false } },
 	};
 
 	std::unordered_map<StepIndex, ActionTextLine> m_textLineSteps {
@@ -120,7 +121,7 @@ private:
 	};
 	
 	std::unordered_map<StepIndex, ActionChoiceSetNextNode> m_choiceSetNextNode {
-		{ 3, { {{0, 3}, {1, 4}, {2, 2}} } }
+		{ 3, { {{0, 5}, {1, 4}, {2, 2}} } }
 	};
 
 

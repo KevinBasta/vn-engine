@@ -32,8 +32,7 @@ void StateChoices::applySetNextNodeId() {
 	auto nodeId{ m_choiceSetNextNode->m_nodeId.find(m_currentChoiceIndex) };
 
 	if (nodeId != m_choiceSetNextNode->m_nodeId.end()) {
-		m_nextNodeIdSet = true;
-		m_nextNodeId = nodeId->second;
+		m_stateSubject->m_nextNode.set(nodeId->second);
 	}
 }
 
@@ -43,9 +42,8 @@ void StateChoices::applySetNextChapterId() {
 	auto chapterId{ m_choiceSetNextChapter->m_chapterId.find(m_currentChoiceIndex) };
 
 	if (chapterId != m_choiceSetNextChapter->m_chapterId.end()) {
-		m_nextChapterIdSet = true;
-		m_nextChapterId = chapterId->second;
-	}
+		m_stateSubject->m_nextChapter.set(chapterId->second);
+	}	
 }
 
 void StateChoices::applyRelationModifications() {

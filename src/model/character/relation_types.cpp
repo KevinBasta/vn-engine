@@ -34,9 +34,11 @@ int RelationTypes::getRelationId(std::string relationName) {
 }
 
 void RelationTypes::print() {
+	/*
 	std::cout << "Relation Types:" << std::endl;
 
 	for (auto [key, value] : relationTypes) {
 		std::cout << "\t name - " << key << "    \t id -   " << value << std::endl;
 	}
+	*/
 }

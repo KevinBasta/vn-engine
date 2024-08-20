@@ -28,7 +28,8 @@ template<> struct stateHelper<ActionRelationModify>			{ static constexpr auto ha
 template<> struct stateHelper<ActionRelationSetNextNode>	{ static constexpr auto handler = &StateSubject::m_relations; };
 template<> struct stateHelper<ActionRelationSetNextChapter>	{ static constexpr auto handler = &StateSubject::m_relations; };
 
-template<> struct stateHelper<ActionSetNextChapter>			{ static constexpr auto handler = &StateSubject::m_choices; };
+template<> struct stateHelper<ActionSetNextChapter>			{ static constexpr auto handler = &StateSubject::m_nextChapter; };
+
 template<> struct stateHelper<ActionChoice>					{ static constexpr auto handler = &StateSubject::m_choices; };
 template<> struct stateHelper<ActionChoiceSetNextNode>		{ static constexpr auto handler = &StateSubject::m_choices; };
 template<> struct stateHelper<ActionChoiceModifyRelation>	{ static constexpr auto handler = &StateSubject::m_choices; };
@@ -154,15 +155,20 @@ NodeState ChapterNode::action(StateSubject* stateSubject, int stepIndex)
 {
 	// TODO: Remove m_temp
 	std::cout << "test speaker" << " said: " << m_temp << std::endl;
+	std::cout << "step #" << stepIndex << std::endl;
 
 	if (stepIndex < m_steps.size()) {
 		bool stepDone = doStep(stateSubject, stepIndex);
 
-		return NodeState::NODE_STEP;
+		if (stepIndex + 1 < m_steps.size()) {
+			return NodeState::NODE_STEP;
+		}
+		else {
+			return NodeState::NODE_END;
+		}
 	}
 
-	std::cout << "step #" << stepIndex << std::endl;
-	stateSubject->nodeEndActions();
+	//stateSubject->nodeEndActions();
 
 	//std::cout << "step #" << stepIndex << " " << (stepDone ? "completed" : "not completed") << std::endl;
 

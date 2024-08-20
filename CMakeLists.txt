@@ -127,7 +127,7 @@ add_executable (
 	"src/view/layers/layer_transition.cpp" 
 	"src/view/base/texture_manager.h" 
 	"src/view/base/texture_manager.cpp" 
-       "src/model/model_subject/model_textures.cpp" "src/model/model_subject/model_chapters.cpp" "src/model/model_subject/model_chapters.h" "src/model/model_subject/model_relations.h" "src/model/model_subject/model_realtions.cpp" "src/model/model_subject/model_characters.cpp" "src/model/model_subject/model_characters.h" "src/model/base/linkable.cpp" "src/model/base/linkable.h" "src/model/builders/linkable_builder.h")
+       "src/model/model_subject/model_textures.cpp" "src/model/model_subject/model_chapters.cpp" "src/model/model_subject/model_chapters.h" "src/model/model_subject/model_relations.h" "src/model/model_subject/model_realtions.cpp" "src/model/model_subject/model_characters.cpp" "src/model/model_subject/model_characters.h" "src/model/base/linkable.cpp" "src/model/base/linkable.h" "src/model/builders/linkable_builder.h" "src/model/state_subject/state_next_chapter.h" "src/model/state_subject/state_next_node.h")
 
 target_include_directories(
 	"vn_engine"

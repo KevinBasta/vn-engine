@@ -18,7 +18,6 @@ public:
 	}
 
 	void newGame() {
-		m_state->initIterator(ModelSubject::iter(0));
 		m_state->newGame();
 	}
 	

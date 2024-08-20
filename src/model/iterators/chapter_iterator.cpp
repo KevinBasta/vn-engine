@@ -10,52 +10,67 @@
 #include <iostream>
 
 bool ChapterIterator::goToNextNode(StateSubject* stateSubject) {
-	if (m_curNodePtr == nullptr || m_curChapterPtr == nullptr || stateSubject == nullptr) {
+	if (m_nodePtr == nullptr || m_chapterPtr == nullptr || stateSubject == nullptr) {
 		return false;
 	}
 
-	if (m_curNodePtr->getChildrenAmount() == 0) {
+	if (m_nodePtr->getChildrenAmount() == 0) {
+		std::cout << "CHILDREN 0" << std::endl;
 		Chapter* chapter{ nullptr };
 		id chapterId{ 0 };
 		
-		if (stateSubject->m_choices.hasNextChapterId()) {
-			// TODO: go to next chapter if there is one, otherwise return flase
-			chapterId = stateSubject->m_choices.getChoiceChapterId();
-			chapter = ModelSubject::getChapterById(chapterId);
+		if (stateSubject->m_nextChapter.hasNextChapterId()) {
+			// TODO: go to next chapter if there is one, otherwise return false
+			chapterId = stateSubject->m_nextChapter.getNextChapterId();
+
+			if (m_chapterPtr->hasChild(chapterId)) {
+				chapter = ModelSubject::getChapterById(chapterId);
+			}
 		}
 
 		if (chapter == nullptr) {
 			try {
-				chapterId = m_curChapterPtr->getFirstChildId();
+				chapterId = m_chapterPtr->getFirstChildId();
 				chapter = ModelSubject::getChapterById(chapterId);
 			}
 			catch (...) {
-
+				std::cout << "no more chapters lol" << std::endl;
 			}
+			
+			std::cout << "chapter is not set by action" << std::endl;
+			std::cout << chapterId << std::endl;
 		}
 
 		if (chapter) {
-			if (m_curChapterPtr->getChildrenAmount() > 1) {
-				stateSubject->m_choices.recordChapterChildChoice(chapterId);
+			std::cout << "chatper was resolved" << std::endl;
+
+			if (m_chapterPtr->getChildrenAmount() > 1) {
+				stateSubject->m_nextChapter.recordChapterChildChoice(chapterId);
 			}
 
-			m_curChapterId = chapterId;
-
-			step(stateSubject);
+			m_chapterId.emplace(chapterId);
+			updateChapterPtr();
+			defaultNodeId();
+			updateNodePtr();
 			
 			return true;
 		}
-		
-		// TODO: go to main menu		
+		else {
+			// TODO: go to main menu
+		}
 	}
 	else {
+		std::cout << "CHILDREN MORE THAN 0" << std::endl;
 		Node* child{ nullptr };
 		id    childId{ 0 };
-		
+
 		// Check if there is a chosen node
-		if (stateSubject->m_choices.hasNextNodeId()) {
-			childId = stateSubject->m_choices.getChoiceNodeId();
-			child = ModelSubject::getNodeById(childId);
+		if (stateSubject->m_nextNode.hasNextNodeId()) {
+			childId = stateSubject->m_nextNode.getNextNodeId();
+
+			if (m_nodePtr->hasChild(childId)) {
+				child = ModelSubject::getNodeById(childId);
+			}
 		}
 
 		// Get the first child otherwise 
@@ -63,22 +78,26 @@ bool ChapterIterator::goToNextNode(StateSubject* stateSubject) {
 			// TODO: handle exceptions
 			// TODO: should get any child not visited yet, with fall back to 0
 			try {
-				childId = m_curNodePtr->getFirstChildId();
+				childId = m_nodePtr->getFirstChildId();
 				child = ModelSubject::getNodeById(childId);
 			}
 			catch (...) {
-
+				std::cout << "no more nodes lol" << std::endl;
 			}
+			
+			std::cout << "node is not set by action" << std::endl;
+			std::cout << childId << std::endl;
 		}
 
 		if (child) {
-			if (m_curNodePtr->getChildrenAmount() > 1) {
-				stateSubject->m_choices.recordNodeChildChoice(childId);
+			std::cout << "node was resolved" << std::endl;
+
+			if (m_nodePtr->getChildrenAmount() > 1) {
+				stateSubject->m_nextNode.recordNodeChildChoice(childId);
 			}
 			
-			m_curNodeId = childId;
-			m_curNodePtr = child;
-			m_nodeRunner = m_curNodePtr->iter();
+			m_nodeId.emplace(childId);
+			updateNodePtr();
 
 			return true;
 		}
@@ -87,44 +106,62 @@ bool ChapterIterator::goToNextNode(StateSubject* stateSubject) {
 	return false;
 }
 
+void ChapterIterator::defaultChapterId() {
+	m_chapterId.emplace(ModelSubject::getFirstChapterId());
+}
+
+void ChapterIterator::updateChapterPtr() {
+	m_chapterPtr = ModelSubject::getChapterById(m_chapterId.value());
+
+	if (m_chapterPtr == nullptr) {
+		// TODO: create new exception class
+		throw "bad";
+	}
+}
+
+void ChapterIterator::defaultNodeId() {
+	m_nodeId.emplace(m_chapterPtr->getHeadNodeId());
+}
+
+void ChapterIterator::updateNodePtr() {
+	m_nodePtr = ModelSubject::getNodeById(m_nodeId.value());
+
+	if (m_nodePtr == nullptr) {
+		// TODO: create new exception class
+		throw "bad";
+	}
+
+	m_nodeRunner = m_nodePtr->iter();
+}
+
 ChapterState ChapterIterator::step(StateSubject* stateSubject) {
-	if (m_curChapterPtr == nullptr) {
-		m_curChapterPtr = ModelSubject::getChapterById(m_curChapterId);
-		if (m_curChapterPtr == nullptr) {
-			// TODO: throw exception instead??
-			return ChapterState::CHAPTER_ERR;
-		}
-	}
-
-	if (m_curNodePtr == nullptr) {
-		m_curNodeId = m_curChapterPtr->getHeadNodeId();
-		m_curNodePtr = ModelSubject::getNodeById(m_curNodeId);
-
-		if (m_curNodePtr == nullptr) {
-			// TODO: throw exception instead??
-			return ChapterState::CHAPTER_ERR;
-		}
-
-		m_nodeRunner = m_curNodePtr->iter();
-	}
+	if (!m_chapterId.has_value()) { defaultChapterId(); }
+	if (!m_chapterPtr)			  { updateChapterPtr(); }
+	if (!m_nodeId.has_value())	  { defaultNodeId(); }
+	if (!m_nodePtr)				  { updateNodePtr(); }
 
 	if (stateSubject->m_choices.isChoiceActive()) {
-		stateSubject->m_choices.consumeChoice();
+		stateSubject->m_choices.applyChoice();
 	}
 
 	// TODO: abstract this to a different function so that when step is called again
 	// can protect against inf recursion, aka TODO err checking for step(stateSubject);
-	NodeState state = m_nodeRunner.step(stateSubject);
-
-	if (state == NodeState::NODE_END) {
+	
+	if (m_goToNextNode) {
 		bool inNextNode{ goToNextNode(stateSubject) };
+
 		if (!inNextNode) {
 			return ChapterState::CHAPTERS_END;
 		}
-		else {
-			// TODO: check return?
-			step(stateSubject);
-		}
+
+		m_goToNextNode = false;
+		stateSubject->nodeEndActions();
+	}
+
+	NodeState state = m_nodeRunner.step(stateSubject);
+
+	if (state == NodeState::NODE_END) {
+		m_goToNextNode = true;
 	}
 
 	return ChapterState::CHAPTER_STEP;
