@@ -15,8 +15,6 @@
 #include "game_observer.h"
 #include "engine_observer.h"
 
-#include "node_stray.h"
-
 #include <iostream>
 #include <string>
 #include <filesystem>
@@ -91,8 +89,6 @@ int main()
 	//idCheck();
 	memCheck();
 	
-	NodeStray::print();
-
 	std::cout << "End of program" << std::endl;
 
 #ifdef _WIN32

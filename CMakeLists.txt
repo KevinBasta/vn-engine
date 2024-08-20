@@ -35,41 +35,66 @@ add_executable (
 	"src/common/index.h"
 
 	# model
-	"src/model/base/chapter.cpp"
-	"src/model/base/chapter.h"
-	"src/model/base/node.cpp"
-	"src/model/base/node.h"
-	
+	"src/model/builders/chapter_builder.h"
+	"src/model/builders/chapter_node_builder.h"
+	"src/model/builders/character_builder.h"
+	"src/model/builders/linkable_builder.h"
+	"src/model/builders/relations_builder.h"
+	"src/model/builders/texture_store_builder.h"
+
+	"src/model/chapter_node/chapter_node.cpp"
+	"src/model/chapter_node/chapter_node.h"
+	"src/model/chapter_node/chapter_node_types.h"
+
 	"src/model/character/character.cpp"
 	"src/model/character/character.h"
-	"src/model/character/relation_types.cpp" 
-	"src/model/character/relation_types.h" 
 	"src/model/character/relations.cpp"
 	"src/model/character/relations.h"
+	"src/model/character/relation_types.cpp" 
+	"src/model/character/relation_types.h" 
 	
 	"src/model/iterators/chapter_iterator.cpp"
 	"src/model/iterators/chapter_iterator.h"
 	"src/model/iterators/node_runner.cpp"
 	"src/model/iterators/node_runner.h"
 
-	"src/model/node/chapter_node.cpp"
-	"src/model/node/chapter_node.h"
+	"src/model/linkable/chapter.cpp"
+	"src/model/linkable/chapter.h"
+	"src/model/linkable/node.cpp"
+	"src/model/linkable/node.h"
+	"src/model/linkable/linkable.cpp" 
+	"src/model/linkable/linkable.h" 
 	
-	"src/model/state_subject/state_background.h" 
-	"src/model/state_subject/state_choices.cpp" 
-	"src/model/state_subject/state_choices.h" 
-	"src/model/state_subject/state_dialogue.h" 
-	"src/model/state_subject/state_relations.cpp" 
-	"src/model/state_subject/state_relations.h" 
-	"src/model/state_subject/state_sprites.cpp" 
-	"src/model/state_subject/state_sprites.h" 
-	"src/model/state_subject/state_subject.cpp"
-	"src/model/state_subject/state_subject.h"
-	"src/model/state_subject/state_types.h"
+	"src/model/stores/node_store.h" 
+	"src/model/stores/node_store.cpp" 
+	"src/model/stores/texture_store.h"
+	"src/model/stores/texture_store.cpp"
 	
-	"src/model/model_subject/model_subject.cpp"
-	"src/model/model_subject/model_subject.h"
-
+	"src/model/subject_model/model_chapters.cpp"
+	"src/model/subject_model/model_chapters.h"
+	"src/model/subject_model/model_characters.cpp" 
+	"src/model/subject_model/model_characters.h" 
+	"src/model/subject_model/model_relations.h" 
+	"src/model/subject_model/model_realtions.cpp" 
+	"src/model/subject_model/model_subject.cpp"
+	"src/model/subject_model/model_subject.h"
+    "src/model/subject_model/model_textures.cpp" 
+    "src/model/subject_model/model_textures.h" 
+	
+	"src/model/subject_state/state_background.h" 
+	"src/model/subject_state/state_choices.cpp" 
+	"src/model/subject_state/state_choices.h" 
+	"src/model/subject_state/state_dialogue.h" 
+	"src/model/subject_state/state_next_chapter.h" 
+	"src/model/subject_state/state_next_node.h"
+	"src/model/subject_state/state_relations.cpp" 
+	"src/model/subject_state/state_relations.h" 
+	"src/model/subject_state/state_sprites.cpp" 
+	"src/model/subject_state/state_sprites.h" 
+	"src/model/subject_state/state_subject.cpp"
+	"src/model/subject_state/state_subject.h"
+	"src/model/subject_state/state_types.h"
+	
 	"src/model/subject.h"
 	"src/model/subjects_orchestrator.h"
 
@@ -77,19 +102,6 @@ add_executable (
 	"src/model/savefile/json/json_token.cpp"
 	"src/model/savefile/json/json_error.cpp"
 	"src/model/savefile/json/json_expr.cpp"
-
-	"src/model/builders/chapter_node_builder.h" 
-	"src/model/builders/chapter_builder.h" 
-	"src/model/builders/character_builder.h" 
-	"src/model/builders/relations_builder.h" 
-	 
-	"src/model/builders/texture_store_builder.h" 
-
-	"src/model/base/node_stray.h" 
-	"src/model/base/node_stray.cpp" 
-
-	"src/model/stores/texture_store.h"  
-	"src/model/stores/texture_store.cpp" 
 
 	# view
 	"src/view/base/window.cpp" 
@@ -127,7 +139,7 @@ add_executable (
 	"src/view/layers/layer_transition.cpp" 
 	"src/view/base/texture_manager.h" 
 	"src/view/base/texture_manager.cpp" 
-       "src/model/model_subject/model_textures.cpp" "src/model/model_subject/model_chapters.cpp" "src/model/model_subject/model_chapters.h" "src/model/model_subject/model_relations.h" "src/model/model_subject/model_realtions.cpp" "src/model/model_subject/model_characters.cpp" "src/model/model_subject/model_characters.h" "src/model/base/linkable.cpp" "src/model/base/linkable.h" "src/model/builders/linkable_builder.h" "src/model/state_subject/state_next_chapter.h" "src/model/state_subject/state_next_node.h")
+)
 
 target_include_directories(
 	"vn_engine"
@@ -137,15 +149,15 @@ target_include_directories(
 	"src/common"
 	
 	"src/model"
-	"src/model/base"
+	"src/model/builders"
+	"src/model/chapter_node"
 	"src/model/character"
 	"src/model/iterators"
-	"src/model/node"
+	"src/model/linkable"
 	"src/model/savefile"
-	"src/model/builders"
-	"src/model/state_subject"
-	"src/model/model_subject"
 	"src/model/stores"
+	"src/model/subject_model"
+	"src/model/subject_state"
 
 	"src/view"
 	"src/view/base"
