@@ -4,29 +4,36 @@
 #include "model_subject.h"
 #include "state_subject.h"
 
-#include "texture.h"
+#include <memory>
 
 class SubjectsOrchestrator {
 private:
-	StateSubject* m_state{};
+	std::unique_ptr<StateSubject> m_stateSubject{};
 
 public:
-	SubjectsOrchestrator(StateSubject* state) :
-		m_state{state}
+	SubjectsOrchestrator() :
+		m_stateSubject{ new StateSubject{} }
 	{
 		ModelSubject::init();
 	}
 
+	// Menu Options
 	void newGame() {
-		m_state->newGame();
+		m_stateSubject.get()->newGame();
 	}
 	
 	void loadGame() {
 
 	}
 
+	// Game runtime options
 	void action() {
-		m_state->action();
+		m_stateSubject.get()->action();
+	}
+
+	// Other interface
+	StateSubject* getState() {
+		return m_stateSubject.get();
 	}
 };
 

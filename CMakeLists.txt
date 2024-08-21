@@ -12,14 +12,17 @@ add_executable (
 	"vn_engine"
 	
 	# imgui dependancies
-	"external/imgui/imgui.cpp"
-	"external/imgui/imgui_demo.cpp"
-	"external/imgui/imgui_draw.cpp"
+
 	"external/imgui/imgui_tables.cpp"
 	"external/imgui/imgui_widgets.cpp"
+	"external/imgui/imgui_draw.cpp"
+	"external/imgui/imgui_demo.cpp"
+	"external/imgui/imconfig.h"
+	"external/imgui/imgui.cpp"
+	"external/imgui/imgui.h"
 	"external/imgui/backends/imgui_impl_opengl3.cpp"
-	"external/imgui/backends/imgui_impl_glfw.cpp"
 	"external/imgui/backends/imgui_impl_opengl3.h"
+	"external/imgui/backends/imgui_impl_glfw.cpp"
 	"external/imgui/backends/imgui_impl_glfw.h"
 
 	# main program
@@ -139,7 +142,7 @@ add_executable (
 	"src/view/layers/layer_transition.cpp" 
 	"src/view/base/texture_manager.h" 
 	"src/view/base/texture_manager.cpp" 
-)
+ "src/model/stores/engine_node_store.h" "src/view/engine_properties.h")
 
 target_include_directories(
 	"vn_engine"
@@ -172,6 +175,7 @@ target_include_directories(
 	SYSTEM
 	PUBLIC
 	"external/imgui"
+	"external/imgui/backends"
 	"external/stb"
 	"external/glad"
 	"external/glfw"

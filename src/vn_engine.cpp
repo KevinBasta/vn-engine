@@ -45,28 +45,17 @@ void memCheck() {
 
 	std::cout << VN_BASE_PATH << std::endl;
 
-	// load opengl
+	// Create a game window
 	VnWindow window{};
 	window.load();
-	
-	// contains state of what chapter/node on and character relations and items
 
-
-	// contatins current game state
-	StateSubject stateSubject{};
-
-	SubjectsOrchestrator subjectsOrchestrator{&stateSubject};
+	// Create game state and load model
+	SubjectsOrchestrator subjectsOrchestrator{};
 	subjectsOrchestrator.newGame();
 
-	// the vn game
-	GameObserver game{ &window, &stateSubject };
-	
-	stateSubject.attatch(static_cast<Observer*>(&game));
-
+	// Crate game graphics and engine ui
+	GameObserver game{ &window, subjectsOrchestrator.getState() };
 	game.run();
-
-	
-	//subject.forwardProgress(&stateSubject);
 }
 
 void idCheck() {
