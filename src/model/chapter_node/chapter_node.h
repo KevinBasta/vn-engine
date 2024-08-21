@@ -17,7 +17,7 @@ class ChapterNodeBuilder;
 class ChapterNode : public Node {
 private:
 	friend class ChapterNodeBuilder;
-	
+
 	// TODO: need to determine what keeps it's state between steps and nodes and what doesn't 
 	// (e.g. text is only retained in node, when a new node comes, the text state is reset)
 
@@ -116,7 +116,7 @@ private:
 	// Choice step
 	//
 
-	std::unordered_map<StepIndex, ActionChoice> m_choiceTextOption {
+	std::unordered_map<StepIndex, ActionChoice> m_choiceTextOptions {
 		{3, { ChoiceStyle::LIST_TEXT_AREA, {L"second first-level node", L"third first-level node", L"first first-level node"}}}
 	};
 	

@@ -135,7 +135,7 @@ bool ChapterNode::doStep(StateSubject* stateSubject, int stepIndex) {
 			break;
 		case (ChapterNodeActionType::CHOICE):
 			stepExists |= handle(stateSubject, stepIndex, m_setNextChapter);
-			stepExists |= handle(stateSubject, stepIndex, m_choiceTextOption);
+			stepExists |= handle(stateSubject, stepIndex, m_choiceTextOptions);
 			stepExists |= handle(stateSubject, stepIndex, m_choiceSetNextNode);
 			stepExists |= handle(stateSubject, stepIndex, m_choiceRelationModifications);
 			stepExists |= handle(stateSubject, stepIndex, m_choiceSetNextChapter);
