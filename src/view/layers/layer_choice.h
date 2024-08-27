@@ -25,7 +25,7 @@ private:
 	StateSubject* m_stateSubject{ nullptr };
 	Shader m_textShader;
 
-	void drawChoice(std::wstring_view text, glm::vec3 color, float& paddingBottom) {
+	void drawChoice(const FrameDimensions& frame, std::wstring_view text, glm::vec3 color, float& paddingBottom) {
 		if (text == L"") {
 			return;
 		}
@@ -37,7 +37,7 @@ private:
 		float scale{ 0.7f };
 
 		// TODO: move ortho to camera object
-		glm::mat4 ortho = glm::ortho(0.0f, static_cast<float>(m_window->width()), 0.0f, static_cast<float>(m_window->height()), 0.0f, 100.0f);
+		glm::mat4 ortho = glm::ortho(0.0f, static_cast<float>(frame.width), 0.0f, static_cast<float>(frame.height), 0.0f, 100.0f);
 		unsigned int orthoLocation = glGetUniformLocation(m_textShader.ID(), "inOrtho");
 		glUniformMatrix4fv(orthoLocation, 1, GL_FALSE, glm::value_ptr(ortho));
 
@@ -46,13 +46,13 @@ private:
 		float paddingRight{ 300.0f };
 		int lastConsumedIndex{ 0 };
 
-		std::vector<std::wstring_view> lines{ TextTexture::fittedScreenLines(text, m_window->width() - ((paddingLeft + paddingRight) * m_window->scale()), m_window->scale() * scale) };
+		std::vector<std::wstring_view> lines{ TextTexture::fittedScreenLines(text, frame.width - ((paddingLeft + paddingRight) * frame.scale), frame.scale * scale) };
 
 		std::vector<std::wstring_view>::iterator line{ lines.begin() };
 		for (; line != lines.end(); line++) {
 			glm::mat4 model = glm::mat4(1.0f);
-			model = glm::translate(model, glm::vec3(paddingLeft * m_window->scale(), paddingBottom * m_window->scale(), -1.0f));
-			model = glm::scale(model, glm::vec3(m_window->scale() * scale, m_window->scale() * scale, 0.0f));
+			model = glm::translate(model, glm::vec3(paddingLeft * frame.scale, paddingBottom * frame.scale, -1.0f));
+			model = glm::scale(model, glm::vec3(frame.scale * scale, frame.scale * scale, 0.0f));
 			glUniformMatrix4fv(glGetUniformLocation(m_textShader.ID(), "inModel"), 1, GL_FALSE, glm::value_ptr(model));
 
 			TextTexture::draw(*line);
@@ -69,7 +69,7 @@ public:
 	{
 	}
 
-	void pollAndDraw() {
+	void pollAndDraw(const FrameDimensions& frame) {
 		if (m_stateSubject->m_choices.isChoiceActive()) {
 			ActionChoice* choices{ m_stateSubject->m_choices.getChoices() };
 
@@ -87,7 +87,7 @@ public:
 					color = { 1.0f, 0.0f, 0.0f };
 				}
 
-				drawChoice(choice, color, paddingBottom);
+				drawChoice(frame, choice, color, paddingBottom);
 				index++;
 			}
 		}

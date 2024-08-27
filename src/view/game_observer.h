@@ -87,62 +87,58 @@ public:
 				m_rerenderContext = true;
 			}
 
-				if (m_stateSubject->inAutoAction()) {
-					m_stateSubject->tickAutoActions(deltaTime);
-				}
-				ImGui_ImplOpenGL3_NewFrame();
-				ImGui_ImplGlfw_NewFrame();
-				ImGui::NewFrame();
+			if (m_stateSubject->inAutoAction()) {
+				m_stateSubject->tickAutoActions(deltaTime);
+			}
+			
+			glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+			glClear(GL_COLOR_BUFFER_BIT);
 
-					// Using a Child allow to fill all the space of the window.
-					// It also alows customization
-					//ImGui::BeginChild("GameRender");
-					// Get the size of the child (i.e. the whole draw size of the windows).
-					//ImVec2 wsize = ImGui::GetWindowSize();
-					// Because I use the texture from OpenGL, I need to invert the V from the UV.
-					//ImGui::Image((ImTextureID)tex, wsize, ImVec2(0, 1), ImVec2(1, 0));
-					//ImGui::EndChild();
+			ImGui_ImplOpenGL3_NewFrame();
+			ImGui_ImplGlfw_NewFrame();
+			ImGui::NewFrame();
+
+			// Using a Child allow to fill all the space of the window.
+			// It also alows customization
+			//ImGui::BeginChild("GameRender");
+			// Get the size of the child (i.e. the whole draw size of the windows).
+			//ImVec2 wsize = ImGui::GetWindowSize();
+			// Because I use the texture from OpenGL, I need to invert the V from the UV.
+			//ImGui::Image((ImTextureID)tex, wsize, ImVec2(0, 1), ImVec2(1, 0));
+			//ImGui::EndChild();
 					
+			ImGui::Begin("Test Window");
+
+			const float newWidth = ImGui::GetContentRegionAvail().x;
+			const float newHeight = ImGui::GetContentRegionAvail().y;
+
+			std::pair<FrameDimensions, ViewportUpdateParams> windowSizeUpdate{};
+			windowSizeUpdate = getNormalizedDimentions(newWidth, newHeight);
+			glViewport(0, 0, windowSizeUpdate.first.width, windowSizeUpdate.first.height);
 				
-				
-				ImGui::Begin("Test Window");
+			unsigned int textureId = m_context.getTextureId();
+			ImVec2 pos = ImGui::GetCursorScreenPos(); // screen position of the window
 
-				// we access the ImGui window size
-				const float newWidth = ImGui::GetContentRegionAvail().x;
-				const float newHeight = ImGui::GetContentRegionAvail().y;
+			// and here we can add our created texture as image to ImGui
+			ImGui::GetWindowDrawList()->AddImage(
+				(void*)textureId,
+				ImVec2(pos.x, pos.y),
+				ImVec2(pos.x + windowSizeUpdate.second.width, pos.y + windowSizeUpdate.second.height),
+				ImVec2(0, 1),
+				ImVec2(1, 0)
+			);
 
-				std::pair<FrameDimentions, ViewportUpdateParams> windowSizeUpdate{};
-				windowSizeUpdate = getNormalizedDimentions(newWidth, newHeight);
+			m_context.renderEngine(windowSizeUpdate.first);
 
-				glViewport(0, 0, windowSizeUpdate.first.frameWidth, windowSizeUpdate.first.frameHeight);
-				
-				unsigned int textureId = m_context.getTextureId();
+			ImGui::End();
 
-				// we get the screen position of the window
-				ImVec2 pos = ImGui::GetCursorScreenPos();
+			ImGui::ShowDemoWindow();
 
-				// and here we can add our created texture as image to ImGui
-				// unfortunately we need to use the cast to void* or I didn't find another way tbh
-				ImGui::GetWindowDrawList()->AddImage(
-					(void*)textureId,
-					ImVec2(pos.x, pos.y),
-					ImVec2(pos.x + windowSizeUpdate.second.width, pos.y + windowSizeUpdate.second.height),
-					ImVec2(0, 1),
-					ImVec2(1, 0)
-				);
+			ImGui::Render();
+			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
-				m_context.renderEngine(windowSizeUpdate.first);
 
-				ImGui::End();
-
-				ImGui::ShowDemoWindow();
-
-				ImGui::Render();
-				ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
-				glfwSwapBuffers(m_window->get());
-
-				m_stateSubject->clearStateDelta();
+			m_stateSubject->clearStateDelta();
 
 			// Update and Render additional Platform Windows
 			if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
@@ -153,6 +149,7 @@ public:
 				glfwMakeContextCurrent(backup_current_context);
 			}
 
+			glfwSwapBuffers(m_window->get());
 			glfwPollEvents();
 		}
 

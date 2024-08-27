@@ -26,7 +26,7 @@ public:
 	Shader m_screenShader;
 	unsigned int m_quadVAO, m_quadVBO, m_framebuffer, m_textureColorbuffer, m_rbo;
 
-	void drawLayers(const FrameDimentions frameDimentions) {
+	void drawLayers(const FrameDimensions& frame) {
 		// Bind framebuffer
 		glBindFramebuffer(GL_FRAMEBUFFER, m_framebuffer);
 		glEnable(GL_DEPTH_TEST);
@@ -36,14 +36,14 @@ public:
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		// Draw each layer
-		m_backgroundLayer.pollAndDraw(frameDimentions);
-		m_spriteLayer.pollAndDraw(frameDimentions);
+		m_backgroundLayer.pollAndDraw(frame);
+		m_spriteLayer.pollAndDraw(frame);
 		
 		if (m_stateSubject->m_choices.isChoiceActive()) {
-			m_choiceLayer.pollAndDraw();
+			m_choiceLayer.pollAndDraw(frame);
 		}
 		else {
-			m_textLayer.pollAndDraw(frameDimentions);
+			m_textLayer.pollAndDraw(frame);
 		}
 
 		// Unbind framebuffer
@@ -53,10 +53,9 @@ public:
 public:
 	GameContext(VnWindow* window, StateSubject* stateSubject);
 	
-
-	void renderEngine(const FrameDimentions frameDimentions) {
-		rescaleFramebuffer(frameDimentions);
-		drawLayers(frameDimentions);
+	void renderEngine(const FrameDimensions& frame) {
+		rescaleFramebuffer(frame);
+		drawLayers(frame);
 
 		// Bind framebuffer
 		glBindFramebuffer(GL_FRAMEBUFFER, m_framebuffer);
@@ -71,8 +70,8 @@ public:
 	}
 
 	void renderRuntime() {
-		rescaleFramebuffer(m_window->getFrameDimentions());
-		drawLayers(m_window->getFrameDimentions());
+		rescaleFramebuffer(m_window->getFrameDimensions());
+		drawLayers(m_window->getFrameDimensions());
 		
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		glDisable(GL_DEPTH_TEST);
@@ -90,18 +89,18 @@ public:
 		return m_textureColorbuffer;
 	}
 
-	void rescaleFramebuffer(const FrameDimentions frameDimentions) {
+	void rescaleFramebuffer(const FrameDimensions& frame) {
 		// Bind framebuffer
 		glBindFramebuffer(GL_FRAMEBUFFER, m_framebuffer);
 
 		glBindTexture(GL_TEXTURE_2D, m_textureColorbuffer);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, frameDimentions.frameWidth, frameDimentions.frameHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, frame.width, frame.height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_textureColorbuffer, 0);
 
 		glBindRenderbuffer(GL_RENDERBUFFER, m_rbo);
-		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, frameDimentions.frameWidth, frameDimentions.frameHeight);
+		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, frame.width, frame.height);
 		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, m_rbo);
 
 		// Unbind framebuffer

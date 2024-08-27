@@ -24,9 +24,9 @@
 #define startHeight 900
 
 
-struct FrameDimentions {
-	int frameWidth{ 1920 };
-	int frameHeight{ 1080 };
+struct FrameDimensions {
+	int width{ 1920 };
+	int height{ 1080 };
 	float scale{ 1.0f };
 };
 
@@ -37,7 +37,7 @@ struct ViewportUpdateParams {
 	GLsizei height{};
 };
 
-static FrameDimentions sg_dimentions{};
+static FrameDimensions sg_frame{};
 
 static bool sg_updated{ true };
 // The nodes will have sprite positions that are relative 
@@ -47,7 +47,7 @@ static bool sg_updated{ true };
 
 
 
-std::pair<FrameDimentions, ViewportUpdateParams> getNormalizedDimentions(int newWidth, int newHeight);
+std::pair<FrameDimensions, ViewportUpdateParams> getNormalizedDimentions(int newWidth, int newHeight);
 
 static void frameSizeUpdateCallback(GLFWwindow* window, int newWidth, int newHeight) {
 	/*
@@ -87,11 +87,11 @@ static void frameSizeUpdateCallback(GLFWwindow* window, int newWidth, int newHei
 
 	// TODO: should all this be in just ints not floats?
 	
-	std::pair<FrameDimentions, ViewportUpdateParams> update{};
+	std::pair<FrameDimensions, ViewportUpdateParams> update{};
 
 	update = getNormalizedDimentions(newWidth, newHeight);
 
-	sg_dimentions = update.first;
+	sg_frame = update.first;
 
 	glViewport(update.second.x, update.second.y, update.second.width, update.second.height);
 	glfwSetWindowAspectRatio(window, widthRatio, heightRatio);
@@ -131,7 +131,7 @@ public:
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-		m_window = glfwCreateWindow(sg_dimentions.frameWidth, sg_dimentions.frameHeight, "opengl :)", NULL, NULL);
+		m_window = glfwCreateWindow(sg_frame.width, sg_frame.height, "opengl :)", NULL, NULL);
 		if (m_window == NULL) {
 			std::cout << "failed to create GLFW window" << std::endl;
 			glfwTerminate();
@@ -153,7 +153,7 @@ public:
 			// raise exception or return err?
 		}
 
-		glViewport(0, 0, sg_dimentions.frameWidth, sg_dimentions.frameHeight);
+		glViewport(0, 0, sg_frame.width, sg_frame.height);
 		//glfwMaximizeWindow(m_window);
 
 		glfwSetWindowSize(m_window, startWidth, startHeight);
@@ -166,19 +166,19 @@ public:
 	}
 
 	int width() {
-		return sg_dimentions.frameWidth;
+		return sg_frame.width;
 	}
 
 	int height() {
-		return sg_dimentions.frameHeight;
+		return sg_frame.height;
 	}
 
 	float scale() {
-		return sg_dimentions.scale;
+		return sg_frame.scale;
 	}
 
-	const FrameDimentions getFrameDimentions() {
-		return sg_dimentions;
+	const FrameDimensions getFrameDimensions() {
+		return sg_frame;
 	}
 
 	bool updated() {

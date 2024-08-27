@@ -16,7 +16,7 @@ private:
 	Shader m_defaultShader;
 	StateSubject* m_stateSubject{ nullptr };
 
-	void drawSprite(const TextureIdentifier& textureIdentifier, const SpriteState& spriteState, const FrameDimentions frameDimentions);
+	void drawSprite(const FrameDimensions& frame, const TextureIdentifier& textureIdentifier, const SpriteState& spriteState);
 
 public:
 	SpriteLayer(VnWindow* window, StateSubject* stateSubject):
@@ -26,7 +26,7 @@ public:
 	{
 	}
 
-	void pollAndDraw(const FrameDimentions frameDimentions);
+	void pollAndDraw(const FrameDimensions& frame);
 };
 
 
