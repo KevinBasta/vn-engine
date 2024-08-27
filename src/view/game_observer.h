@@ -15,7 +15,6 @@
 
 #include <GLFW/glfw3.h>
 
-
 static void mouseCallback(GLFWwindow* window, double xpos, double ypos) {
 	//(*g_camera).processMouseMovement(xpos, ypos);
 }
@@ -76,6 +75,7 @@ public:
 		double deltaTime = 0.0f;
 		double lastFrame = 0.0f;
 
+
 		while (!glfwWindowShouldClose(m_window->get())) {
 			m_controller.processInput();
 
@@ -87,10 +87,6 @@ public:
 				m_rerenderContext = true;
 			}
 
-			if (true) {
-				glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-				glClear(GL_COLOR_BUFFER_BIT);
-
 				if (m_stateSubject->inAutoAction()) {
 					m_stateSubject->tickAutoActions(deltaTime);
 				}
@@ -98,8 +94,6 @@ public:
 				ImGui_ImplGlfw_NewFrame();
 				ImGui::NewFrame();
 
-				ImGui::Begin("GameWindow");
-				{
 					// Using a Child allow to fill all the space of the window.
 					// It also alows customization
 					//ImGui::BeginChild("GameRender");
@@ -108,11 +102,38 @@ public:
 					// Because I use the texture from OpenGL, I need to invert the V from the UV.
 					//ImGui::Image((ImTextureID)tex, wsize, ImVec2(0, 1), ImVec2(1, 0));
 					//ImGui::EndChild();
-				}
+					
+				
+				
+				ImGui::Begin("Test Window");
+
+				// we access the ImGui window size
+				const float newWidth = ImGui::GetContentRegionAvail().x;
+				const float newHeight = ImGui::GetContentRegionAvail().y;
+
+				std::pair<FrameDimentions, ViewportUpdateParams> windowSizeUpdate{};
+				windowSizeUpdate = getNormalizedDimentions(newWidth, newHeight);
+
+				glViewport(0, 0, windowSizeUpdate.first.frameWidth, windowSizeUpdate.first.frameHeight);
+				
+				unsigned int textureId = m_context.getTextureId();
+
+				// we get the screen position of the window
+				ImVec2 pos = ImGui::GetCursorScreenPos();
+
+				// and here we can add our created texture as image to ImGui
+				// unfortunately we need to use the cast to void* or I didn't find another way tbh
+				ImGui::GetWindowDrawList()->AddImage(
+					(void*)textureId,
+					ImVec2(pos.x, pos.y),
+					ImVec2(pos.x + windowSizeUpdate.second.width, pos.y + windowSizeUpdate.second.height),
+					ImVec2(0, 1),
+					ImVec2(1, 0)
+				);
+
+				m_context.renderEngine(windowSizeUpdate.first);
+
 				ImGui::End();
-
-				m_context.drawLayers();
-
 
 				ImGui::ShowDemoWindow();
 
@@ -121,9 +142,7 @@ public:
 
 				glfwSwapBuffers(m_window->get());
 
-				m_rerenderContext = false;
 				m_stateSubject->clearStateDelta();
-			}
 
 			// Update and Render additional Platform Windows
 			if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
@@ -165,14 +184,14 @@ public:
 			}
 
 			if (m_rerenderContext || m_stateSubject->inAutoAction()) {
-				glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-				glClear(GL_COLOR_BUFFER_BIT);
+				//glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+				//glClear(GL_COLOR_BUFFER_BIT);
 
 				if (m_stateSubject->inAutoAction()) {
 					m_stateSubject->tickAutoActions(deltaTime);
 				}
 
-				m_context.drawLayers();
+				m_context.renderRuntime();
 
 
 				glfwSwapBuffers(m_window->get());

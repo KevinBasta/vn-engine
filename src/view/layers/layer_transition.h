@@ -5,8 +5,8 @@
 #include "shader.h"
 #include "state_subject.h"
 
-#define TEMP_VERTEX_PATH	VN_BASE_PATH"/src/view/glsl/defaultVertex.glsl"
-#define TEMP_FRAGMENT_PATH	VN_BASE_PATH"/src/view/glsl/defaultFragment.glsl"
+#define TEMP_VERTEX_PATH	VN_BASE_PATH"/src/view/glsl/vertex_texture.glsl"
+#define TEMP_FRAGMENT_PATH	VN_BASE_PATH"/src/view/glsl/fragment_texture.glsl"
 
 class TransitionLayer {
 	VnWindow* m_window{ nullptr };

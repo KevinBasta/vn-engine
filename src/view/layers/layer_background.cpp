@@ -8,7 +8,7 @@
 #include "state_background.h"
 #include "chapter_node_types.h"
 
-void BackgroundLayer::drawBackground(TextureIdentifier& textureIdentifier) {
+void BackgroundLayer::drawBackground(TextureIdentifier& textureIdentifier, const FrameDimentions frameDimentions) {
 	m_defaultShader.use();
 
 	Texture2D* texture{ TextureManager::getTexture(textureIdentifier) };
@@ -18,10 +18,10 @@ void BackgroundLayer::drawBackground(TextureIdentifier& textureIdentifier) {
 	}
 
 	// can move to Texture2D
-	float scale{ texture->getScaleToViewport(m_window) };
+	float scale{ texture->getScaleToFrame(frameDimentions.frameWidth, frameDimentions.frameHeight) };
 
 	glm::mat4 model = glm::mat4(1.0f);
-	//model = glm::translate(model, glm::vec3(-1.0f, -1.0f, 0.0f));
+	model = glm::translate(model, glm::vec3(0.0f, 0.0f, -99.0f));
 	model = glm::scale(model, glm::vec3(scale, scale, 0.0f));
 
 	unsigned int modelLocation = glGetUniformLocation(m_defaultShader.ID(), "inModel");
@@ -34,7 +34,7 @@ void BackgroundLayer::drawBackground(TextureIdentifier& textureIdentifier) {
 	glUniformMatrix4fv(viewLocation, 1, GL_FALSE, glm::value_ptr(view));
 
 
-	glm::mat4 ortho = glm::ortho(0.0f, static_cast<float>(m_window->width()), 0.0f, static_cast<float>(m_window->height()), 0.0f, 100.0f);
+	glm::mat4 ortho = glm::ortho(0.0f, static_cast<float>(frameDimentions.frameWidth), 0.0f, static_cast<float>(frameDimentions.frameHeight), 0.0f, 100.0f);
 
 	unsigned int orthoLocation = glGetUniformLocation(m_defaultShader.ID(), "inOrtho");
 	glUniformMatrix4fv(orthoLocation, 1, GL_FALSE, glm::value_ptr(ortho));
@@ -45,8 +45,8 @@ void BackgroundLayer::drawBackground(TextureIdentifier& textureIdentifier) {
 	texture->draw();
 }
 
-void BackgroundLayer::pollAndDraw() {
-	drawBackground(m_stateSubject->m_background.m_currentBackground);
+void BackgroundLayer::pollAndDraw(const FrameDimentions frameDimentions) {
+	drawBackground(m_stateSubject->m_background.m_currentBackground, frameDimentions);
 
 	if (m_stateSubject->isInDelta(StateDelta::BACKGROUND)) {
 		std::cout << "BACKGROUND IN DELTA" << std::endl;

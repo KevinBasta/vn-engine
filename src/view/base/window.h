@@ -23,17 +23,31 @@
 #define startWidth 1600
 #define startHeight 900
 
-static int sg_frameWidth{ 1920 };
-static int sg_frameHeight{ 1080 };
 
+struct FrameDimentions {
+	int frameWidth{ 1920 };
+	int frameHeight{ 1080 };
+	float scale{ 1.0f };
+};
 
+struct ViewportUpdateParams {
+	GLint x{};
+	GLint y{};
+	GLsizei width{};
+	GLsizei height{};
+};
+
+static FrameDimentions sg_dimentions{};
+
+static bool sg_updated{ true };
 // The nodes will have sprite positions that are relative 
 // to the standard window width and height
 // scale is used to convert those positions to the new
 // width and height resized to
 
-static float sg_scale{ 1.0f };
-static bool sg_updated{ true };
+
+
+std::pair<FrameDimentions, ViewportUpdateParams> getNormalizedDimentions(int newWidth, int newHeight);
 
 static void frameSizeUpdateCallback(GLFWwindow* window, int newWidth, int newHeight) {
 	/*
@@ -72,48 +86,14 @@ static void frameSizeUpdateCallback(GLFWwindow* window, int newWidth, int newHei
 	// of that so that the viewport is centered
 
 	// TODO: should all this be in just ints not floats?
-
-	float widthGCD{ newWidth / widthRatioFloat };
-	float heightGCD{ newHeight / heightRatioFloat };
-
-	if (static_cast<int>(widthGCD) != static_cast<int>(heightGCD)) {
-		//std::cout << "gcd not equal" << std::endl << std::endl;
-		if (heightGCD > widthGCD) {
-			std::cout << "Height Too Big" << std::endl;
-			float correctedHeight{ heightRatioFloat * widthGCD };
-
-
-			sg_frameWidth = newWidth;
-			sg_frameHeight = correctedHeight;
-
-			sg_scale = sg_frameHeight / standardWindowHeight;
-
-
-			glViewport(0, (newHeight - correctedHeight) / 2, newWidth, correctedHeight);
-		}
-		else {
-			std::cout << "Width Too Big" << std::endl;
-			float correctedWidth{ widthRatioFloat * heightGCD };
-
-
-			sg_frameWidth = correctedWidth;
-			sg_frameHeight = newHeight;
-
-			sg_scale = sg_frameWidth / standardWindowWidth;
-			
-			glViewport((newWidth - correctedWidth) / 2, 0, correctedWidth, newHeight);
-		}
-	}
-	else {
-		std::cout << "gcd equal" << std::endl << std::endl;
-		glViewport(0, 0, newWidth, newHeight);
 	
-		sg_scale = newWidth / standardWindowWidth;
-		
-		sg_frameWidth = newWidth;
-		sg_frameHeight = newHeight;
-	}
+	std::pair<FrameDimentions, ViewportUpdateParams> update{};
 
+	update = getNormalizedDimentions(newWidth, newHeight);
+
+	sg_dimentions = update.first;
+
+	glViewport(update.second.x, update.second.y, update.second.width, update.second.height);
 	glfwSetWindowAspectRatio(window, widthRatio, heightRatio);
 
 	sg_updated = true;
@@ -151,7 +131,7 @@ public:
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-		m_window = glfwCreateWindow(sg_frameWidth, sg_frameHeight, "opengl :)", NULL, NULL);
+		m_window = glfwCreateWindow(sg_dimentions.frameWidth, sg_dimentions.frameHeight, "opengl :)", NULL, NULL);
 		if (m_window == NULL) {
 			std::cout << "failed to create GLFW window" << std::endl;
 			glfwTerminate();
@@ -173,7 +153,7 @@ public:
 			// raise exception or return err?
 		}
 
-		glViewport(0, 0, sg_frameWidth, sg_frameHeight);
+		glViewport(0, 0, sg_dimentions.frameWidth, sg_dimentions.frameHeight);
 		//glfwMaximizeWindow(m_window);
 
 		glfwSetWindowSize(m_window, startWidth, startHeight);
@@ -186,15 +166,19 @@ public:
 	}
 
 	int width() {
-		return sg_frameWidth;
+		return sg_dimentions.frameWidth;
 	}
 
 	int height() {
-		return sg_frameHeight;
+		return sg_dimentions.frameHeight;
 	}
 
 	float scale() {
-		return sg_scale;
+		return sg_dimentions.scale;
+	}
+
+	const FrameDimentions getFrameDimentions() {
+		return sg_dimentions;
 	}
 
 	bool updated() {

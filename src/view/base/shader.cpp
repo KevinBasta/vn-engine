@@ -102,6 +102,8 @@ void Shader::checkCompileErrors(GLuint shader, std::string type) {
 	glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
 
 	if (!success) {
+		std::cout << m_vertexPath << std::endl;
+		std::cout << m_fragmentPath << std::endl;
 		glGetShaderInfoLog(shader, 1024, NULL, infoLog);
 		std::cout << "---------------------------------------------------" << std::endl;
 		std::cout << "ERROR::SHADER_COMPILATION_ERROR::" << type << std::endl;
@@ -117,6 +119,8 @@ void Shader::checkLinkErrors(GLuint shader) {
 	glGetProgramiv(shader, GL_LINK_STATUS, &success);
 
 	if (!success) {
+		std::cout << m_vertexPath << std::endl;
+		std::cout << m_fragmentPath << std::endl;
 		glGetProgramInfoLog(shader, 1024, NULL, infoLog);
 		std::cout << "---------------------------------------------------" << std::endl;
 		std::cout << "ERROR::PROGRAM_LINKING_ERROR" << std::endl;

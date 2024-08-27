@@ -15,8 +15,8 @@
 #include <string_view>
 #include <iostream>
 
-#define TEMP_TEXT_VERTEX_SHADER		VN_BASE_PATH"/src/view/glsl/textVertex.glsl"
-#define TEMP_TEXT_FRAGMENT_SHADER	VN_BASE_PATH"/src/view/glsl/textFragment.glsl"
+#define TEMP_TEXT_VERTEX_SHADER		VN_BASE_PATH"/src/view/glsl/vertex_text.glsl"
+#define TEMP_TEXT_FRAGMENT_SHADER	VN_BASE_PATH"/src/view/glsl/fragment_text.glsl"
 
 
 class ChoiceLayer {

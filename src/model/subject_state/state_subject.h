@@ -79,6 +79,7 @@ public:
 	void nodeEndActions() {
 		// clear non-presistent state
 		m_dialogue.reset();
+		m_sprites.reset();
 		m_choices.reset();
 		m_nextNode.reset();
 	}

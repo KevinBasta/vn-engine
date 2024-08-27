@@ -7,8 +7,8 @@
 #include "state_subject.h"
 #include "chapter_node_types.h"
 
-#define TEMP_VERTEX_PATH	VN_BASE_PATH"/src/view/glsl/defaultVertex.glsl"
-#define TEMP_FRAGMENT_PATH	VN_BASE_PATH"/src/view/glsl/defaultFragment.glsl"
+#define TEMP_VERTEX_PATH	VN_BASE_PATH"/src/view/glsl/vertex_texture.glsl"
+#define TEMP_FRAGMENT_PATH	VN_BASE_PATH"/src/view/glsl/fragment_texture.glsl"
 
 class BackgroundLayer {
 private:
@@ -16,7 +16,7 @@ private:
 	Shader m_defaultShader;
 	StateSubject* m_stateSubject{ nullptr };
 
-	void drawBackground(TextureIdentifier& texture);
+	void drawBackground(TextureIdentifier& texture, const FrameDimentions frameDimentions);
 
 public:
 	BackgroundLayer(VnWindow* window, StateSubject* stateSubject) :
@@ -26,7 +26,7 @@ public:
 	{
 	}
 
-	void pollAndDraw();
+	void pollAndDraw(const FrameDimentions frameDimentions);
 };
 
 

@@ -8,7 +8,7 @@
 #include "state_sprites.h"
 #include "state_subject.h"
 
-void SpriteLayer::drawSprite(const TextureIdentifier& textureIdentifier, const SpriteState& spriteState) {
+void SpriteLayer::drawSprite(const TextureIdentifier& textureIdentifier, const SpriteState& spriteState, const FrameDimentions frameDimentions) {
 	m_defaultShader.use();
 
 	Texture2D* texture{ TextureManager::getTexture(textureIdentifier) };
@@ -17,14 +17,14 @@ void SpriteLayer::drawSprite(const TextureIdentifier& textureIdentifier, const S
 		return;
 	}
 
-	float scale{ texture->getScaleToViewport(m_window) * spriteState.m_scale };
+	float scale{ texture->getScaleToFrame(frameDimentions.frameWidth, frameDimentions.frameHeight) * spriteState.m_scale };
 
 	glm::mat4 model = glm::mat4(1.0f);
 	//model = glm::translate(model, glm::vec3((static_cast<float>(m_window->width()) / 2) - (static_cast<float>(texture->width()) / 2), 0.0f, 0.0f));
 	model = glm::translate(model,
-		glm::vec3(spriteState.m_xPos * m_window->scale(),
-				  spriteState.m_yPos * m_window->scale(),
-				  spriteState.m_zPos));
+		glm::vec3(spriteState.m_xPos * frameDimentions.scale,
+				  spriteState.m_yPos * frameDimentions.scale,
+				  spriteState.m_zPos - 10.0f));
 
 	//std::cout << "scale to view port" << scale << std::endl;
 	//std::cout << "scale to view port" << spriteState.m_position.m_xCoord << std::endl;
@@ -42,7 +42,7 @@ void SpriteLayer::drawSprite(const TextureIdentifier& textureIdentifier, const S
 	glUniformMatrix4fv(viewLocation, 1, GL_FALSE, glm::value_ptr(view));
 
 
-	glm::mat4 ortho = glm::ortho(0.0f, static_cast<float>(m_window->width()), 0.0f, static_cast<float>(m_window->height()), 0.0f, 100.0f);
+	glm::mat4 ortho = glm::ortho(0.0f, static_cast<float>(frameDimentions.frameWidth), 0.0f, static_cast<float>(frameDimentions.frameHeight), 0.0f, 100.0f);
 
 	unsigned int orthoLocation = glGetUniformLocation(m_defaultShader.ID(), "inOrtho");
 	glUniformMatrix4fv(orthoLocation, 1, GL_FALSE, glm::value_ptr(ortho));
@@ -57,13 +57,13 @@ void SpriteLayer::drawSprite(const TextureIdentifier& textureIdentifier, const S
 }
 
 
-void SpriteLayer::pollAndDraw() {
+void SpriteLayer::pollAndDraw(const FrameDimentions frameDimentions) {
 	auto& data{ m_stateSubject->m_sprites.getSpriteRenderData() };
 
 	auto iter{ data.begin() };
 	for (; iter != data.end(); iter++) {
 		if (iter->second.m_opacity > 0.0f) {
-			drawSprite(iter->first, iter->second);
+			drawSprite(iter->first, iter->second, frameDimentions);
 		}
 	}
 

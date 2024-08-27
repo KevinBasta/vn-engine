@@ -162,16 +162,8 @@ void Texture2D::deleteVAO() {
 
 }
 
-float Texture2D::getScaleToViewport(VnWindow* window) {
-	if (window == nullptr) {
-		// TODO: raise exception?
-		return 1.0f;
-	}
-
+float Texture2D::getScaleToFrame(float frameWidth, float frameHeight) {
 	float scaleFactor	{ 0.0f };
-
-	float frameWidth	{ static_cast<float>(window->width()) };
-	float frameHeight	{ static_cast<float>(window->height()) };
 
 	float imageWidth	{ static_cast<float>(m_width) };
 	float imageHeight	{ static_cast<float>(m_height) };

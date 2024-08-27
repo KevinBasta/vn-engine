@@ -49,7 +49,7 @@ public:
 	int vnId() const { return m_vnId; }
 	int width()  const { return m_width; }
 	int height() const { return m_height; }
-	float getScaleToViewport(VnWindow* window);
+	float getScaleToFrame(float frameWidth, float frameHeight);
 };
 
 
