@@ -112,9 +112,8 @@ public:
 			const float newWidth = ImGui::GetContentRegionAvail().x;
 			const float newHeight = ImGui::GetContentRegionAvail().y;
 
-			std::pair<FrameDimensions, ViewportUpdateParams> windowSizeUpdate{};
-			windowSizeUpdate = getNormalizedDimentions(newWidth, newHeight);
-			glViewport(0, 0, windowSizeUpdate.first.width, windowSizeUpdate.first.height);
+			FrameDimensions windowSizeUpdate{ getNormalizedDimentions(newWidth, newHeight) };
+			glViewport(0, 0, windowSizeUpdate.width, windowSizeUpdate.height);
 				
 			unsigned int textureId = m_context.getTextureId();
 			ImVec2 pos = ImGui::GetCursorScreenPos(); // screen position of the window
@@ -123,12 +122,12 @@ public:
 			ImGui::GetWindowDrawList()->AddImage(
 				(void*)textureId,
 				ImVec2(pos.x, pos.y),
-				ImVec2(pos.x + windowSizeUpdate.second.width, pos.y + windowSizeUpdate.second.height),
+				ImVec2(pos.x + windowSizeUpdate.width, pos.y + windowSizeUpdate.height),
 				ImVec2(0, 1),
 				ImVec2(1, 0)
 			);
 
-			m_context.renderEngine(windowSizeUpdate.first);
+			m_context.renderEngine(windowSizeUpdate);
 
 			ImGui::End();
 
@@ -181,8 +180,10 @@ public:
 			}
 
 			if (m_rerenderContext || m_stateSubject->inAutoAction()) {
-				//glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-				//glClear(GL_COLOR_BUFFER_BIT);
+				// Clear the screen content
+				glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
 
 				if (m_stateSubject->inAutoAction()) {
 					m_stateSubject->tickAutoActions(deltaTime);

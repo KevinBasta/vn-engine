@@ -1,9 +1,8 @@
 
 #include "window.h"
 
-std::pair<FrameDimensions, ViewportUpdateParams> getNormalizedDimentions(int newWidth, int newHeight) {
+FrameDimensions getNormalizedDimentions(int newWidth, int newHeight) {
 	FrameDimensions frame{};
-	ViewportUpdateParams viewportParams{};
 
 	float widthGCD{ newWidth / widthRatioFloat };
 	float heightGCD{ newHeight / heightRatioFloat };
@@ -16,10 +15,10 @@ std::pair<FrameDimensions, ViewportUpdateParams> getNormalizedDimentions(int new
 
 			frame.width = newWidth;
 			frame.height = correctedHeight;
-
 			frame.scale = correctedHeight / standardWindowHeight;
 
-			viewportParams = { 0, static_cast<int>((newHeight - correctedHeight) / 2), newWidth, static_cast<int>(correctedHeight) };
+			frame.x = 0.0f; 
+			frame.y = (newHeight - correctedHeight) / 2.0f;
 		}
 		else {
 			//std::cout << "Width Too Big" << std::endl;
@@ -29,7 +28,8 @@ std::pair<FrameDimensions, ViewportUpdateParams> getNormalizedDimentions(int new
 			frame.height = newHeight;
 			frame.scale = correctedWidth / standardWindowWidth;
 
-			viewportParams = { static_cast<int>((newWidth - correctedWidth) / 2), 0, static_cast<int>(correctedWidth), newHeight };
+			frame.x = (newWidth - correctedWidth) / 2.0f;
+			frame.y = 0.0f;
 		}
 	}
 	else {
@@ -39,10 +39,11 @@ std::pair<FrameDimensions, ViewportUpdateParams> getNormalizedDimentions(int new
 		frame.height = newHeight;
 		frame.scale = newWidth / standardWindowWidth;
 		 
-		viewportParams = { 0, 0, newWidth, newHeight };
+		frame.x = 0;
+		frame.y = 0;
 	}
 
-	return std::pair(frame, viewportParams);
+	return frame;
 }
 
 //float widthGCD{ newWidth / widthRatioFloat };

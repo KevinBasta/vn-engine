@@ -25,16 +25,11 @@
 
 
 struct FrameDimensions {
-	int width{ 1920 };
-	int height{ 1080 };
+	float width{ 1920.0f };
+	float height{ 1080.0f };
 	float scale{ 1.0f };
-};
-
-struct ViewportUpdateParams {
-	GLint x{};
-	GLint y{};
-	GLsizei width{};
-	GLsizei height{};
+	float x{ 0.0f };
+	float y{ 0.0f };
 };
 
 static FrameDimensions sg_frame{};
@@ -46,8 +41,7 @@ static bool sg_updated{ true };
 // width and height resized to
 
 
-
-std::pair<FrameDimensions, ViewportUpdateParams> getNormalizedDimentions(int newWidth, int newHeight);
+FrameDimensions getNormalizedDimentions(int newWidth, int newHeight);
 
 static void frameSizeUpdateCallback(GLFWwindow* window, int newWidth, int newHeight) {
 	/*
@@ -87,14 +81,17 @@ static void frameSizeUpdateCallback(GLFWwindow* window, int newWidth, int newHei
 
 	// TODO: should all this be in just ints not floats?
 	
-	std::pair<FrameDimensions, ViewportUpdateParams> update{};
+	
+	sg_frame = getNormalizedDimentions(newWidth, newHeight);
 
-	update = getNormalizedDimentions(newWidth, newHeight);
+	//std::cout << "VIEWPORT X Y VALUES:" << std::endl;
+	//std::cout << sg_frame.x << "    " << sg_frame.y << std::endl;
+	//std::cout << sg_frame.width << "    " << sg_frame.height << std::endl;
 
-	sg_frame = update.first;
-
-	glViewport(update.second.x, update.second.y, update.second.width, update.second.height);
-	glfwSetWindowAspectRatio(window, widthRatio, heightRatio);
+	// Center viewport to middle of window
+	// TODO: MUST FACTOR IN THIS VIEWPORT OFFSET IN THE FRAME BUFFER OFFSET, Can use gl_get to find the value to offset by
+	glViewport(static_cast<int>(sg_frame.x), static_cast<int>(sg_frame.y), sg_frame.width, sg_frame.height);
+	//glfwSetWindowAspectRatio(window, widthRatio, heightRatio);
 
 	sg_updated = true;
 }
