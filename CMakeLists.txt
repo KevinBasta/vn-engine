@@ -73,8 +73,8 @@ add_executable (
 	"src/model/linkable/linkable.cpp" 
 	"src/model/linkable/linkable.h" 
 	
-	"src/model/stores/node_store.h" 
-	"src/model/stores/node_store.cpp" 
+	"src/model/resource_managers/node_store.h" 
+	"src/model/resource_managers/node_store.cpp" 
 	"src/model/stores/texture_store.h"
 	"src/model/stores/texture_store.cpp"
 	
@@ -145,9 +145,9 @@ add_executable (
 	"src/view/layers/layer_choice.h" 
 	"src/view/layers/layer_transition.h" 
 	"src/view/layers/layer_transition.cpp" 
-	"src/view/base/texture_manager.h" 
-	"src/view/base/texture_manager.cpp" 
- "src/model/stores/engine_node_store.h" "src/view/engine_properties.h" "src/view/engine/engine_graph.cpp" "src/view/engine/engine_graph.h" "src/view/engine/engine_preview.h" "src/view/engine/engine_preview.cpp")
+	"src/view/resource_managers/texture_manager.h" 
+	"src/view/resource_managers/texture_manager.cpp" 
+ "src/model/resource_managers/engine_node_store.h" "src/view/engine_properties.h" "src/view/engine/engine_graph.cpp" "src/view/engine/engine_graph.h" "src/view/engine/engine_preview.h" "src/view/engine/engine_preview.cpp" "src/model/resource_managers/runtime_chapter_manager.h" "src/model/resource_managers/engine_chapter_manager.h" "src/model/resource_managers/engine_node_manager.h")
 
 target_include_directories(
 	"vn_engine"
@@ -166,12 +166,14 @@ target_include_directories(
 	"src/model/stores"
 	"src/model/subject_model"
 	"src/model/subject_state"
+	"src/model/resource_managers"
 
 	"src/view"
 	"src/view/base"
 	"src/view/engine"
 	"src/view/game"
 	"src/view/layers"
+	"src/view/resource_managers"
 )
 
 # Avoid warnings/errors from libraries 

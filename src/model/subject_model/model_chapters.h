@@ -6,6 +6,8 @@
 #include "chapter_node.h"
 #include "chapter_node_builder.h"
 #include "chapter_node_types.h"
+#include "engine_chapter_manager.h"
+#include "engine_node_manager.h"
 
 #include <memory>
 #include <vector>
@@ -17,9 +19,8 @@ class ModelChapters {
 private:
 	friend class ModelSubject;
 
-	std::unordered_map<id, std::unique_ptr<ChapterNode>> m_nodes{};
-	std::unordered_map<id, std::unique_ptr<Chapter>> m_chapters{};
-	std::list<Chapter*> m_chapterOrder{}; // TODO: remove, chapter class will be graph/tree
+	EngineNodeManager m_nodes{};
+	EngineChapterManager m_chapters{};
 
 	void createChapterOne() {
 
@@ -54,52 +55,49 @@ private:
 		// chapterOneHead->addChild(chapterOneHead); TODO: unhandled case yet cycle
 		ChapterBuilder{ chapterOne }.setHeadNodeId(head);
 
-		m_chapters.insert(std::pair{ chapterOne->getId(), std::unique_ptr<Chapter>(chapterOne)});
-		m_nodes[head->getId()] = std::unique_ptr<ChapterNode>(head);
-		m_nodes[oneone->getId()] = std::unique_ptr<ChapterNode>(oneone);
-		m_nodes[onetwo->getId()] = std::unique_ptr<ChapterNode>(onetwo);
-		m_nodes[twoone->getId()] = std::unique_ptr<ChapterNode>(twoone);
-		m_nodes[twotwo->getId()] = std::unique_ptr<ChapterNode>(twotwo);
-		m_nodes[threeone->getId()] = std::unique_ptr<ChapterNode>(threeone);
-		
+		m_chapters.add(chapterOne);
+		m_nodes.add(head);
+		m_nodes.add(oneone);
+		m_nodes.add(onetwo);
+		m_nodes.add(twoone);
+		m_nodes.add(twotwo);
+		m_nodes.add(threeone);
+
 		Chapter* chapterTwo = new Chapter{};
 		ChapterNode* fourone = ChapterNodeBuilder{ "four one node" }.get();
-		m_nodes[fourone->getId()] = std::unique_ptr<ChapterNode>(fourone);
+		m_nodes.add(fourone);
+
 		ChapterBuilder{ chapterTwo }.setHeadNodeId(fourone);
 
 		ChapterBuilder{ chapterOne }.link(chapterTwo);
 
-		m_chapters.insert(std::pair{ chapterTwo->getId(), std::unique_ptr<Chapter>(chapterTwo)});
+		m_chapters.add(chapterTwo);
 
 		//std::cout << chapterOneGraph << std::endl;
 	}
 
+	void loadChildChapters() {
+
+	}
+
+	void loadChildNodes() {
+
+	}
+
+	void deallocLastNode() {
+		// after step off a node and a new node is displayed
+		// it doesn't need to be in memory anymore so it can be deallocated
+		// in runtime, the next set of children can be loaded
+		// all on different threads
+		// flag system to say if something is being loaded
+	}
+
 	Chapter* getChapterById(id chapterId) {
-		// TODO: Load from model file if not loaded
-
-		// TODO: this is temp for testing
-		auto iter{ m_chapters.find(chapterId) };
-
-		if (iter != m_chapters.end()) {
-			return iter->second.get();
-		} 
-		
-		return nullptr;
+		return m_chapters.get(chapterId);
 	}
 
 	Node* getNodeById(id nodeId) {
-		auto iter{ m_nodes.find(nodeId) };
-
-		if (iter == m_nodes.end()) {
-			// TODO: attempt to read the file
-			// BUT should already covered by prefetcher on a diff thread,
-			// so maybe check a vector containing the nodes currently loading
-			return nullptr;
-		}
-		else {
-			// return a pointer to the node
-			return iter->second.get();
-		}
+		return m_nodes.get(nodeId);
 	}
 
 
