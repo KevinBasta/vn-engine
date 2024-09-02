@@ -73,8 +73,6 @@ add_executable (
 	"src/model/linkable/linkable.cpp" 
 	"src/model/linkable/linkable.h" 
 	
-	"src/model/resource_managers/node_store.h" 
-	"src/model/resource_managers/node_store.cpp" 
 	"src/model/stores/texture_store.h"
 	"src/model/stores/texture_store.cpp"
 	
@@ -147,7 +145,14 @@ add_executable (
 	"src/view/layers/layer_transition.cpp" 
 	"src/view/resource_managers/texture_manager.h" 
 	"src/view/resource_managers/texture_manager.cpp" 
- "src/model/resource_managers/engine_node_store.h" "src/view/engine_properties.h" "src/view/engine/engine_graph.cpp" "src/view/engine/engine_graph.h" "src/view/engine/engine_preview.h" "src/view/engine/engine_preview.cpp" "src/model/resource_managers/runtime_chapter_manager.h" "src/model/resource_managers/engine_chapter_manager.h" "src/model/resource_managers/engine_node_manager.h")
+	"src/view/engine_properties.h" 
+	"src/view/engine/engine_graph.cpp" 
+	"src/view/engine/engine_graph.h" 
+	"src/view/engine/engine_preview.h" 
+	"src/view/engine/engine_preview.cpp" 
+	"src/model/resource_managers/runtime_chapter_manager.h" 
+	"src/model/resource_managers/engine_chapter_manager.h" 
+	"src/model/resource_managers/engine_node_manager.h")
 
 target_include_directories(
 	"vn_engine"

@@ -19,6 +19,8 @@
 #include "model_relations.h"
 #include "model_characters.h"
 
+#include "engine_chapter_manager.h"
+
 #include "chapter_node_builder.h"
 #include "character_builder.h"
 #include "chapter_builder.h"
@@ -88,6 +90,12 @@ public:
 	// Chapters and nodes
 	static id getFirstChapterId() {
 		return 1;
+	}
+
+	static const Chapter* getHeadChapter() {
+		ModelSubject* model{ validateInstance() };
+		
+		return model->m_modelChapters.getHeadChapter();
 	}
 
 	static Chapter* getChapterById(id chapterId) {

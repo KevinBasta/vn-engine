@@ -22,10 +22,11 @@ public:
 	Linkable() : m_id{ IdGenerator<Linkable>::getId() } {}
 	virtual ~Linkable() {};
 
-	id getId() { return m_id; }
-	int getChildrenAmount() { return m_children.size(); }
-	id getFirstChildId();
-	bool hasChild(id childId);
+	id getId() const { return m_id; }
+	int getParentsAmount() const { return m_parents.size(); }
+	int getChildrenAmount() const { return m_children.size(); }
+	id getFirstChildId() const;
+	bool hasChild(id childId) const;
 };
 
 #endif // VN_LINKABLE_OBJECT_H

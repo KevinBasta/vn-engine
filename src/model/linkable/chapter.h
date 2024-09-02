@@ -26,6 +26,7 @@ private:
 
 public:
 	Chapter() {}
+	std::wstring getName() const { return m_name; }
 	id getHeadNodeId() const { return m_headNodeId; }
 };
 

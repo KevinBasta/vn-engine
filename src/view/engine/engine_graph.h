@@ -4,11 +4,17 @@
 #include "window.h"
 #include "context.h"
 
+#include "model_subject.h"
+#include "engine_chapter_manager.h"
+
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
 #include "imgui_internal.h"
 #include "imgui_node_editor.h"
+
+#include <codecvt>
+#include <string>
 
 #include <GLFW/glfw3.h>
 
@@ -70,7 +76,48 @@ public:
 		OnStop();
 	}
 
+	void drawChapter(const Chapter* chapter, int x, int y) {
+		std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> myconv;
+		std::string convertedName{ myconv.to_bytes(chapter->getName()) };
+
+		ed::NodeId nodeId = chapter->getId();
+		ed::PinId  inPinIdStart = chapter->getId() + 10000;
+		ed::PinId  outPinIdStart = chapter->getId() + 20000;
+
+		if (m_FirstFrame)
+			ed::SetNodePosition(nodeId, ImVec2(10, 10));
+
+		ed::BeginNode(nodeId);
+		ImGui::Text(convertedName.c_str());
+
+		ImGuiEx_BeginColumn();
+		for (int i{ 0 }; i <= chapter->getParentsAmount(); i++) {
+			ed::BeginPin(inPinIdStart, ed::PinKind::Input);
+			ImGui::Text("-> In");
+			ed::EndPin();
+
+			inPinIdStart = inPinIdStart.Get() + 1;
+		}
+		ImGuiEx_NextColumn();
+
+		ImGui::SameLine();
+
+		for (int i{ 0 }; i <= chapter->getChildrenAmount(); i++) {
+			ed::BeginPin(outPinIdStart, ed::PinKind::Output);
+			ImGui::Text("Out ->");
+			ed::EndPin();
+
+			outPinIdStart = outPinIdStart.Get() + 1;
+		}
+		ImGuiEx_EndColumn();
+
+		ed::EndNode();
+	}
+
 	void draw() {
+
+		const Chapter* headChapter{ ModelSubject::getHeadChapter() };
+
 		auto& io = ImGui::GetIO();
 
 		ImGui::Text("FPS: %.2f (%.2gms)", io.Framerate, io.Framerate ? 1000.0f / io.Framerate : 0.0f);
@@ -88,47 +135,8 @@ public:
 		// 1) Commit known data to editor
 		//
 
-		// Submit Node A
-		ed::NodeId nodeA_Id = uniqueId++;
-		ed::PinId  nodeA_InputPinId = uniqueId++;
-		ed::PinId  nodeA_OutputPinId = uniqueId++;
+		drawChapter(headChapter, 1, 1);
 
-		if (m_FirstFrame)
-			ed::SetNodePosition(nodeA_Id, ImVec2(10, 10));
-		ed::BeginNode(nodeA_Id);
-		ImGui::Text("Node A");
-		ed::BeginPin(nodeA_InputPinId, ed::PinKind::Input);
-		ImGui::Text("-> In");
-		ed::EndPin();
-		ImGui::SameLine();
-		ed::BeginPin(nodeA_OutputPinId, ed::PinKind::Output);
-		ImGui::Text("Out ->");
-		ed::EndPin();
-		ed::EndNode();
-
-		// Submit Node B
-		ed::NodeId nodeB_Id = uniqueId++;
-		ed::PinId  nodeB_InputPinId1 = uniqueId++;
-		ed::PinId  nodeB_InputPinId2 = uniqueId++;
-		ed::PinId  nodeB_OutputPinId = uniqueId++;
-
-		if (m_FirstFrame)
-			ed::SetNodePosition(nodeB_Id, ImVec2(210, 60));
-		ed::BeginNode(nodeB_Id);
-		ImGui::Text("Node B");
-		ImGuiEx_BeginColumn();
-		ed::BeginPin(nodeB_InputPinId1, ed::PinKind::Input);
-		ImGui::Text("-> In1");
-		ed::EndPin();
-		ed::BeginPin(nodeB_InputPinId2, ed::PinKind::Input);
-		ImGui::Text("-> In2");
-		ed::EndPin();
-		ImGuiEx_NextColumn();
-		ed::BeginPin(nodeB_OutputPinId, ed::PinKind::Output);
-		ImGui::Text("Out ->");
-		ed::EndPin();
-		ImGuiEx_EndColumn();
-		ed::EndNode();
 
 		// Submit Links
 		for (auto& linkInfo : m_Links)

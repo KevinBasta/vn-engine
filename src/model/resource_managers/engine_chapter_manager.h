@@ -8,8 +8,11 @@
 #include <unordered_map>
 
 class EngineChapterManager {
+public:
+	using ChapterMap = std::unordered_map<id, std::unique_ptr<Chapter>>;
+
 private:
-	std::unordered_map<id, std::unique_ptr<Chapter>> m_chapters{};
+	ChapterMap m_chapters{};
 
 public:
 	EngineChapterManager() {}
@@ -26,6 +29,10 @@ public:
 		}
 
 		return nullptr;
+	}
+
+	const ChapterMap& getChapters() {
+		return m_chapters;
 	}
 
 	void add(Chapter* newChapter) {

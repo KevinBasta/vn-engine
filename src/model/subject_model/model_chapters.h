@@ -54,6 +54,7 @@ private:
 		//chapterOneChild4->addChild(chapterOneChild5);
 		// chapterOneHead->addChild(chapterOneHead); TODO: unhandled case yet cycle
 		ChapterBuilder{ chapterOne }.setHeadNodeId(head);
+		ChapterBuilder{ chapterOne }.setName(L"Garu 3 node tree");
 
 		m_chapters.add(chapterOne);
 		m_nodes.add(head);
@@ -68,6 +69,7 @@ private:
 		m_nodes.add(fourone);
 
 		ChapterBuilder{ chapterTwo }.setHeadNodeId(fourone);
+		ChapterBuilder{ chapterTwo }.setName(L"Garu 1 node tree");
 
 		ChapterBuilder{ chapterOne }.link(chapterTwo);
 
@@ -94,6 +96,10 @@ private:
 
 	Chapter* getChapterById(id chapterId) {
 		return m_chapters.get(chapterId);
+	}
+
+	const Chapter* getHeadChapter() {
+		return m_chapters.get(1);
 	}
 
 	Node* getNodeById(id nodeId) {
