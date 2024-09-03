@@ -83,9 +83,11 @@ public:
 		ed::NodeId nodeId = chapter->getId();
 		ed::PinId  inPinIdStart = chapter->getId() + 10000;
 		ed::PinId  outPinIdStart = chapter->getId() + 20000;
+		int nodeSize{ 1 };
+
 
 		if (m_FirstFrame)
-			ed::SetNodePosition(nodeId, ImVec2(10, 10));
+			ed::SetNodePosition(nodeId, ImVec2(x, y));
 
 		ed::BeginNode(nodeId);
 		ImGui::Text(convertedName.c_str());
@@ -97,21 +99,43 @@ public:
 			ed::EndPin();
 
 			inPinIdStart = inPinIdStart.Get() + 1;
+			if (i > nodeSize) { nodeSize = i; }
 		}
-		ImGuiEx_NextColumn();
+		ImGuiEx_EndColumn();
 
 		ImGui::SameLine();
 
+		ImGuiEx_BeginColumn();
 		for (int i{ 0 }; i <= chapter->getChildrenAmount(); i++) {
 			ed::BeginPin(outPinIdStart, ed::PinKind::Output);
 			ImGui::Text("Out ->");
 			ed::EndPin();
 
 			outPinIdStart = outPinIdStart.Get() + 1;
+			if (i > nodeSize) { nodeSize = i; }
 		}
 		ImGuiEx_EndColumn();
 
 		ed::EndNode();
+		
+
+		std::list<const Chapter*> nextChapters{};
+		for (auto chapterId : chapter->getChildrenSet()) {
+			const Chapter* childChapter{ ModelSubject::getChapterById(chapterId) };
+
+			if (childChapter != nullptr) {
+				nextChapters.push_back(childChapter);
+			}
+		}
+
+		int nextXStart{ x + 170 };
+		int nextYStart{ y + ((nodeSize * 50) / 2) - ((static_cast<int>(nextChapters.size()) * 100) / 2) };
+
+		for (auto childChapter : nextChapters) {
+			drawChapter(childChapter, nextXStart, nextYStart);
+			nextYStart += 100;
+		}
+
 	}
 
 	void draw() {
@@ -135,7 +159,10 @@ public:
 		// 1) Commit known data to editor
 		//
 
-		drawChapter(headChapter, 1, 1);
+		int x = 10;
+		int y = 10;
+
+		drawChapter(headChapter, x, y);
 
 
 		// Submit Links

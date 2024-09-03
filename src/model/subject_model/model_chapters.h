@@ -67,6 +67,7 @@ private:
 		Chapter* chapterTwo = new Chapter{};
 		ChapterNode* fourone = ChapterNodeBuilder{ "four one node" }.get();
 		m_nodes.add(fourone);
+		
 
 		ChapterBuilder{ chapterTwo }.setHeadNodeId(fourone);
 		ChapterBuilder{ chapterTwo }.setName(L"Garu 1 node tree");
@@ -74,6 +75,18 @@ private:
 		ChapterBuilder{ chapterOne }.link(chapterTwo);
 
 		m_chapters.add(chapterTwo);
+		
+		Chapter* chapterThree = new Chapter{};
+		ChapterBuilder{ chapterThree }.setName(L"chapter 3");
+		Chapter* chapterFour = new Chapter{};
+		ChapterBuilder{ chapterFour }.setName(L"chapter 4");
+		
+		ChapterBuilder{ chapterOne }.link(chapterThree);
+		ChapterBuilder{ chapterOne }.link(chapterFour);
+
+		m_chapters.add(chapterThree);
+		m_chapters.add(chapterFour);
+
 
 		//std::cout << chapterOneGraph << std::endl;
 	}
