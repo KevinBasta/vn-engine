@@ -1,6 +1,7 @@
 #ifndef VN_ENGINE_GRAPH_H
 #define VN_ENGINE_GRAPH_H
 
+#include "id.h"
 #include "window.h"
 #include "context.h"
 
@@ -15,14 +16,58 @@
 
 #include <codecvt>
 #include <string>
+#include <vector>
+#include <unordered_map>
 
 #include <GLFW/glfw3.h>
 
 namespace ed = ax::NodeEditor;
 
-class VnEngineGraph {
-private:
+namespace std
+{
+	template<> struct hash<ed::PinId>
+	{
+		std::size_t operator()(const ed::PinId& s) const noexcept
+		{
+			return static_cast<std::size_t>(s.Get());
+		}
+	};
+}
 
+class VnEngineGraph {
+public:
+	struct PinIdHasher {
+		size_t operator()(const ed::PinId& key) const {
+			return std::hash<ed::PinId>()(key);
+		}
+	};
+	
+	struct NodeLinkKey;
+
+	struct NodeLinkKeyHasher {
+		size_t operator()(const NodeLinkKey& key) const {
+			return std::hash<id>()(key.m_firstNode) ^
+				(std::hash<id>()(key.m_secondNode) << 1);
+		}
+	};
+
+	struct NodeLinkKey {
+		id m_firstNode{};
+		id m_secondNode{};
+
+		friend bool operator==(const NodeLinkKey& keyOne, const NodeLinkKey& keyTwo) {
+			NodeLinkKeyHasher hasher{};
+			return hasher(keyOne) == hasher(keyTwo);
+		}
+	};
+
+	struct NodeLinkData {
+		ed::LinkId m_id{};
+		ed::PinId m_inId{};
+		ed::PinId m_outId{};
+	};
+
+protected:
 	struct LinkInfo
 	{
 		ed::LinkId Id;
@@ -36,6 +81,12 @@ private:
 	bool                 m_FirstFrame = true;    // Flag set for first frame only, some action need to be executed once.
 	ImVector<LinkInfo>   m_Links;                // List of live links. It is dynamic unless you want to create read-only view over nodes.
 	int                  m_NextLinkId = 100;     // Counter to help generate link ids. In real application this will probably based on pointer to user data structure.
+	int m_uniqueId{ 1 };
+	int m_linkId{ 1 };
+
+	std::unordered_map<NodeLinkKey, NodeLinkData, NodeLinkKeyHasher> m_currentLinks{};
+	std::unordered_map<ed::PinId, id, PinIdHasher> m_pinInIdToNodeId{};
+	std::unordered_map<ed::PinId, id, PinIdHasher> m_pinOutIdToNodeId{};
 
 	void OnStart()
 	{
@@ -81,43 +132,55 @@ public:
 		std::string convertedName{ myconv.to_bytes(chapter->getName()) };
 
 		ed::NodeId nodeId = chapter->getId();
-		ed::PinId  inPinIdStart = chapter->getId() + 10000;
-		ed::PinId  outPinIdStart = chapter->getId() + 20000;
-		int nodeSize{ 1 };
+		ed::PinId  inPinId = m_uniqueId++;
+		ed::PinId  outPinId = m_uniqueId++;
 
+		m_pinInIdToNodeId[inPinId] = chapter->getId();
+		m_pinInIdToNodeId[outPinId] = chapter->getId();
 
+		// Draw the node in the graph window
 		if (m_FirstFrame)
 			ed::SetNodePosition(nodeId, ImVec2(x, y));
 
 		ed::BeginNode(nodeId);
+
 		ImGui::Text(convertedName.c_str());
 
 		ImGuiEx_BeginColumn();
-		for (int i{ 0 }; i <= chapter->getParentsAmount(); i++) {
-			ed::BeginPin(inPinIdStart, ed::PinKind::Input);
-			ImGui::Text("-> In");
-			ed::EndPin();
-
-			inPinIdStart = inPinIdStart.Get() + 1;
-			if (i > nodeSize) { nodeSize = i; }
-		}
+		ed::BeginPin(inPinId, ed::PinKind::Input);
+		ImGui::Text("-> In");
+		ed::EndPin();
 		ImGuiEx_EndColumn();
 
 		ImGui::SameLine();
 
 		ImGuiEx_BeginColumn();
-		for (int i{ 0 }; i <= chapter->getChildrenAmount(); i++) {
-			ed::BeginPin(outPinIdStart, ed::PinKind::Output);
-			ImGui::Text("Out ->");
-			ed::EndPin();
-
-			outPinIdStart = outPinIdStart.Get() + 1;
-			if (i > nodeSize) { nodeSize = i; }
-		}
+		ed::BeginPin(outPinId, ed::PinKind::Output);
+		ImGui::Text("Out ->");
+		ed::EndPin();
 		ImGuiEx_EndColumn();
 
 		ed::EndNode();
+
+		// Populate graph link information for both parent and child nodes
 		
+		for (auto chapterId : chapter->getParentsSet()) {
+			if (m_currentLinks.find({ chapterId, chapter->getId() }) == m_currentLinks.end()) {
+				m_currentLinks[{ chapterId, chapter->getId() }].m_id = m_linkId++;
+			}
+
+			m_currentLinks[{ chapterId, chapter->getId() }].m_inId = inPinId;
+		}
+
+		for (auto chapterId : chapter->getChildrenSet()) {
+			if (m_currentLinks.find({ chapter->getId(), chapterId }) == m_currentLinks.end()) {
+				m_currentLinks[{chapter->getId(), chapterId}].m_id = m_linkId++;
+			}
+
+			m_currentLinks[{chapter->getId(), chapterId}].m_outId = outPinId;
+		}
+
+		// Recursion for drawing child nodes
 
 		std::list<const Chapter*> nextChapters{};
 		for (auto chapterId : chapter->getChildrenSet()) {
@@ -129,7 +192,7 @@ public:
 		}
 
 		int nextXStart{ x + 170 };
-		int nextYStart{ y + ((nodeSize * 50) / 2) - ((static_cast<int>(nextChapters.size()) * 100) / 2) };
+		int nextYStart{ y - ((static_cast<int>(nextChapters.size()) * 100) / 2) };
 
 		for (auto childChapter : nextChapters) {
 			drawChapter(childChapter, nextXStart, nextYStart);
@@ -153,11 +216,16 @@ public:
 		// Start interaction with editor.
 		ed::Begin("My Editor", ImVec2(0.0, 0.0f));
 
-		int uniqueId = 1;
 
 		//
 		// 1) Commit known data to editor
 		//
+
+		m_uniqueId = 1;
+		m_linkId = 1;
+		m_currentLinks.clear();
+		m_pinInIdToNodeId.clear();
+		m_pinOutIdToNodeId.clear();
 
 		int x = 10;
 		int y = 10;
@@ -166,8 +234,12 @@ public:
 
 
 		// Submit Links
-		for (auto& linkInfo : m_Links)
-			ed::Link(linkInfo.Id, linkInfo.InputId, linkInfo.OutputId);
+		//for (auto& linkInfo : m_Links)
+			//ed::Link(linkInfo.Id, linkInfo.InputId, linkInfo.OutputId);
+		
+		for (auto& [key, data] : m_currentLinks) {
+			ed::Link(data.m_id, data.m_inId, data.m_outId);
+		}
 
 		//
 		// 2) Handle interactions
@@ -196,11 +268,18 @@ public:
 					// ed::AcceptNewItem() return true when user release mouse button.
 					if (ed::AcceptNewItem())
 					{
+						// TODO: Error checking
+					
+						Chapter* parentNode{ ModelSubject::getChapterById(m_pinOutIdToNodeId[outputPinId]) };
+						Chapter* childNode{ ModelSubject::getChapterById(m_pinInIdToNodeId[inputPinId]) };
+
+						ChapterBuilder{ parentNode }.link(childNode);
+
 						// Since we accepted new link, lets add one to our list of links.
-						m_Links.push_back({ ed::LinkId(m_NextLinkId++), inputPinId, outputPinId });
+						//m_Links.push_back({ ed::LinkId(m_NextLinkId++), inputPinId, outputPinId });
 
 						// Draw new link.
-						ed::Link(m_Links.back().Id, m_Links.back().InputId, m_Links.back().OutputId);
+						//ed::Link(m_Links.back().Id, m_Links.back().InputId, m_Links.back().OutputId);
 					}
 
 					// You may choose to reject connection between these nodes
@@ -223,11 +302,11 @@ public:
 				if (ed::AcceptDeletedItem())
 				{
 					// Then remove link from your data.
-					for (auto& link : m_Links)
+					for (auto& [key, data] : m_currentLinks)
 					{
-						if (link.Id == deletedLinkId)
+						if (data.m_id == deletedLinkId)
 						{
-							m_Links.erase(&link);
+							m_currentLinks.erase(key);
 							break;
 						}
 					}

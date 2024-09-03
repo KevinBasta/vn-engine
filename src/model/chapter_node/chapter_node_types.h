@@ -48,8 +48,8 @@ struct TextureIdentifier {
 
 struct TextureIdentifierHasher {
 	size_t operator()(const TextureIdentifier& textureIdentifier) const {
-		return std::hash<int>()(textureIdentifier.m_textureStoreId) ^ 
-			   (std::hash<int>()(textureIdentifier.m_textureIndex) << 1);
+		return std::hash<id>()(textureIdentifier.m_textureStoreId) ^ 
+			   (std::hash<index>()(textureIdentifier.m_textureIndex) << 1);
 	}
 };
 
