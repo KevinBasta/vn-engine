@@ -6,5 +6,5 @@ a.out
 
 *.ttc
 *.ttf
-*.txt
+test/*.txt
 test.jpg

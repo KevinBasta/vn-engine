@@ -58,14 +58,14 @@ public:
 	//
 
 	void link(Linkable* secondLinkableObject) {
-		if (m_linkableObject == nullptr || secondLinkableObject == nullptr) { return; }
+		if (m_linkableObject == nullptr || secondLinkableObject == nullptr) { std::cout << "LINKABLE BUILDER: ONE OF OBJECTS IS NULL" << std::endl; return; }
 
 		addChild(secondLinkableObject->getId());
 		LinkableBuilder{ secondLinkableObject }.addParent(m_linkableObject->getId());
 	}
 
 	void unlink(Linkable* secondLinkableObject) {
-		if (m_linkableObject == nullptr || secondLinkableObject == nullptr) { return; }
+		if (m_linkableObject == nullptr || secondLinkableObject == nullptr) { std::cout << "LINKABLE BUILDER: ONE OF OBJECTS IS NULL" << std::endl; return; }
 
 		removeChild(secondLinkableObject->getId());
 		LinkableBuilder{ secondLinkableObject }.removeParent(m_linkableObject->getId());

@@ -136,7 +136,7 @@ public:
 		ed::PinId  outPinId = m_uniqueId++;
 
 		m_pinInIdToNodeId[inPinId] = chapter->getId();
-		m_pinInIdToNodeId[outPinId] = chapter->getId();
+		m_pinOutIdToNodeId[outPinId] = chapter->getId();
 
 		// Draw the node in the graph window
 		if (m_FirstFrame)
@@ -184,9 +184,10 @@ public:
 
 		std::list<const Chapter*> nextChapters{};
 		for (auto chapterId : chapter->getChildrenSet()) {
+			//std::cout << "chapterId" << chapterId << std::endl;
 			const Chapter* childChapter{ ModelSubject::getChapterById(chapterId) };
 
-			if (childChapter != nullptr) {
+			if (childChapter != nullptr && chapterId != chapter->getId()) {
 				nextChapters.push_back(childChapter);
 			}
 		}
@@ -270,11 +271,19 @@ public:
 					{
 						// TODO: Error checking
 					
-						Chapter* parentNode{ ModelSubject::getChapterById(m_pinOutIdToNodeId[outputPinId]) };
-						Chapter* childNode{ ModelSubject::getChapterById(m_pinInIdToNodeId[inputPinId]) };
+						std::cout << m_pinInIdToNodeId[inputPinId] << std::endl;
+						std::cout << m_pinOutIdToNodeId[outputPinId] << std::endl;
+						id parentId{ m_pinOutIdToNodeId[outputPinId] };
+						id childId{ m_pinInIdToNodeId[inputPinId] };
+
+						Chapter* parentNode{ ModelSubject::getChapterById(parentId) };
+						Chapter* childNode{ ModelSubject::getChapterById(childId) };
 
 						ChapterBuilder{ parentNode }.link(childNode);
 
+						//m_currentLinks[{m_pinOutIdToNodeId[outputPinId], m_pinInIdToNodeId[inputPinId]}].m_id = m_linkId++;
+						//m_currentLinks[{m_pinOutIdToNodeId[outputPinId], m_pinInIdToNodeId[inputPinId]}].m_inId = inputPinId.Get();
+						//m_currentLinks[{m_pinOutIdToNodeId[outputPinId], m_pinInIdToNodeId[inputPinId]}].m_outId = outputPinId.Get();
 						// Since we accepted new link, lets add one to our list of links.
 						//m_Links.push_back({ ed::LinkId(m_NextLinkId++), inputPinId, outputPinId });
 
@@ -306,7 +315,27 @@ public:
 					{
 						if (data.m_id == deletedLinkId)
 						{
-							m_currentLinks.erase(key);
+							std::cout << m_pinInIdToNodeId[data.m_inId] << std::endl;
+							std::cout << m_pinOutIdToNodeId[data.m_outId] << std::endl;
+
+							id parentId{ m_pinOutIdToNodeId[data.m_outId] };
+							id childId{ m_pinInIdToNodeId[data.m_inId] };
+
+							Chapter* parentNode{ ModelSubject::getChapterById(parentId) };
+							Chapter* childNode{ ModelSubject::getChapterById(childId) };
+
+							if (parentNode == nullptr) {
+								std::cout << "parent is null" << std::endl;
+							}
+
+							if (childNode == nullptr) {
+								std::cout << "child is null" << std::endl;
+							}
+
+
+							ChapterBuilder{ parentNode }.unlink(childNode);
+
+							//m_currentLinks.erase(key);
 							break;
 						}
 					}
