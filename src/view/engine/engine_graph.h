@@ -87,6 +87,8 @@ protected:
 	std::unordered_map<NodeLinkKey, NodeLinkData, NodeLinkKeyHasher> m_currentLinks{};
 	std::unordered_map<ed::PinId, id, PinIdHasher> m_pinInIdToNodeId{};
 	std::unordered_map<ed::PinId, id, PinIdHasher> m_pinOutIdToNodeId{};
+	// Node Id and its x and y coordinates
+	std::set<id> m_strayNodes{};
 
 	void OnStart()
 	{
@@ -227,11 +229,20 @@ public:
 		m_currentLinks.clear();
 		m_pinInIdToNodeId.clear();
 		m_pinOutIdToNodeId.clear();
+		//m_strayNodes.clear();
 
 		int x = 10;
 		int y = 10;
 
 		drawChapter(headChapter, x, y);
+
+		for (auto& chapterId : m_strayNodes) {
+			Chapter* chapter{ ModelSubject::getChapterById(chapterId) };
+
+			if (chapter != nullptr) {
+				drawChapter(chapter, 0, 0);
+			}
+		}
 
 
 		// Submit Links
@@ -266,12 +277,16 @@ public:
 
 				if (inputPinId && outputPinId) // both are valid, let's accept link
 				{
+						std::cout << m_pinInIdToNodeId[inputPinId] << std::endl;
+						std::cout << m_pinOutIdToNodeId[outputPinId] << std::endl;
 					// ed::AcceptNewItem() return true when user release mouse button.
 					if (ed::AcceptNewItem())
 					{
 						// TODO: Error checking
-					
+						
 						std::cout << m_pinInIdToNodeId[inputPinId] << std::endl;
+						std::cout << m_pinInIdToNodeId[outputPinId] << std::endl;
+						std::cout << m_pinOutIdToNodeId[inputPinId] << std::endl;
 						std::cout << m_pinOutIdToNodeId[outputPinId] << std::endl;
 						id parentId{ m_pinOutIdToNodeId[outputPinId] };
 						id childId{ m_pinInIdToNodeId[inputPinId] };
@@ -280,6 +295,11 @@ public:
 						Chapter* childNode{ ModelSubject::getChapterById(childId) };
 
 						ChapterBuilder{ parentNode }.link(childNode);
+
+						// TODO: can skip the if I believe
+						if (m_strayNodes.find(childId) != m_strayNodes.end() && parentId != childId) {
+							m_strayNodes.erase(childId);
+						}
 
 						//m_currentLinks[{m_pinOutIdToNodeId[outputPinId], m_pinInIdToNodeId[inputPinId]}].m_id = m_linkId++;
 						//m_currentLinks[{m_pinOutIdToNodeId[outputPinId], m_pinInIdToNodeId[inputPinId]}].m_inId = inputPinId.Get();
@@ -334,6 +354,15 @@ public:
 
 
 							ChapterBuilder{ parentNode }.unlink(childNode);
+
+							//ed::GetNodeZPosition(childNode->getId());
+							//ed::NodeId(childNode->getId());
+
+							if (childNode->getParentsAmount() == 0) {
+								m_strayNodes.insert(childNode->getId());
+							}
+
+							ed::DeleteLink(deletedLinkId);
 
 							//m_currentLinks.erase(key);
 							break;
