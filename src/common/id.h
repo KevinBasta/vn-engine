@@ -16,7 +16,11 @@ public:
 		m_currentId = i;
 	}
 
-	static const int getId() {
+	static const id returnGreatestId() {
+		return m_currentId;
+	}
+
+	static const id getId() {
 		return m_currentId++;
 	}
 };

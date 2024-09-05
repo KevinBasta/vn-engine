@@ -82,7 +82,7 @@ public:
 	};
 
 protected:
-	ed::EditorContext* m_Context = nullptr;
+	ed::EditorContext* m_context = nullptr;
 	bool m_firstFrame = true;
 	int m_uniqueId{ 1 };
 	int m_linkId{ 1 };
@@ -90,19 +90,19 @@ protected:
 	std::unordered_map<NodeLinkKey, NodeLinkData, NodeLinkKeyHasher> m_currentLinks{};
 	std::unordered_map<ed::PinId, id, PinIdHasher> m_pinInIdToNodeId{};
 	std::unordered_map<ed::PinId, id, PinIdHasher> m_pinOutIdToNodeId{};
-	std::unordered_map<ed::NodeId, id, NodeIdHasher> m_nodeIdToChapterId{};
 	std::set<id> m_drawnNodes{};
+	std::set<id> m_graphNodes{};
 	std::set<id> m_strayNodes{};
 
 public:
 	VnEngineGraph() {
 		ed::Config config;
 		config.SettingsFile = "BasicInteraction.json";
-		m_Context = ed::CreateEditor(&config);
+		m_context = ed::CreateEditor(&config);
 	}
 
 	~VnEngineGraph() {
-		ed::DestroyEditor(m_Context);
+		ed::DestroyEditor(m_context);
 	}
 
 	void draw() {
@@ -110,18 +110,16 @@ public:
 		ImGui::Text("FPS: %.2f (%.2gms)", io.Framerate, io.Framerate ? 1000.0f / io.Framerate : 0.0f);
 		ImGui::Separator();
 
-
-		ed::SetCurrentEditor(m_Context);
+		ed::SetCurrentEditor(m_context);
 		ed::Begin("My Editor", ImVec2(0.0, 0.0f));
 
-
-		m_uniqueId = 1;
+		m_uniqueId = IdGenerator<Linkable>::returnGreatestId() + 1;
 		m_linkId = 1;
 		m_currentLinks.clear();
 		m_pinInIdToNodeId.clear();
 		m_pinOutIdToNodeId.clear();
-		m_nodeIdToChapterId.clear();
 		m_drawnNodes.clear();
+		m_graphNodes.clear();
 
 		int x = 10;
 		int y = 10;
@@ -129,6 +127,7 @@ public:
 		// Draw the chapter graph/tree
 		const Chapter* headChapter{ ModelSubject::getHeadChapter() };
 		drawChapter(headChapter, x, y);
+		m_graphNodes = m_drawnNodes;
 
 		// Draw the nodes that have been disconnected
 		for (auto& chapterId : m_strayNodes) {
@@ -151,20 +150,10 @@ public:
 
 		// Handle creation action, returns true if editor want to create new object (node or link)
 		if (ed::BeginCreate()) {
+			
+			// QueryNewLink returns true if editor want to create new link between pins.
 			ed::PinId inputPinId, outputPinId;
 			if (ed::QueryNewLink(&inputPinId, &outputPinId)) {
-				// QueryNewLink returns true if editor want to create new link between pins.
-				//
-				// Link can be created only for two valid pins, it is up to you to
-				// validate if connection make sense. Editor is happy to make any.
-				//
-				// Link always goes from input to output. User may choose to drag
-				// link from output pin or input pin. This determine which pin ids
-				// are valid and which are not:
-				//   * input valid, output invalid - user started to drag new ling from input pin
-				//   * input invalid, output valid - user started to drag new ling from output pin
-				//   * input valid, output valid   - user dragged link over other pin, can be validated
-
 				// both are valid, let's accept link
 				if (inputPinId && outputPinId) {
 					// ed::AcceptNewItem() return true when user release mouse button.
@@ -180,16 +169,22 @@ public:
 						if (parentNode != nullptr && childNode != nullptr) {
 							ChapterBuilder{ parentNode }.link(childNode);
 
-							// TODO: can skip the if I believe
-							if (m_strayNodes.find(childId) != m_strayNodes.end() && parentId != childId) {
-								m_strayNodes.erase(childId);
+
+							// Only erase a node from the stray nodes if it's not linking to itself and is a stray node
+							// TODO: handle loop with no other parent
+							if (parentId != childId) {
+								bool isStrayNode{ m_strayNodes.find(childId) != m_strayNodes.end() };
+								bool isJoinedToGraph{ m_graphNodes.contains(parentNode->getId()) };
+
+								if (isStrayNode && isJoinedToGraph) {
+									m_strayNodes.erase(childId);
+								}
 							}
 						}
 
-
-						// BUG: connecting two in pins makes nodes disappear // DONE
-						// BUG: draging one node drags a different pin id, need to make the node id conform to unique id
-						// BUG: head node in can't be dragged from
+						// BUG: draging one node drags a different pin id, need to make the node id conform to unique id // DONE
+						// BUG: head node in can't be dragged from // DONE
+						// BUG: two stray nodes forming a loop disappear // DONE
 					}
 
 					// You may choose to reject connection between these nodes
@@ -272,10 +267,10 @@ public:
 		ed::PinId  inPinId = m_uniqueId++;
 		ed::PinId  outPinId = m_uniqueId++;
 
+		m_drawnNodes.insert(chapter->getId());
 		m_pinInIdToNodeId[inPinId] = chapter->getId();
 		m_pinOutIdToNodeId[outPinId] = chapter->getId();
-		m_drawnNodes.insert(chapter->getId());
-
+		
 		// Draw the node in the graph window
 		if (m_firstFrame)
 			ed::SetNodePosition(nodeId, ImVec2(x, y));
@@ -301,7 +296,6 @@ public:
 		ed::EndNode();
 
 		// Populate graph link information for both parent and child nodes
-		
 		for (auto chapterId : chapter->getParentsSet()) {
 			if (m_currentLinks.find({ chapterId, chapter->getId() }) == m_currentLinks.end()) {
 				m_currentLinks[{ chapterId, chapter->getId() }].m_id = m_linkId++;
@@ -319,7 +313,6 @@ public:
 		}
 
 		// Recursion for drawing child nodes
-
 		std::list<const Chapter*> nextChapters{};
 		for (auto chapterId : chapter->getChildrenSet()) {
 			//std::cout << "chapterId" << chapterId << std::endl;
