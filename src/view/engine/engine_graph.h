@@ -88,6 +88,7 @@ protected:
 	std::unordered_map<ed::PinId, id, PinIdHasher> m_pinInIdToNodeId{};
 	std::unordered_map<ed::PinId, id, PinIdHasher> m_pinOutIdToNodeId{};
 	// Node Id and its x and y coordinates
+	std::set<id> m_drawnNodes{};
 	std::set<id> m_strayNodes{};
 
 	void OnStart()
@@ -139,6 +140,7 @@ public:
 
 		m_pinInIdToNodeId[inPinId] = chapter->getId();
 		m_pinOutIdToNodeId[outPinId] = chapter->getId();
+		m_drawnNodes.insert(chapter->getId());
 
 		// Draw the node in the graph window
 		if (m_FirstFrame)
@@ -189,7 +191,7 @@ public:
 			//std::cout << "chapterId" << chapterId << std::endl;
 			const Chapter* childChapter{ ModelSubject::getChapterById(chapterId) };
 
-			if (childChapter != nullptr && chapterId != chapter->getId()) {
+			if (childChapter != nullptr && chapterId != chapter->getId() && !m_drawnNodes.contains(chapterId)) {
 				nextChapters.push_back(childChapter);
 			}
 		}
@@ -229,6 +231,7 @@ public:
 		m_currentLinks.clear();
 		m_pinInIdToNodeId.clear();
 		m_pinOutIdToNodeId.clear();
+		m_drawnNodes.clear();
 		//m_strayNodes.clear();
 
 		int x = 10;
@@ -239,7 +242,7 @@ public:
 		for (auto& chapterId : m_strayNodes) {
 			Chapter* chapter{ ModelSubject::getChapterById(chapterId) };
 
-			if (chapter != nullptr) {
+			if (chapter != nullptr && !m_drawnNodes.contains(chapterId)) {
 				drawChapter(chapter, 0, 0);
 			}
 		}
@@ -277,29 +280,29 @@ public:
 
 				if (inputPinId && outputPinId) // both are valid, let's accept link
 				{
-						std::cout << m_pinInIdToNodeId[inputPinId] << std::endl;
-						std::cout << m_pinOutIdToNodeId[outputPinId] << std::endl;
 					// ed::AcceptNewItem() return true when user release mouse button.
 					if (ed::AcceptNewItem())
 					{
 						// TODO: Error checking
-						
-						std::cout << m_pinInIdToNodeId[inputPinId] << std::endl;
-						std::cout << m_pinInIdToNodeId[outputPinId] << std::endl;
-						std::cout << m_pinOutIdToNodeId[inputPinId] << std::endl;
-						std::cout << m_pinOutIdToNodeId[outputPinId] << std::endl;
-						id parentId{ m_pinOutIdToNodeId[outputPinId] };
-						id childId{ m_pinInIdToNodeId[inputPinId] };
+						id parentId{ (m_pinOutIdToNodeId[outputPinId] == 0) ? m_pinOutIdToNodeId[inputPinId] : m_pinOutIdToNodeId[outputPinId] };
+						id childId{ (m_pinInIdToNodeId[inputPinId] == 0) ? m_pinInIdToNodeId[outputPinId] : m_pinInIdToNodeId[inputPinId] };
 
 						Chapter* parentNode{ ModelSubject::getChapterById(parentId) };
 						Chapter* childNode{ ModelSubject::getChapterById(childId) };
 
-						ChapterBuilder{ parentNode }.link(childNode);
+						if (parentNode != nullptr && childNode != nullptr) {
+							ChapterBuilder{ parentNode }.link(childNode);
 
-						// TODO: can skip the if I believe
-						if (m_strayNodes.find(childId) != m_strayNodes.end() && parentId != childId) {
-							m_strayNodes.erase(childId);
+							// TODO: can skip the if I believe
+							if (m_strayNodes.find(childId) != m_strayNodes.end() && parentId != childId) {
+								m_strayNodes.erase(childId);
+							}
 						}
+
+						
+						// BUG: connecting two in pins makes nodes disappear // DONE
+						// BUG: draging one node drags a different pin id, need to make the node id conform to unique id
+						// BUG: head node in can't be dragged from
 
 						//m_currentLinks[{m_pinOutIdToNodeId[outputPinId], m_pinInIdToNodeId[inputPinId]}].m_id = m_linkId++;
 						//m_currentLinks[{m_pinOutIdToNodeId[outputPinId], m_pinInIdToNodeId[inputPinId]}].m_inId = inputPinId.Get();
@@ -352,17 +355,16 @@ public:
 								std::cout << "child is null" << std::endl;
 							}
 
-
 							ChapterBuilder{ parentNode }.unlink(childNode);
 
 							//ed::GetNodeZPosition(childNode->getId());
 							//ed::NodeId(childNode->getId());
 
-							if (childNode->getParentsAmount() == 0) {
+							if (childNode != nullptr && childNode->getParentsAmount() == 0) {
 								m_strayNodes.insert(childNode->getId());
 							}
 
-							ed::DeleteLink(deletedLinkId);
+							//ed::DeleteLink(deletedLinkId);
 
 							//m_currentLinks.erase(key);
 							break;
