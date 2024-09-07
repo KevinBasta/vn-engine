@@ -82,8 +82,8 @@ public:
 	};
 
 protected:
-	ed::EditorContext* m_context = nullptr;
-	bool m_firstFrame = true;
+	ed::EditorContext* m_context{ nullptr };
+	bool m_firstFrame{ true };
 	int m_uniqueId{ 1 };
 	int m_linkId{ 1 };
 
@@ -93,6 +93,7 @@ protected:
 	std::set<id> m_drawnNodes{};
 	std::set<id> m_graphNodes{};
 	std::set<id> m_strayNodes{};
+	std::set<id> m_pendingStrayNodes{};
 
 public:
 	VnEngineGraph() {
@@ -128,6 +129,25 @@ public:
 		const Chapter* headChapter{ ModelSubject::getHeadChapter() };
 		drawChapter(headChapter, x, y);
 		m_graphNodes = m_drawnNodes;
+
+		// TODO: error checking
+		for (id pendingStray : m_pendingStrayNodes) {
+			bool isStray{ true };
+			for (auto parentId : ModelSubject::getChapterById(pendingStray)->getParentsSet()) {
+				
+				if (m_graphNodes.contains(parentId)) {
+					isStray = false;
+					break;
+				}
+			}
+
+			if (isStray) {
+				m_strayNodes.insert(pendingStray);
+			}
+		}
+
+		m_pendingStrayNodes.clear();
+
 
 		// Draw the nodes that have been disconnected
 		for (auto& chapterId : m_strayNodes) {
@@ -233,8 +253,12 @@ public:
 							//ed::GetNodeZPosition(childNode->getId());
 							//ed::NodeId(childNode->getId());
 
-							if (childNode != nullptr && childNode->getParentsAmount() == 0) {
-								m_strayNodes.insert(childNode->getId());
+							if (childNode != nullptr) {
+								bool isStrayNode{ m_strayNodes.find(childId) != m_strayNodes.end() };
+
+								if (!isStrayNode) {
+									m_pendingStrayNodes.insert(childNode->getId());
+								}
 							}
 
 							//ed::DeleteLink(deletedLinkId);
