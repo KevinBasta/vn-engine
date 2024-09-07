@@ -130,11 +130,18 @@ public:
 		drawChapter(headChapter, x, y);
 		m_graphNodes = m_drawnNodes;
 
-		// TODO: error checking
+
+		// Check if pending stray nodes are not connected to the head graph
 		for (id pendingStray : m_pendingStrayNodes) {
 			bool isStray{ true };
-			for (auto parentId : ModelSubject::getChapterById(pendingStray)->getParentsSet()) {
-				
+
+			Chapter* currentChapter{ ModelSubject::getChapterById(pendingStray) };
+
+			if (currentChapter == nullptr) {
+				continue;
+			}
+
+			for (auto parentId : currentChapter->getParentsSet()) {
 				if (m_graphNodes.contains(parentId)) {
 					isStray = false;
 					break;
@@ -148,13 +155,21 @@ public:
 
 		m_pendingStrayNodes.clear();
 
+		// Draw the nodes that have been marked as stray, removing any from the list if they have been drawn already
+		for (std::set<id>::iterator iter{ m_strayNodes.begin() }; iter != m_strayNodes.end(); iter++) {
+			Chapter* chapter{ ModelSubject::getChapterById(*iter) };
 
-		// Draw the nodes that have been disconnected
-		for (auto& chapterId : m_strayNodes) {
-			Chapter* chapter{ ModelSubject::getChapterById(chapterId) };
-
-			if (chapter != nullptr && !m_drawnNodes.contains(chapterId)) {
-				drawChapter(chapter, 0, 0);
+			if (chapter != nullptr) {
+				if (!m_drawnNodes.contains(*iter)) {
+					drawChapter(chapter, 0, 0);
+				}
+				else {
+					iter = m_strayNodes.erase(iter);
+					
+					if (iter == m_strayNodes.end()) {
+						break;
+					}
+				}
 			}
 		}
 		
@@ -177,9 +192,7 @@ public:
 				// both are valid, let's accept link
 				if (inputPinId && outputPinId) {
 					// ed::AcceptNewItem() return true when user release mouse button.
-					if (ed::AcceptNewItem()) {
-						
-						// TODO: Error checking
+					if (ed::AcceptNewItem()) {						
 						id parentId{ (m_pinOutIdToNodeId[outputPinId] == 0) ? m_pinOutIdToNodeId[inputPinId] : m_pinOutIdToNodeId[outputPinId] };
 						id childId{ (m_pinInIdToNodeId[inputPinId] == 0) ? m_pinInIdToNodeId[outputPinId] : m_pinInIdToNodeId[inputPinId] };
 
@@ -189,22 +202,17 @@ public:
 						if (parentNode != nullptr && childNode != nullptr) {
 							ChapterBuilder{ parentNode }.link(childNode);
 
-
-							// Only erase a node from the stray nodes if it's not linking to itself and is a stray node
-							// TODO: handle loop with no other parent
+							// Only erase a node from the stray nodes if it's not linking to itself
+							// Add it to pending stray nodes in case of stray loops							
 							if (parentId != childId) {
-								bool isStrayNode{ m_strayNodes.find(childId) != m_strayNodes.end() };
-								bool isJoinedToGraph{ m_graphNodes.contains(parentNode->getId()) };
-
-								if (isStrayNode && isJoinedToGraph) {
+								bool isChildAStrayNode{ m_strayNodes.find(childId) != m_strayNodes.end() };
+								
+								if (isChildAStrayNode) {
 									m_strayNodes.erase(childId);
+									m_pendingStrayNodes.insert(childId);
 								}
 							}
 						}
-
-						// BUG: draging one node drags a different pin id, need to make the node id conform to unique id // DONE
-						// BUG: head node in can't be dragged from // DONE
-						// BUG: two stray nodes forming a loop disappear // DONE
 					}
 
 					// You may choose to reject connection between these nodes
@@ -231,37 +239,16 @@ public:
 					{
 						if (data.m_id == deletedLinkId)
 						{
-							std::cout << m_pinInIdToNodeId[data.m_inId] << std::endl;
-							std::cout << m_pinOutIdToNodeId[data.m_outId] << std::endl;
-
 							id parentId{ m_pinOutIdToNodeId[data.m_outId] };
 							id childId{ m_pinInIdToNodeId[data.m_inId] };
 
 							Chapter* parentNode{ ModelSubject::getChapterById(parentId) };
 							Chapter* childNode{ ModelSubject::getChapterById(childId) };
 
-							if (parentNode == nullptr) {
-								std::cout << "parent is null" << std::endl;
-							}
-
-							if (childNode == nullptr) {
-								std::cout << "child is null" << std::endl;
-							}
-
 							ChapterBuilder{ parentNode }.unlink(childNode);
 
-							//ed::GetNodeZPosition(childNode->getId());
-							//ed::NodeId(childNode->getId());
-
-							if (childNode != nullptr) {
-								bool isStrayNode{ m_strayNodes.find(childId) != m_strayNodes.end() };
-
-								if (!isStrayNode) {
-									m_pendingStrayNodes.insert(childNode->getId());
-								}
-							}
-
-							//ed::DeleteLink(deletedLinkId);
+							// Set child to be set as a stray node after checking next head graph render
+							m_pendingStrayNodes.insert(childId);
 
 							break;
 						}
