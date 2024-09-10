@@ -28,7 +28,7 @@ class Node : public Linkable {
 private:
 	friend class NodeBuilder;
 
-protected:	
+public:	
 	// Temp
 	std::string m_temp{};
 

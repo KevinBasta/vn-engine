@@ -35,6 +35,11 @@ private:
 	ChapterIterator iterator{};
 	
 public:
+	// Engine operations
+	id getChapterId() { return iterator.getChapterId(); }
+	id getNodeId() { return iterator.getNodeId(); }
+
+public:
 	// non-serialize critical (partial data may be saved for savefile thumbnails for example)
 	StateDialogue m_dialogue{};
 	StateBackground m_background{};

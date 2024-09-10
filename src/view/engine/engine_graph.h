@@ -96,18 +96,23 @@ protected:
 	std::set<id> m_pendingStrayNodes{};
 
 public:
-	VnEngineGraph() {
+	VnEngineGraph(const char* filename) {
 		ed::Config config;
-		config.SettingsFile = "BasicInteraction.json";
+		config.SettingsFile = filename;
 		m_context = ed::CreateEditor(&config);
 	}
 
-	~VnEngineGraph() {
+	virtual ~VnEngineGraph() {
 		ed::DestroyEditor(m_context);
 	}
 
+	virtual Linkable* getLinkableById(id linkableId) = 0;
+	virtual const Linkable* getLinkableHead() = 0;
+	virtual std::wstring getLinkableName(id linkableId) = 0;
+
 	void draw() {
 		auto& io = ImGui::GetIO();
+		
 		ImGui::Text("FPS: %.2f (%.2gms)", io.Framerate, io.Framerate ? 1000.0f / io.Framerate : 0.0f);
 		ImGui::Separator();
 
@@ -126,22 +131,21 @@ public:
 		int y = 10;
 
 		// Draw the chapter graph/tree
-		const Chapter* headChapter{ ModelSubject::getHeadChapter() };
-		drawChapter(headChapter, x, y);
+		const Linkable* headLinkable{ getLinkableHead() };
+		drawGraphNode(headLinkable, x, y);
 		m_graphNodes = m_drawnNodes;
-
 
 		// Check if pending stray nodes are not connected to the head graph
 		for (id pendingStray : m_pendingStrayNodes) {
 			bool isStray{ true };
 
-			Chapter* currentChapter{ ModelSubject::getChapterById(pendingStray) };
+			Linkable* currentLinkable{ getLinkableById(pendingStray) };
 
-			if (currentChapter == nullptr) {
+			if (currentLinkable == nullptr) {
 				continue;
 			}
 
-			for (auto parentId : currentChapter->getParentsSet()) {
+			for (auto parentId : currentLinkable->getParentsSet()) {
 				if (m_graphNodes.contains(parentId)) {
 					isStray = false;
 					break;
@@ -157,11 +161,11 @@ public:
 
 		// Draw the nodes that have been marked as stray, removing any from the list if they have been drawn already
 		for (std::set<id>::iterator iter{ m_strayNodes.begin() }; iter != m_strayNodes.end(); iter++) {
-			Chapter* chapter{ ModelSubject::getChapterById(*iter) };
+			Linkable* linkable{ getLinkableById(*iter) };
 
-			if (chapter != nullptr) {
+			if (linkable != nullptr) {
 				if (!m_drawnNodes.contains(*iter)) {
-					drawChapter(chapter, 0, 0);
+					drawGraphNode(linkable);
 				}
 				else {
 					iter = m_strayNodes.erase(iter);
@@ -196,14 +200,15 @@ public:
 						id parentId{ (m_pinOutIdToNodeId[outputPinId] == 0) ? m_pinOutIdToNodeId[inputPinId] : m_pinOutIdToNodeId[outputPinId] };
 						id childId{ (m_pinInIdToNodeId[inputPinId] == 0) ? m_pinInIdToNodeId[outputPinId] : m_pinInIdToNodeId[inputPinId] };
 
-						Chapter* parentNode{ ModelSubject::getChapterById(parentId) };
-						Chapter* childNode{ ModelSubject::getChapterById(childId) };
+						Linkable* parentLinkable{ getLinkableById(parentId) };
+						Linkable* childLinkable{ getLinkableById(childId) };
 
-						if (parentNode != nullptr && childNode != nullptr) {
-							ChapterBuilder{ parentNode }.link(childNode);
+						if (parentLinkable != nullptr && childLinkable != nullptr) {
+							LinkableBuilder{ parentLinkable }.link(childLinkable);
 
 							// Only erase a node from the stray nodes if it's not linking to itself
 							// Add it to pending stray nodes in case of stray loops							
+							// TODO: This can be compeltely removed as it's handled by the update logic
 							if (parentId != childId) {
 								bool isChildAStrayNode{ m_strayNodes.find(childId) != m_strayNodes.end() };
 								
@@ -242,10 +247,10 @@ public:
 							id parentId{ m_pinOutIdToNodeId[data.m_outId] };
 							id childId{ m_pinInIdToNodeId[data.m_inId] };
 
-							Chapter* parentNode{ ModelSubject::getChapterById(parentId) };
-							Chapter* childNode{ ModelSubject::getChapterById(childId) };
+							Linkable* parentLinkable{ getLinkableById(parentId) };
+							Linkable* childLinkable{ getLinkableById(childId) };
 
-							ChapterBuilder{ parentNode }.unlink(childNode);
+							LinkableBuilder{ parentLinkable }.unlink(childLinkable);
 
 							// Set child to be set as a stray node after checking next head graph render
 							m_pendingStrayNodes.insert(childId);
@@ -270,17 +275,17 @@ public:
 		m_firstFrame = false;
 	}
 
-	void drawChapter(const Chapter* chapter, int x, int y) {
+	void drawGraphNode(const Linkable* linkable, int x = 0, int y = 0) {
 		std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> myconv;
-		std::string convertedName{ myconv.to_bytes(chapter->getName()) };
+		std::string convertedName{ myconv.to_bytes(getLinkableName(linkable->getId())) };
 
-		ed::NodeId nodeId = chapter->getId();
+		ed::NodeId nodeId = linkable->getId();
 		ed::PinId  inPinId = m_uniqueId++;
 		ed::PinId  outPinId = m_uniqueId++;
 
-		m_drawnNodes.insert(chapter->getId());
-		m_pinInIdToNodeId[inPinId] = chapter->getId();
-		m_pinOutIdToNodeId[outPinId] = chapter->getId();
+		m_drawnNodes.insert(linkable->getId());
+		m_pinInIdToNodeId[inPinId] = linkable->getId();
+		m_pinOutIdToNodeId[outPinId] = linkable->getId();
 		
 		// Draw the node in the graph window
 		if (m_firstFrame)
@@ -307,38 +312,38 @@ public:
 		ed::EndNode();
 
 		// Populate graph link information for both parent and child nodes
-		for (auto chapterId : chapter->getParentsSet()) {
-			if (m_currentLinks.find({ chapterId, chapter->getId() }) == m_currentLinks.end()) {
-				m_currentLinks[{ chapterId, chapter->getId() }].m_id = m_linkId++;
+		for (auto connectedLinkableId : linkable->getParentsSet()) {
+			if (m_currentLinks.find({ connectedLinkableId, linkable->getId() }) == m_currentLinks.end()) {
+				m_currentLinks[{ connectedLinkableId, linkable->getId() }].m_id = m_linkId++;
 			}
 
-			m_currentLinks[{ chapterId, chapter->getId() }].m_inId = inPinId;
+			m_currentLinks[{ connectedLinkableId, linkable->getId() }].m_inId = inPinId;
 		}
 
-		for (auto chapterId : chapter->getChildrenSet()) {
-			if (m_currentLinks.find({ chapter->getId(), chapterId }) == m_currentLinks.end()) {
-				m_currentLinks[{chapter->getId(), chapterId}].m_id = m_linkId++;
+		for (auto connectedLinkableId : linkable->getChildrenSet()) {
+			if (m_currentLinks.find({ linkable->getId(), connectedLinkableId }) == m_currentLinks.end()) {
+				m_currentLinks[{linkable->getId(), connectedLinkableId}].m_id = m_linkId++;
 			}
 
-			m_currentLinks[{chapter->getId(), chapterId}].m_outId = outPinId;
+			m_currentLinks[{linkable->getId(), connectedLinkableId}].m_outId = outPinId;
 		}
 
 		// Recursion for drawing child nodes
-		std::list<const Chapter*> nextChapters{};
-		for (auto chapterId : chapter->getChildrenSet()) {
+		std::list<const Linkable*> validChildLinkables{};
+		for (auto connectedLinkableId : linkable->getChildrenSet()) {
 			//std::cout << "chapterId" << chapterId << std::endl;
-			const Chapter* childChapter{ ModelSubject::getChapterById(chapterId) };
+			const Linkable* childLinkable{ getLinkableById(connectedLinkableId) };
 
-			if (childChapter != nullptr && chapterId != chapter->getId() && !m_drawnNodes.contains(chapterId)) {
-				nextChapters.push_back(childChapter);
+			if (childLinkable != nullptr && connectedLinkableId != linkable->getId() && !m_drawnNodes.contains(connectedLinkableId)) {
+				validChildLinkables.push_back(childLinkable);
 			}
 		}
 
 		int nextXStart{ x + 170 };
-		int nextYStart{ y - ((static_cast<int>(nextChapters.size()) * 100) / 2) };
+		int nextYStart{ y - ((static_cast<int>(validChildLinkables.size()) * 100) / 2) };
 
-		for (auto childChapter : nextChapters) {
-			drawChapter(childChapter, nextXStart, nextYStart);
+		for (auto childLinkable : validChildLinkables) {
+			drawGraphNode(childLinkable, nextXStart, nextYStart);
 			nextYStart += 100;
 		}
 

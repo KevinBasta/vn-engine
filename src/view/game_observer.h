@@ -64,7 +64,7 @@ public:
 	}
 
 	void runEngine() {
-		VnEngine m_engine{ m_window, &m_context };
+		VnEngine m_engine{ m_window, m_stateSubject, &m_context };
 
 		// Gameloop
 		double deltaTime = 0.0f;

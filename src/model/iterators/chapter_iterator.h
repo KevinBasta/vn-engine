@@ -86,6 +86,21 @@ public:
 	ChapterState step(StateSubject* stateSubject);
 
 	//ChapterState stepBack
+
+public:
+	// Engine operations:
+	id getChapterId() {
+		return m_chapterId.has_value() ? m_chapterId.value() : 0;
+	}
+
+	id getNodeId() {
+		return m_nodeId.has_value() ? m_nodeId.value() : 0;
+	}
+
+	index getCurrentStepIndex() {
+		//return m_nodeRunner.
+		return 0;
+	}
 };
 
 

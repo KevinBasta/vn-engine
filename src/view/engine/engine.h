@@ -3,8 +3,10 @@
 
 #include "window.h"
 #include "context.h"
+#include "state_subject.h"
 
-#include "engine_graph.h"
+#include "engine_chapter_graph.h"
+#include "engine_node_graph.h"
 #include "engine_preview.h"
 
 #include "imgui.h"
@@ -22,9 +24,11 @@ static void printTest() {
 class VnEngine {
 private:
 	VnWindow* m_window{ nullptr };
+	StateSubject* m_stateSubject{ nullptr };
 	GameContext* m_context{ nullptr };
 	VnEnginePreview m_enginePreview;
-	VnEngineGraph m_engineGraph;
+	VnEngineChapterGraph m_engineChapterGraph;
+	VnEngineNodeGraph m_engineNodeGraph;
 
 	void initImgui() {
 		// Init imgui
@@ -48,9 +52,12 @@ private:
 	}
 
 public:
-	VnEngine(VnWindow* window, GameContext* context) :
+	VnEngine(VnWindow* window, StateSubject* stateSubject, GameContext* context) :
 		m_window{ window },
 		m_context{ context },
+		m_stateSubject{ stateSubject },
+		m_engineNodeGraph{ stateSubject },
+		m_engineChapterGraph{ stateSubject },
 		m_enginePreview{ context }
 	{
 		initImgui();
@@ -68,7 +75,19 @@ public:
 		ImGui::DockSpaceOverViewport(0, ImGui::GetMainViewport());
 
 		m_enginePreview.draw();
-		m_engineGraph.draw();
+
+		ImGui::Begin("GRAPH");
+		
+		m_engineChapterGraph.draw();
+		
+		ImGui::End();
+
+		ImGui::Begin("NODES");
+
+		m_engineNodeGraph.draw();
+		
+		ImGui::End();
+
 		ImGui::ShowDemoWindow();
 
 		ImGui::Render();
