@@ -32,14 +32,6 @@ namespace std
 			return static_cast<std::size_t>(s.Get());
 		}
 	};
-	
-	template<> struct hash<ed::NodeId>
-	{
-		std::size_t operator()(const ed::NodeId& s) const noexcept
-		{
-			return static_cast<std::size_t>(s.Get());
-		}
-	};
 }
 
 class VnEngineGraph {
@@ -49,13 +41,7 @@ public:
 			return std::hash<ed::PinId>()(key);
 		}
 	};
-	
-	struct NodeIdHasher {
-		size_t operator()(const ed::NodeId& key) const {
-			return std::hash<ed::NodeId>()(key);
-		}
-	};
-	
+
 	struct NodeLinkKey;
 
 	struct NodeLinkKeyHasher {
@@ -92,7 +78,7 @@ protected:
 	std::unordered_map<ed::PinId, id, PinIdHasher> m_pinOutIdToNodeId{};
 	std::set<id> m_drawnNodes{};
 	std::set<id> m_graphNodes{};
-	std::set<id> m_strayNodes{};
+	std::unordered_map<id, std::set<id>> m_strayNodes{};
 	std::set<id> m_pendingStrayNodes{};
 
 public:
@@ -106,8 +92,9 @@ public:
 		ed::DestroyEditor(m_context);
 	}
 
-	virtual Linkable* getLinkableById(id linkableId) = 0;
+	virtual id getLinkableHeadId() = 0;
 	virtual const Linkable* getLinkableHead() = 0;
+	virtual Linkable* getLinkableById(id linkableId) = 0;
 	virtual std::wstring getLinkableName(id linkableId) = 0;
 
 	void draw() {
@@ -153,14 +140,14 @@ public:
 			}
 
 			if (isStray) {
-				m_strayNodes.insert(pendingStray);
+				m_strayNodes[getLinkableHeadId()].insert(pendingStray);
 			}
 		}
 
 		m_pendingStrayNodes.clear();
 
 		// Draw the nodes that have been marked as stray, removing any from the list if they have been drawn already
-		for (std::set<id>::iterator iter{ m_strayNodes.begin() }; iter != m_strayNodes.end(); iter++) {
+		for (std::set<id>::iterator iter{ m_strayNodes[getLinkableHeadId()].begin()}; iter != m_strayNodes[getLinkableHeadId()].end(); iter++) {
 			Linkable* linkable{ getLinkableById(*iter) };
 
 			if (linkable != nullptr) {
@@ -168,9 +155,9 @@ public:
 					drawGraphNode(linkable);
 				}
 				else {
-					iter = m_strayNodes.erase(iter);
+					iter = m_strayNodes[getLinkableHeadId()].erase(iter);
 					
-					if (iter == m_strayNodes.end()) {
+					if (iter == m_strayNodes[getLinkableHeadId()].end()) {
 						break;
 					}
 				}
@@ -210,10 +197,10 @@ public:
 							// Add it to pending stray nodes in case of stray loops							
 							// TODO: This can be compeltely removed as it's handled by the update logic
 							if (parentId != childId) {
-								bool isChildAStrayNode{ m_strayNodes.find(childId) != m_strayNodes.end() };
+								bool isChildAStrayNode{ m_strayNodes[getLinkableHeadId()].find(childId) != m_strayNodes[getLinkableHeadId()].end()};
 								
 								if (isChildAStrayNode) {
-									m_strayNodes.erase(childId);
+									m_strayNodes[getLinkableHeadId()].erase(childId);
 									m_pendingStrayNodes.insert(childId);
 								}
 							}
@@ -279,13 +266,15 @@ public:
 		std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> myconv;
 		std::string convertedName{ myconv.to_bytes(getLinkableName(linkable->getId())) };
 
-		ed::NodeId nodeId = linkable->getId();
+		id linkableId{ linkable->getId() };
+
+		ed::NodeId nodeId = linkableId;
 		ed::PinId  inPinId = m_uniqueId++;
 		ed::PinId  outPinId = m_uniqueId++;
 
-		m_drawnNodes.insert(linkable->getId());
-		m_pinInIdToNodeId[inPinId] = linkable->getId();
-		m_pinOutIdToNodeId[outPinId] = linkable->getId();
+		m_drawnNodes.insert(linkableId);
+		m_pinInIdToNodeId[inPinId] = linkableId;
+		m_pinOutIdToNodeId[outPinId] = linkableId;
 		
 		// Draw the node in the graph window
 		if (m_firstFrame)
@@ -312,6 +301,14 @@ public:
 		ed::EndNode();
 
 		// Populate graph link information for both parent and child nodes
+		populateParentLinks(linkable, inPinId);
+		populateChildLinks(linkable, outPinId);
+
+		// Recursion for drawing child nodes
+		drawGraphChildNodes(linkable, x, y);
+	}
+
+	void populateParentLinks(const Linkable* linkable, ed::PinId inPinId) {
 		for (auto connectedLinkableId : linkable->getParentsSet()) {
 			if (m_currentLinks.find({ connectedLinkableId, linkable->getId() }) == m_currentLinks.end()) {
 				m_currentLinks[{ connectedLinkableId, linkable->getId() }].m_id = m_linkId++;
@@ -319,7 +316,9 @@ public:
 
 			m_currentLinks[{ connectedLinkableId, linkable->getId() }].m_inId = inPinId;
 		}
+	}
 
+	void populateChildLinks(const Linkable* linkable, ed::PinId outPinId) {
 		for (auto connectedLinkableId : linkable->getChildrenSet()) {
 			if (m_currentLinks.find({ linkable->getId(), connectedLinkableId }) == m_currentLinks.end()) {
 				m_currentLinks[{linkable->getId(), connectedLinkableId}].m_id = m_linkId++;
@@ -327,11 +326,12 @@ public:
 
 			m_currentLinks[{linkable->getId(), connectedLinkableId}].m_outId = outPinId;
 		}
+	}
 
-		// Recursion for drawing child nodes
+	void drawGraphChildNodes(const Linkable* linkable, int x = 0, int y = 0) {
+		// Create a list of linkable objects who's pointers are obtainable
 		std::list<const Linkable*> validChildLinkables{};
 		for (auto connectedLinkableId : linkable->getChildrenSet()) {
-			//std::cout << "chapterId" << chapterId << std::endl;
 			const Linkable* childLinkable{ getLinkableById(connectedLinkableId) };
 
 			if (childLinkable != nullptr && connectedLinkableId != linkable->getId() && !m_drawnNodes.contains(connectedLinkableId)) {
@@ -339,6 +339,7 @@ public:
 			}
 		}
 
+		// Recursion to draw all the child graph nodes
 		int nextXStart{ x + 170 };
 		int nextYStart{ y - ((static_cast<int>(validChildLinkables.size()) * 100) / 2) };
 
@@ -346,9 +347,7 @@ public:
 			drawGraphNode(childLinkable, nextXStart, nextYStart);
 			nextYStart += 100;
 		}
-
 	}
-
 };
 
 #endif // VN_ENGINE_GRAPH_H

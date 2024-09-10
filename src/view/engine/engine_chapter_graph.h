@@ -18,6 +18,10 @@ public:
 	{
 	}
 
+	id getLinkableHeadId() {
+		return ModelSubject::getFirstChapterId();
+	}
+
 	Linkable* getLinkableById(id linkableId) {
 		return static_cast<Linkable*>(ModelSubject::getChapterById(linkableId));
 	}

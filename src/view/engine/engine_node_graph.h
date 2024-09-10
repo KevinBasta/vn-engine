@@ -23,6 +23,10 @@ public:
 
 	}
 
+	id getLinkableHeadId() {
+		return ModelSubject::getChapterById(m_stateSubject->getChapterId())->getHeadNodeId();
+	}
+
 	Linkable* getLinkableById(id linkableId) {
 		return static_cast<Linkable*>(ModelSubject::getNodeById(linkableId));
 	}
