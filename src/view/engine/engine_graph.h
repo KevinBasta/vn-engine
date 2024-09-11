@@ -147,7 +147,7 @@ public:
 		m_pendingStrayNodes.clear();
 
 		// Draw the nodes that have been marked as stray, removing any from the list if they have been drawn already
-		for (std::set<id>::iterator iter{ m_strayNodes[getLinkableHeadId()].begin()}; iter != m_strayNodes[getLinkableHeadId()].end(); iter++) {
+		for (std::set<id>::iterator iter{ m_strayNodes[getLinkableHeadId()].begin() }; iter != m_strayNodes[getLinkableHeadId()].end(); iter++) {
 			Linkable* linkable{ getLinkableById(*iter) };
 
 			if (linkable != nullptr) {
@@ -197,7 +197,7 @@ public:
 							// Add it to pending stray nodes in case of stray loops							
 							// TODO: This can be compeltely removed as it's handled by the update logic
 							if (parentId != childId) {
-								bool isChildAStrayNode{ m_strayNodes[getLinkableHeadId()].find(childId) != m_strayNodes[getLinkableHeadId()].end()};
+								bool isChildAStrayNode{ m_strayNodes[getLinkableHeadId()].find(childId) != m_strayNodes[getLinkableHeadId()].end() };
 								
 								if (isChildAStrayNode) {
 									m_strayNodes[getLinkableHeadId()].erase(childId);

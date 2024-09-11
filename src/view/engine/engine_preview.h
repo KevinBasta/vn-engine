@@ -28,9 +28,6 @@ public:
 		//
 		// Game view window
 		//
-
-		ImGui::Begin("Viewport Preview");
-
 		const float newWidth = ImGui::GetContentRegionAvail().x;
 		const float newHeight = ImGui::GetContentRegionAvail().y;
 
@@ -65,8 +62,6 @@ public:
 
 			ImGui::EndMenuBar();
 		}*/
-
-		ImGui::End();
 	}
 
 };
