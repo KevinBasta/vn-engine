@@ -86,7 +86,6 @@ public:
 		window_flags |= ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
 		window_flags |= ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
 
-
 		// When using ImGuiDockNodeFlags_PassthruCentralNode, DockSpace() will render our background and handle the pass-thru hole, so we ask Begin() to not render a background.
 		if (dockspace_flags & ImGuiDockNodeFlags_PassthruCentralNode)
 			window_flags |= ImGuiWindowFlags_NoBackground;
@@ -115,12 +114,23 @@ public:
 				// split the dockspace into 2 nodes -- DockBuilderSplitNode takes in the following args in the following order
 				//   window ID to split, direction, fraction (between 0 and 1), the final two setting let's us choose which id we want (which ever one we DON'T set as NULL, will be returned by the function)
 				//                                                              out_id_at_dir is the id of the node in the direction we specified earlier, out_id_at_opposite_dir is in the opposite direction
-				auto dock_id_left = ImGui::DockBuilderSplitNode(dockspace_id, ImGuiDir_Left, 0.2f, nullptr, &dockspace_id);
-				auto dock_id_down = ImGui::DockBuilderSplitNode(dockspace_id, ImGuiDir_Down, 0.25f, nullptr, &dockspace_id);
+				auto dock_id_left = ImGui::DockBuilderSplitNode(dockspace_id, ImGuiDir_Left, 0.4f, nullptr, &dockspace_id);
+				//ImVec2 dockspace_size = ImGui::GetContentRegionAvail();
+				//ImGui::DockBuilderSetNodeSize(dockspace_id, dockspace_size);
 
+				auto dock_id_up = ImGui::DockBuilderSplitNode(dockspace_id, ImGuiDir_Up, 0.5f, nullptr, &dockspace_id);
+				//https://github.com/ocornut/imgui/issues/6217
+				//dockspace_size = ImGui::GetContentRegionAvail();
+				//ImGui::DockBuilderSetNodeSize(dockspace_id, dockspace_size);
+
+				auto dock_id_down = ImGui::DockBuilderSplitNode(dockspace_id, ImGuiDir_Down, 1.0f, nullptr, &dockspace_id);
+				
 				// we now dock our windows into the docking node we made above
-				ImGui::DockBuilderDockWindow("Viewport Preview", dock_id_down);
-				ImGui::DockBuilderDockWindow("CHAPTERS", dock_id_left);
+				ImGui::DockBuilderDockWindow("Dear ImGui Demo", dock_id_left);
+				ImGui::DockBuilderDockWindow("Viewport Preview", dock_id_up);
+				ImGui::DockBuilderDockWindow("CHAPTERS", dock_id_down);
+				ImGui::DockBuilderDockWindow("NODES", dock_id_down);
+
 				ImGui::DockBuilderFinish(dockspace_id);
 			}
 		}
@@ -129,30 +139,17 @@ public:
 
 		ImGui::End();
 
-
 		ImGui::Begin("Viewport Preview");
-		if (m_firstDraw) {
-			//ImGui::SetWindowSize({ 100, 100 });
-		}
-
 		m_enginePreview.draw();
-
 		ImGui::End();
-		
 		
 		ImGui::Begin("CHAPTERS");
-		
 		m_engineChapterGraph.draw();
-		
 		ImGui::End();
-
 
 		ImGui::Begin("NODES");
-
 		m_engineNodeGraph.draw();
-		
 		ImGui::End();
-
 
 		ImGui::ShowDemoWindow();
 
