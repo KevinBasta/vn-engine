@@ -255,7 +255,8 @@ public:
 		ed::End();
 
 		if (m_firstFrame) {
-			ed::NavigateToContent(0.0f);
+			//std::cout << "navigate to content" << std::endl;
+			//ed::NavigateToContent(0.0f);
 		}
 
 		ed::SetCurrentEditor(nullptr);

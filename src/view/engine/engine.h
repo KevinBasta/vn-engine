@@ -73,7 +73,7 @@ public:
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
 
-		static ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_PassthruCentralNode;
+		static ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_None;
 
 		ImGuiWindowFlags window_flags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking;
 
@@ -111,20 +111,11 @@ public:
 				ImGui::DockBuilderAddNode(dockspace_id, dockspace_flags | ImGuiDockNodeFlags_DockSpace);
 				ImGui::DockBuilderSetNodeSize(dockspace_id, viewport->Size);
 
-				// split the dockspace into 2 nodes -- DockBuilderSplitNode takes in the following args in the following order
-				//   window ID to split, direction, fraction (between 0 and 1), the final two setting let's us choose which id we want (which ever one we DON'T set as NULL, will be returned by the function)
-				//                                                              out_id_at_dir is the id of the node in the direction we specified earlier, out_id_at_opposite_dir is in the opposite direction
-				auto dock_id_left = ImGui::DockBuilderSplitNode(dockspace_id, ImGuiDir_Left, 0.4f, nullptr, &dockspace_id);
-				//ImVec2 dockspace_size = ImGui::GetContentRegionAvail();
-				//ImGui::DockBuilderSetNodeSize(dockspace_id, dockspace_size);
+				ImGuiID dock_id_left = ImGui::DockBuilderSplitNode(dockspace_id, ImGuiDir_Left, 0.4f, nullptr, &dockspace_id);
 
-				auto dock_id_up = ImGui::DockBuilderSplitNode(dockspace_id, ImGuiDir_Up, 0.5f, nullptr, &dockspace_id);
-				//https://github.com/ocornut/imgui/issues/6217
-				//dockspace_size = ImGui::GetContentRegionAvail();
-				//ImGui::DockBuilderSetNodeSize(dockspace_id, dockspace_size);
+				ImGuiID dock_id_down = 0;
+				ImGuiID dock_id_up = ImGui::DockBuilderSplitNode(dockspace_id, ImGuiDir_Up, 0.5f, nullptr, &dock_id_down);
 
-				auto dock_id_down = ImGui::DockBuilderSplitNode(dockspace_id, ImGuiDir_Down, 1.0f, nullptr, &dockspace_id);
-				
 				// we now dock our windows into the docking node we made above
 				ImGui::DockBuilderDockWindow("Dear ImGui Demo", dock_id_left);
 				ImGui::DockBuilderDockWindow("Viewport Preview", dock_id_up);
@@ -134,8 +125,6 @@ public:
 				ImGui::DockBuilderFinish(dockspace_id);
 			}
 		}
-
-		//https://github.com/ocornut/imgui/blob/docking/imgui_internal.h#L3657
 
 		ImGui::End();
 
