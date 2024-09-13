@@ -70,8 +70,13 @@ public:
 protected:
 	ed::EditorContext* m_context{ nullptr };
 	bool m_firstFrame{ true };
+	
+	bool m_doInitialNavigation{ true };
+	int m_navigateToContent{ 0 };
+
 	int m_uniqueId{ 1 };
 	int m_linkId{ 1 };
+	id m_previousHead{ 0 };
 
 	std::unordered_map<NodeLinkKey, NodeLinkData, NodeLinkKeyHasher> m_currentLinks{};
 	std::unordered_map<ed::PinId, id, PinIdHasher> m_pinInIdToNodeId{};
@@ -92,6 +97,7 @@ public:
 		ed::DestroyEditor(m_context);
 	}
 
+	virtual std::string getGraphName() = 0;
 	virtual id getLinkableHeadId() = 0;
 	virtual const Linkable* getLinkableHead() = 0;
 	virtual Linkable* getLinkableById(id linkableId) = 0;
@@ -104,7 +110,7 @@ public:
 		ImGui::Separator();
 
 		ed::SetCurrentEditor(m_context);
-		ed::Begin("My Editor", ImVec2(0.0, 0.0f));
+		ed::Begin(getGraphName().c_str(), ImVec2(0.0, 0.0f));
 
 		m_uniqueId = IdGenerator<Linkable>::returnGreatestId() + 1;
 		m_linkId = 1;
@@ -254,9 +260,23 @@ public:
 		ed::EndDelete();
 		ed::End();
 
-		if (m_firstFrame) {
-			//std::cout << "navigate to content" << std::endl;
-			//ed::NavigateToContent(0.0f);
+		if (m_doInitialNavigation) {
+			// The graphs are not drawn in the first gameloop
+			// so navigate to the graph content at the 5th gameloop
+			if (m_navigateToContent == 5) {
+				std::cout << "navigate to content" << std::endl;
+				ed::NavigateToContent(0.0f);
+				m_doInitialNavigation = false;
+			}
+			else {
+				m_navigateToContent++;
+			}
+		}
+
+		// If the head node changes, navigate to the new graph
+		if (m_previousHead != getLinkableHeadId()) {
+			ed::NavigateToContent(3.0f);
+			m_previousHead = getLinkableHeadId();
 		}
 
 		ed::SetCurrentEditor(nullptr);

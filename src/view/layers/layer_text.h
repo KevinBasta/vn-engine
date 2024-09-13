@@ -82,6 +82,12 @@ public:
 	void pollAndDraw(const FrameDimensions& frame) {
 		TextState& state{ m_stateSubject->m_dialogue.get() };
 
+		// TODO: make permeneant solution for this engine text too small 
+		// for rendering issue.
+		if (frame.width < 10 || frame.height < 10) {
+			return;
+		}
+
 		if (state.m_render != false) {
 			drawText(frame,
 				state.m_speakerName,

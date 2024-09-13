@@ -27,6 +27,8 @@ private:
 	StateSubject* m_stateSubject{ nullptr };
 	GameContext* m_context{ nullptr };
 	bool m_firstDraw{ true };
+	bool m_resetDockspace{ true };
+	bool m_expandedDockingView{ false };
 	VnEnginePreview m_enginePreview;
 	VnEngineChapterGraph m_engineChapterGraph;
 	VnEngineNodeGraph m_engineNodeGraph;
@@ -102,42 +104,91 @@ public:
 			ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");
 			ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
 
-			static auto first_time = true;
-			if (first_time)
-			{
-				first_time = false;
+			if (m_resetDockspace)
+			{ 
+				m_resetDockspace = false;
 
 				ImGui::DockBuilderRemoveNode(dockspace_id); // clear any previous layout
 				ImGui::DockBuilderAddNode(dockspace_id, dockspace_flags | ImGuiDockNodeFlags_DockSpace);
 				ImGui::DockBuilderSetNodeSize(dockspace_id, viewport->Size);
 
-				ImGuiID dock_id_left = ImGui::DockBuilderSplitNode(dockspace_id, ImGuiDir_Left, 0.4f, nullptr, &dockspace_id);
+				if (m_expandedDockingView) {
+					ImGui::DockBuilderDockWindow("Viewport Preview", dockspace_id);
+					ImGui::DockBuilderDockWindow("Dear ImGui Demo", dockspace_id);
+					ImGui::DockBuilderDockWindow("CHAPTERS", dockspace_id);
+					ImGui::DockBuilderDockWindow("NODES", dockspace_id);
+				}
+				else {
+					ImGuiID dock_id_left = ImGui::DockBuilderSplitNode(dockspace_id, ImGuiDir_Left, 0.4f, nullptr, &dockspace_id);
 
-				ImGuiID dock_id_down = 0;
-				ImGuiID dock_id_up = ImGui::DockBuilderSplitNode(dockspace_id, ImGuiDir_Up, 0.5f, nullptr, &dock_id_down);
+					ImGuiID dock_id_down = 0;
+					ImGuiID dock_id_up = ImGui::DockBuilderSplitNode(dockspace_id, ImGuiDir_Up, 0.5f, nullptr, &dock_id_down);
 
-				// we now dock our windows into the docking node we made above
-				ImGui::DockBuilderDockWindow("Dear ImGui Demo", dock_id_left);
-				ImGui::DockBuilderDockWindow("Viewport Preview", dock_id_up);
-				ImGui::DockBuilderDockWindow("CHAPTERS", dock_id_down);
-				ImGui::DockBuilderDockWindow("NODES", dock_id_down);
-
+					// we now dock our windows into the docking node we made above
+					ImGui::DockBuilderDockWindow("Dear ImGui Demo", dock_id_left);
+					ImGui::DockBuilderDockWindow("Viewport Preview", dock_id_up);
+					ImGui::DockBuilderDockWindow("CHAPTERS", dock_id_down);
+					ImGui::DockBuilderDockWindow("NODES", dock_id_down);
+				}
+				
 				ImGui::DockBuilderFinish(dockspace_id);
 			}
 		}
 
+
+		if (ImGui::BeginMenuBar())
+		{
+			if (ImGui::BeginMenu("Main Menu"))
+			{
+				// TODO: implement shortcuts
+				if (ImGui::MenuItem("New Project")) {
+				
+				}
+				
+				if (ImGui::MenuItem("Open Project", "Ctrl+O")) {
+				
+				}
+
+				if (ImGui::MenuItem("Save Project", "Ctrl+S")) {
+				
+				}
+
+				ImGui::EndMenu();
+			}
+		
+			if (ImGui::BeginMenu("Layout")) {
+				if (ImGui::MenuItem("reset layout")) {
+					m_resetDockspace = true;
+				}
+				
+				ImGui::Separator();
+
+				if (ImGui::MenuItem("Preview Mode", NULL, &m_expandedDockingView, true)) {
+					m_resetDockspace = true;
+				}
+
+				ImGui::EndMenu();
+			}
+
+			ImGui::EndMenuBar();
+		}
+
 		ImGui::End();
 
+
+		
 		ImGui::Begin("Viewport Preview");
 		m_enginePreview.draw();
 		ImGui::End();
 		
-		ImGui::Begin("CHAPTERS");
-		m_engineChapterGraph.draw();
+		if (ImGui::Begin("CHAPTERS")) {
+			m_engineChapterGraph.draw();
+		}
 		ImGui::End();
 
-		ImGui::Begin("NODES");
-		m_engineNodeGraph.draw();
+		if (ImGui::Begin("NODES")) {
+			m_engineNodeGraph.draw();
+		}
 		ImGui::End();
 
 		ImGui::ShowDemoWindow();

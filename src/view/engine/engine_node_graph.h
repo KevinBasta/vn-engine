@@ -23,6 +23,10 @@ public:
 
 	}
 
+	std::string getGraphName() {
+		return "NODES_GRAPH_EDITOR";
+	}
+
 	id getLinkableHeadId() {
 		return ModelSubject::getChapterById(m_stateSubject->getChapterId())->getHeadNodeId();
 	}

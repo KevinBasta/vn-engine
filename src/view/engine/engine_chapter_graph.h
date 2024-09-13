@@ -18,6 +18,10 @@ public:
 	{
 	}
 
+	std::string getGraphName() {
+		return "CHAPTERS_GRAPH_EDITOR";
+	}
+
 	id getLinkableHeadId() {
 		return ModelSubject::getFirstChapterId();
 	}

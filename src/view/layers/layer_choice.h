@@ -77,6 +77,12 @@ public:
 				return;
 			}
 
+			// TODO: make permeneant solution for this engine text too small 
+			// for rendering issue.
+			if (frame.width < 10 || frame.height < 10) {
+				return;
+			}
+
 			int index{ 0 };
 			int selected{ m_stateSubject->m_choices.getChoiceIndex() };
 			float paddingBottom{ 200.0f };
