@@ -21,5 +21,6 @@ void TextureStore::loadTexture(index textureIndex) {
 	if (textureLoaded == m_loadedTextures.end()) {
 		std::string& texturePath{ m_texturePaths[textureIndex].value()};
 		TextureManager::registerTexture({m_id, textureIndex}, texturePath);
+		m_loadedTextures.insert(textureIndex);
 	}
 }

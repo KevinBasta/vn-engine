@@ -32,6 +32,8 @@ public:
 		
 		TextureManager* manager{ m_instance.get() };
 
+		// NOTE: construction of a Texture2D is expensive. Can cause slowdowns on main thread.
+		// TODO: assess only calling texture manager on a separate thread and doing the texture loading ahead of time.
 		std::unique_ptr<Texture2D> texture{ std::make_unique<Texture2D>(path) };
 
 		manager->m_textureMap[textureIdentifier] = std::move(texture);

@@ -71,7 +71,7 @@ private:
 	ModelCharacters m_modelCharacters{};
 
 public:
-	~ModelSubject() {}
+	~ModelSubject() { std::cout << "MODEL DECONSTRUCTOR CALLED" << std::endl; }
 
 	static void init() {
 		ModelSubject* model{ validateInstance() };

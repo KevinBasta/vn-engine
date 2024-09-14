@@ -53,6 +53,7 @@ bool ChapterIterator::advanceChapter(StateSubject* stateSubject) {
 	return false;
 }
 
+// TODO: Optimizations needed for nodes who's first step is to load new textures.
 bool ChapterIterator::advanceNode(StateSubject* stateSubject) {
 	Node* child{ nullptr };
 	id    childId{ 0 };
