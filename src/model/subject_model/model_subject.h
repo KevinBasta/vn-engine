@@ -3,6 +3,7 @@
 
 #include "subject.h"
 
+#include "timer.h"
 #include "index.h"
 #include "texture.h"
 #include "character.h"
@@ -30,6 +31,7 @@
 #include <vector>
 #include <unordered_map>
 #include <memory>
+#include <thread>
 
 class ChapterIterator;
 
@@ -76,11 +78,32 @@ public:
 	static void init() {
 		ModelSubject* model{ validateInstance() };
 
+		Timer timer{};
+
+		timer.resetp();
+		/*
+		// Without multithreading
+
 		model->m_modelChapters.createChapterOne();
 		model->m_modelTextures.initTextureStores();
-		model->m_modelRelations.initRelationTypes();
+		//model->m_modelRelations.initRelationTypes();
 		model->m_modelRelations.initBaseRelations();
 		model->m_modelCharacters.initCharacters();
+		*/
+
+		// With multithreading
+		std::thread chaptersThread(&ModelChapters::createChapterOne, &model->m_modelChapters);
+		std::thread relationsThread(&ModelRelations::initBaseRelations, &model->m_modelRelations);
+		std::thread charactersThread(&ModelCharacters::initCharacters, &model->m_modelCharacters);
+		std::thread texturesThread(&ModelTextures::initTextureStores, &model->m_modelTextures);
+
+		// Wait for the threads to finish
+		chaptersThread.join();
+		relationsThread.join();
+		charactersThread.join();
+		texturesThread.join();
+		 
+		timer.elapsedp();
 	}
 
 	// Iterators

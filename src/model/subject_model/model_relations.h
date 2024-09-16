@@ -26,6 +26,7 @@ private:
 	}
 
 	void initBaseRelations() {
+		initRelationTypes();
 		id garuId{ 1 };
 		id brzId{ 2 };
 

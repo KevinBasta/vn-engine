@@ -152,7 +152,7 @@ add_executable (
 	"src/view/engine/engine_preview.cpp" 
 	"src/model/resource_managers/runtime_chapter_manager.h" 
 	"src/model/resource_managers/engine_chapter_manager.h" 
-	"src/model/resource_managers/engine_node_manager.h" "src/view/engine/engine_chapter_graph.h" "src/view/engine/engine_node_graph.h" "src/view/engine/engine_sidebar.h")
+	"src/model/resource_managers/engine_node_manager.h" "src/view/engine/engine_chapter_graph.h" "src/view/engine/engine_node_graph.h" "src/view/engine/engine_sidebar.h" "src/model/stores/sound_store.h" "src/model/stores/sound_store.cpp")
 
 target_include_directories(
 	"vn_engine"
