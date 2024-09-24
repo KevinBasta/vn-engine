@@ -77,6 +77,9 @@ protected:
 	int m_uniqueId{ 1 };
 	int m_linkId{ 1 };
 	id m_previousHead{ 0 };
+	// TODO: update selected graph node based on state subject
+	// when it switches through preview interaction, switch here
+	// when you switch here, change the state subject iterator
 
 	std::unordered_map<NodeLinkKey, NodeLinkData, NodeLinkKeyHasher> m_currentLinks{};
 	std::unordered_map<ed::PinId, id, PinIdHasher> m_pinInIdToNodeId{};

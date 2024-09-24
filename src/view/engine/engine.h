@@ -117,15 +117,25 @@ public:
 					ImGui::DockBuilderDockWindow("Dear ImGui Demo", dockspace_id);
 					ImGui::DockBuilderDockWindow("CHAPTERS", dockspace_id);
 					ImGui::DockBuilderDockWindow("NODES", dockspace_id);
+					ImGui::DockBuilderDockWindow("BROWSE", dockspace_id);
+					ImGui::DockBuilderDockWindow("NODE EDITOR", dockspace_id);
+					ImGui::DockBuilderDockWindow("CHAPTER EDITOR", dockspace_id);
+					ImGui::DockBuilderDockWindow("TEXTURE STORES", dockspace_id);
+					//ImGui::DockBuilderDockWindow("SOUND STORES", dockspace_id);
 				}
 				else {
 					ImGuiID dock_id_left = ImGui::DockBuilderSplitNode(dockspace_id, ImGuiDir_Left, 0.4f, nullptr, &dockspace_id);
 
-					ImGuiID dock_id_down = 0;
-					ImGuiID dock_id_up = ImGui::DockBuilderSplitNode(dockspace_id, ImGuiDir_Up, 0.5f, nullptr, &dock_id_down);
+					ImGuiID dock_id_up = 0;
+					ImGuiID dock_id_down = ImGui::DockBuilderSplitNode(dockspace_id, ImGuiDir_Down, 0.5f, nullptr, &dock_id_up);
 
 					// we now dock our windows into the docking node we made above
 					ImGui::DockBuilderDockWindow("Dear ImGui Demo", dock_id_left);
+					ImGui::DockBuilderDockWindow("BROWSE", dock_id_left);
+					ImGui::DockBuilderDockWindow("NODE EDITOR", dock_id_left);
+					ImGui::DockBuilderDockWindow("CHAPTER EDITOR", dock_id_left);
+					ImGui::DockBuilderDockWindow("TEXTURE STORES", dock_id_left);
+					//ImGui::DockBuilderDockWindow("SOUND STORES", dock_id_left);
 					ImGui::DockBuilderDockWindow("Viewport Preview", dock_id_up);
 					ImGui::DockBuilderDockWindow("CHAPTERS", dock_id_down);
 					ImGui::DockBuilderDockWindow("NODES", dock_id_down);
@@ -192,6 +202,34 @@ public:
 		ImGui::End();
 
 		ImGui::ShowDemoWindow();
+
+
+		if (ImGui::Begin("BROWSE")) {
+		
+		}
+		ImGui::End();
+		
+		if (ImGui::Begin("NODE EDITOR")) {
+		
+		}
+		ImGui::End();
+
+		if (ImGui::Begin("CHAPTER EDITOR")) {
+
+		}
+		ImGui::End();
+
+
+		if (ImGui::Begin("TEXTURE STORES")) {
+
+		}
+		ImGui::End();
+
+		/*if (ImGui::Begin("SOUND STORES")) {
+
+		}
+		ImGui::End();*/
+
 
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
