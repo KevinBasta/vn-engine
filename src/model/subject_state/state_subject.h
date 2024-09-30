@@ -39,6 +39,9 @@ public:
 	id getChapterId() { return iterator.getChapterId(); }
 	id getNodeId() { return iterator.getNodeId(); }
 
+	void goToChapterId(id chapterId) { chapterEndActions(); iterator = ChapterIterator{ chapterId }; }
+	void goToNodeId(id nodeId) { nodeEndActions(); iterator = ChapterIterator{ iterator.getChapterId(), nodeId }; }
+
 public:
 	// non-serialize critical (partial data may be saved for savefile thumbnails for example)
 	StateDialogue m_dialogue{};

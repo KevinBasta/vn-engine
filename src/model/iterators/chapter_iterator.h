@@ -79,7 +79,7 @@ public:
 		m_chapterId{ chapterId },
 		m_nodeId{ nodeId }
 	{
-
+		
 	}
 
 	bool goToNextNode(StateSubject* stateSubject);

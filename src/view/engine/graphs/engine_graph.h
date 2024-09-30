@@ -32,10 +32,24 @@ namespace std
 			return static_cast<std::size_t>(s.Get());
 		}
 	};
+
+	template<> struct hash<ed::NodeId>
+	{
+		std::size_t operator()(const ed::NodeId& s) const noexcept
+		{
+			return static_cast<std::size_t>(s.Get());
+		}
+	};
 }
 
 class VnEngineGraph {
 public:
+	struct NodeIdHasher {
+		size_t operator()(const ed::NodeId& key) const {
+			return std::hash<ed::NodeId>()(key);
+		}
+	};
+
 	struct PinIdHasher {
 		size_t operator()(const ed::PinId& key) const {
 			return std::hash<ed::PinId>()(key);
@@ -82,6 +96,7 @@ protected:
 	// when you switch here, change the state subject iterator
 
 	std::unordered_map<NodeLinkKey, NodeLinkData, NodeLinkKeyHasher> m_currentLinks{};
+	std::unordered_map<ed::NodeId, id, NodeIdHasher> m_nodeIdToLinkableId{};
 	std::unordered_map<ed::PinId, id, PinIdHasher> m_pinInIdToNodeId{};
 	std::unordered_map<ed::PinId, id, PinIdHasher> m_pinOutIdToNodeId{};
 	std::set<id> m_drawnNodes{};
@@ -94,6 +109,8 @@ public:
 		ed::Config config;
 		config.SettingsFile = filename;
 		m_context = ed::CreateEditor(&config);
+		// TODO: deselect everything on first frame? May need to change imgui node editor config file
+		// TODO: serialize the current chapter and node (and step?) editing for project files?
 	}
 
 	virtual ~VnEngineGraph() {
@@ -105,7 +122,7 @@ public:
 	virtual const Linkable* getLinkableHead() = 0;
 	virtual Linkable* getLinkableById(id linkableId) = 0;
 	virtual std::wstring getLinkableName(id linkableId) = 0;
-	virtual id getCurrentSelectedLinkable() = 0;
+	virtual id getCurrentStateLinkable() = 0;
 	virtual void setCurrentStateToLinkable(id linkableId) = 0;
 
 	void draw() {
@@ -265,6 +282,16 @@ public:
 		ed::EndDelete();
 		ed::End();
 
+
+		ed::NodeId doubleClickedNode{ ed::GetDoubleClickedNode() };
+		
+		if (doubleClickedNode && m_nodeIdToLinkableId[doubleClickedNode] != getCurrentStateLinkable()) {
+			setCurrentStateToLinkable(m_nodeIdToLinkableId[doubleClickedNode]);
+		}
+		else {
+			//ed::SelectNode(currentStateLinkable, true);
+		}
+
 		if (m_doInitialNavigation) {
 			// The graphs are not drawn in the first gameloop
 			// so navigate to the graph content at the 5th gameloop
@@ -299,12 +326,17 @@ public:
 		ed::PinId  outPinId = m_uniqueId++;
 
 		m_drawnNodes.insert(linkableId);
+		m_nodeIdToLinkableId[nodeId] = linkableId;
 		m_pinInIdToNodeId[inPinId] = linkableId;
 		m_pinOutIdToNodeId[outPinId] = linkableId;
 		
 		// Draw the node in the graph window
 		if (m_firstFrame)
 			ed::SetNodePosition(nodeId, ImVec2(x, y));
+
+		if (getCurrentStateLinkable() == linkableId) {
+			ed::PushStyleColor(ed::StyleColor_NodeBg, ImColor(128, 128, 128, 200));
+		}
 
 		ed::BeginNode(nodeId);
 
@@ -326,6 +358,10 @@ public:
 
 		ed::EndNode();
 
+		if (getCurrentStateLinkable() == linkableId) {
+			ed::PopStyleColor(1);
+		}
+		
 		// Populate graph link information for both parent and child nodes
 		populateParentLinks(linkable, inPinId);
 		populateChildLinks(linkable, outPinId);

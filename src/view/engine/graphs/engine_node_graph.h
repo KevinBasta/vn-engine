@@ -50,7 +50,7 @@ public:
 		return wide;
 	}
 
-	id getCurrentSelectedLinkable() {
+	id getCurrentStateLinkable() {
 		if (m_stateSubject != nullptr) {
 			return m_stateSubject->getNodeId();
 		}
@@ -59,7 +59,7 @@ public:
 	}
 
 	void setCurrentStateToLinkable(id linkableId) {
-
+		m_stateSubject->goToNodeId(linkableId);
 	}
 };
 

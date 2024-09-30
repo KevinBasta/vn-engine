@@ -38,7 +38,7 @@ public:
 		return ModelSubject::getChapterById(linkableId)->getName();
 	}
 
-	id getCurrentSelectedLinkable() {
+	id getCurrentStateLinkable() {
 		if (m_stateSubject != nullptr) {
 			return m_stateSubject->getChapterId();
 		}
@@ -47,7 +47,7 @@ public:
 	}
 
 	void setCurrentStateToLinkable(id linkableId) {
-
+		m_stateSubject->goToChapterId(linkableId);
 	}
 };
 
