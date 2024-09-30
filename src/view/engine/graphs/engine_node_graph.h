@@ -50,6 +50,17 @@ public:
 		return wide;
 	}
 
+	id getCurrentSelectedLinkable() {
+		if (m_stateSubject != nullptr) {
+			return m_stateSubject->getNodeId();
+		}
+
+		return getLinkableHeadId();
+	}
+
+	void setCurrentStateToLinkable(id linkableId) {
+
+	}
 };
 
 #endif // VN_ENGINE_NODE_GRAPH_H

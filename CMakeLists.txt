@@ -146,13 +146,18 @@ add_executable (
 	"src/view/resource_managers/texture_manager.h" 
 	"src/view/resource_managers/texture_manager.cpp" 
 	"src/view/engine_properties.h" 
-	"src/view/engine/engine_graph.cpp" 
-	"src/view/engine/engine_graph.h" 
-	"src/view/engine/engine_preview.h" 
-	"src/view/engine/engine_preview.cpp" 
+	"src/view/engine/graphs/engine_graph.cpp" 
+	"src/view/engine/graphs/engine_graph.h" 
+	"src/view/engine/viewport/engine_preview.h" 
+	"src/view/engine/viewport/engine_preview.cpp" 
 	"src/model/resource_managers/runtime_chapter_manager.h" 
 	"src/model/resource_managers/engine_chapter_manager.h" 
-	"src/model/resource_managers/engine_node_manager.h" "src/view/engine/engine_chapter_graph.h" "src/view/engine/engine_node_graph.h" "src/view/engine/engine_sidebar.h" "src/model/stores/sound_store.h" "src/model/stores/sound_store.cpp")
+	"src/model/resource_managers/engine_node_manager.h" 
+	"src/view/engine/graphs/engine_chapter_graph.h" 
+	"src/view/engine/graphs/engine_node_graph.h" 
+	 
+	"src/model/stores/sound_store.h" 
+	"src/model/stores/sound_store.cpp")
 
 target_include_directories(
 	"vn_engine"
@@ -176,6 +181,9 @@ target_include_directories(
 	"src/view"
 	"src/view/base"
 	"src/view/engine"
+	"src/view/engine/graphs"
+	"src/view/engine/sidebar"
+	"src/view/engine/viewport"
 	"src/view/game"
 	"src/view/layers"
 	"src/view/resource_managers"

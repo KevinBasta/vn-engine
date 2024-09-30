@@ -105,6 +105,8 @@ public:
 	virtual const Linkable* getLinkableHead() = 0;
 	virtual Linkable* getLinkableById(id linkableId) = 0;
 	virtual std::wstring getLinkableName(id linkableId) = 0;
+	virtual id getCurrentSelectedLinkable() = 0;
+	virtual void setCurrentStateToLinkable(id linkableId) = 0;
 
 	void draw() {
 		auto& io = ImGui::GetIO();

@@ -37,6 +37,18 @@ public:
 	std::wstring getLinkableName(id linkableId) {
 		return ModelSubject::getChapterById(linkableId)->getName();
 	}
+
+	id getCurrentSelectedLinkable() {
+		if (m_stateSubject != nullptr) {
+			return m_stateSubject->getChapterId();
+		}
+
+		return getLinkableHeadId();
+	}
+
+	void setCurrentStateToLinkable(id linkableId) {
+
+	}
 };
 
 #endif // VN_ENGINE_CHAPTER_GRAPH_H
