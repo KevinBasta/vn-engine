@@ -71,7 +71,12 @@ public:
 		double lastFrame = 0.0f;
 
 		while (!glfwWindowShouldClose(m_window->get())) {
-			m_controller.processInput();
+			if (m_engine.framebufferFocused()) {
+				m_controller.processInput();
+			}
+			else {
+				m_controller.processInput(false);
+			}
 
 			double currentFrame = glfwGetTime();
 			deltaTime = currentFrame - lastFrame;

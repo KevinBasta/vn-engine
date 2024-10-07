@@ -3,6 +3,8 @@
 
 #include "window.h"
 #include "state_subject.h"
+#include "engine_properties.h"
+
 
 static bool sg_leftButtonReleaseEvent{ false };
 static bool sg_upKeyButtonReleaseEvent{ false };
@@ -48,12 +50,24 @@ public:
 		glfwSetKeyCallback(window->get(), keyPressCallback);
 	}
 
-	void processInput() {
-		processMouse();
-		processKeyboard();
+	void processInput(bool doActions = true) {
+		if (doActions) {
+			processMouse();
+			processKeyboard();
+		}
+		else {
+			discardMouse();
+			discardKeyboard();
+		}
 	}
 
 private:
+	void discardMouse() {
+		if (sg_leftButtonReleaseEvent) {
+			sg_leftButtonReleaseEvent = false;
+		}
+	}
+
 	void processMouse() {
 		// Do a state step on left click
 		if (sg_leftButtonReleaseEvent) {
@@ -75,8 +89,23 @@ private:
 		//}
 	}
 
+	void discardKeyboard() {
+		if (sg_enterKeyButtonReleaseEvent) {
+			sg_enterKeyButtonReleaseEvent = false;
+		}
+
+		if (sg_upKeyButtonReleaseEvent) {
+			sg_upKeyButtonReleaseEvent = false;
+		}
+
+		if (sg_downKeyButtonReleaseEvent) {
+			sg_downKeyButtonReleaseEvent = false;
+		}
+	}
+
 	void processKeyboard() {
-		if (glfwGetKey(m_window->get(), GLFW_KEY_ESCAPE) == GLFW_PRESS) {
+
+		if (!IS_ENGINE_ACTIVE && glfwGetKey(m_window->get(), GLFW_KEY_ESCAPE) == GLFW_PRESS) {
 			// TODO: open menu?
 			glfwSetWindowShouldClose(m_window->get(), true);
 		}

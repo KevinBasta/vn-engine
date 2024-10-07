@@ -56,6 +56,7 @@ public:
 	void createDockspace();
 	void createMenuBar();
 	void draw();
+	bool framebufferFocused();
 };
 
 

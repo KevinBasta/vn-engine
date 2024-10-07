@@ -30,6 +30,12 @@ VnEngine::VnEngine(VnWindow* window, StateSubject* stateSubject, GameContext* co
 	initImgui();
 }
 
+bool VnEngine::framebufferFocused() {
+	auto framebufferWindow{ ImGui::FindWindowByName(WINDOW_VIEWPORT_PREVIEW) };
+	auto currentWindow{ ImGui::GetCurrentContext()->NavWindow };
+	return  (currentWindow != nullptr) && (framebufferWindow == currentWindow) ;
+}
+
 void VnEngine::initImgui() {
 	// Init imgui
 	IMGUI_CHECKVERSION();
@@ -103,6 +109,7 @@ void VnEngine::createDockspace() {
 			else {
 				ImGuiID dock_id_left = ImGui::DockBuilderSplitNode(dockspace_id, ImGuiDir_Left, 0.4f, nullptr, &dockspace_id);
 
+				// The order of these two decides which one expands when the OpenGL window is put in full screen
 				ImGuiID dock_id_up = 0;
 				ImGuiID dock_id_down = ImGui::DockBuilderSplitNode(dockspace_id, ImGuiDir_Down, 0.5f, nullptr, &dock_id_up);
 

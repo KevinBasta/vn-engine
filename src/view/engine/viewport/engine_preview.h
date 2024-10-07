@@ -23,7 +23,6 @@ public:
 
 	}
 
-
 	void draw() {
 		//
 		// Game view window
