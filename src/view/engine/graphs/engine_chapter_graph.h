@@ -7,6 +7,7 @@
 #include "state_subject.h"
 #include "model_subject.h"
 
+// TODO: ALL ERROR HANDLING 
 class VnEngineChapterGraph : public VnEngineGraph {
 private:
 	StateSubject* m_stateSubject{ nullptr };

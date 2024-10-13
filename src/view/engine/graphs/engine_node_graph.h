@@ -11,6 +11,7 @@
 #include <codecvt>
 #include <string>
 
+// TODO: ALL ERROR HANDLING
 class VnEngineNodeGraph : public VnEngineGraph {
 private:
 	StateSubject* m_stateSubject{ nullptr };

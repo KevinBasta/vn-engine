@@ -50,8 +50,8 @@ public:
 		glfwSetKeyCallback(window->get(), keyPressCallback);
 	}
 
-	void processInput(bool doActions = true) {
-		if (doActions) {
+	void processInput(bool processInput = true) {
+		if (processInput) {
 			processMouse();
 			processKeyboard();
 		}
@@ -105,7 +105,7 @@ private:
 
 	void processKeyboard() {
 
-		if (!IS_ENGINE_ACTIVE && glfwGetKey(m_window->get(), GLFW_KEY_ESCAPE) == GLFW_PRESS) {
+		if (/*!IS_ENGINE_ACTIVE && */glfwGetKey(m_window->get(), GLFW_KEY_ESCAPE) == GLFW_PRESS) {
 			// TODO: open menu?
 			glfwSetWindowShouldClose(m_window->get(), true);
 		}

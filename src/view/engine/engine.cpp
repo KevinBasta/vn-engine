@@ -31,6 +31,7 @@ VnEngine::VnEngine(VnWindow* window, StateSubject* stateSubject, GameContext* co
 }
 
 bool VnEngine::framebufferFocused() {
+	// TODO: framebuffer window can be a class member variable
 	auto framebufferWindow{ ImGui::FindWindowByName(WINDOW_VIEWPORT_PREVIEW) };
 	auto currentWindow{ ImGui::GetCurrentContext()->NavWindow };
 	return  (currentWindow != nullptr) && (framebufferWindow == currentWindow) ;
