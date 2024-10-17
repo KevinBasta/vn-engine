@@ -1,8 +1,11 @@
 #ifndef VN_ENGINE_NODE_EDITOR_H
 #define VN_ENGINE_NODE_EDITOR_H
 
+#include "id.h"
+
 #include "window.h"
 #include "context.h"
+#include "model_subject.h"
 #include "state_subject.h"
 
 #include "imgui.h"
@@ -18,6 +21,20 @@
 class VnEngineNodeEditor {
 private:
 	StateSubject* m_stateSubject;
+
+private:
+	void drawCurrentNodeSteps() {
+		if (m_stateSubject == nullptr) { return; }
+
+		id nodeId{ m_stateSubject->getNodeId() };
+		Node* node{ ModelSubject::getNodeById(nodeId) };
+		
+		if (node == nullptr) { return; }
+
+	
+
+	}
+	
 
 public:
 	VnEngineNodeEditor(StateSubject* stateSubject):
@@ -99,6 +116,8 @@ public:
 			}
 
 		}
+	
+		drawCurrentNodeSteps();
 	}
 
 };

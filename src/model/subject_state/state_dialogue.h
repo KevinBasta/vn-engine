@@ -27,7 +27,7 @@ public:
 	void handle(ActionTextLine& action) {
 		m_dialogueState.m_line = action.m_line;
 
-		Character* character = ModelSubject::getCharacterByID(action.m_characterID);
+		Character* character = ModelSubject::getCharacterById(action.m_characterID);
 
 		if (character != nullptr) {
 			m_dialogueState.m_speakerName = character->getName();

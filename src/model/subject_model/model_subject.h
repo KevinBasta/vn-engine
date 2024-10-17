@@ -134,10 +134,10 @@ public:
 	}
 
 	// Characters
-	static Character* getCharacterByID(int id) {
+	static Character* getCharacterById(int id) {
 		ModelSubject* model{ validateInstance() };
 
-		return model->m_modelCharacters.getCharacterByID(id);
+		return model->m_modelCharacters.getCharacterById(id);
 	}
 
 	// Textures

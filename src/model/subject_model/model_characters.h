@@ -24,7 +24,7 @@ private:
 		m_characters[brz.get()->getId()] = std::unique_ptr<Character>{ brz.get() };
 	}
 
-	Character* getCharacterByID(int id) {
+	Character* getCharacterById(int id) {
 		return m_characters[id].get();
 	}
 
