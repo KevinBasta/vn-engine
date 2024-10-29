@@ -7,6 +7,9 @@
 #include "context.h"
 #include "model_subject.h"
 #include "state_subject.h"
+#include "node.h"
+#include "chapter_node.h"
+#include "chapter_node_builder.h"
 
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
@@ -23,15 +26,62 @@ private:
 	StateSubject* m_stateSubject;
 
 private:
+
+	void drawStepActions(ChapterNode* node, int index) {
+
+
+
+		if (ImGui::TreeNode("##Multi-line Text Input"))
+		{
+			// Note: we are using a fixed-sized buffer for simplicity here. See ImGuiInputTextFlags_CallbackResize
+			// and the code in misc/cpp/imgui_stdlib.h for how to setup InputText() for dynamically resizing strings.
+			static char text[1024 * 16] =
+				"test\n";
+
+			static ImGuiInputTextFlags flags{ 0 };
+			//HelpMarker("You can use the ImGuiInputTextFlags_CallbackResize facility if you need to wire InputTextMultiline() to a dynamic string type. See misc/cpp/imgui_stdlib.h for an example. (This is not demonstrated in imgui_demo.cpp because we don't want to include <string> in here)");
+			ImGui::CheckboxFlags("##ReadOnly", &flags, ImGuiInputTextFlags_ReadOnly);
+			ImGui::SameLine();
+			ImGui::CheckboxFlags("##AllowTabInput", &flags, ImGuiInputTextFlags_AllowTabInput);
+			ImGui::SameLine(); //HelpMarker("When _AllowTabInput is set, passing through the widget with Tabbing doesn't automatically activate it, in order to also cycling through subsequent widgets.");
+			ImGui::CheckboxFlags("##CtrlEnterForNewLine", &flags, ImGuiInputTextFlags_CtrlEnterForNewLine);
+
+			ImGui::InputTextMultiline("##source", text, IM_ARRAYSIZE(text), ImVec2(-FLT_MIN, ImGui::GetTextLineHeight() * 16), flags);
+			ImGui::TreePop();
+		}
+
+
+	}
+
+	void drawStep(ChapterNode* node, int index) {
+		if (node == nullptr) { return; }
+
+		std::string stepTitle{ "Step #" + std::to_string(index) };
+
+		if (ImGui::TreeNode(stepTitle.c_str()))
+		{
+
+			ImGui::TreePop();
+		}
+
+	}
+
 	void drawCurrentNodeSteps() {
 		if (m_stateSubject == nullptr) { return; }
 
 		id nodeId{ m_stateSubject->getNodeId() };
-		Node* node{ ModelSubject::getNodeById(nodeId) };
+		Node* nodeBase{ ModelSubject::getNodeById(nodeId) };
 		
-		if (node == nullptr) { return; }
+		if (nodeBase == nullptr) { return; }
 
-	
+		
+		// TODO: node objects to be brought into one object OR
+		// do dynamic cast and handle failure of the cast?
+		ChapterNode* node{ static_cast<ChapterNode*>(nodeBase) };
+
+		for (int i{ 0 }; i < node->m_totalSteps; i++) {
+			drawStep(node, i);
+		}
 
 	}
 	

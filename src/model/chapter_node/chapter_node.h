@@ -13,13 +13,17 @@
 
 class StateSubject;
 class ChapterNodeBuilder;
+class VnEngineNodeEditor;
 
 class ChapterNode : public Node {
 private:
 	friend class ChapterNodeBuilder;
+	friend class VnEngineNodeEditor;
 
 	// TODO: need to determine what keeps it's state between steps and nodes and what doesn't 
 	// (e.g. text is only retained in node, when a new node comes, the text state is reset)
+
+	int m_totalSteps{ 4 };
 
 	// temp data for testing here, will be done by engine/hooks
 	std::vector<std::vector<ChapterNodeActionType>> m_steps{ 

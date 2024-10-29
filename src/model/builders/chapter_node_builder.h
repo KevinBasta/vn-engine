@@ -84,7 +84,20 @@ public:
 		}
 	}
 
+
+
 	template <class T>
+	T& getStepAction(int stepIndex) {
+		return (m_nodeDerived->*(chapterNodeHelper<T>::handler))[stepIndex];
+	}
+
+	template <class T>
+	std::vector<T>& getStepActions(int stepIndex) {
+		return (m_nodeDerived->*(chapterNodeHelper<T>::handler))[stepIndex];
+	}
+
+
+	/*template <class T>
 	std::unordered_map<int, T>& getStep(int stepIndex) {
 		return (m_nodeDerived->*(chapterNodeHelper<T>::handler))[stepIndex];
 	}
@@ -92,7 +105,7 @@ public:
 	template <class T>
 	std::unordered_map<int, std::vector<T>>& getStep(int stepIndex) {
 		return (m_nodeDerived->*(chapterNodeHelper<T>::handler))[stepIndex];
-	}
+	}*/
 
 private:
 	void updateStepActionsArray() {
