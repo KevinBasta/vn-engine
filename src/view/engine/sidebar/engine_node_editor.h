@@ -27,6 +27,28 @@ private:
 
 private:
 
+	void sectionBackgroundTexture(ChapterNode* node, int index) {
+		if (node == nullptr) { return; }
+
+		ActionBackgroundTexture* action{ ChapterNodeBuilder{ node }.getStepAction<ActionBackgroundTexture>(index) };
+
+		if (action == nullptr) { return; }
+
+
+		std::string actionTitle{ "Background Texture##IdDifferentiator" + std::to_string(index) };
+
+		if (ImGui::TreeNode(actionTitle.c_str()))
+		{
+			// TODO: make dropdown
+			// get the ids from the model (engine interface)
+			// limit the set of dragInt for texture index, and perhaps display names of texture stores and the individual textures too
+			ImGui::DragInt("Texture Store Id: ", &(action->m_texture.m_textureStoreId), 1, 0, 10, "%d", ImGuiSliderFlags_WrapAround);
+			ImGui::DragInt("Texture Index: ", &(action->m_texture.m_textureIndex), 1, 0, 10, "%d", ImGuiSliderFlags_WrapAround);
+			
+			ImGui::TreePop();
+		}
+	}
+
 	void drawStepActions(ChapterNode* node, int index) {
 
 
@@ -49,7 +71,7 @@ private:
 			ImGui::InputTextMultiline("##source", text, IM_ARRAYSIZE(text), ImVec2(-FLT_MIN, ImGui::GetTextLineHeight() * 16), flags);
 			ImGui::TreePop();
 		}
-
+		sectionBackgroundTexture(node, index);
 
 	}
 
@@ -60,7 +82,7 @@ private:
 
 		if (ImGui::TreeNode(stepTitle.c_str()))
 		{
-
+			drawStepActions(node, index);
 			ImGui::TreePop();
 		}
 

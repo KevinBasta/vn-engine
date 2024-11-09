@@ -157,7 +157,7 @@ add_executable (
 	"src/view/engine/graphs/engine_node_graph.h" 
 	 
 	"src/model/stores/sound_store.h" 
-	"src/model/stores/sound_store.cpp")
+	"src/model/stores/sound_store.cpp" "src/model/subject_model/model_runtime_interface.h" "src/model/subject_model/model_engine_interface.h")
 
 target_include_directories(
 	"vn_engine"

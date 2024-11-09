@@ -87,8 +87,8 @@ public:
 
 
 	template <class T>
-	T& getStepAction(int stepIndex) {
-		return (m_nodeDerived->*(chapterNodeHelper<T>::handler))[stepIndex];
+	T* getStepAction(int stepIndex) {
+		return &((m_nodeDerived->*(chapterNodeHelper<T>::handler))[stepIndex]);
 	}
 
 	template <class T>
