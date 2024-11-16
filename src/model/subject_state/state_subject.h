@@ -38,9 +38,31 @@ public:
 	// Engine operations
 	id getChapterId() { return iterator.getChapterId(); }
 	id getNodeId() { return iterator.getNodeId(); }
+	int getStepIndex() { return iterator.getCurrentStepIndex(); }
 
 	void goToChapterId(id chapterId) { chapterEndActions(); iterator = ChapterIterator{ chapterId }; }
 	void goToNodeId(id nodeId) { nodeEndActions(); iterator = ChapterIterator{ iterator.getChapterId(), nodeId }; }
+
+	void reloadStateStep() {
+		// TODO: validate if all three calls are needed.
+		id chapterId{ getChapterId() };
+		id nodeId{ getNodeId() };
+		int stepIndex{ getStepIndex() };
+
+		goToChapterId(chapterId);
+		goToNodeId(nodeId);
+
+
+		// TODO: the following doesn't work properly for a few reasons.
+		// 1. auto actions need an extra "step" (a virtual step) to skip the auto action
+		// 2. picking from options does not work
+		// Need a different way to implement. Maybe can use same logic that would be used
+		// for reloading a savefile to a specific chapter, node, and step.
+		// like an array of previous actions (like global save choice record or similar)
+		//for (int i{ 0 }; i < stepIndex; i++) {
+		//	action();
+		//}
+	}
 
 public:
 	// non-serialize critical (partial data may be saved for savefile thumbnails for example)

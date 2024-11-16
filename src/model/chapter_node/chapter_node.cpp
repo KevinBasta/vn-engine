@@ -151,6 +151,7 @@ bool ChapterNode::doStep(StateSubject* stateSubject, int stepIndex) {
 }
 
 
+//TODO replace stepIndex type with index type?
 NodeState ChapterNode::action(StateSubject* stateSubject, int stepIndex) 
 {
 	// TODO: Remove m_temp

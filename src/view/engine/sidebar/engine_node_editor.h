@@ -204,7 +204,7 @@ public:
 
 		if (modified) {
 			// TODO: need a new function to accumulate state up to current step in node
-			m_stateSubject->notify();
+			m_stateSubject->reloadStateStep();
 		}
 	}
 

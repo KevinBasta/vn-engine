@@ -35,6 +35,10 @@ public:
 
 		return m_latestAction;
 	}
+
+	int getCurrentStepIndex() {
+		return m_currentStep;
+	}
 };
 
 #endif // VN_NODE_ITERATOR_H

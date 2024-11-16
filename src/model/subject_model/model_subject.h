@@ -83,6 +83,7 @@ public:
 
 	static void init() {
 		ModelSubject* model{ validateInstance() };
+		// TODO: class variable to void multiple inits
 
 		Timer timer{};
 
@@ -111,6 +112,8 @@ public:
 		 
 		timer.elapsedp();
 	}
+
+	// TODO: make the functions below private, only for use through interface objects.
 
 	// Iterators
 	static ChapterIterator iter();

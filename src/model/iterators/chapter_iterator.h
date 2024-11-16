@@ -98,8 +98,7 @@ public:
 	}
 
 	index getCurrentStepIndex() {
-		//return m_nodeRunner.
-		return 0;
+		return m_nodeRunner.getCurrentStepIndex();
 	}
 };
 
