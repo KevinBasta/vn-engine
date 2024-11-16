@@ -24,8 +24,18 @@
 class VnEngineNodeEditor {
 private:
 	StateSubject* m_stateSubject;
+	bool modified{ false };
 
 private:
+	void updateViewport() {
+
+	}
+
+	void check(bool fieldModified) {
+		if (fieldModified) {
+			modified = true;
+		}
+	}
 
 	void sectionBackgroundTexture(ChapterNode* node, int index) {
 		if (node == nullptr) { return; }
@@ -42,8 +52,8 @@ private:
 			// TODO: make dropdown
 			// get the ids from the model (engine interface)
 			// limit the set of dragInt for texture index, and perhaps display names of texture stores and the individual textures too
-			ImGui::DragInt("Texture Store Id: ", &(action->m_texture.m_textureStoreId), 1, 0, 10, "%d", ImGuiSliderFlags_WrapAround);
-			ImGui::DragInt("Texture Index: ", &(action->m_texture.m_textureIndex), 1, 0, 10, "%d", ImGuiSliderFlags_WrapAround);
+			check(ImGui::DragInt("Texture Store Id: ", &(action->m_texture.m_textureStoreId), 1, 0, 10, "%d", ImGuiSliderFlags_WrapAround));
+			check(ImGui::DragInt("Texture Index: ", &(action->m_texture.m_textureIndex), 1, 0, 10, "%d", ImGuiSliderFlags_WrapAround));
 			
 			ImGui::TreePop();
 		}
@@ -104,7 +114,6 @@ private:
 		for (int i{ 0 }; i < node->m_totalSteps; i++) {
 			drawStep(node, i);
 		}
-
 	}
 	
 
@@ -122,6 +131,8 @@ public:
 
 public:
 	void draw() {
+		modified = false;
+
 		constexpr int itemNumb{ 3 };
 		const char* items[itemNumb] = {
 			"##foo",
@@ -190,6 +201,11 @@ public:
 		}
 	
 		drawCurrentNodeSteps();
+
+		if (modified) {
+			// TODO: need a new function to accumulate state up to current step in node
+			m_stateSubject->notify();
+		}
 	}
 
 };

@@ -4,6 +4,7 @@
 #include "state_types.h"
 #include "chapter_node_types.h"
 #include "model_subject.h"
+#include "model_runtime_interface.h"
 
 class StateDialogue {
 	// TODO add text style type for background translusent black for character thoughts
@@ -27,11 +28,13 @@ public:
 	void handle(ActionTextLine& action) {
 		m_dialogueState.m_line = action.m_line;
 
-		Character* character = ModelSubject::getCharacterById(action.m_characterID);
+		// TODO: should the character data be updatable? or just overriden by the actions?
+		Character* character = ModelRuntimeInterface::getCharacterById(action.m_characterID);
 
 		if (character != nullptr) {
 			m_dialogueState.m_speakerName = character->getName();
-			m_dialogueState.m_color = character->getTextColor();
+			// TODO: text color override? Depends on order of actions. Make it order independant?
+			m_dialogueState.m_color = character->getTextColor(); 
 		}
 		else {
 			std::cout << "handle ActionTextLine half failed" << std::endl;

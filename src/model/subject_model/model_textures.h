@@ -11,10 +11,14 @@
 #define TEMP_SPRITE_TEXTURE		VN_BASE_PATH"/test/assets/garu_outline.png"
 
 class ModelSubject;
+class ModelRuntimeInterface;
+class ModelEngineInterface;
 
 class ModelTextures {
 private:
 	friend class ModelSubject;
+	friend class ModelRuntimeInterface;
+	friend class ModelEngineInterface;
 
 	using TextureStoreMap = std::unordered_map<id, std::unique_ptr<TextureStore>>;
 	TextureStoreMap m_textureStores{};

@@ -4,6 +4,7 @@
 #include "id.h"
 #include "relations.h"
 #include "model_subject.h"
+#include "model_runtime_interface.h"
 
 #include <unordered_map>
 #include <memory>
@@ -31,7 +32,7 @@ public:
 	void reset() {
 		m_characterRelationsData.clear();
 
-		for (const auto& [characterId, baseRelationUniquePtr] : ModelSubject::getBaseRelations()) {
+		for (const auto& [characterId, baseRelationUniquePtr] : ModelRuntimeInterface::getBaseRelations()) {
 			Relations* const baseRelationsObj{ baseRelationUniquePtr.get() };
 			Relations* newRelationObj{ new Relations{*baseRelationsObj} };
 

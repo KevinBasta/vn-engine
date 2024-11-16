@@ -11,10 +11,14 @@
 #include <unordered_map>
 
 class ModelSubject;
+class ModelRuntimeInterface;
+class ModelEngineInterface;
 
 class ModelRelations {
 private:
 	friend class ModelSubject;
+	friend class ModelRuntimeInterface;
+	friend class ModelEngineInterface;
 
 	std::unordered_map<id, std::unique_ptr<Relations>> m_baseRelations{};
 

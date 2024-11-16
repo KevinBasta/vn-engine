@@ -5,10 +5,14 @@
 #include "character_builder.h"
 
 class ModelSubject;
+class ModelRuntimeInterface;
+class ModelEngineInterface;
 
 class ModelCharacters {
 private:
 	friend class ModelSubject;
+	friend class ModelRuntimeInterface;
+	friend class ModelEngineInterface;
 
 	using CharacterMap = std::unordered_map<id, std::unique_ptr<Character>>;
 	CharacterMap m_characters{};

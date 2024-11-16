@@ -2,13 +2,14 @@
 #include "state_subject.h"
 #include "state_types.h"
 #include "model_subject.h"
+#include "model_runtime_interface.h"
 #include "state_sprites.h"
 #include "chapter_node_types.h"
 
 void StateSprites::handle(ActionSpriteProperty& action) {
 	if (m_spriteRenderData.find(action.m_texture) == m_spriteRenderData.end()) {
 		// TODO: handle error/exceptions
-		ModelSubject::loadTexture(action.m_texture);		
+		ModelRuntimeInterface::loadTexture(action.m_texture);		
 	}
 
 	switch (action.m_property)

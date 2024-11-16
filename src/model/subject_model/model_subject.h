@@ -34,6 +34,8 @@
 #include <thread>
 
 class ChapterIterator;
+class ModelRuntimeInterface;
+class ModelEngineInterface;
 
 // TODO:
 // LOAD FILES - modelinfo.format can contain things like what the chapter id for a new game is, textures for home screen etc..
@@ -50,6 +52,10 @@ class ChapterIterator;
 // TODO: arr telling which chapters loaded, func to ckeck and load
 class ModelSubject : public Subject {
 private:
+	// Interface friend classes
+	friend class ModelRuntimeInterface;
+	friend class ModelEngineInterface;
+
 	// Singleton helpers
 	static std::unique_ptr<ModelSubject> m_instance;
 
@@ -131,27 +137,6 @@ public:
 		ModelSubject* model{ validateInstance() };
 
 		return model->m_modelChapters.getNodeById(nodeId);
-	}
-
-	// Characters
-	static Character* getCharacterById(int id) {
-		ModelSubject* model{ validateInstance() };
-
-		return model->m_modelCharacters.getCharacterById(id);
-	}
-
-	// Textures
-	static void loadTexture(TextureIdentifier& textureId) {
-		ModelSubject* model{ validateInstance() };
-
-		model->m_modelTextures.loadTexture(textureId);
-	}
-
-	// Relations
-	static const std::unordered_map<id, std::unique_ptr<Relations>>& getBaseRelations() {
-		ModelSubject* model{ validateInstance() };
-
-		return model->m_modelRelations.m_baseRelations;
 	}
 };
 

@@ -5,6 +5,7 @@
 
 #include "state_types.h"
 #include "model_subject.h"
+#include "model_runtime_interface.h"
 #include "chapter_node_types.h"
 
 class StateBackground {
@@ -21,7 +22,7 @@ public:
 		// TODO: have load texture return a true if success
 		// if fail then fall back to a base image for background
 		// or a solid color?
-		ModelSubject::loadTexture(backgroundAction.m_texture);
+		ModelRuntimeInterface::loadTexture(backgroundAction.m_texture);
 
 		//m_stateDelta.push_back(StateDelta::BACKGROUND);
 	}
