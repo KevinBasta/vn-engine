@@ -1,17 +1,12 @@
 
-#ifndef MODEL_RUNTIME_INTERFACE_H
-#define MODEL_RUNTIME_INTERFACE_H
+#ifndef MODEL_INTERFACE_RUNTIME_H
+#define MODEL_INTERFACE_RUNTIME_H
 
 #include "model_subject.h"
+#include "model_common_interface.h"
 
-class ModelRuntimeInterface {
+class ModelRuntimeInterface : public ModelCommonInterface {
 public:
-	// Common interface calls the ModelSubject implementation
-	static id getFirstChapterId()					{ return ModelSubject::getFirstChapterId(); }
-	static const Chapter* getHeadChapter()			{ return ModelSubject::getHeadChapter(); }
-	static Chapter* getChapterById(id chapterId)	{ return ModelSubject::getChapterById(chapterId); }
-	static Node* getNodeById(id nodeId)				{ return ModelSubject::getNodeById(nodeId); }
-
 	// Characters
 	static Character* getCharacterById(int id) {
 		ModelSubject* model{ ModelSubject::validateInstance() };
@@ -34,5 +29,4 @@ public:
 	}
 };
 
-
-#endif // MODEL_RUNTIME_INTERFACE_H
+#endif // MODEL_INTERFACE_RUNTIME_H

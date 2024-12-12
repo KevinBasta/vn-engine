@@ -76,17 +76,20 @@ add_executable (
 	"src/model/stores/texture_store.h"
 	"src/model/stores/texture_store.cpp"
 	
-	"src/model/subject_model/model_chapters.cpp"
-	"src/model/subject_model/model_chapters.h"
-	"src/model/subject_model/model_characters.cpp" 
-	"src/model/subject_model/model_characters.h" 
-	"src/model/subject_model/model_relations.h" 
-	"src/model/subject_model/model_realtions.cpp" 
-	"src/model/subject_model/model_subject.cpp"
-	"src/model/subject_model/model_subject.h"
-    "src/model/subject_model/model_textures.cpp" 
-    "src/model/subject_model/model_textures.h" 
-	
+	"src/model/subject_model/components/model_chapters.cpp"
+	"src/model/subject_model/components/model_chapters.h"
+	"src/model/subject_model/components/model_characters.cpp" 
+	"src/model/subject_model/components/model_characters.h" 
+	"src/model/subject_model/components/model_relations.h" 
+	"src/model/subject_model/components/model_realtions.cpp" 
+    "src/model/subject_model/components/model_textures.cpp" 
+    "src/model/subject_model/components/model_textures.h" 
+	"src/model/subject_model/interface/model_subject.cpp"
+	"src/model/subject_model/interface/model_subject.h"
+	"src/model/subject_model/interface/model_runtime_interface.h" 
+	"src/model/subject_model/interface/model_engine_interface.h" 
+	"src/model/subject_model/interface/model_common_interface.h"
+
 	"src/model/subject_state/state_background.h" 
 	"src/model/subject_state/state_choices.cpp" 
 	"src/model/subject_state/state_choices.h" 
@@ -157,7 +160,8 @@ add_executable (
 	"src/view/engine/graphs/engine_node_graph.h" 
 	 
 	"src/model/stores/sound_store.h" 
-	"src/model/stores/sound_store.cpp" "src/model/subject_model/model_runtime_interface.h" "src/model/subject_model/model_engine_interface.h")
+	"src/model/stores/sound_store.cpp" 
+)
 
 target_include_directories(
 	"vn_engine"
@@ -175,6 +179,8 @@ target_include_directories(
 	"src/model/savefile"
 	"src/model/stores"
 	"src/model/subject_model"
+	"src/model/subject_model/components"
+	"src/model/subject_model/interface"
 	"src/model/subject_state"
 	"src/model/resource_managers"
 

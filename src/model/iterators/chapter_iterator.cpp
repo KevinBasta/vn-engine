@@ -4,7 +4,7 @@
 #include "node.h"
 #include "chapter.h"
 
-#include "model_subject.h"
+#include "model_runtime_interface.h"
 #include "state_subject.h"
 
 #include <iostream>
@@ -18,14 +18,14 @@ bool ChapterIterator::advanceChapter(StateSubject* stateSubject) {
 		chapterId = stateSubject->m_nextChapter.getNextChapterId();
 
 		if (m_chapterPtr->hasChild(chapterId)) {
-			chapter = ModelSubject::getChapterById(chapterId);
+			chapter = ModelRuntimeInterface::getChapterById(chapterId);
 		}
 	}
 
 	if (chapter == nullptr) {
 		try {
 			chapterId = m_chapterPtr->getFirstChildId();
-			chapter = ModelSubject::getChapterById(chapterId);
+			chapter = ModelRuntimeInterface::getChapterById(chapterId);
 		}
 		catch (...) {
 			std::cout << "no more chapters" << std::endl;
@@ -62,7 +62,7 @@ bool ChapterIterator::advanceNode(StateSubject* stateSubject) {
 		childId = stateSubject->m_nextNode.getNextNodeId();
 
 		if (m_nodePtr->hasChild(childId)) {
-			child = ModelSubject::getNodeById(childId);
+			child = ModelRuntimeInterface::getNodeById(childId);
 		}
 	}
 
@@ -72,7 +72,7 @@ bool ChapterIterator::advanceNode(StateSubject* stateSubject) {
 		// TODO: should get any child not visited yet, with fall back to 0
 		try {
 			childId = m_nodePtr->getFirstChildId();
-			child = ModelSubject::getNodeById(childId);
+			child = ModelRuntimeInterface::getNodeById(childId);
 		}
 		catch (...) {
 			std::cout << "no more nodes lol" << std::endl;
@@ -108,11 +108,11 @@ bool ChapterIterator::goToNextNode(StateSubject* stateSubject) {
 }
 
 void ChapterIterator::defaultChapterId() {
-	m_chapterId.emplace(ModelSubject::getFirstChapterId());
+	m_chapterId.emplace(ModelRuntimeInterface::getFirstChapterId());
 }
 
 void ChapterIterator::updateChapterPtr() {
-	m_chapterPtr = ModelSubject::getChapterById(m_chapterId.value());
+	m_chapterPtr = ModelRuntimeInterface::getChapterById(m_chapterId.value());
 
 	if (m_chapterPtr == nullptr) {
 		// TODO: create new exception class
@@ -125,7 +125,7 @@ void ChapterIterator::defaultNodeId() {
 }
 
 void ChapterIterator::updateNodePtr() {
-	m_nodePtr = ModelSubject::getNodeById(m_nodeId.value());
+	m_nodePtr = ModelRuntimeInterface::getNodeById(m_nodeId.value());
 
 	if (m_nodePtr == nullptr) {
 		// TODO: create new exception class

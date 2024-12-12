@@ -23,4 +23,4 @@ current:
 future additions:
 - `Memento` for supporting undo operations
 - `Command` for menu commands
-- other
+- `Visitor` for serialization

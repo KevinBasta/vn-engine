@@ -5,7 +5,7 @@
 
 #include "window.h"
 #include "context.h"
-#include "model_subject.h"
+#include "model_engine_interface.h"
 #include "state_subject.h"
 #include "node.h"
 #include "chapter_node.h"
@@ -102,7 +102,7 @@ private:
 		if (m_stateSubject == nullptr) { return; }
 
 		id nodeId{ m_stateSubject->getNodeId() };
-		Node* nodeBase{ ModelSubject::getNodeById(nodeId) };
+		Node* nodeBase{ ModelEngineInterface::getNodeById(nodeId) };
 		
 		if (nodeBase == nullptr) { return; }
 

@@ -14,10 +14,16 @@
 #include <unordered_map>
 
 class ModelSubject;
+class ModelCommonInterface;
+class ModelRuntimeInterface;
+class ModelEngineInterface;
 
 class ModelChapters {
 private:
 	friend class ModelSubject;
+	friend class ModelCommonInterface;
+	friend class ModelRuntimeInterface;
+	friend class ModelEngineInterface;
 
 	EngineNodeManager m_nodes{};
 	EngineChapterManager m_chapters{};

@@ -34,6 +34,7 @@
 #include <thread>
 
 class ChapterIterator;
+class ModelCommonInterface;
 class ModelRuntimeInterface;
 class ModelEngineInterface;
 
@@ -53,6 +54,7 @@ class ModelEngineInterface;
 class ModelSubject : public Subject {
 private:
 	// Interface friend classes
+	friend class ModelCommonInterface;
 	friend class ModelRuntimeInterface;
 	friend class ModelEngineInterface;
 
@@ -111,35 +113,6 @@ public:
 		texturesThread.join();
 		 
 		timer.elapsedp();
-	}
-
-	// TODO: make the functions below private, only for use through interface objects.
-
-	// Iterators
-	static ChapterIterator iter();
-	static ChapterIterator iter(id chapterId);
-
-	// Chapters and nodes
-	static id getFirstChapterId() {
-		return 1;
-	}
-
-	static const Chapter* getHeadChapter() {
-		ModelSubject* model{ validateInstance() };
-		
-		return model->m_modelChapters.getHeadChapter();
-	}
-
-	static Chapter* getChapterById(id chapterId) {
-		ModelSubject* model{ validateInstance() };
-
-		return model->m_modelChapters.getChapterById(chapterId);
-	}
-
-	static Node* getNodeById(id nodeId) {
-		ModelSubject* model{ validateInstance() };
-
-		return model->m_modelChapters.getNodeById(nodeId);
 	}
 };
 

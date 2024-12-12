@@ -5,7 +5,7 @@
 
 #include "linkable.h"
 #include "state_subject.h"
-#include "model_subject.h"
+#include "model_engine_interface.h"
 
 // TODO: ALL ERROR HANDLING 
 class VnEngineChapterGraph : public VnEngineGraph {
@@ -24,19 +24,19 @@ public:
 	}
 
 	id getLinkableHeadId() {
-		return ModelSubject::getFirstChapterId();
+		return ModelEngineInterface::getFirstChapterId();
 	}
 
 	Linkable* getLinkableById(id linkableId) {
-		return static_cast<Linkable*>(ModelSubject::getChapterById(linkableId));
+		return static_cast<Linkable*>(ModelEngineInterface::getChapterById(linkableId));
 	}
 	
 	const Linkable* getLinkableHead() {
-		return static_cast<const Linkable*>(ModelSubject::getHeadChapter());
+		return static_cast<const Linkable*>(ModelEngineInterface::getHeadChapter());
 	}
 
 	std::wstring getLinkableName(id linkableId) {
-		return ModelSubject::getChapterById(linkableId)->getName();
+		return ModelEngineInterface::getChapterById(linkableId)->getName();
 	}
 
 	id getCurrentStateLinkable() {

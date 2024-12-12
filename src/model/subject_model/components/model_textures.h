@@ -11,12 +11,14 @@
 #define TEMP_SPRITE_TEXTURE		VN_BASE_PATH"/test/assets/garu_outline.png"
 
 class ModelSubject;
+class ModelCommonInterface;
 class ModelRuntimeInterface;
 class ModelEngineInterface;
 
 class ModelTextures {
 private:
 	friend class ModelSubject;
+	friend class ModelCommonInterface;
 	friend class ModelRuntimeInterface;
 	friend class ModelEngineInterface;
 

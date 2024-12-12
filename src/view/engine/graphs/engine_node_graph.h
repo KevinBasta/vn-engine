@@ -5,7 +5,7 @@
 
 #include "linkable.h"
 #include "state_subject.h"
-#include "model_subject.h"
+#include "model_engine_interface.h"
 
 #include <locale>
 #include <codecvt>
@@ -29,11 +29,11 @@ public:
 	}
 
 	id getLinkableHeadId() {
-		return ModelSubject::getChapterById(m_stateSubject->getChapterId())->getHeadNodeId();
+		return ModelEngineInterface::getChapterById(m_stateSubject->getChapterId())->getHeadNodeId();
 	}
 
 	Linkable* getLinkableById(id linkableId) {
-		return static_cast<Linkable*>(ModelSubject::getNodeById(linkableId));
+		return static_cast<Linkable*>(ModelEngineInterface::getNodeById(linkableId));
 	}
 
 	const Linkable* getLinkableHead() {
@@ -41,12 +41,12 @@ public:
 			return nullptr;
 		}
 
-		return static_cast<const Linkable*>(ModelSubject::getNodeById(ModelSubject::getChapterById(m_stateSubject->getChapterId())->getHeadNodeId()));
+		return static_cast<const Linkable*>(ModelEngineInterface::getNodeById(ModelEngineInterface::getChapterById(m_stateSubject->getChapterId())->getHeadNodeId()));
 	}
 
 	std::wstring getLinkableName(id linkableId) {
 		std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
-		std::wstring wide = converter.from_bytes(ModelSubject::getNodeById(linkableId)->m_temp);
+		std::wstring wide = converter.from_bytes(ModelEngineInterface::getNodeById(linkableId)->m_temp);
 
 		return wide;
 	}

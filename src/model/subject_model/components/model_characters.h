@@ -5,12 +5,14 @@
 #include "character_builder.h"
 
 class ModelSubject;
+class ModelCommonInterface;
 class ModelRuntimeInterface;
 class ModelEngineInterface;
 
 class ModelCharacters {
 private:
 	friend class ModelSubject;
+	friend class ModelCommonInterface;
 	friend class ModelRuntimeInterface;
 	friend class ModelEngineInterface;
 
