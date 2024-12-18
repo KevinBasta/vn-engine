@@ -161,7 +161,7 @@ add_executable (
 	 
 	"src/model/stores/sound_store.h" 
 	"src/model/stores/sound_store.cpp" 
-)
+ "src/view/engine/sidebar/engine_node_editor.cpp" "src/view/engine/sidebar/engine_node_action_fields.h" "src/view/engine/sidebar/engine_node_action_fields.cpp")
 
 target_include_directories(
 	"vn_engine"
