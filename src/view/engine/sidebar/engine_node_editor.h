@@ -11,6 +11,7 @@
 #include "chapter_node.h"
 #include "chapter_node_builder.h"
 #include "engine_node_action_fields.h"
+#include "action_type_mappers.h"
 
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
@@ -21,45 +22,81 @@
 #include <GLFW/glfw3.h>
 
 #include <string>
+#include <vector>
+#include <functional>
+#include <utility>
+
 
 class VnEngineNodeEditor {
 private:
+	// Encapsulate the combo header of this section
+	class ComboActions {
+	private:
+		// Helper to avoid having to specify more data with the specific types T
+		// TODO: this can be applicable to so much more, especially the model/state
+		// and the helper structs they use to get pointers to functions and variables
+		struct ActionHelper {
+		public:
+			template <class T>
+			ActionHelper(std::in_place_type_t<T>)
+				: draw([]() { return ActionField<T>::drawField(); }),
+				  getName([]() { return ActionToActionName<T>::name; })
+			{ }
+
+			std::function<bool()> draw;
+			std::function<const char* ()> getName;
+		};
+
+	private:
+		static int s_selectedIndex;
+		static const std::vector<ActionHelper> s_items;
+
+		static std::string addComboId(const char* str) { return (std::string(str) + std::string("##ComboChoiceId")); }
+
+	public:
+		static bool drawSelection() {
+			return (s_items.at(s_selectedIndex)).draw();
+		}
+
+		static void drawCombo() {
+			if (ImGui::BeginCombo("Action", addComboId(s_items.at(s_selectedIndex).getName()).c_str(), NULL))
+			{
+				for (int i{ 0 }; i < s_items.size(); i++)
+				{
+					const bool isSelected = (i == s_selectedIndex);
+					if (ImGui::Selectable(addComboId(s_items.at(i).getName()).c_str(), isSelected)) {
+						s_selectedIndex = i;
+					}
+
+					// Set the initial focus when opening the combo (scrolling + keyboard navigation focus)
+					if (isSelected) {
+						ImGui::SetItemDefaultFocus();
+					}
+				}
+				ImGui::EndCombo();
+			}
+		}
+	};
+
+	// Encapsulate the Steps of the node in this section
+	class NodeSteps {
+
+	};
+
+private:
 	StateSubject* m_stateSubject;
-	bool modified{ false };
 
 private:
 	void updateViewport() {
 
 	}
 
-	void sectionBackgroundTexture(ChapterNode* node, int index) {
-	}
-
 	void drawStepActions(ChapterNode* node, int index) {
-
-
-
-		if (ImGui::TreeNode("##Multi-line Text Input"))
-		{
-			// Note: we are using a fixed-sized buffer for simplicity here. See ImGuiInputTextFlags_CallbackResize
-			// and the code in misc/cpp/imgui_stdlib.h for how to setup InputText() for dynamically resizing strings.
-			static char text[1024 * 16] =
-				"test\n";
-
-			static ImGuiInputTextFlags flags{ 0 };
-			//HelpMarker("You can use the ImGuiInputTextFlags_CallbackResize facility if you need to wire InputTextMultiline() to a dynamic string type. See misc/cpp/imgui_stdlib.h for an example. (This is not demonstrated in imgui_demo.cpp because we don't want to include <string> in here)");
-			ImGui::CheckboxFlags("##ReadOnly", &flags, ImGuiInputTextFlags_ReadOnly);
-			ImGui::SameLine();
-			ImGui::CheckboxFlags("##AllowTabInput", &flags, ImGuiInputTextFlags_AllowTabInput);
-			ImGui::SameLine(); //HelpMarker("When _AllowTabInput is set, passing through the widget with Tabbing doesn't automatically activate it, in order to also cycling through subsequent widgets.");
-			ImGui::CheckboxFlags("##CtrlEnterForNewLine", &flags, ImGuiInputTextFlags_CtrlEnterForNewLine);
-
-			ImGui::InputTextMultiline("##source", text, IM_ARRAYSIZE(text), ImVec2(-FLT_MIN, ImGui::GetTextLineHeight() * 16), flags);
-			ImGui::TreePop();
-		}
-
+		bool modified{ false };
+		
 		ActionField<ActionBackgroundTexture> backgroundTexture;
-		backgroundTexture.drawField(node, index);
+		modified = backgroundTexture.drawField(node, index);
+		if (modified) { reloadStateToStep(index); }
 
 	}
 
@@ -73,7 +110,6 @@ private:
 			drawStepActions(node, index);
 			ImGui::TreePop();
 		}
-
 	}
 
 	void drawCurrentNodeSteps() {
@@ -109,57 +145,25 @@ public:
 
 public:
 	void draw() {
-		modified = false;
-
-		constexpr int itemNumb{ 3 };
-		const char* items[itemNumb] = {
-			"##foo",
-			"ActionTextLine",
-			"ActionTextOverrideColor"
-		};
-		static int itemSelectedIndex{ 0 };
-
-		// Pass in the preview value visible before opening the combo (it could technically be different contents or not pulled from items[])
-		const char* comboPreviewValue = items[itemSelectedIndex];
-
-		if (ImGui::BeginCombo("combo 1", comboPreviewValue, NULL))
-		{
-			for (int n = 0; n < itemNumb; n++)
-			{
-				const bool is_selected = (itemSelectedIndex == n);
-				if (ImGui::Selectable(items[n], is_selected)) {
-					itemSelectedIndex = n;
-				}
-
-				// Set the initial focus when opening the combo (scrolling + keyboard navigation focus)
-				if (is_selected) {
-					ImGui::SetItemDefaultFocus();
-				}
-			}
-			ImGui::EndCombo();
-		}
+		ComboActions::drawCombo();
 
 		ImGui::Spacing();
 
-		if (itemSelectedIndex != 0) {
-			
-			switch (itemSelectedIndex)
-			{
-			case 1:
-			{
-				// draw each empty field
+		ComboActions::drawSelection();
 
-				break;
-			}
-			default:
-				break;
-			}
+		ImGui::Spacing();
 
-		}
-	
 		drawCurrentNodeSteps();
 
-		if (modified) {
+	}
+
+	void reloadStateToStep(int stepIndex) {
+		// If any of the fields (of the model) were moditifer, then update the state subject
+		// If we are viewing the node that was edited at or past the point of the action // TO DO THIS LINE
+	
+		int currentStep{ m_stateSubject->getStepIndex() };
+		
+		if (currentStep <= stepIndex) {
 			// TODO: need a new function to accumulate state up to current step in node
 			m_stateSubject->reloadStateStep();
 		}

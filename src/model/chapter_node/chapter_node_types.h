@@ -22,20 +22,11 @@ enum class ChapterNodeActionType {
 	RELATION,
 };
 
-
-
-//
-// Sprite Actions
-//
-
-enum class SpriteProperty {
-	NONE,
-	XPOS,
-	YPOS,
-	ZPOS,
-	SCALE,
-	OPACITY
-};
+/**
+ * COMMON STRUCTS
+ * Identifies textures using the store id and index.
+ * Provides hasher for this identifier type.
+ */
 
 struct TextureIdentifier {
 	id m_textureStoreId{ 0 };
@@ -48,10 +39,33 @@ struct TextureIdentifier {
 
 struct TextureIdentifierHasher {
 	size_t operator()(const TextureIdentifier& textureIdentifier) const {
-		return std::hash<id>()(textureIdentifier.m_textureStoreId) ^ 
-			   (std::hash<index>()(textureIdentifier.m_textureIndex) << 1);
+		return std::hash<id>()(textureIdentifier.m_textureStoreId) ^
+			(std::hash<index>()(textureIdentifier.m_textureIndex) << 1);
 	}
 };
+
+/**
+ * BACKGROUND ACTIONS
+ *
+ */
+struct ActionBackgroundTexture {
+	TextureIdentifier m_texture{};
+};
+
+
+/**
+ * SPRITE ACTIONS
+ * 
+ */
+enum class SpriteProperty {
+	NONE,
+	XPOS,
+	YPOS,
+	ZPOS,
+	SCALE,
+	OPACITY
+};
+
 
 struct ActionSpriteProperty {
 	TextureIdentifier m_texture{};
@@ -74,10 +88,10 @@ struct ActionSpriteAnimationGeneric {
 
 
 
-
-//
-// Text Actions
-//
+/**
+ * TEXT ACTIONS
+ * 
+ */
 struct ActionTextRender {
 	bool m_render{ false };
 };
@@ -97,20 +111,9 @@ struct ActionTextOverrideColor {
 
 
 
-
-//
-// Background Actions
-//
-struct ActionBackgroundTexture {
-	TextureIdentifier m_texture{};
-};
-
-
-
-
-//
-// Bonds/Relationship Actions
-//
+/**
+ * BOND/RELATIONSHIP ACTIONS
+ */
 
 // Modify a relationship
 enum class RelationModification {
@@ -189,11 +192,9 @@ struct ActionRelationSetNextChapter {
 
 
 
-
-//
-// Choice picking attached actions
-//
-
+/** 
+ * CHOICE PICKING ATTACHED ACTIONS
+ */
 using ChoiceIndex = int;
 
 struct ActionChoiceModifyRelation {
@@ -209,10 +210,11 @@ struct ActionChoiceSetNextChapter {
 };
 
 
-//
-// Choice Interface
-//
 
+/** 
+ * CHOICE INTERFACE
+ * 
+ */
 enum class ChoiceStyle {
 	LIST_TEXT_AREA,
 	LIST_MID_SCREEN,
@@ -237,11 +239,10 @@ struct ActionChoice {
 };
 
 
-
-//
-// Direct next chapter picking
-//
-
+/** 
+ * DIRECT NEXT CHAPTER PICKING
+ * 
+ */
 struct ActionSetNextChapter {
 	id m_chapterId{};
 };

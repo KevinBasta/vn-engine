@@ -9,23 +9,23 @@ template <class T>
 class ActionField {
 private:
 	static inline T m_obj{};
-	T* m_drawnObj{ &m_obj };
+	static inline T* m_drawnObj{ &m_obj };
 
-	bool drawInternal();
+	static bool drawInternal();
 
 public:
-	T getObj() { return m_obj; }
-	void clearObj() { m_obj = {}; }
+	static T getObj() { return m_obj; }
+	static void clearObj() { m_obj = {}; }
 	
 	// Set m_drawnObj to m_obj and drawInternal()
-	bool drawField() {
+	static bool drawField() {
 		m_drawnObj = &m_obj;
 		
 		return drawInternal();
 	}
 
 	// Set m_drawnObj to obj inside node at index and drawInternal()
-	bool drawField(ChapterNode* node, int index) {
+	static bool drawField(ChapterNode* node, int index) {
 		bool modified = false;
 		
 		if (node == nullptr) { return modified; }
