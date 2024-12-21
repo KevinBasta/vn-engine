@@ -11,18 +11,18 @@
 
 
 template<>
-bool ActionField<ActionBackgroundTexture>::drawInternal() {
+bool ActionField<ActionBackgroundTexture>::drawInternal(ActionBackgroundTexture* obj) {
 	bool modified = false;
 
-	std::string actionTitle{ "Background Texture##" + std::to_string((unsigned long long)(void**)m_drawnObj) };
+	std::string actionTitle{ "Background Texture##" + std::to_string((unsigned long long)(void**)obj) };
 
 	if (ImGui::TreeNode(actionTitle.c_str()))
 	{
 		// TODO: make dropdown
 		// get the ids from the model (engine interface)
 		// limit the set of dragInt for texture index, and perhaps display names of texture stores and the individual textures too
-		modified |= ImGui::DragInt("Texture Store Id: ", &(m_drawnObj->m_texture.m_textureStoreId), 1, 0, 10, "%d", ImGuiSliderFlags_WrapAround);
-		modified |= ImGui::DragInt("Texture Index: ", &(m_drawnObj->m_texture.m_textureIndex), 1, 0, 10, "%d", ImGuiSliderFlags_WrapAround);
+		modified |= ImGui::DragInt("Texture Store Id: ", &(obj->m_texture.m_textureStoreId), 1, 0, 10, "%d", ImGuiSliderFlags_WrapAround);
+		modified |= ImGui::DragInt("Texture Index: ", &(obj->m_texture.m_textureIndex), 1, 0, 10, "%d", ImGuiSliderFlags_WrapAround);
 
 		ImGui::TreePop();
 	}
@@ -34,13 +34,13 @@ bool ActionField<ActionBackgroundTexture>::drawInternal() {
 
 
 template<>
-bool ActionField<ActionSpriteProperty>::drawInternal() {
+bool ActionField<ActionSpriteProperty>::drawInternal(ActionSpriteProperty* obj) {
 	bool modified = false;
 
 	return modified;
 }
 template<>
-bool ActionField<ActionSpriteAnimationGeneric>::drawInternal() {
+bool ActionField<ActionSpriteAnimationGeneric>::drawInternal(ActionSpriteAnimationGeneric* obj) {
 	bool modified = false;
 
 	return modified;
@@ -49,17 +49,17 @@ bool ActionField<ActionSpriteAnimationGeneric>::drawInternal() {
 
 
 
-bool ActionField<ActionTextRender>::drawInternal() {
+bool ActionField<ActionTextRender>::drawInternal(ActionTextRender* obj) {
 	bool modified = false;
 
 	return modified;
 }
 
 template<>
-bool ActionField<ActionTextLine>::drawInternal() {
+bool ActionField<ActionTextLine>::drawInternal(ActionTextLine* obj) {
 	bool modified = false;
 
-	std::string actionTitle{ "ActionTextLine##" + std::to_string((unsigned long long)(void**)m_drawnObj) };
+	std::string actionTitle{ "ActionTextLine##" + std::to_string((unsigned long long)(void**)obj) };
 
 
 	if (ImGui::TreeNode(actionTitle.c_str()))
@@ -88,31 +88,12 @@ bool ActionField<ActionTextLine>::drawInternal() {
 	return modified;
 }
 
-bool ActionField<ActionTextOverrideSpeaker>::drawInternal() {
+bool ActionField<ActionTextOverrideSpeaker>::drawInternal(ActionTextOverrideSpeaker* obj) {
 	bool modified = false;
 
 	return modified;
 }
-bool ActionField<ActionTextOverrideColor>::drawInternal() {
-	bool modified = false;
-
-	return modified;
-}
-
-
-
-
-bool ActionField<ActionRelationModify>::drawInternal() {
-	bool modified = false;
-
-	return modified;
-}
-bool ActionField<ActionRelationSetNextNode>::drawInternal() {
-	bool modified = false;
-
-	return modified;
-}
-bool ActionField<ActionRelationSetNextChapter>::drawInternal() {
+bool ActionField<ActionTextOverrideColor>::drawInternal(ActionTextOverrideColor* obj) {
 	bool modified = false;
 
 	return modified;
@@ -121,7 +102,17 @@ bool ActionField<ActionRelationSetNextChapter>::drawInternal() {
 
 
 
-bool ActionField<ActionSetNextChapter>::drawInternal() {
+bool ActionField<ActionRelationModify>::drawInternal(ActionRelationModify* obj) {
+	bool modified = false;
+
+	return modified;
+}
+bool ActionField<ActionRelationSetNextNode>::drawInternal(ActionRelationSetNextNode* obj) {
+	bool modified = false;
+
+	return modified;
+}
+bool ActionField<ActionRelationSetNextChapter>::drawInternal(ActionRelationSetNextChapter* obj) {
 	bool modified = false;
 
 	return modified;
@@ -129,22 +120,31 @@ bool ActionField<ActionSetNextChapter>::drawInternal() {
 
 
 
-bool ActionField<ActionChoice>::drawInternal() {
+
+bool ActionField<ActionSetNextChapter>::drawInternal(ActionSetNextChapter* obj) {
 	bool modified = false;
 
 	return modified;
 }
-bool ActionField<ActionChoiceSetNextNode>::drawInternal() {
+
+
+
+bool ActionField<ActionChoice>::drawInternal(ActionChoice* obj) {
 	bool modified = false;
 
 	return modified;
 }
-bool ActionField<ActionChoiceModifyRelation>::drawInternal() {
+bool ActionField<ActionChoiceSetNextNode>::drawInternal(ActionChoiceSetNextNode* obj) {
 	bool modified = false;
 
 	return modified;
 }
-bool ActionField<ActionChoiceSetNextChapter>::drawInternal() {
+bool ActionField<ActionChoiceModifyRelation>::drawInternal(ActionChoiceModifyRelation* obj) {
+	bool modified = false;
+
+	return modified;
+}
+bool ActionField<ActionChoiceSetNextChapter>::drawInternal(ActionChoiceSetNextChapter* obj) {
 	bool modified = false;
 
 	return modified;

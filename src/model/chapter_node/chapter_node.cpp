@@ -41,7 +41,7 @@ template<> struct stateHelper<ActionChoiceSetNextChapter>	{ static constexpr aut
 // Sends data to the subject
 // Bool returns indicate if any step occured
 //
-template <class T>
+/*template <class T>
 bool ChapterNode::handle(
 	StateSubject* stateSubject,
 	StepIndex stepIndex,
@@ -63,7 +63,7 @@ bool ChapterNode::handle(
 	}
 
 	return hasStep;
-}
+}*/
 
 template <class T>
 bool ChapterNode::handle(

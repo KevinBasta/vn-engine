@@ -9,9 +9,7 @@ template <class T>
 class ActionField {
 private:
 	static inline T m_obj{};
-	static inline T* m_drawnObj{ &m_obj };
-
-	static bool drawInternal();
+	static bool drawInternal(T* obj);
 
 public:
 	static T getObj() { return m_obj; }
@@ -19,9 +17,7 @@ public:
 	
 	// Set m_drawnObj to m_obj and drawInternal()
 	static bool drawField() {
-		m_drawnObj = &m_obj;
-		
-		return drawInternal();
+		return drawInternal(&m_obj);
 	}
 
 	// Set m_drawnObj to obj inside node at index and drawInternal()
@@ -29,12 +25,11 @@ public:
 		bool modified = false;
 		
 		if (node == nullptr) { return modified; }
-		m_drawnObj = ChapterNodeBuilder{ node }.getStepAction<T>(index);
-		if (m_drawnObj == nullptr) { m_drawnObj = &m_obj; return modified; }
+		std::vector<T>& objects = ChapterNodeBuilder{ node }.getStepActions<T>(index);
 		
-		modified = drawInternal();
-
-		m_drawnObj = &m_obj;
+		for (auto& obj : objects) {
+			modified |= drawInternal(&obj);
+		}
 
 		return modified;
 	}

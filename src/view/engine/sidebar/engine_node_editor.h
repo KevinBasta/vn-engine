@@ -28,34 +28,53 @@
 
 
 class VnEngineNodeEditor {
+protected:
+	static StateSubject* m_stateSubject;
+
+public:
+	VnEngineNodeEditor(StateSubject* stateSubject) 
+	{ 
+		m_stateSubject = stateSubject;
+	}
+
+	~VnEngineNodeEditor() { }
+
+
+private:
+	// Helper to avoid having to specify more data with the specific types T
+	// TODO: this can be applicable to so much more, especially the model/state
+	// and the helper structs they use to get pointers to functions and variables
+	struct ActionHelper {
+	public:
+		template <class T>
+		ActionHelper(std::in_place_type_t<T>)
+		:	getType([]() { return ActionToType<T>::type; }),
+			getName([]() { return ActionToActionName<T>::name; }),
+			drawNew([]() { return ActionField<T>::drawField(); }),
+			drawExisting([](ChapterNode* node, int index) {
+				return ActionField<T>::drawField(node, index);
+			})
+		{ }
+
+		std::function<ActionType()> getType;
+		std::function<bool()> drawNew;
+		std::function<bool(ChapterNode* node, int index)> drawExisting;
+		std::function<const char* ()> getName;
+	};
+	
+	static const std::vector<ActionHelper> s_items;
+
 private:
 	// Encapsulate the combo header of this section
 	class ComboActions {
 	private:
-		// Helper to avoid having to specify more data with the specific types T
-		// TODO: this can be applicable to so much more, especially the model/state
-		// and the helper structs they use to get pointers to functions and variables
-		struct ActionHelper {
-		public:
-			template <class T>
-			ActionHelper(std::in_place_type_t<T>)
-				: draw([]() { return ActionField<T>::drawField(); }),
-				  getName([]() { return ActionToActionName<T>::name; })
-			{ }
-
-			std::function<bool()> draw;
-			std::function<const char* ()> getName;
-		};
-
-	private:
 		static int s_selectedIndex;
-		static const std::vector<ActionHelper> s_items;
 
 		static std::string addComboId(const char* str) { return (std::string(str) + std::string("##ComboChoiceId")); }
 
 	public:
 		static bool drawSelection() {
-			return (s_items.at(s_selectedIndex)).draw();
+			return (s_items.at(s_selectedIndex)).drawNew();
 		}
 
 		static void drawCombo() {
@@ -78,70 +97,63 @@ private:
 		}
 	};
 
+
 	// Encapsulate the Steps of the node in this section
 	class NodeSteps {
+	public:
+		static void drawNodeSteps() {
+			if (m_stateSubject == nullptr) { return; }
 
+			id nodeId{ m_stateSubject->getNodeId() };
+			Node* nodeBase{ ModelEngineInterface::getNodeById(nodeId) };
+			if (nodeBase == nullptr) { return; }
+
+			// TODO: node objects to be brought into one object OR
+			// do dynamic cast and handle failure of the cast?
+			ChapterNode* node{ static_cast<ChapterNode*>(nodeBase) };
+
+			for (int i{ 0 }; i < node->m_totalSteps; i++) {
+				drawStep(node, i);
+			}
+		}
+
+
+		static void drawStep(ChapterNode* node, int index) {
+			if (node == nullptr) { return; }
+
+			std::string stepTitle{ "Step #" + std::to_string(index) };
+
+			if (ImGui::TreeNode(stepTitle.c_str()))
+			{
+				for (int i{ 0 }; i < s_items.size(); i++)
+				{
+					bool modified = s_items.at(i).drawExisting(node, index);
+					if (modified) { reloadStateToStep(index); }
+				}
+
+				ImGui::TreePop();
+			}
+		}
+
+		static void reloadStateToStep(int stepIndex) {
+			// If any of the fields (of the model) were moditifer, then update the state subject
+			// If we are viewing the node that was edited at or past the point of the action // TO DO THIS LINE
+
+			int currentStep{ m_stateSubject->getStepIndex() };
+
+			if (currentStep <= stepIndex) {
+				// TODO: need a new function to accumulate state up to current step in node
+				m_stateSubject->reloadStateStep();
+			}
+		}
 	};
 
-private:
-	StateSubject* m_stateSubject;
 
 private:
+	// TODO: is this needed?
 	void updateViewport() {
 
 	}
-
-	void drawStepActions(ChapterNode* node, int index) {
-		bool modified{ false };
-		
-		ActionField<ActionBackgroundTexture> backgroundTexture;
-		modified = backgroundTexture.drawField(node, index);
-		if (modified) { reloadStateToStep(index); }
-
-	}
-
-	void drawStep(ChapterNode* node, int index) {
-		if (node == nullptr) { return; }
-
-		std::string stepTitle{ "Step #" + std::to_string(index) };
-
-		if (ImGui::TreeNode(stepTitle.c_str()))
-		{
-			drawStepActions(node, index);
-			ImGui::TreePop();
-		}
-	}
-
-	void drawCurrentNodeSteps() {
-		if (m_stateSubject == nullptr) { return; }
-
-		id nodeId{ m_stateSubject->getNodeId() };
-		Node* nodeBase{ ModelEngineInterface::getNodeById(nodeId) };
-		
-		if (nodeBase == nullptr) { return; }
-
-		
-		// TODO: node objects to be brought into one object OR
-		// do dynamic cast and handle failure of the cast?
-		ChapterNode* node{ static_cast<ChapterNode*>(nodeBase) };
-
-		for (int i{ 0 }; i < node->m_totalSteps; i++) {
-			drawStep(node, i);
-		}
-	}
-	
-
-public:
-	VnEngineNodeEditor(StateSubject* stateSubject):
-		m_stateSubject{ stateSubject }
-	{
-
-	}
-
-	~VnEngineNodeEditor() {
-
-	}
-
 
 public:
 	void draw() {
@@ -153,22 +165,8 @@ public:
 
 		ImGui::Spacing();
 
-		drawCurrentNodeSteps();
-
+		NodeSteps::drawNodeSteps();
 	}
-
-	void reloadStateToStep(int stepIndex) {
-		// If any of the fields (of the model) were moditifer, then update the state subject
-		// If we are viewing the node that was edited at or past the point of the action // TO DO THIS LINE
-	
-		int currentStep{ m_stateSubject->getStepIndex() };
-		
-		if (currentStep <= stepIndex) {
-			// TODO: need a new function to accumulate state up to current step in node
-			m_stateSubject->reloadStateStep();
-		}
-	}
-
 };
 
 

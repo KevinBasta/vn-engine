@@ -60,7 +60,8 @@ public:
 	// access element similar to state subject variable access from node	
 	template <class T>
 	void setStep(int stepIndex, T object) {
-		(m_nodeDerived->*(chapterNodeHelper<T>::handler))[stepIndex] = object;
+		(m_nodeDerived->*(chapterNodeHelper<T>::handler))[stepIndex].clear();
+		(m_nodeDerived->*(chapterNodeHelper<T>::handler))[stepIndex].push_back(object);
 	}
 
 	/*template <class T>
@@ -86,16 +87,17 @@ public:
 
 
 
-	template <class T>
-	T* getStepAction(int stepIndex) {
-		return &((m_nodeDerived->*(chapterNodeHelper<T>::handler))[stepIndex]);
-	}
+	//template <class T>
+	//T* getStepAction(int stepIndex) {
+	//	return &((m_nodeDerived->*(chapterNodeHelper<T>::handler))[stepIndex]);
+	//}
 
 	template <class T>
 	std::vector<T>& getStepActions(int stepIndex) {
+		// TODO: ERR, CREATING ENTRY IN MAP AND RETURNING EMPTY VECTOR
+
 		return (m_nodeDerived->*(chapterNodeHelper<T>::handler))[stepIndex];
 	}
-
 
 	/*template <class T>
 	std::unordered_map<int, T>& getStep(int stepIndex) {

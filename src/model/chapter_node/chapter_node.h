@@ -40,8 +40,8 @@ private:
 	// Background actions
 	//
 
-	std::unordered_map<StepIndex, ActionBackgroundTexture> m_backgroundSteps{
-		{ 0, {2, 0} }
+	std::unordered_map<StepIndex, std::vector<ActionBackgroundTexture>> m_backgroundSteps {
+		{ 0, { {2, 0} } }
 	};
 
 
@@ -78,25 +78,25 @@ private:
 	// Text actions
 	//
 
-	std::unordered_map<StepIndex, ActionTextRender> m_textRenderSteps{
-		{ 0, { false } },
-		{ 1, { true } },
-		{ 3, { false } },
+	std::unordered_map<StepIndex, std::vector<ActionTextRender>> m_textRenderSteps{
+		{ 0, {{ false }} },
+		{ 1, {{ true }} },
+		{ 3, {{ false }} },
 	};
 
-	std::unordered_map<StepIndex, ActionTextLine> m_textLineSteps {
-		{ 1, {1, L"hello, this is garu! I came from a far away land to do something important. That is to foil Brazazaza. Why you ask? Well... it's because he... he... well I am actually not very sure myself."} },
-		{ 2, {1, L"hello, this is NOT garu"} },
+	std::unordered_map<StepIndex, std::vector<ActionTextLine>> m_textLineSteps {
+		{ 1, {{1, L"hello, this is garu! I came from a far away land to do something important. That is to foil Brazazaza. Why you ask? Well... it's because he... he... well I am actually not very sure myself."}} },
+		{ 2, {{1, L"hello, this is NOT garu"}} },
 		//{ 3, std::vector<ActionTextLine>{{1, L"hello, this is a potato"}} }
 	};	
 	
-	std::unordered_map<StepIndex, ActionTextOverrideSpeaker> m_textOverrideSpeakerSteps{
-		{ 2, {L"???"}},
+	std::unordered_map<StepIndex, std::vector<ActionTextOverrideSpeaker>> m_textOverrideSpeakerSteps{
+		{ 2, {{L"???"}} },
 		//{ 3, std::vector<ActionTextOverrideSpeaker>{{L"potato man"}}}
 	};
 
-	std::unordered_map<StepIndex, ActionTextOverrideColor> m_textOverrideColorSteps{
-		{ 2, {glm::vec3(0.0f, 1.0f, 0.5f)}}
+	std::unordered_map<StepIndex, std::vector<ActionTextOverrideColor>> m_textOverrideColorSteps{
+		{ 2, {{glm::vec3(0.0f, 1.0f, 0.5f)}} }
 	};
 
 	
@@ -104,8 +104,8 @@ private:
 	// Relation mutation actions
 	//
 
-	std::unordered_map<StepIndex, ActionRelationModify> m_relationshipModifySteps{
-		{0, {{1, 2, 1}, RelationModification::ADD, 10}}
+	std::unordered_map<StepIndex, std::vector<ActionRelationModify>> m_relationshipModifySteps{
+		{0, {{{1, 2, 1}, RelationModification::ADD, 10}} }
 	};
 
 	std::unordered_map <StepIndex, std::vector<ActionRelationSetNextNode>> m_relationshipChooseNode {
@@ -117,34 +117,34 @@ private:
 	};
 
 	//
-	// Choice step
-	//
-
-	std::unordered_map<StepIndex, ActionChoice> m_choiceTextOptions {
-		{3, { ChoiceStyle::LIST_TEXT_AREA, {L"second first-level node", L"third first-level node", L"first first-level node"}}}
-	};
-	
-	std::unordered_map<StepIndex, ActionChoiceSetNextNode> m_choiceSetNextNode {
-		{ 3, { {{0, 5}, {1, 4}, {2, 2}} } }
-	};
-
-
-	std::unordered_map<StepIndex, ActionChoiceModifyRelation> m_choiceRelationModifications {
-		{3, { { {0, { {{1, 2, 1}, RelationModification::ADD, 100} } }}}}
-	};
-
-	std::unordered_map<StepIndex, ActionChoiceSetNextChapter> m_choiceSetNextChapter{
-
-	};
-
-
-	//
 	// Direct next chapter set
  	//
 
-	std::unordered_map<StepIndex, ActionSetNextChapter> m_setNextChapter{
+	std::unordered_map<StepIndex, std::vector<ActionSetNextChapter>> m_setNextChapter{
 
 	};
+
+	//
+	// Choice step
+	//
+
+	std::unordered_map<StepIndex, std::vector<ActionChoice>> m_choiceTextOptions {
+		{3, {{ ChoiceStyle::LIST_TEXT_AREA, {L"second first-level node", L"third first-level node", L"first first-level node"}}} }
+	};
+	
+	std::unordered_map<StepIndex, std::vector<ActionChoiceSetNextNode>> m_choiceSetNextNode {
+		{ 3, {{ {{0, 5}, {1, 4}, {2, 2}} }} }
+	};
+
+
+	std::unordered_map<StepIndex, std::vector<ActionChoiceModifyRelation>> m_choiceRelationModifications {
+		{3, {{ { {0, { {{1, 2, 1}, RelationModification::ADD, 100} } }}}}}
+	};
+
+	std::unordered_map<StepIndex, std::vector<ActionChoiceSetNextChapter>> m_choiceSetNextChapter{
+
+	};
+
 
 
 	//
@@ -152,8 +152,8 @@ private:
 	//
 	bool doStep(StateSubject* stateSubject, int stepIndex);
 	
-	template <class T>
-	bool handle(StateSubject* stateSubject, StepIndex stepIndex, std::unordered_map<StepIndex, T>& stepMap);
+	//template <class T>
+	//bool handle(StateSubject* stateSubject, StepIndex stepIndex, std::unordered_map<StepIndex, T>& stepMap);
 
 	template <class T>
 	bool handle(StateSubject* stateSubject, StepIndex stepIndex, std::unordered_map<StepIndex, std::vector<T>>& stepMap);
