@@ -1,0 +1,47 @@
+
+#include "index.h"
+
+#include "state_subject.h"
+
+#include "engine_timeline.h"
+
+// TODO: null error checking on state subjct
+class VnEngineStepTimeline : public VnEngineTimeline {
+private:
+	StateSubject* m_stateSubject{ nullptr };
+
+public:
+	VnEngineStepTimeline(StateSubject* stateSubject) :
+		VnEngineTimeline{ "stepTimeline.json" },
+		m_stateSubject{ stateSubject }
+	{ 
+	}
+
+protected:
+	std::string getGraphName() {
+		return "STEPS_TIMELINE";
+	}
+
+	std::pair<index, index> getTimelineRange() {
+		index total{ m_stateSubject->getCurrentNodeTotalSteps() };
+		
+		// TODO: the range starting from 1 depends on some internal chapterNode property. Perhaps certralize this.
+		return { 1, total };
+	}
+
+	index getTimlineRangeMax() {
+		index total{ m_stateSubject->getCurrentNodeTotalSteps() };
+
+		return total;
+	}
+
+	bool isCurrentlySelected(index rangeIndex) {
+		index current{ m_stateSubject->getStepIndex() };
+
+		return current == rangeIndex;
+	}
+	
+	void setCurrentlySelectedToIndex(index rangeIndex) {
+		m_stateSubject->goToStepIndex(rangeIndex);
+	}
+};

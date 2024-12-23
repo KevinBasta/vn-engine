@@ -1,4 +1,5 @@
 
+#include "index.h"
 
 #include "chapter_node.h"
 #include "state_subject.h"
@@ -41,30 +42,6 @@ template<> struct stateHelper<ActionChoiceSetNextChapter>	{ static constexpr aut
 // Sends data to the subject
 // Bool returns indicate if any step occured
 //
-/*template <class T>
-bool ChapterNode::handle(
-	StateSubject* stateSubject,
-	StepIndex stepIndex,
-	std::unordered_map<StepIndex, T>& stepMap)
-{
-	bool hasStep{ false };
-
-	if (stateSubject == nullptr) {
-		return hasStep;
-	}
-
-	class std::unordered_map<StepIndex, T>::iterator stepLocation = stepMap.find(stepIndex);
-
-	// Check if the step exsists for this type of action
-	if (stepLocation != stepMap.end()) {
-		hasStep = true;
-
-		(stateSubject->*(stateHelper<T>::handler)).handle(stepLocation->second);
-	}
-
-	return hasStep;
-}*/
-
 template <class T>
 bool ChapterNode::handle(
 	StateSubject *stateSubject,
@@ -174,4 +151,8 @@ NodeState ChapterNode::action(StateSubject* stateSubject, int stepIndex)
 	//std::cout << "step #" << stepIndex << " " << (stepDone ? "completed" : "not completed") << std::endl;
 
 	return NodeState::NODE_END;
+}
+
+index ChapterNode::getTotalSteps() {
+	return m_steps.size();
 }

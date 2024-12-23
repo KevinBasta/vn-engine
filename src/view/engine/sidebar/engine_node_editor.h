@@ -112,7 +112,7 @@ private:
 			// do dynamic cast and handle failure of the cast?
 			ChapterNode* node{ static_cast<ChapterNode*>(nodeBase) };
 
-			for (int i{ 0 }; i < node->m_totalSteps; i++) {
+			for (int i{ 1 }; i <= node->m_totalSteps; i++) {
 				drawStep(node, i);
 			}
 		}

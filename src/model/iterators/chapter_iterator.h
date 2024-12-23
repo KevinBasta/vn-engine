@@ -2,6 +2,7 @@
 #define VN_CHAPTER_ITERATOR_H
 
 #include "id.h"
+#include "index.h"
 #include "chapter.h"
 
 #include "node.h"
@@ -82,6 +83,14 @@ public:
 		
 	}
 
+	ChapterIterator(id chapterId, id nodeId, index stepIndex) :
+		m_chapterId{ chapterId },
+		m_nodeId{ nodeId }
+	{
+
+	}
+
+
 	bool goToNextNode(StateSubject* stateSubject);
 	ChapterState step(StateSubject* stateSubject);
 
@@ -98,7 +107,13 @@ public:
 	}
 
 	index getCurrentStepIndex() {
+		std::cout << m_nodeRunner.getCurrentStepIndex() << std::endl;
+		std::cout << "the step index is" << std::endl;
 		return m_nodeRunner.getCurrentStepIndex();
+	}
+
+	index getCurrentNodeTotalSteps() {
+		return m_nodeRunner.getCurrentNodeTotalSteps();
 	}
 };
 

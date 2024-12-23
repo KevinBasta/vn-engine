@@ -24,6 +24,7 @@ VnEngine::VnEngine(VnWindow* window, StateSubject* stateSubject, GameContext* co
 	m_stateSubject{ stateSubject },
 	m_engineNodeGraph{ stateSubject },
 	m_engineChapterGraph{ stateSubject },
+	m_engineStepTimeline{ stateSubject },
 	m_enginePreview{ context },
 	m_engineNodeEditor{ stateSubject }
 {
@@ -104,8 +105,9 @@ void VnEngine::createDockspace() {
 				ImGui::DockBuilderDockWindow(WINDOW_VIEWPORT_PREVIEW, dockspace_id);
 				ImGui::DockBuilderDockWindow(WINDOW_CHAPTER_GRAPH, dockspace_id);
 				ImGui::DockBuilderDockWindow(WINDOW_NODE_GRAPH, dockspace_id);
+				ImGui::DockBuilderDockWindow(WINDOW_STEP_TIMELINE, dockspace_id);
 				ImGui::DockBuilderDockWindow(WINDOW_NODE_EDITOR, dockspace_id);
-				ImGui::DockBuilderDockWindow(WINDOW_IMGUI_DEMO, dockspace_id);
+				//ImGui::DockBuilderDockWindow(WINDOW_IMGUI_DEMO, dockspace_id);
 			}
 			else {
 				ImGuiID dock_id_left = ImGui::DockBuilderSplitNode(dockspace_id, ImGuiDir_Left, 0.4f, nullptr, &dockspace_id);
@@ -118,8 +120,9 @@ void VnEngine::createDockspace() {
 				ImGui::DockBuilderDockWindow(WINDOW_VIEWPORT_PREVIEW, dock_id_up);
 				ImGui::DockBuilderDockWindow(WINDOW_CHAPTER_GRAPH, dock_id_down);
 				ImGui::DockBuilderDockWindow(WINDOW_NODE_GRAPH, dock_id_down);
+				ImGui::DockBuilderDockWindow(WINDOW_STEP_TIMELINE, dock_id_down);
 				ImGui::DockBuilderDockWindow(WINDOW_NODE_EDITOR, dock_id_left);
-				ImGui::DockBuilderDockWindow(WINDOW_IMGUI_DEMO, dock_id_left);
+				//ImGui::DockBuilderDockWindow(WINDOW_IMGUI_DEMO, dock_id_left);
 			}
 
 			ImGui::DockBuilderFinish(dockspace_id);
@@ -188,13 +191,18 @@ void VnEngine::draw() {
 	}
 	ImGui::End();
 
+	if (ImGui::Begin(WINDOW_STEP_TIMELINE)) {
+		m_engineStepTimeline.draw();
+	}
+	ImGui::End();
+
 	if (ImGui::Begin(WINDOW_NODE_EDITOR)) {
 		m_engineNodeEditor.draw();
 	}
 	ImGui::End();
 
 
-	ImGui::ShowDemoWindow();
+	//ImGui::ShowDemoWindow();
 
 
 	ImGui::Render();

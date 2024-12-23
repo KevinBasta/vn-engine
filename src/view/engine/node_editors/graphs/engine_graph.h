@@ -7,6 +7,7 @@
 
 #include "model_subject.h"
 #include "engine_chapter_manager.h"
+#include "node_editors_common.h"
 
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
@@ -21,66 +22,7 @@
 
 #include <GLFW/glfw3.h>
 
-namespace ed = ax::NodeEditor;
-
-namespace std
-{
-	template<> struct hash<ed::PinId>
-	{
-		std::size_t operator()(const ed::PinId& s) const noexcept
-		{
-			return static_cast<std::size_t>(s.Get());
-		}
-	};
-
-	template<> struct hash<ed::NodeId>
-	{
-		std::size_t operator()(const ed::NodeId& s) const noexcept
-		{
-			return static_cast<std::size_t>(s.Get());
-		}
-	};
-}
-
 class VnEngineGraph {
-public:
-	struct NodeIdHasher {
-		size_t operator()(const ed::NodeId& key) const {
-			return std::hash<ed::NodeId>()(key);
-		}
-	};
-
-	struct PinIdHasher {
-		size_t operator()(const ed::PinId& key) const {
-			return std::hash<ed::PinId>()(key);
-		}
-	};
-
-	struct NodeLinkKey;
-
-	struct NodeLinkKeyHasher {
-		size_t operator()(const NodeLinkKey& key) const {
-			return std::hash<id>()(key.m_firstNode) ^
-				(std::hash<id>()(key.m_secondNode) << 1);
-		}
-	};
-
-	struct NodeLinkKey {
-		id m_firstNode{};
-		id m_secondNode{};
-
-		friend bool operator==(const NodeLinkKey& keyOne, const NodeLinkKey& keyTwo) {
-			NodeLinkKeyHasher hasher{};
-			return hasher(keyOne) == hasher(keyTwo);
-		}
-	};
-
-	struct NodeLinkData {
-		ed::LinkId m_id{};
-		ed::PinId m_inId{};
-		ed::PinId m_outId{};
-	};
-
 protected:
 	ed::EditorContext* m_context{ nullptr };
 	bool m_firstFrame{ true };

@@ -152,9 +152,6 @@ private:
 	//
 	bool doStep(StateSubject* stateSubject, int stepIndex);
 	
-	//template <class T>
-	//bool handle(StateSubject* stateSubject, StepIndex stepIndex, std::unordered_map<StepIndex, T>& stepMap);
-
 	template <class T>
 	bool handle(StateSubject* stateSubject, StepIndex stepIndex, std::unordered_map<StepIndex, std::vector<T>>& stepMap);
 
@@ -167,6 +164,7 @@ public:
 	ChapterNode(std::string tempData) : Node(tempData) {}
 
 	NodeState action(StateSubject* stateSubject, int stepIndex);
+	index getTotalSteps();
 
 public:
 	// Engine operations

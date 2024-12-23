@@ -39,6 +39,12 @@ public:
 	int getCurrentStepIndex() {
 		return m_currentStep;
 	}
+
+	int getCurrentNodeTotalSteps() {
+		if (m_node == nullptr) { return 0; }
+		
+		return m_node->getTotalSteps();
+	}
 };
 
 #endif // VN_NODE_ITERATOR_H

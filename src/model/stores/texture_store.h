@@ -36,8 +36,8 @@ private:
 	runtimeTextureSet m_loadedTextures{};
 
 public:
-	id getId() { return m_id;  }
-	std::string getName() { return m_name; }
+	const id getId() { return m_id;  }
+	const std::string& getName() { return m_name; }
 	void loadTexture(index textureIndex);
 };
 

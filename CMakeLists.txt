@@ -149,15 +149,14 @@ add_executable (
 	"src/view/resource_managers/texture_manager.h" 
 	"src/view/resource_managers/texture_manager.cpp" 
 	"src/view/engine_properties.h" 
-	"src/view/engine/graphs/engine_graph.cpp" 
-	"src/view/engine/graphs/engine_graph.h" 
+	"src/view/engine/node_editors/graphs/engine_graph.h" 
 	"src/view/engine/viewport/engine_preview.h" 
 	"src/view/engine/viewport/engine_preview.cpp" 
 	"src/model/resource_managers/runtime_chapter_manager.h" 
 	"src/model/resource_managers/engine_chapter_manager.h" 
 	"src/model/resource_managers/engine_node_manager.h" 
-	"src/view/engine/graphs/engine_chapter_graph.h" 
-	"src/view/engine/graphs/engine_node_graph.h" 
+	"src/view/engine/node_editors/graphs/engine_chapter_graph.h" 
+	"src/view/engine/node_editors/graphs/engine_node_graph.h" 
 	 
 	"src/model/stores/sound_store.h" 
 	"src/model/stores/sound_store.cpp" 
@@ -165,7 +164,13 @@ add_executable (
  "src/view/engine/sidebar/engine_node_action_fields.h"
  "src/view/engine/sidebar/engine_node_action_fields.cpp" 
  "src/model/chapter_node/action_type_mappers.h"
- "src/model/chapter_node/action_type_mappers.cpp")
+ "src/model/chapter_node/action_type_mappers.cpp"  
+ "src/view/engine/node_editors/timelines/engine_timeline.h"
+ "src/view/engine/node_editors/timelines/engine_step_timeline.h" 
+ "src/view/engine/node_editors/timelines/engine_animations_timeline.h" 
+ "src/view/engine/node_editors/node_editors_common.h" 
+ "src/view/engine/node_editors/node_editors_common.cpp"
+)
 
 target_include_directories(
 	"vn_engine"
@@ -194,6 +199,9 @@ target_include_directories(
 	"src/view/engine/graphs"
 	"src/view/engine/sidebar"
 	"src/view/engine/viewport"
+	"src/view/engine/node_editors"
+	"src/view/engine/node_editors/graphs"
+	"src/view/engine/node_editors/timelines"
 	"src/view/game"
 	"src/view/layers"
 	"src/view/resource_managers"

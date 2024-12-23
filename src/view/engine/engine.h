@@ -9,6 +9,7 @@
 
 #include "engine_chapter_graph.h"
 #include "engine_node_graph.h"
+#include "engine_step_timeline.h"
 #include "engine_preview.h"
 #include "engine_node_editor.h"
 
@@ -23,6 +24,7 @@
 #define WINDOW_VIEWPORT_PREVIEW "VIEWPORT PREVIEW"
 #define WINDOW_CHAPTER_GRAPH	"CHAPTER GRAPH"
 #define WINDOW_NODE_GRAPH		"NODE GRAPH"
+#define WINDOW_STEP_TIMELINE	"STEP TIMELINE"
 #define WINDOW_NODE_EDITOR		"NODE EDITOR"
 #define WINDOW_IMGUI_DEMO		"Dear ImGui Demo"
 
@@ -39,9 +41,13 @@ private:
 	bool m_resetDockspace{ true };
 	bool m_expandedDockingView{ false };
 	VnEnginePreview m_enginePreview;
+	
 	VnEngineChapterGraph m_engineChapterGraph;
 	VnEngineNodeGraph m_engineNodeGraph;
+	VnEngineStepTimeline m_engineStepTimeline;
+
 	VnEngineNodeEditor m_engineNodeEditor;
+
 
 	void initImgui();
 

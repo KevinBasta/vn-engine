@@ -39,9 +39,11 @@ public:
 	id getChapterId() { return iterator.getChapterId(); }
 	id getNodeId() { return iterator.getNodeId(); }
 	int getStepIndex() { return iterator.getCurrentStepIndex(); }
+	int getCurrentNodeTotalSteps() { return iterator.getCurrentNodeTotalSteps(); }
 
 	void goToChapterId(id chapterId) { chapterEndActions(); iterator = ChapterIterator{ chapterId }; }
 	void goToNodeId(id nodeId) { nodeEndActions(); iterator = ChapterIterator{ iterator.getChapterId(), nodeId }; }
+	void goToStepIndex(index stepIndex) { nodeEndActions(); iterator = ChapterIterator{ iterator.getChapterId(), iterator.getNodeId(), stepIndex }; }
 
 	void reloadStateStep() {
 		// TODO: validate if all three calls are needed.

@@ -21,7 +21,6 @@ public:
 		VnEngineGraph{ "nodeGraph.json" },
 		m_stateSubject{ stateSubject }
 	{
-
 	}
 
 	std::string getGraphName() {

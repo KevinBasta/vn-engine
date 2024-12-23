@@ -1,10 +1,12 @@
 
-
 #include "model_engine_interface.h"
+#include "chapter_node_types.h"
 
 #include "action_type_mappers.h"
 
 #include "engine_node_action_fields.h"
+
+#include "texture_store.h"
 
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
@@ -28,14 +30,24 @@ bool ActionField<ActionBackgroundTexture>::drawInternal(ActionBackgroundTexture*
 		// get the ids from the model (engine interface)
 		// limit the set of dragInt for texture index, and perhaps display names of texture stores and the individual textures too
 		//modified |= ImGui::DragInt("Texture Store Id: ", , 1, 0, 10, "%d", ImGuiSliderFlags_WrapAround);
-		
-		std::string textureStoreName = textureStores[obj->m_texture.m_textureStoreId].get()->getName();
-
-		const char* elem_name = "lol";//textureStoreName.c_str();
-		ImGui::SliderInt("Texture Store", &(obj->m_texture.m_textureStoreId), 0, textureStores.size() - 1, elem_name); // Use ImGuiSliderFlags_NoInput flag to disable CTRL+Click here.
-		ImGui::SameLine();
-
 		//modified |= ImGui::DragInt("Texture Index: ", &(obj->m_texture.m_textureIndex), 1, 0, 10, "%d", ImGuiSliderFlags_WrapAround);
+
+
+		// In the case that the texture store is invalid
+		if (!textureStores.contains(obj->m_texture.m_textureStoreId)) {
+			obj->m_texture.m_textureStoreId = (textureStores.begin())->first;
+		}
+
+		TextureStore* currentStore{ textureStores.at(obj->m_texture.m_textureStoreId).get() };
+
+		// Draw the texture store options
+		const std::string& textureStoreName{ currentStore->getName() };
+		modified |= ImGui::SliderInt("Texture Store", &(obj->m_texture.m_textureStoreId), 1, textureStores.size(), textureStoreName.c_str()); // Use ImGuiSliderFlags_NoInput flag to disable CTRL+Click here.
+		
+		//if (currentStore.)
+		
+		
+		//modified |= ImGui::SliderInt("Texture", &(obj->m_texture.m_textureIndex), 1, 0, 10, "%d", ImGuiSliderFlags_WrapAround);
 
 		ImGui::TreePop();
 	}
@@ -55,10 +67,9 @@ bool ActionField<ActionSpriteProperty>::drawInternal(ActionSpriteProperty* obj) 
 	{
 
 
+		ImGui::TreePop();
 	}
 	
-
-
 	return modified;
 }
 template<>
