@@ -28,13 +28,13 @@ private:
 	void initTextureStores() {
 		TextureStoreBuilder garuStore{};
 		garuStore.addTexture(TEMP_SPRITE_TEXTURE);
-		garuStore.setName(L"Garu Sprites");
+		garuStore.setName("Garu Sprites");
 
 		m_textureStores[garuStore.get()->getId()] = std::unique_ptr<TextureStore>{ garuStore.get() };
 
 		TextureStoreBuilder backgroundStore{};
 		backgroundStore.addTexture(TEMP_BACKGROUND_TEXTURE);
-		backgroundStore.setName(L"chapter one backgrounds");
+		backgroundStore.setName("chapter one backgrounds");
 
 		m_textureStores[backgroundStore.get()->getId()] = std::unique_ptr<TextureStore>{ backgroundStore.get() };
 	}

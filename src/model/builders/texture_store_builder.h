@@ -32,7 +32,7 @@ private:
 	}
 
 public:
-	void setName(std::wstring name) {
+	void setName(std::string name) {
 		if (m_textureStore == nullptr) { return; }
 
 		m_textureStore->m_name = name;

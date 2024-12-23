@@ -1,4 +1,7 @@
 
+
+#include "model_engine_interface.h"
+
 #include "action_type_mappers.h"
 
 #include "engine_node_action_fields.h"
@@ -9,6 +12,7 @@
 #include "imgui_internal.h"
 #include "imgui_node_editor.h"
 
+#include <string>
 
 template<>
 bool ActionField<ActionBackgroundTexture>::drawInternal(ActionBackgroundTexture* obj) {
@@ -18,11 +22,20 @@ bool ActionField<ActionBackgroundTexture>::drawInternal(ActionBackgroundTexture*
 
 	if (ImGui::TreeNode(actionTitle.c_str()))
 	{
+		ModelEngineInterface::TextureStoreMap& textureStores{ ModelEngineInterface::getTextureStoreMap() };
+
 		// TODO: make dropdown
 		// get the ids from the model (engine interface)
 		// limit the set of dragInt for texture index, and perhaps display names of texture stores and the individual textures too
-		modified |= ImGui::DragInt("Texture Store Id: ", &(obj->m_texture.m_textureStoreId), 1, 0, 10, "%d", ImGuiSliderFlags_WrapAround);
-		modified |= ImGui::DragInt("Texture Index: ", &(obj->m_texture.m_textureIndex), 1, 0, 10, "%d", ImGuiSliderFlags_WrapAround);
+		//modified |= ImGui::DragInt("Texture Store Id: ", , 1, 0, 10, "%d", ImGuiSliderFlags_WrapAround);
+		
+		std::string textureStoreName = textureStores[obj->m_texture.m_textureStoreId].get()->getName();
+
+		const char* elem_name = "lol";//textureStoreName.c_str();
+		ImGui::SliderInt("Texture Store", &(obj->m_texture.m_textureStoreId), 0, textureStores.size() - 1, elem_name); // Use ImGuiSliderFlags_NoInput flag to disable CTRL+Click here.
+		ImGui::SameLine();
+
+		//modified |= ImGui::DragInt("Texture Index: ", &(obj->m_texture.m_textureIndex), 1, 0, 10, "%d", ImGuiSliderFlags_WrapAround);
 
 		ImGui::TreePop();
 	}
@@ -36,6 +49,15 @@ bool ActionField<ActionBackgroundTexture>::drawInternal(ActionBackgroundTexture*
 template<>
 bool ActionField<ActionSpriteProperty>::drawInternal(ActionSpriteProperty* obj) {
 	bool modified = false;
+
+	std::string actionTitle{ "Sprite Property##" + std::to_string((unsigned long long)(void**)obj) };
+	if (ImGui::TreeNode(actionTitle.c_str()))
+	{
+
+
+	}
+	
+
 
 	return modified;
 }

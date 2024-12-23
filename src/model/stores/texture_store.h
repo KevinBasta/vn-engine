@@ -25,7 +25,7 @@ public:
 
 private:
 	id m_id{};
-	std::wstring m_name{};
+	std::string m_name{};
 
 	friend class TextureStoreBuilder;
 	
@@ -37,7 +37,7 @@ private:
 
 public:
 	id getId() { return m_id;  }
-	std::wstring_view getName() { return m_name; }
+	std::string getName() { return m_name; }
 	void loadTexture(index textureIndex);
 };
 

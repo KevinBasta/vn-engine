@@ -7,8 +7,13 @@
 
 class ModelEngineInterface : public ModelCommonInterface {
 public:
-	// Common interface calls the ModelSubject implementation
-	
+	using TextureStoreMap = ModelTextures::TextureStoreMap;
+	static TextureStoreMap& getTextureStoreMap() {
+		ModelSubject* model{ ModelSubject::validateInstance() };
+
+		return model->m_modelTextures.m_textureStores;
+	}
+
 };
 
 #endif // MODEL_INTERFACE_ENGINE_H

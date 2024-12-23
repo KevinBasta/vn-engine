@@ -94,7 +94,11 @@ public:
 
 	template <class T>
 	std::vector<T>& getStepActions(int stepIndex) {
-		// TODO: ERR, CREATING ENTRY IN MAP AND RETURNING EMPTY VECTOR
+		// TODO: ERR, RETURN IS CREATING ENTRY IN MAP AND RETURNING EMPTY VECTOR
+		
+		if ((m_nodeDerived->*(chapterNodeHelper<T>::handler)).find(stepIndex) == (m_nodeDerived->*(chapterNodeHelper<T>::handler)).end()) {
+			//throw someObj
+		}
 
 		return (m_nodeDerived->*(chapterNodeHelper<T>::handler))[stepIndex];
 	}
