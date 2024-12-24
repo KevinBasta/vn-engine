@@ -38,7 +38,8 @@ protected:
 
 	// For giving the nodes and pins all different Ids which is required by the imgui node editor library
 	// (otherwise two entities with the same id will have one clickable and one not clickable for example)
-	int m_operationalId{ 1 }; // Unsure if linkid needs to be included or can be separate. It's included in this.
+	int m_operationalId{ 1 };
+	int m_linkId{ 1 };
 	
 	// For config the timeline on init
 	bool m_firstFrame{ true };
@@ -58,6 +59,8 @@ protected:
 
 	virtual bool isCurrentlySelected(index rangeIndex) = 0;
 	virtual void setCurrentlySelectedToIndex(index rangeIndex) = 0;
+
+	virtual bool redrawPositions() = 0;
 
 public:
 	//
@@ -92,6 +95,7 @@ public:
 
 		// Reset the timeline nodes
 		m_operationalId = getTimlineRangeMax() + 1;
+		m_linkId = 1;
 		m_currentLinks.clear();
 		m_nodeIdToLinkableId.clear();
 		m_pinInIdToNodeId.clear();
@@ -229,6 +233,7 @@ public:
 
 	void drawTimelineNodes(int x = 0, int y = 0) {
 		std::pair<index, index> range{ getTimelineRange() };
+		bool redraw{ redrawPositions() };
 
 		for (index i{ range.first }; i <= range.second; i++) {
 			std::string name{ std::to_string(i) };
@@ -243,7 +248,7 @@ public:
 			m_pinOutIdToNodeId[outPinId] = i;
 
 			// Handle special cases
-			if (m_firstFrame) {
+			if (redraw) {
 				ed::SetNodePosition(nodeId, ImVec2(x, y));
 				x += 100;
 			}
@@ -259,7 +264,7 @@ public:
 
 			ImGui::BeginGroup();
 			ed::BeginPin(inPinId, ed::PinKind::Input);
-			ImGui::Text("-> In");
+			ImGui::Text(" ");
 			ed::EndPin();
 			ImGui::EndGroup();
 
@@ -267,7 +272,7 @@ public:
 
 			ImGui::BeginGroup();
 			ed::BeginPin(outPinId, ed::PinKind::Output);
-			ImGui::Text("Out ->");
+			ImGui::Text(" ");
 			ed::EndPin();
 			ImGui::EndGroup();
 
@@ -283,7 +288,7 @@ public:
 				if (i == range.first) {
 					// If currently on the first link then populate link to next
 					if (m_currentLinks.find({ i, i + 1 }) == m_currentLinks.end()) {
-						m_currentLinks[{i, i + 1}].m_id = m_operationalId++;
+						m_currentLinks[{i, i + 1}].m_id = m_linkId++;
 					}
 
 					m_currentLinks[{i, i + 1}].m_outId = outPinId;
@@ -291,7 +296,7 @@ public:
 				else if (i == range.second) {
 					// If currently on the last link then populate link to previous
 					if (m_currentLinks.find({ i - 1, i }) == m_currentLinks.end()) {
-						m_currentLinks[{i - 1, i}].m_id = m_operationalId++;
+						m_currentLinks[{i - 1, i}].m_id = m_linkId++;
 					}
 
 					m_currentLinks[{i - 1, i}].m_inId = inPinId;
@@ -299,19 +304,24 @@ public:
 				else {
 					// If in the middle of the range then populate previous and next links
 					if (m_currentLinks.find({ i - 1, i }) == m_currentLinks.end()) {
-						m_currentLinks[{i - 1, i}].m_id = m_operationalId++;
+						m_currentLinks[{i - 1, i}].m_id = m_linkId++;
 					}
 
 					m_currentLinks[{i - 1, i}].m_inId = inPinId;
 					
 					if (m_currentLinks.find({ i, i + 1 }) == m_currentLinks.end()) {
-						m_currentLinks[{i, i + 1}].m_id = m_operationalId++;
+						m_currentLinks[{i, i + 1}].m_id = m_linkId++;
 					}
 
 					m_currentLinks[{i, i + 1}].m_outId = outPinId;
 				}
 			}
 		}
+
+		if (redraw) {
+			ed::NavigateToContent(0.0f);
+		}
+
 	}
 
 

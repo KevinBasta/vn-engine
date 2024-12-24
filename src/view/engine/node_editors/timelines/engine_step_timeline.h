@@ -1,4 +1,5 @@
 
+#include "id.h"
 #include "index.h"
 
 #include "state_subject.h"
@@ -9,6 +10,7 @@
 class VnEngineStepTimeline : public VnEngineTimeline {
 private:
 	StateSubject* m_stateSubject{ nullptr };
+	id m_previousNodeId{ 0 };
 
 public:
 	VnEngineStepTimeline(StateSubject* stateSubject) :
@@ -43,5 +45,16 @@ protected:
 	
 	void setCurrentlySelectedToIndex(index rangeIndex) {
 		m_stateSubject->goToStepIndex(rangeIndex);
+	}
+
+	bool redrawPositions() {
+		id current{ m_stateSubject->getNodeId() };
+
+		if (current != m_previousNodeId) {
+			m_previousNodeId = current;
+			return true;
+		}
+
+		return false;
 	}
 };

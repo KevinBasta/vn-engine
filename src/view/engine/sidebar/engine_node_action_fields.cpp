@@ -43,11 +43,10 @@ bool ActionField<ActionBackgroundTexture>::drawInternal(ActionBackgroundTexture*
 		// Draw the texture store options
 		const std::string& textureStoreName{ currentStore->getName() };
 		modified |= ImGui::SliderInt("Texture Store", &(obj->m_texture.m_textureStoreId), 1, textureStores.size(), textureStoreName.c_str()); // Use ImGuiSliderFlags_NoInput flag to disable CTRL+Click here.
-		
-		//if (currentStore.)
-		
-		
-		//modified |= ImGui::SliderInt("Texture", &(obj->m_texture.m_textureIndex), 1, 0, 10, "%d", ImGuiSliderFlags_WrapAround);
+			
+		std::pair<int, int> texturesRange{ currentStore->getTexturesRange() };
+		std::string currentTextureIndex{ std::to_string(obj->m_texture.m_textureIndex) };
+		modified |= ImGui::SliderInt("Texture", &(obj->m_texture.m_textureIndex), texturesRange.first, texturesRange.second, currentTextureIndex.c_str());
 
 		ImGui::TreePop();
 	}

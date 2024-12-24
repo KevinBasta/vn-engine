@@ -38,6 +38,7 @@ private:
 public:
 	const id getId() { return m_id;  }
 	const std::string& getName() { return m_name; }
+	std::pair<int, int> getTexturesRange() { return { 0, m_texturePaths.size() - 1 }; }
 	void loadTexture(index textureIndex);
 };
 

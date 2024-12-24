@@ -112,7 +112,7 @@ private:
 			// do dynamic cast and handle failure of the cast?
 			ChapterNode* node{ static_cast<ChapterNode*>(nodeBase) };
 
-			for (int i{ 1 }; i <= node->m_totalSteps; i++) {
+			for (int i{ 0 }; i < node->m_totalSteps; i++) {
 				drawStep(node, i);
 			}
 		}
@@ -121,7 +121,7 @@ private:
 		static void drawStep(ChapterNode* node, int index) {
 			if (node == nullptr) { return; }
 
-			std::string stepTitle{ "Step #" + std::to_string(index) };
+			std::string stepTitle{ "Step #" + std::to_string(index + 1) };
 
 			if (ImGui::TreeNode(stepTitle.c_str()))
 			{

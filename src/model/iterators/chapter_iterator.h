@@ -107,8 +107,6 @@ public:
 	}
 
 	index getCurrentStepIndex() {
-		std::cout << m_nodeRunner.getCurrentStepIndex() << std::endl;
-		std::cout << "the step index is" << std::endl;
 		return m_nodeRunner.getCurrentStepIndex();
 	}
 
