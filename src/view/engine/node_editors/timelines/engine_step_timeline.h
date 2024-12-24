@@ -3,6 +3,10 @@
 #include "index.h"
 
 #include "state_subject.h"
+#include "model_engine_interface.h"
+
+#include "node.h"
+#include "chapter_node_builder.h"
 
 #include "engine_timeline.h"
 
@@ -47,13 +51,23 @@ protected:
 		m_stateSubject->goToStepIndex(rangeIndex);
 	}
 
-	bool redrawPositions() {
+	bool shouldRedrawPositions() {
 		id current{ m_stateSubject->getNodeId() };
 
 		if (current != m_previousNodeId) {
 			m_previousNodeId = current;
 			return true;
 		}
+
+		return false;
+	}
+
+	bool handleDeletingNode(index rangeIndex) {
+		id current{ m_stateSubject->getNodeId() };
+		ChapterNode* node{ static_cast<ChapterNode*>(ModelCommonInterface::getNodeById(current)) };
+
+		std::cout << "in handle deleting node" << std::endl;
+		//ChapterNodeBuilder{ node }.removeStep(rangeIndex);
 
 		return false;
 	}
