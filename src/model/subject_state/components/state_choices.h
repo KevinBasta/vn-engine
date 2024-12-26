@@ -48,8 +48,8 @@ public:
 
 private:
 	void applySetNextNodeId();
-	void applyRelationModifications();
 	void applySetNextChapterId();
+	void applyRelationModifications();
 
 public:
 	//
@@ -77,16 +77,17 @@ public:
 		std::cout << "pick next node based on choice" << std::endl;
 		m_choiceSetNextNode = &action;
 	}
+
+	void handle(const ActionChoiceSetNextChapter& action) {
+		std::cout << "pick next chapter based on choice" << std::endl;
+		m_choiceSetNextChapter = &action;
+	}
 	
 	void handle(const ActionChoiceModifyRelation& action) {
 		std::cout << "modify relations based on choice" << std::endl;
 		m_choiceModifyRelations = &action;
 	}
 
-	void handle(const ActionChoiceSetNextChapter& action) {
-		std::cout << "pick next chapter based on choice" << std::endl;
-		m_choiceSetNextChapter = &action;
-	}
 };
 
 #endif // VN_STATE_CHOICES_H

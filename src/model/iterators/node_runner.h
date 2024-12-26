@@ -30,20 +30,17 @@ public:
 			return m_latestAction;
 		}
 
+		if (m_latestAction != NodeState::NODE_NOT_STARTED) {
+			m_currentStep++;
+		}
+		
 		m_latestAction = m_node->action(stateSubject, m_currentStep);
-		m_currentStep++;
 
 		return m_latestAction;
 	}
 
 	int getCurrentStepIndex() {
 		return m_currentStep;
-	}
-
-	int getCurrentNodeTotalSteps() {
-		if (m_node == nullptr) { return 0; }
-		
-		return m_node->getTotalSteps();
 	}
 };
 

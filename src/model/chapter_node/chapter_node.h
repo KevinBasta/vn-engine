@@ -21,7 +21,6 @@ class VnEngineNodeEditor;
 class ChapterNode : public Node {
 private:
 	friend class ChapterNodeBuilder;
-	friend class VnEngineNodeEditor;
 
 	template <class T>
 	using ActionStepMap = std::unordered_map<index, std::vector<T>>;
@@ -161,12 +160,13 @@ public:
 	ChapterNode(std::string tempData) : Node(tempData) {}
 
 	NodeState action(StateSubject* stateSubject, int stepIndex);
-	index getTotalSteps();
 
 public:
 	// Engine operations
 	void addStep() {}
 	void updateTotalSteps() {}
+	int getTotalSteps() { return m_totalSteps; }
+	int getLastStepIndex() { return m_totalSteps - 1; }
 
 public:
 	virtual void print(bool printChildren) {

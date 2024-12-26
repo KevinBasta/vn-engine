@@ -63,6 +63,8 @@ protected:
 
 	virtual bool shouldRedrawPositions() = 0;
 
+	virtual ImColor getSelectionColor() = 0;
+
 public:
 	//
 	// Constructor and destructor
@@ -158,8 +160,10 @@ private:
 				x += 100;
 			}
 
-			if (isCurrentlySelected(i)) {
-				ed::PushStyleColor(ed::StyleColor_NodeBg, ImColor(128, 128, 128, 200));
+			bool isSelected{ isCurrentlySelected(i) };
+
+			if (isSelected) {
+				ed::PushStyleColor(ed::StyleColor_NodeBg, getSelectionColor());
 			}
 
 			// Draw the node in the graph window
@@ -183,7 +187,7 @@ private:
 
 			ed::EndNode();
 
-			if (isCurrentlySelected(i)) {
+			if (isSelected) {
 				ed::PopStyleColor(1);
 			}
 

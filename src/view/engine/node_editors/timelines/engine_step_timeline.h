@@ -29,16 +29,20 @@ protected:
 	}
 
 	std::pair<index, index> getTimelineRange() {
-		index total{ m_stateSubject->getCurrentNodeTotalSteps() };
+		id current{ m_stateSubject->getNodeId() };
+		ChapterNode* node{ static_cast<ChapterNode*>(ModelCommonInterface::getNodeById(current)) };
+		if (node == nullptr) { return { 0,0 }; }
 		
 		// TODO: the range starting from 1 depends on some internal chapterNode property. Perhaps certralize this.
-		return { 1, total };
+		return { 0, node->getLastStepIndex() };
 	}
 
 	index getTimlineRangeMax() {
-		index total{ m_stateSubject->getCurrentNodeTotalSteps() };
+		id current{ m_stateSubject->getNodeId() };
+		ChapterNode* node{ static_cast<ChapterNode*>(ModelCommonInterface::getNodeById(current)) };
+		if (node == nullptr) { return 0; }
 
-		return total;
+		return node->getLastStepIndex();
 	}
 
 	bool isCurrentlySelected(index rangeIndex) {
@@ -70,5 +74,18 @@ protected:
 		//ChapterNodeBuilder{ node }.removeStep(rangeIndex);
 
 		return false;
+	}
+
+	ImColor getSelectionColor() {
+		id current{ m_stateSubject->getNodeId() };
+		ChapterNode* node{ static_cast<ChapterNode*>(ModelCommonInterface::getNodeById(current)) };
+		
+		if (m_stateSubject->inAutoAction()) {
+			// TODO: perhaps it can start as green and over time as we get closer to
+			// the end of the autoaction it can transition into the default colour
+			return ImColor(58, 255, 46, 120);
+		}
+		
+		return ImColor(128, 128, 128, 200);
 	}
 };

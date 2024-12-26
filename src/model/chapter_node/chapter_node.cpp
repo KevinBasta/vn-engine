@@ -152,7 +152,3 @@ NodeState ChapterNode::action(StateSubject* stateSubject, int stepIndex)
 
 	return NodeState::NODE_END;
 }
-
-index ChapterNode::getTotalSteps() {
-	return m_steps.size();
-}

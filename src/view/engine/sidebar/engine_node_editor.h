@@ -112,23 +112,23 @@ private:
 			// do dynamic cast and handle failure of the cast?
 			ChapterNode* node{ static_cast<ChapterNode*>(nodeBase) };
 
-			for (int i{ 0 }; i < node->m_totalSteps; i++) {
+			for (index i{ 0 }; i < node->getTotalSteps(); i++) {
 				drawStep(node, i);
 			}
 		}
 
 
-		static void drawStep(ChapterNode* node, int index) {
+		static void drawStep(ChapterNode* node, index stepIndex) {
 			if (node == nullptr) { return; }
 
-			std::string stepTitle{ "Step #" + std::to_string(index + 1) };
+			std::string stepTitle{ "Step #" + std::to_string(stepIndex) };
 
 			if (ImGui::TreeNode(stepTitle.c_str()))
 			{
 				for (int i{ 0 }; i < s_items.size(); i++)
 				{
-					bool modified = s_items.at(i).drawExisting(node, index);
-					if (modified) { reloadStateToStep(index); }
+					bool modified = s_items.at(i).drawExisting(node, stepIndex);
+					if (modified) { reloadStateToStep(stepIndex); }
 				}
 
 				ImGui::TreePop();
@@ -140,10 +140,11 @@ private:
 			// If we are viewing the node that was edited at or past the point of the action // TO DO THIS LINE
 
 			int currentStep{ m_stateSubject->getStepIndex() };
+			std::cout << stepIndex << " current: " << currentStep << std::endl;
 
-			if (currentStep <= stepIndex) {
-				// TODO: need a new function to accumulate state up to current step in node
-				m_stateSubject->reloadStateStep();
+			if (stepIndex <= currentStep) {
+				std::cout << "GOTOSTEPINDEX" << std::endl;
+				m_stateSubject->goToStepIndex(currentStep);
 			}
 		}
 	};

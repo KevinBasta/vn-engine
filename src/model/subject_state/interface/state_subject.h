@@ -39,31 +39,28 @@ public:
 	id getChapterId() { return iterator.getChapterId(); }
 	id getNodeId() { return iterator.getNodeId(); }
 	int getStepIndex() { return iterator.getCurrentStepIndex(); }
-	int getCurrentNodeTotalSteps() { return iterator.getCurrentNodeTotalSteps(); }
 
 	void goToChapterId(id chapterId) { chapterEndActions(); iterator = ChapterIterator{ chapterId }; }
 	void goToNodeId(id nodeId) { nodeEndActions(); iterator = ChapterIterator{ iterator.getChapterId(), nodeId }; }
-	void goToStepIndex(index stepIndex) { nodeEndActions(); iterator = ChapterIterator{ iterator.getChapterId(), iterator.getNodeId(), stepIndex }; }
-
-	void reloadStateStep() {
-		// TODO: validate if all three calls are needed.
+	
+	void goToStepIndex(index stepIndex) { 
 		id chapterId{ getChapterId() };
 		id nodeId{ getNodeId() };
-		int stepIndex{ getStepIndex() };
-
-		goToChapterId(chapterId);
+		
 		goToNodeId(nodeId);
 
-
-		// TODO: the following doesn't work properly for a few reasons.
-		// 1. auto actions need an extra "step" (a virtual step) to skip the auto action
-		// 2. picking from options does not work
-		// Need a different way to implement. Maybe can use same logic that would be used
-		// for reloading a savefile to a specific chapter, node, and step.
-		// like an array of previous actions (like global save choice record or similar)
-		//for (int i{ 0 }; i < stepIndex; i++) {
-		//	action();
-		//}
+		for (index i{ 0 }; i <= stepIndex; i++) {
+			// Do each action up to and including stepIndex
+			action();
+		
+			// If autoactions are set by the action, clear them so 
+			// that the next action isn't an autostep clearing action
+			if (inAutoAction()) {
+				endAutoActions();
+				clearAutoAction();
+				notify();
+			}
+		}	
 	}
 
 public:

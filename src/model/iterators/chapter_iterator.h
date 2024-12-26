@@ -109,10 +109,6 @@ public:
 	index getCurrentStepIndex() {
 		return m_nodeRunner.getCurrentStepIndex();
 	}
-
-	index getCurrentNodeTotalSteps() {
-		return m_nodeRunner.getCurrentNodeTotalSteps();
-	}
 };
 
 
