@@ -71,7 +71,7 @@ public:
 
 	void pollAndDraw(const FrameDimensions& frame) {
 		if (m_stateSubject->m_choices.isChoiceActive()) {
-			ActionChoice* choices{ m_stateSubject->m_choices.getChoices() };
+			ActionChoice const* choices{ m_stateSubject->m_choices.getChoices() };
 
 			if (choices == nullptr) {
 				return;

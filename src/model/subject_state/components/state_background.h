@@ -15,7 +15,7 @@ public:
 	// TODO: allow background scalling, moving, rotating, etc..
 	// TODO: allow background color setting
 
-	void handle(ActionBackgroundTexture& backgroundAction) {
+	void handle(const ActionBackgroundTexture& backgroundAction) {
 		// TODO: Error handling
 		m_currentBackground = backgroundAction.m_texture;
 

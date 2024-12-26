@@ -39,7 +39,7 @@ private:
 		m_textureStores[backgroundStore.get()->getId()] = std::unique_ptr<TextureStore>{ backgroundStore.get() };
 	}
 
-	void loadTexture(TextureIdentifier& textureId) {
+	void loadTexture(const TextureIdentifier& textureId) {
 		auto iter{ m_textureStores.find(textureId.m_textureStoreId) };
 
 		if (iter != m_textureStores.end()) {

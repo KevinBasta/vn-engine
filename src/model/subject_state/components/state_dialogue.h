@@ -25,7 +25,7 @@ public:
 	//
 	// Node interface
 	//
-	void handle(ActionTextLine& action) {
+	void handle(const ActionTextLine& action) {
 		m_dialogueState.m_line = action.m_line;
 
 		// TODO: should the character data be updatable? or just overriden by the actions?
@@ -41,15 +41,15 @@ public:
 		}
 	}
 
-	void handle(ActionTextOverrideSpeaker& action) {
+	void handle(const ActionTextOverrideSpeaker& action) {
 		m_dialogueState.m_speakerName = action.m_speakerName;
 	}
 
-	void handle(ActionTextOverrideColor& action) {
+	void handle(const ActionTextOverrideColor& action) {
 		m_dialogueState.m_color = action.m_textColor;
 	}
 
-	void handle(ActionTextRender& action) {
+	void handle(const ActionTextRender& action) {
 		m_dialogueState.m_render = action.m_render;
 	}
 };

@@ -13,10 +13,10 @@ private:
 	StateSubject* m_stateSubject{ nullptr };
 
 	bool m_activeChoice{ false };
-	ActionChoice* m_choices{ nullptr };
-	ActionChoiceSetNextNode* m_choiceSetNextNode{ nullptr };
-	ActionChoiceModifyRelation* m_choiceModifyRelations{ nullptr };
-	ActionChoiceSetNextChapter* m_choiceSetNextChapter{ nullptr };
+	ActionChoice const* m_choices{ nullptr };
+	ActionChoiceSetNextNode const* m_choiceSetNextNode{ nullptr };
+	ActionChoiceModifyRelation const* m_choiceModifyRelations{ nullptr };
+	ActionChoiceSetNextChapter const* m_choiceSetNextChapter{ nullptr };
 
 	int m_currentChoiceIndex{ 0 };
 
@@ -60,30 +60,30 @@ public:
 
 	bool isChoiceActive() { return m_activeChoice; }
 	int getChoiceIndex() { return m_currentChoiceIndex; }
-	ActionChoice* getChoices() { return m_choices; }
+	const ActionChoice* getChoices() { return m_choices; }
 
 public:
 	//
 	// Node interface
 	//
-	void handle(ActionChoice& action) {
+	void handle(const ActionChoice& action) {
 		m_activeChoice = true;
 		m_currentChoiceIndex = 0;
 
 		m_choices = &action;
 	}
 
-	void handle(ActionChoiceSetNextNode& action) {
+	void handle(const ActionChoiceSetNextNode& action) {
 		std::cout << "pick next node based on choice" << std::endl;
 		m_choiceSetNextNode = &action;
 	}
 	
-	void handle(ActionChoiceModifyRelation& action) {
+	void handle(const ActionChoiceModifyRelation& action) {
 		std::cout << "modify relations based on choice" << std::endl;
 		m_choiceModifyRelations = &action;
 	}
 
-	void handle(ActionChoiceSetNextChapter& action) {
+	void handle(const ActionChoiceSetNextChapter& action) {
 		std::cout << "pick next chapter based on choice" << std::endl;
 		m_choiceSetNextChapter = &action;
 	}

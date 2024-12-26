@@ -28,7 +28,7 @@ public:
 	void recordChapterChildChoice(id chapterId) { m_chapterChoicesRecord.push_back(chapterId); }
 
 public:
-	void handle(ActionSetNextChapter& action) {
+	void handle(const ActionSetNextChapter& action) {
 		std::cout << "set next chapter" << std::endl;
 		set(action.m_chapterId);
 	}

@@ -15,7 +15,7 @@ public:
 	}
 
 	// Textures
-	static void loadTexture(TextureIdentifier& textureId) {
+	static void loadTexture(const TextureIdentifier& textureId) {
 		ModelSubject* model{ ModelSubject::validateInstance() };
 
 		model->m_modelTextures.loadTexture(textureId);

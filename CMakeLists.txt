@@ -90,19 +90,19 @@ add_executable (
 	"src/model/subject_model/interface/model_engine_interface.h" 
 	"src/model/subject_model/interface/model_common_interface.h"
 
-	"src/model/subject_state/state_background.h" 
-	"src/model/subject_state/state_choices.cpp" 
-	"src/model/subject_state/state_choices.h" 
-	"src/model/subject_state/state_dialogue.h" 
-	"src/model/subject_state/state_next_chapter.h" 
-	"src/model/subject_state/state_next_node.h"
-	"src/model/subject_state/state_relations.cpp" 
-	"src/model/subject_state/state_relations.h" 
-	"src/model/subject_state/state_sprites.cpp" 
-	"src/model/subject_state/state_sprites.h" 
-	"src/model/subject_state/state_subject.cpp"
-	"src/model/subject_state/state_subject.h"
-	"src/model/subject_state/state_types.h"
+	"src/model/subject_state/components/state_background.h" 
+	"src/model/subject_state/components/state_choices.cpp" 
+	"src/model/subject_state/components/state_choices.h" 
+	"src/model/subject_state/components/state_dialogue.h" 
+	"src/model/subject_state/components/state_next_chapter.h" 
+	"src/model/subject_state/components/state_next_node.h"
+	"src/model/subject_state/components/state_relations.cpp" 
+	"src/model/subject_state/components/state_relations.h" 
+	"src/model/subject_state/components/state_sprites.cpp" 
+	"src/model/subject_state/components/state_sprites.h" 
+	"src/model/subject_state/interface/state_subject.cpp"
+	"src/model/subject_state/interface/state_subject.h"
+	"src/model/subject_state/interface/state_types.h"
 	
 	"src/model/subject.h"
 	"src/model/subjects_orchestrator.h"
@@ -170,7 +170,7 @@ add_executable (
  "src/view/engine/node_editors/timelines/engine_animations_timeline.h" 
  "src/view/engine/node_editors/node_editors_common.h" 
  "src/view/engine/node_editors/node_editors_common.cpp"
-)
+ "src/model/subject_state/components/state_background.cpp" "src/model/subject_state/components/state_dialogue.cpp" "src/model/subject_state/components/state_next_chapter.cpp" "src/model/subject_state/components/state_next_node.cpp")
 
 target_include_directories(
 	"vn_engine"
@@ -191,6 +191,8 @@ target_include_directories(
 	"src/model/subject_model/components"
 	"src/model/subject_model/interface"
 	"src/model/subject_state"
+	"src/model/subject_state/components"
+	"src/model/subject_state/interface"
 	"src/model/resource_managers"
 
 	"src/view"

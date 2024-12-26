@@ -111,7 +111,7 @@ bool StateRelations::eval(RelationConditionUnit& conditionUnit) {
 	return false;
 }
 
-void StateRelations::handle(ActionRelationSetNextNode& action) {
+void StateRelations::handle(const ActionRelationSetNextNode& action) {
 	if (m_stateSubject == nullptr) { return; }
 
 	for (auto condition : action.m_conditions) {
@@ -124,7 +124,7 @@ void StateRelations::handle(ActionRelationSetNextNode& action) {
 	}
 }
 
-void StateRelations::handle(ActionRelationSetNextChapter& action) {
+void StateRelations::handle(const ActionRelationSetNextChapter& action) {
 	if (m_stateSubject == nullptr) { return; }
 	
 	for (auto condition : action.m_conditions) {
@@ -137,7 +137,7 @@ void StateRelations::handle(ActionRelationSetNextChapter& action) {
 	}
 }
 
-void StateRelations::handle(ActionRelationModify& action) {
+void StateRelations::handle(const ActionRelationModify& action) {
 	if (m_characterRelationsData[action.m_relation.m_characterOneId].get() == nullptr) {
 		m_characterRelationsData[action.m_relation.m_characterOneId] = std::make_unique<Relations>();
 	}

@@ -6,7 +6,7 @@
 #include "state_sprites.h"
 #include "chapter_node_types.h"
 
-void StateSprites::handle(ActionSpriteProperty& action) {
+void StateSprites::handle(const ActionSpriteProperty& action) {
 	if (m_spriteRenderData.find(action.m_texture) == m_spriteRenderData.end()) {
 		// TODO: handle error/exceptions
 		ModelRuntimeInterface::loadTexture(action.m_texture);		
@@ -44,7 +44,7 @@ void StateSprites::handle(ActionSpriteProperty& action) {
 	}
 }
 
-void StateSprites::handle(ActionSpriteAnimationGeneric& action)
+void StateSprites::handle(const ActionSpriteAnimationGeneric& action)
 {
 	std::cout << "auto action handling" << std::endl;
 	// TODO: null check

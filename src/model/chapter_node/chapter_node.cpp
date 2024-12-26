@@ -45,8 +45,8 @@ template<> struct stateHelper<ActionChoiceSetNextChapter>	{ static constexpr aut
 template <class T>
 bool ChapterNode::handle(
 	StateSubject *stateSubject,
-	StepIndex stepIndex, 
-	std::unordered_map<StepIndex, std::vector<T>>& stepMap)
+	index stepIndex, 
+	ActionStepMap<T>& stepMap)
 {
 	bool hasStep{ false };
 
@@ -54,12 +54,12 @@ bool ChapterNode::handle(
 		return hasStep;
 	}
 
-	class std::unordered_map<StepIndex, std::vector<T>>::iterator stepLocation = stepMap.find(stepIndex);
+	class ActionStepMap<T>::const_iterator stepLocation = stepMap.find(stepIndex);
 
 	// Check if the step exsists for this type of action
 	if (stepLocation != stepMap.end()) {
 		hasStep = true;
-		class std::vector<T>::iterator action;
+		class std::vector<T>::const_iterator action;
 
 		// Execute all the actions within the step
 		for (action = stepLocation->second.begin(); action < stepLocation->second.end(); action++)

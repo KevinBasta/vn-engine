@@ -44,9 +44,9 @@ public:
 	//
 	// Node interface
 	//
-	void handle(ActionRelationSetNextNode& action);
-	void handle(ActionRelationModify& action);
-	void handle(ActionRelationSetNextChapter& action);
+	void handle(const ActionRelationSetNextNode& action);
+	void handle(const ActionRelationModify& action);
+	void handle(const ActionRelationSetNextChapter& action);
 
 public:
 	void save() {}
