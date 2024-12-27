@@ -85,13 +85,6 @@ public:
 		}
 	}
 
-
-
-	//template <class T>
-	//T* getStepAction(int stepIndex) {
-	//	return &((m_nodeDerived->*(chapterNodeHelper<T>::handler))[stepIndex]);
-	//}
-
 	template <class T>
 	std::vector<T>& getStepActions(int stepIndex) {
 		// TODO: ERR, RETURN IS CREATING ENTRY IN MAP AND RETURNING EMPTY VECTOR

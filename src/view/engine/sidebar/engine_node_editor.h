@@ -41,27 +41,6 @@ public:
 
 
 private:
-	// Helper to avoid having to specify more data with the specific types T
-	// TODO: this can be applicable to so much more, especially the model/state
-	// and the helper structs they use to get pointers to functions and variables
-	struct ActionHelper {
-	public:
-		template <class T>
-		ActionHelper(std::in_place_type_t<T>)
-		:	getType([]() { return ActionToType<T>::type; }),
-			getName([]() { return ActionToActionName<T>::name; }),
-			drawNew([]() { return ActionField<T>::drawField(); }),
-			drawExisting([](ChapterNode* node, int index) {
-				return ActionField<T>::drawField(node, index);
-			})
-		{ }
-
-		std::function<ActionType()> getType;
-		std::function<bool()> drawNew;
-		std::function<bool(ChapterNode* node, int index)> drawExisting;
-		std::function<const char* ()> getName;
-	};
-	
 	static const std::vector<ActionHelper> s_items;
 
 private:

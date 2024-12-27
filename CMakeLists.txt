@@ -170,7 +170,7 @@ add_executable (
  "src/view/engine/node_editors/timelines/engine_animations_timeline.h" 
  "src/view/engine/node_editors/node_editors_common.h" 
  "src/view/engine/node_editors/node_editors_common.cpp"
- "src/model/subject_state/components/state_background.cpp" "src/model/subject_state/components/state_dialogue.cpp" "src/model/subject_state/components/state_next_chapter.cpp" "src/model/subject_state/components/state_next_node.cpp")
+ "src/model/subject_state/components/state_background.cpp" "src/model/subject_state/components/state_dialogue.cpp" "src/model/subject_state/components/state_next_chapter.cpp" "src/model/subject_state/components/state_next_node.cpp" "src/model/subject_state/interface/state_common_interface.h" "src/model/subject_state/interface/state_engine_interface.h" "src/model/subject_state/interface/state_runtime_interface.h")
 
 target_include_directories(
 	"vn_engine"

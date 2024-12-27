@@ -146,7 +146,9 @@ private:
 			std::string name{ std::to_string(i) };
 
 			// Populate node and pin data
-			ed::NodeId nodeId = i;
+
+			// Making sure a nodeId is never 0 due to library issue with id 0
+			ed::NodeId nodeId = i + 1; 
 			ed::PinId  inPinId = m_operationalId++;
 			ed::PinId  outPinId = m_operationalId++;
 

@@ -44,9 +44,19 @@ public:
 	void goToNodeId(id nodeId) { nodeEndActions(); iterator = ChapterIterator{ iterator.getChapterId(), nodeId }; }
 	
 	void goToStepIndex(index stepIndex) { 
+		// First clear any autoactions from current iterator
+		// So that an action to get to stepIndex is not spent on clearing
+		// the auto action
+		if (inAutoAction()) {
+			endAutoActions();
+			clearAutoAction();
+			notify();
+		}
+
+		// Next get the current chapter and node, then set the iterator to them
 		id chapterId{ getChapterId() };
 		id nodeId{ getNodeId() };
-		
+		goToChapterId(chapterId);
 		goToNodeId(nodeId);
 
 		for (index i{ 0 }; i <= stepIndex; i++) {

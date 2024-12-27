@@ -16,37 +16,59 @@
 
 #include <string>
 
+static std::string toString(enum class SpriteProperty property) {
+	switch (property)	
+	{
+	case SpriteProperty::XPOS:
+		return "XPOS";
+	case SpriteProperty::YPOS:
+		return "YPOS";
+	case SpriteProperty::ZPOS:
+		return "ZPOS";
+	case SpriteProperty::SCALE:
+		return "SCALE";
+	case SpriteProperty::OPACITY:
+		return "OPACITY";
+	default:
+		break;
+	}
+
+	return "NONE";
+}
+
+bool drawTextureAndTextureStore(TextureIdentifier& texture) {
+	bool modified = false;
+
+	ModelEngineInterface::TextureStoreMap& textureStores{ ModelEngineInterface::getTextureStoreMap() };
+
+	// In the case that the texture store is invalid
+	if (!textureStores.contains(texture.m_textureStoreId)) {
+		texture.m_textureStoreId = (textureStores.begin())->first;
+	}
+
+	TextureStore* currentStore{ textureStores.at(texture.m_textureStoreId).get() };
+
+	// Draw the texture store options
+	const std::string& textureStoreName{ currentStore->getName() };
+	modified |= ImGui::SliderInt("Texture Store", &(texture.m_textureStoreId), 1, textureStores.size(), textureStoreName.c_str()); // Use ImGuiSliderFlags_NoInput flag to disable CTRL+Click here.
+
+	std::pair<int, int> texturesRange{ currentStore->getTexturesRange() };
+	std::string currentTextureIndex{ std::to_string(texture.m_textureIndex) };
+	modified |= ImGui::SliderInt("Texture", &(texture.m_textureIndex), texturesRange.first, texturesRange.second, currentTextureIndex.c_str());
+
+	return modified;
+}
+
 template<>
 bool ActionField<ActionBackgroundTexture>::drawInternal(ActionBackgroundTexture* obj) {
 	bool modified = false;
+	if (obj == nullptr) { return modified; }
 
 	std::string actionTitle{ "Background Texture##" + std::to_string((unsigned long long)(void**)obj) };
 
 	if (ImGui::TreeNode(actionTitle.c_str()))
 	{
-		ModelEngineInterface::TextureStoreMap& textureStores{ ModelEngineInterface::getTextureStoreMap() };
-
-		// TODO: make dropdown
-		// get the ids from the model (engine interface)
-		// limit the set of dragInt for texture index, and perhaps display names of texture stores and the individual textures too
-		//modified |= ImGui::DragInt("Texture Store Id: ", , 1, 0, 10, "%d", ImGuiSliderFlags_WrapAround);
-		//modified |= ImGui::DragInt("Texture Index: ", &(obj->m_texture.m_textureIndex), 1, 0, 10, "%d", ImGuiSliderFlags_WrapAround);
-
-
-		// In the case that the texture store is invalid
-		if (!textureStores.contains(obj->m_texture.m_textureStoreId)) {
-			obj->m_texture.m_textureStoreId = (textureStores.begin())->first;
-		}
-
-		TextureStore* currentStore{ textureStores.at(obj->m_texture.m_textureStoreId).get() };
-
-		// Draw the texture store options
-		const std::string& textureStoreName{ currentStore->getName() };
-		modified |= ImGui::SliderInt("Texture Store", &(obj->m_texture.m_textureStoreId), 1, textureStores.size(), textureStoreName.c_str()); // Use ImGuiSliderFlags_NoInput flag to disable CTRL+Click here.
-			
-		std::pair<int, int> texturesRange{ currentStore->getTexturesRange() };
-		std::string currentTextureIndex{ std::to_string(obj->m_texture.m_textureIndex) };
-		modified |= ImGui::SliderInt("Texture", &(obj->m_texture.m_textureIndex), texturesRange.first, texturesRange.second, currentTextureIndex.c_str());
+		modified |= drawTextureAndTextureStore(obj->m_texture);
 
 		ImGui::TreePop();
 	}
@@ -60,10 +82,24 @@ bool ActionField<ActionBackgroundTexture>::drawInternal(ActionBackgroundTexture*
 template<>
 bool ActionField<ActionSpriteProperty>::drawInternal(ActionSpriteProperty* obj) {
 	bool modified = false;
+	if (obj == nullptr) { return modified; }
 
-	std::string actionTitle{ "Sprite Property##" + std::to_string((unsigned long long)(void**)obj) };
+	ModelEngineInterface::TextureStoreMap& textureStores{ ModelEngineInterface::getTextureStoreMap() };
+	
+	// In the case that the texture store is invalid
+	if (!textureStores.contains(obj->m_texture.m_textureStoreId)) {
+		obj->m_texture.m_textureStoreId = (textureStores.begin())->first;
+	}
+
+	TextureStore* currentStore{ textureStores.at(obj->m_texture.m_textureStoreId).get() };
+	const std::string& textureStoreName{ currentStore->getName() };
+	//std::string actionTitle{ textureStoreName + "::[" + std::to_string(obj->m_texture.m_textureIndex) + "]::" + toString(obj->m_property) +  "##" + std::to_string((unsigned long long)(void**)obj)};
+	std::string actionTitle{ "Sprite Property" };
+
 	if (ImGui::TreeNode(actionTitle.c_str()))
 	{
+		modified |= drawTextureAndTextureStore(obj->m_texture);
+
 
 
 		ImGui::TreePop();
