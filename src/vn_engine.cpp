@@ -1,5 +1,6 @@
 ﻿// vn_engine.cpp : Defines the entry point for the application.
 //
+#pragma execution_character_set("utf-8")
 
 #include "vn_engine.h"
 

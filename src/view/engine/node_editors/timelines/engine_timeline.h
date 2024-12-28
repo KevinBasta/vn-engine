@@ -119,7 +119,7 @@ private:
 
 	void resetTimeline() {
 		// Reset the timeline nodes
-		m_operationalId = getTimlineRangeMax() + 1;
+		m_operationalId = getTimlineRangeMax() + 2;
 		m_linkId = 1;
 		m_currentLinks.clear();
 		m_nodeIdToLinkableId.clear();

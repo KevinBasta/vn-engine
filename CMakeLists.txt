@@ -6,6 +6,9 @@ cmake_minimum_required (VERSION 3.8)
 
 project("vn_engine")
 set(CMAKE_CXX_STANDARD 20)
+add_compile_options("$<$<C_COMPILER_ID:MSVC>:/utf-8>")
+add_compile_options("$<$<CXX_COMPILER_ID:MSVC>:/utf-8>")
+
 add_definitions(-DVN_BASE_PATH=\"${CMAKE_CURRENT_SOURCE_DIR}\")
 
 add_executable (
@@ -23,6 +26,8 @@ add_executable (
 	"external/imgui/backends/imgui_impl_opengl3.h"
 	"external/imgui/backends/imgui_impl_glfw.cpp"
 	"external/imgui/backends/imgui_impl_glfw.h"
+	"external/imgui/misc/cpp/imgui_stdlib.cpp"
+	"external/imgui/misc/cpp/imgui_stdlib.h"
 
 	# imgui node editor
 	"external/imgui-node-editor/imgui_node_editor.cpp"
@@ -215,6 +220,7 @@ target_include_directories(
 	SYSTEM
 	PUBLIC
 	"external/imgui"
+	"external/imgui/misc/cpp"
 	"external/imgui/backends"
 	"external/imgui-node-editor"
 	"external/stb"

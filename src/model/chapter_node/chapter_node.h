@@ -1,4 +1,4 @@
-#ifndef CHAPTER_NODE_H
+﻿#ifndef CHAPTER_NODE_H
 #define CHAPTER_NODE_H
 
 #include "id.h"
@@ -32,12 +32,12 @@ private:
 
 	// temp data for testing here, will be done by engine/hooks
 	// can auto add this for engine
-	std::vector<std::vector<ChapterNodeActionType>> m_steps{ 
+	/*std::vector<std::vector<ChapterNodeActionType>> m_steps{ 
 		{ ChapterNodeActionType::BACKGROUND, ChapterNodeActionType::SPRITE, ChapterNodeActionType::RELATION },
 		{ ChapterNodeActionType::TEXT, ChapterNodeActionType::SPRITE },
 		{ ChapterNodeActionType::TEXT, ChapterNodeActionType::SPRITE },
 		{ ChapterNodeActionType::CHOICE } 
-	};
+	};*/
 
 	
 	//
@@ -83,23 +83,26 @@ private:
 	//
 
 	ActionStepMap<ActionTextRender> m_textRenderSteps{
-		{ 0, {{ false }} },
+		{ 0, {{ true }} },
 		{ 1, {{ true }} },
 		{ 3, {{ false }} },
 	};
 
 	ActionStepMap<ActionTextLine> m_textLineSteps {
+		{ 0, {{1, L"ありがとうaaa"}} },
 		{ 1, {{1, L"hello, this is garu! I came from a far away land to do something important. That is to foil Brazazaza. Why you ask? Well... it's because he... he... well I am actually not very sure myself."}} },
 		{ 2, {{1, L"hello, this is NOT garu"}} },
 		//{ 3, std::vector<ActionTextLine>{{1, L"hello, this is a potato"}} }
 	};	
 	
 	ActionStepMap<ActionTextOverrideSpeaker> m_textOverrideSpeakerSteps{
+		{ 0, {{L"???"}} },
 		{ 2, {{L"???"}} },
-		//{ 3, std::vector<ActionTextOverrideSpeaker>{{L"potato man"}}}
+		//{ 3, std::vector<ActionTextOverrideSpeaker>{{"potato man"}}}
 	};
 
 	ActionStepMap<ActionTextOverrideColor> m_textOverrideColorSteps{
+		{ 0, {{glm::vec3(1.0f, 0.0f, 0.0f)}} },
 		{ 2, {{glm::vec3(0.0f, 1.0f, 0.5f)}} }
 	};
 

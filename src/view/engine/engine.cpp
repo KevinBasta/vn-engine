@@ -3,6 +3,7 @@
 
 #include "window.h"
 #include "context.h"
+#include "text.h"
 #include "state_subject.h"
 
 #include "engine_chapter_graph.h"
@@ -43,7 +44,11 @@ void VnEngine::initImgui() {
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
 
-	ImGuiIO& io = ImGui::GetIO(); (void)io;
+	ImGuiIO& io = ImGui::GetIO();
+	// TODO: DECIDE ON THE RAGE TO ALWAYS LOAD https://github.com/ocornut/imgui/blob/master/docs/FONTS.md#about-utf-8-encoding
+	bool fontLoad = io.Fonts->AddFontFromFileTTF(TEMP_FONT_PATH, 16.0f, nullptr, io.Fonts->GetGlyphRangesJapanese());
+
+	if (fontLoad) { std::cout << "FONT LOAD SUCCESS" << std::endl; }
 
 	// Don't use saved state
 	io.IniFilename = NULL;

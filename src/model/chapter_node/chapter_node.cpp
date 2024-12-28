@@ -79,49 +79,71 @@ bool ChapterNode::doStep(StateSubject* stateSubject, int stepIndex) {
 		return false;
 	}
 
-	if (stepIndex >= m_steps.size()) {
-		return false;
-	}
-	
-	std::vector<ChapterNodeActionType>& steps{ m_steps[stepIndex] };
-	std::vector<ChapterNodeActionType>::iterator step { steps.begin() };
+	stepExists |= handle(stateSubject, stepIndex, m_backgroundSteps);
 
-	for (; step != steps.end(); step++) {
-		switch (*step) {
-		case (ChapterNodeActionType::BACKGROUND):
-			stepExists |= handle(stateSubject, stepIndex, m_backgroundSteps);
+	stepExists |= handle(stateSubject, stepIndex, m_spriteTextureSteps);
+	stepExists |= handle(stateSubject, stepIndex, m_spriteGenericAnimationSteps);
 
-			break;
-		case (ChapterNodeActionType::SPRITE):
-			stepExists |= handle(stateSubject, stepIndex, m_spriteTextureSteps);
-			stepExists |= handle(stateSubject, stepIndex, m_spriteGenericAnimationSteps);
-			
-			break;
-		case (ChapterNodeActionType::TEXT):
-			stepExists |= handle(stateSubject, stepIndex, m_textRenderSteps);
-			stepExists |= handle(stateSubject, stepIndex, m_textLineSteps);
-			stepExists |= handle(stateSubject, stepIndex, m_textOverrideSpeakerSteps);
-			stepExists |= handle(stateSubject, stepIndex, m_textOverrideColorSteps);
+	stepExists |= handle(stateSubject, stepIndex, m_textRenderSteps);
+	stepExists |= handle(stateSubject, stepIndex, m_textLineSteps);
+	stepExists |= handle(stateSubject, stepIndex, m_textOverrideSpeakerSteps);
+	stepExists |= handle(stateSubject, stepIndex, m_textOverrideColorSteps);
 
-			break;
-		case (ChapterNodeActionType::RELATION):
-			stepExists |= handle(stateSubject, stepIndex, m_relationshipModifySteps);
-			stepExists |= handle(stateSubject, stepIndex, m_relationshipChooseNode);
-			//stepExists |= handle(stateSubject, stepIndex, m_relationshipChooseChapter);
+	stepExists |= handle(stateSubject, stepIndex, m_relationshipModifySteps);
+	stepExists |= handle(stateSubject, stepIndex, m_relationshipChooseNode);
+	//stepExists |= handle(stateSubject, stepIndex, m_relationshipChooseChapter);
 
-			break;
-		case (ChapterNodeActionType::CHOICE):
-			stepExists |= handle(stateSubject, stepIndex, m_setNextChapter);
-			stepExists |= handle(stateSubject, stepIndex, m_choiceTextOptions);
-			stepExists |= handle(stateSubject, stepIndex, m_choiceSetNextNode);
-			stepExists |= handle(stateSubject, stepIndex, m_choiceRelationModifications);
-			stepExists |= handle(stateSubject, stepIndex, m_choiceSetNextChapter);
+	stepExists |= handle(stateSubject, stepIndex, m_setNextChapter);
+	stepExists |= handle(stateSubject, stepIndex, m_choiceTextOptions);
+	stepExists |= handle(stateSubject, stepIndex, m_choiceSetNextNode);
+	stepExists |= handle(stateSubject, stepIndex, m_choiceRelationModifications);
+	stepExists |= handle(stateSubject, stepIndex, m_choiceSetNextChapter);
 
-			break;
-		default:
-			break;
-		}
-	}
+
+
+	//if (stepIndex >= m_steps.size()) {
+	//	return false;
+	//}
+	//
+	//std::vector<ChapterNodeActionType>& steps{ m_steps[stepIndex] };
+	//std::vector<ChapterNodeActionType>::iterator step { steps.begin() };
+
+	//for (; step != steps.end(); step++) {
+	//	switch (*step) {
+	//	case (ChapterNodeActionType::BACKGROUND):
+	//		stepExists |= handle(stateSubject, stepIndex, m_backgroundSteps);
+
+	//		break;
+	//	case (ChapterNodeActionType::SPRITE):
+	//		stepExists |= handle(stateSubject, stepIndex, m_spriteTextureSteps);
+	//		stepExists |= handle(stateSubject, stepIndex, m_spriteGenericAnimationSteps);
+	//		
+	//		break;
+	//	case (ChapterNodeActionType::TEXT):
+	//		stepExists |= handle(stateSubject, stepIndex, m_textRenderSteps);
+	//		stepExists |= handle(stateSubject, stepIndex, m_textLineSteps);
+	//		stepExists |= handle(stateSubject, stepIndex, m_textOverrideSpeakerSteps);
+	//		stepExists |= handle(stateSubject, stepIndex, m_textOverrideColorSteps);
+
+	//		break;
+	//	case (ChapterNodeActionType::RELATION):
+	//		stepExists |= handle(stateSubject, stepIndex, m_relationshipModifySteps);
+	//		stepExists |= handle(stateSubject, stepIndex, m_relationshipChooseNode);
+	//		//stepExists |= handle(stateSubject, stepIndex, m_relationshipChooseChapter);
+
+	//		break;
+	//	case (ChapterNodeActionType::CHOICE):
+	//		stepExists |= handle(stateSubject, stepIndex, m_setNextChapter);
+	//		stepExists |= handle(stateSubject, stepIndex, m_choiceTextOptions);
+	//		stepExists |= handle(stateSubject, stepIndex, m_choiceSetNextNode);
+	//		stepExists |= handle(stateSubject, stepIndex, m_choiceRelationModifications);
+	//		stepExists |= handle(stateSubject, stepIndex, m_choiceSetNextChapter);
+
+	//		break;
+	//	default:
+	//		break;
+	//	}
+	//}
 
 	return stepExists;
 	// Notify called in state after iter step is called
@@ -135,10 +157,11 @@ NodeState ChapterNode::action(StateSubject* stateSubject, int stepIndex)
 	std::cout << "test speaker" << " said: " << m_temp << std::endl;
 	std::cout << "step #" << stepIndex << std::endl;
 
-	if (stepIndex < m_steps.size()) {
+	//if (stepIndex < m_steps.size()) {
+	if (stepIndex < m_totalSteps) {
 		bool stepDone = doStep(stateSubject, stepIndex);
 
-		if (stepIndex + 1 < m_steps.size()) {
+		if (stepIndex + 1 < m_totalSteps) {
 			return NodeState::NODE_STEP;
 		}
 		else {
