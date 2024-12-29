@@ -22,7 +22,8 @@ public:
 	}
 
 	// Relations
-	static const std::unordered_map<id, std::unique_ptr<Relations>>& getBaseRelations() {
+	using RelationsMap = ModelRelations::RelationsMap;
+	static const RelationsMap& getBaseRelations() {
 		ModelSubject* model{ ModelSubject::validateInstance() };
 
 		return model->m_modelRelations.m_baseRelations;

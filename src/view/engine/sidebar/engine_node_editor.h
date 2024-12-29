@@ -115,14 +115,11 @@ private:
 		}
 
 		static void reloadStateToStep(int stepIndex) {
-			// If any of the fields (of the model) were moditifer, then update the state subject
-			// If we are viewing the node that was edited at or past the point of the action // TO DO THIS LINE
-
+			// If any of the fields (of the model) were moditifer, then update the state subject if 
+			// currently viewing the step that was edited or a step after the step that was edited
 			int currentStep{ m_stateSubject->getStepIndex() };
-			std::cout << stepIndex << " current: " << currentStep << std::endl;
 
 			if (stepIndex <= currentStep) {
-				std::cout << "GOTOSTEPINDEX" << std::endl;
 				m_stateSubject->goToStepIndex(currentStep);
 			}
 		}

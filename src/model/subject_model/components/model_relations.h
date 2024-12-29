@@ -22,7 +22,9 @@ private:
 	friend class ModelRuntimeInterface;
 	friend class ModelEngineInterface;
 
-	std::unordered_map<id, std::unique_ptr<Relations>> m_baseRelations{};
+	using RelationsMap = std::unordered_map<id, std::unique_ptr<Relations>>;
+	
+	RelationsMap m_baseRelations{};
 
 	static void initRelationTypes() {
 		RelationTypes::addRelationType("friendship");
@@ -55,10 +57,6 @@ private:
 
 		m_baseRelations[garuId] = std::unique_ptr<Relations>{ garuRelations.get() };
 		m_baseRelations[brzId] = std::unique_ptr<Relations>{ brzRelations.get() };
-	}
-
-	const std::unordered_map<id, std::unique_ptr<Relations>>& getBaseRelations() {
-		return m_baseRelations;
 	}
 };
 

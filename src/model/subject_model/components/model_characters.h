@@ -33,7 +33,6 @@ private:
 	Character* getCharacterById(int id) {
 		return m_characters[id].get();
 	}
-
 };
 
 #endif // VN_MODEL_CHARACTERS_H

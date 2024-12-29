@@ -1,4 +1,6 @@
 ﻿
+#include "id.h"
+
 #include "model_engine_interface.h"
 #include "chapter_node_types.h"
 
@@ -18,6 +20,13 @@
 #include <locale>
 #include <codecvt>
 #include <string>
+
+static std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> myconv;
+
+static std::string addIdFromPtr(std::string name, void* ptr) { return name + std::to_string((unsigned long long)(void**)ptr); }
+static std::string addIdFromPtr(std::wstring name, void* ptr) { 
+	return myconv.to_bytes(name) + std::to_string((unsigned long long)(void**)ptr);
+}
 
 static std::string toString(enum class SpriteProperty property) {
 	switch (property)	
@@ -128,141 +137,55 @@ bool ActionField<ActionTextRender>::drawInternal(ActionTextRender* obj) {
 	return modified;
 }
 
-//struct ImGuiTextInputExtentionData
-//{
-//	std::wstring* m_string;
-//
-//	// FOR FUTURE EXTENTIONS
-//	//ImGuiInputTextCallback  ChainCallback;
-//	//void* ChainCallbackUserData;
-//};
-//
-//static int InputTextCallback(ImGuiInputTextCallbackData* data)
-//{
-//	ImGuiTextInputExtentionData* user_data = (ImGuiTextInputExtentionData*)data->UserData;
-//	if (data->EventFlag == ImGuiInputTextFlags_CallbackResize) {
-//		// Resize string callback
-//		// If for some reason we refuse the new length (BufTextLen) and/or capacity (BufSize) we need to set them back to what we want.
-//		std::wstring* str = user_data->m_string;
-//		str->resize(data->BufTextLen);
-//		data->Buf = (char*)str->c_str();
-//	}
-//	
-//	// FOR FUTURE EXTENTIONS
-//	//else if (user_data->ChainCallback) {
-//		// Forward to user callback, if any
-//		//data->UserData = user_data->ChainCallbackUserData;
-//		//return user_data->ChainCallback(data);
-//	//}
-//
-//	return 0;
-//}
-//
-//
-//bool InputTextMultiline(const char* label, std::wstring* str, const ImVec2& size, ImGuiInputTextFlags flags)
-//{
-//	ImGuiTextInputExtentionData data;
-//	data.m_string = str;
-//
-//	return ImGui::InputTextMultiline(label, (char*)str->c_str(), str->capacity() + 1, size, flags, InputTextCallback, &data);
-//}
-
-
-
-//struct InputTextCallback_UserData
-//{
-//	std::wstring* Str;
-//	ImGuiInputTextCallback  ChainCallback;
-//	void* ChainCallbackUserData;
-//};
-//
-//static int InputTextCallback(ImGuiInputTextCallbackData* data)
-//{
-//	InputTextCallback_UserData* user_data = (InputTextCallback_UserData*)data->UserData;
-//	if (data->EventFlag == ImGuiInputTextFlags_CallbackResize)
-//	{
-//		// Resize string callback
-//		// If for some reason we refuse the new length (BufTextLen) and/or capacity (BufSize) we need to set them back to what we want.
-//		std::wstring* str = user_data->Str;
-//		str->resize(data->BufTextLen * 5);
-//		
-//		static std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> myconv;
-//		std::string converted = myconv.to_bytes(str->c_str());
-//		
-//		data->Buf = (char*)converted.c_str();
-//	}
-//
-//	//else if (user_data->ChainCallback)
-//	//{
-//	//	// Forward to user callback, if any
-//	//	data->UserData = user_data->ChainCallbackUserData;
-//	//	return user_data->ChainCallback(data);
-//	//}
-//	return 0;
-//}
-//
-//bool InputTextMultiline(const char* label, std::wstring* str, const ImVec2& size, ImGuiInputTextFlags flags, ImGuiInputTextCallback callback, void* user_data)
-//{
-//	IM_ASSERT((flags & ImGuiInputTextFlags_CallbackResize) == 0);
-//	flags |= ImGuiInputTextFlags_CallbackResize;
-//
-//	InputTextCallback_UserData cb_user_data;
-//	cb_user_data.Str = str;
-//	cb_user_data.ChainCallback = callback;
-//	cb_user_data.ChainCallbackUserData = user_data;
-//
-//
-//	static std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> myconv;
-//	std::string converted = myconv.to_bytes(*str);
-//
-//	return ImGui::InputTextMultiline(label, (char*)converted.c_str(), converted.capacity() + 1, size, flags, InputTextCallback, &cb_user_data);
-//}
-
 template<>
-bool ActionField<ActionTextLine>::drawInternal(ActionTextLine* obj) {
+bool ActionField<ActionTextLine>::drawInternal(ActionTextLine* obj) {	
 	bool modified = false;
 
 	std::string actionTitle{ "ActionTextLine##" + std::to_string((unsigned long long)(void**)obj) };
 
-
-
-
-
-
 	if (ImGui::TreeNode(actionTitle.c_str()))
 	{
-		// UTF-8 test with Japanese characters
-		// (Needs a suitable font? Try "Google Noto" or "Arial Unicode". See docs/FONTS.md for details.)
-		// - From C++11 you can use the u8"my text" syntax to encode literal strings as UTF-8
-		// - For earlier compiler, you may be able to encode your sources as UTF-8 (e.g. in Visual Studio, you
-		//   can save your source files as 'UTF-8 without signature').
-		// - FOR THIS DEMO FILE ONLY, BECAUSE WE WANT TO SUPPORT OLD COMPILERS, WE ARE *NOT* INCLUDING RAW UTF-8
-		//   CHARACTERS IN THIS SOURCE FILE. Instead we are encoding a few strings with hexadecimal constants.
-		//   Don't do this in your application! Please use u8"text in any language" in your application!
-		// Note that characters values are preserved even by InputText() if the font cannot be displayed,
-		// so you can safely copy & paste garbled characters into another application.
 
+		// Character selection
+		const ModelEngineInterface::CharacterMap& characterMap{ ModelEngineInterface::getCharacterMap() };
+		
+		// Set the object character to the first valid instance if it's not valid
+		if (!characterMap.contains(obj->m_characterID)) {
+			obj->m_characterID = characterMap.begin()->first;
+		}
+		
+		id selected = obj->m_characterID;
+
+		if (ImGui::BeginCombo("Character", myconv.to_bytes(characterMap.at(selected).get()->getName()).c_str(), NULL))
+		{
+			for (const auto& idCharacterPair : characterMap)
+			{
+				const bool isSelected = (idCharacterPair.first == selected);
+				if (ImGui::Selectable(myconv.to_bytes(idCharacterPair.second.get()->getName()).c_str(), isSelected)) {
+					obj->m_characterID = idCharacterPair.first;
+					modified |= true;
+				}
+
+				// Set the initial focus when opening the combo (scrolling + keyboard navigation focus)
+				if (isSelected) {
+					ImGui::SetItemDefaultFocus();
+				}
+			}
+			ImGui::EndCombo();
+		}
+
+		// TODO: decide if tabs should be allowed at all or not.
 		//ImGui::DebugTextEncoding((const char*)u8"こんにちは");
 		static ImGuiInputTextFlags flags{ 0 };
 		flags |= ImGuiInputTextFlags_AllowTabInput;
-		//flags |= ImGuiInputTextFlags_CallbackResize;
-		
-		std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> myconv;
+
+		// Conver wstring to string, draw multiline input, convert string to wstring
 		std::string convertedName = myconv.to_bytes(obj->m_line);
-		
-		modified |= ImGui::InputTextMultiline("UTF-8 input", &(convertedName), ImVec2(0, 0), flags);
-		
+		modified |= ImGui::InputTextMultiline("Text Line", &(convertedName), ImVec2(0, 0), flags); //TODO: imgui id
 		obj->m_line = myconv.from_bytes(convertedName);
-		
-		//std::cout << "string: " << convertedName.capacity() << "wstring: " << obj->m_line.capacity() << std::endl;;
 		
 		ImGui::TreePop();
 	}
-
-
-
-
-
 
 	return modified;
 }

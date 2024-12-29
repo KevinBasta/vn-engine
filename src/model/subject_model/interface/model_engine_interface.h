@@ -14,6 +14,12 @@ public:
 		return model->m_modelTextures.m_textureStores;
 	}
 
+	using CharacterMap = ModelCharacters::CharacterMap;
+	static const CharacterMap& getCharacterMap() {
+		ModelSubject* model{ ModelSubject::validateInstance() };
+
+		return model->m_modelCharacters.m_characters;
+	}
 };
 
 #endif // MODEL_INTERFACE_ENGINE_H
