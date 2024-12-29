@@ -89,7 +89,7 @@ private:
 	};
 
 	ActionStepMap<ActionTextLine> m_textLineSteps {
-		{ 0, {{1, L"ありがとうaaa"}} },
+		{ 0, {{1, L"\tありがとうaaa"}} },
 		{ 1, {{1, L"hello, this is garu! I came from a far away land to do something important. That is to foil Brazazaza. Why you ask? Well... it's because he... he... well I am actually not very sure myself."}} },
 		{ 2, {{1, L"hello, this is NOT garu"}} },
 		//{ 3, std::vector<ActionTextLine>{{1, L"hello, this is a potato"}} }

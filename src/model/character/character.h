@@ -31,7 +31,7 @@ public:
 	~Character();
 
 	id getId() const { return m_id; }
-	std::wstring_view getName() { return m_name; }
+	std::wstring getName() { return m_name; }
 	glm::vec3 getTextColor() const { return m_textColor; }
 
 	friend std::ostream& operator<<(std::ostream& out, Character& character);

@@ -13,7 +13,7 @@ private:
 	TextState m_dialogueState{ false, L"", L"", glm::vec3() };
 
 public:
-	TextState& get() {
+	TextState get() {
 		return m_dialogueState;
 	}
 

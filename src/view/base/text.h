@@ -24,10 +24,12 @@ class TextTexture {
 private:
 	static std::unique_ptr<TextTexture> m_instance;
 
-	static void checkInstance() {
+	static TextTexture* checkInstance() {
 		if (m_instance.get() == nullptr) {
 			m_instance = std::make_unique<TextTexture>();
 		}
+
+		return m_instance.get();
 	}
 
 private:
@@ -79,17 +81,19 @@ public:
 	// TODO: determine if different (multiple) instances (of the same size) can 
 	// be used for multithreading
 
-
-	// TODO: can remove the y calculations in this function
+	/**
+	 * Return the amount of characters that can fit in a line of maxWidth from text using scale size.
+	 * text			- The string to get a line substring from
+	 * startIndex	- the index in text from which to get a line substring from
+	 * maxWidth		- the maximum width (in pixels?) that a line can be in order to fit on screen
+	 * scale		- the scale of the font being used
+	 */
 	static int computeBreakIndex(std::wstring_view text, int startIndex, int maxWidth, float scale) {
-		checkInstance();
+		TextTexture* instance{ checkInstance() };
 
-		TextTexture* instance{ m_instance.get() };
-
-		int count{ 0 };
-		int lastSpaceCount{ 0 };
+		int charAmount{ 0 };
+		int lastSpaceMarker{ 0 };
 		float x{ 0.0f };
-		float y{ 0.0f };
 
 		std::wstring_view::const_iterator c;
 		for (c = text.begin() + startIndex; c != text.end(); c++)
@@ -99,44 +103,39 @@ public:
 			}
 
 			const CharTextrueData& ch{ instance->m_loadedTextChars[*c] };
+			float newX = (x + (ch.advance >> 6) * scale);
+			
+			// If the line limit is reached and we're mid word,
+			// go back to the end of the last word (the last space).
+			if (newX > maxWidth && *c != L' ') {
+				charAmount = lastSpaceMarker;
+			}
 
-			if ((x + (ch.advance >> 6) * scale) > maxWidth) {
-				if (*c != ' ') {
-					count = lastSpaceCount;
-				}
-
+			// If the line limit is reached or a new line
+			// character is read return.
+			if (newX > maxWidth  || *c == L'\n') {
 				break;
 			}
 
-			if (*c == '\n') {
-				break;
+			x = newX;
+
+			// Update the marker for the last time a word was finished
+			// (a space was read).
+			if (*c == L' ') {
+				lastSpaceMarker = charAmount;
 			}
 
-			float xpos = x + ch.bearing.x * scale;
-			float ypos = y - (ch.size.y - ch.bearing.y) * scale;
-
-			float w = ch.size.x * scale;
-			float h = ch.size.y * scale;
-
-			x += (ch.advance >> 6) * scale;
-
-			if (*c == ' ') {
-				lastSpaceCount = count;
-			}
-
-			count++;
+			charAmount++;
 		}
 
-		return count;
+		return charAmount;
 	}
 
 	/**
 	 * Creates a vector of string views containing the exact substrings
 	 */
 	static std::vector<std::wstring_view> fittedScreenLines(std::wstring_view text, int maxWidth, float scale) {
-		checkInstance();
-
-		TextTexture* instance{ m_instance.get() };
+		TextTexture* instance{ checkInstance() };
 		
 		std::vector<std::wstring_view> fittedLines{};
 
@@ -145,29 +144,26 @@ public:
 		
 		while (startIndex < text.length()) {
 
- 			// Skip any non-display characters
-			while (startIndex < text.length() - 1) {
+ 			// Skip non-display characters at start of the new fitted line
+			while (startIndex < text.length()) {
 				wchar_t currentChar{ text[startIndex] };
 
-				if (currentChar == ' ' || currentChar == '\n') {
-					startIndex++;
-					//std::cout << "skip" << std::endl;
-				}
-				else {
-					break;
-				}
+				if (currentChar == L' ' || currentChar == L'\t' || currentChar == L'\n') { startIndex++; }
+				else { break; }
 			}
 
 			lineLength = computeBreakIndex(text, startIndex, maxWidth, scale);
 
+			if (lineLength <= 0) {
+				// TODO: limitation. If a word spans the entire maxWidth it will result no more text
+				// being displayed. Perhaps use a hyphen for separated words? will have to update the text
+				// to be wstring type and insert a hyphen into the wstring for example.
+				break;
+			}
+
 			fittedLines.push_back(text.substr(startIndex, lineLength));
 			startIndex = startIndex + lineLength;
 		}
-
-		/*for (auto line : fittedLines) {
-			std::wcout << line;
-			std::wcout << "00" << std::endl;
-		}*/
 
 		return fittedLines;
 	}
@@ -177,7 +173,7 @@ public:
 	// -------------------
 	static void draw(std::wstring_view text)
 	{
-		checkInstance();
+		TextTexture* instance{ checkInstance() };
 		
 		float scale{ 1.0f };
 		float x{ 0.0f };
@@ -188,18 +184,18 @@ public:
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 		glActiveTexture(GL_TEXTURE0);
-		glBindVertexArray(m_instance.get()->m_VAO);
+		glBindVertexArray(instance->m_VAO);
 
 		// iterate through all characters
 		std::wstring_view::const_iterator c;
 		for (c = text.begin(); c != text.end(); c++)
 		{
-			if (m_instance.get()->m_loadedTextChars.find(*c) == m_instance.get()->m_loadedTextChars.end()) {
-				m_instance.get()->loadCharacter(*c);
+			if (instance->m_loadedTextChars.find(*c) == instance->m_loadedTextChars.end()) {
+				instance->loadCharacter(*c);
 				//std::cout << "char loaded: " << static_cast<uint32_t>(*c) << std::endl;
 			}
 
-			CharTextrueData& ch{ m_instance.get()->m_loadedTextChars[*c] };
+			CharTextrueData& ch{ instance->m_loadedTextChars[*c] };
 
 			float xpos = x + ch.bearing.x * scale;
 			float ypos = y - (ch.size.y - ch.bearing.y) * scale;
@@ -219,7 +215,7 @@ public:
 			// render glyph texture over quad
 			glBindTexture(GL_TEXTURE_2D, ch.textureID);
 			// update content of VBO memory
-			glBindBuffer(GL_ARRAY_BUFFER, m_instance.get()->m_VBO);
+			glBindBuffer(GL_ARRAY_BUFFER, instance->m_VBO);
 			glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices); // be sure to use glBufferSubData and not glBufferData
 
 			glBindBuffer(GL_ARRAY_BUFFER, 0);

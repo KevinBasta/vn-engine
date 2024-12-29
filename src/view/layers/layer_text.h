@@ -57,6 +57,7 @@ private:
 		//std::wstring testText = L"Hello, this is Garu. I've come from a far land. To meet brazazazaza. brazazaza Test Test Test how should line breaking work?";
 		
 		std::vector<std::wstring_view> lines{ TextTexture::fittedScreenLines(text, frame.width - ((paddingLeft + paddingRight) * frame.scale), frame.scale * scale) };
+		//std::vector<std::wstring_view> lines{ text };
 
 		std::vector<std::wstring_view>::iterator line{ lines.begin() };
 		for (; line != lines.end(); line++) {
@@ -80,7 +81,7 @@ public:
 	}
 
 	void pollAndDraw(const FrameDimensions& frame) {
-		TextState& state{ m_stateSubject->m_dialogue.get() };
+		TextState state{ m_stateSubject->m_dialogue.get() };
 
 		// TODO: make permeneant solution for this engine text too small 
 		// for rendering issue.
@@ -93,6 +94,7 @@ public:
 				state.m_speakerName,
 				state.m_color,
 				200.0f);
+
 			drawText(frame,
 				state.m_line,
 				state.m_color,
