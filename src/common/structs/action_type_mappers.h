@@ -9,6 +9,8 @@
 #include "model_engine_interface.h"
 #include "engine_drag_drop_payload.h"
 
+#include <functional>
+
 enum ActionAmount {
 	SINGLE,
 	VECTOR
@@ -20,12 +22,21 @@ public:
 	template <class T>
 	ActionHelper(std::in_place_type_t<T>);
 
-	std::function<bool(ActionHelper)> equals;
+	// Fetch data from static structs
 	std::function<ActionAmount()> getType;
-	std::function<void(ActionDragDropPayload)> performMove;
+	std::function<const char*()> getName;
+	
+	// Draw fields in engine node editor
 	std::function<bool()> drawNew;
 	std::function<bool(ChapterNode* node, int index)> drawExisting;
-	std::function<const char*()> getName;
+ 
+	// Calling ChapterBuilder member functions
+	std::function<void(id nodeId, index stepIndex)> addStaticObjToNodeAtStep;
+	std::function<bool(ActionDragDropPayload)> performMove;
+	std::function<bool(id nodeId, index stepIndex)> containsStep;
+	
+	// Other Helpers
+	std::function<bool(ActionHelper)> equals;
 };
 
 

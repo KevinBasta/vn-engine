@@ -1,6 +1,6 @@
 
-#ifndef VN_NODE_EDITORS_COMMON_H
-#define VN_NODE_EDITORS_COMMON_H
+#ifndef VN_GRAPH_EDITORS_COMMON_H
+#define VN_GRAPH_EDITORS_COMMON_H
 
 #include "id.h"
 
@@ -63,4 +63,4 @@ struct NodeLinkData {
 	ed::PinId m_outId{};
 };
 
-#endif // VN_NODE_EDITORS_COMMON_H
+#endif // VN_GRAPH_EDITORS_COMMON_H

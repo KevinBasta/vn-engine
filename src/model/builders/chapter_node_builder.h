@@ -88,8 +88,20 @@ public:
 	}
 
 	template <class T>
-	void moveStep(ActionDragDropPayload payload) {
-		std::cout << "MOVE CALLED" << std::endl;
+	void replaceAction(index stepIndex, T obj) {
+		(m_nodeDerived->*(chapterNodeHelper<T>::handler))[stepIndex] = { obj };
+	}
+
+	template <class T>
+	void addAction(index stepIndex, T obj) {
+		// TODO: when adding to node, validate that the step is in the step range?
+		(m_nodeDerived->*(chapterNodeHelper<T>::handler))[stepIndex].push_back(obj);
+	}
+
+	template <class T>
+	bool moveStep(ActionDragDropPayload payload) {
+		if (payload.m_sourceStepIndex == payload.m_destinationStepIndex) { return false; }
+
 		auto sourceStepIter{ (m_nodeDerived->*(chapterNodeHelper<T>::handler)).find(payload.m_sourceStepIndex) };
 
 		if (sourceStepIter != (m_nodeDerived->*(chapterNodeHelper<T>::handler)).end()) {
@@ -120,18 +132,33 @@ public:
 
 			// Erase the entry from the source step
 			(m_nodeDerived->*(chapterNodeHelper<T>::handler)).erase(sourceStepIter);
+			return true;
 		}
+
+		//TODO: perhaps report error at this point
+		return false;
 	}
 
 	template <class T>
-	std::vector<T>& getStepActions(int stepIndex) {
-		// TODO: ERR, RETURN IS CREATING ENTRY IN MAP AND RETURNING EMPTY VECTOR
-		
-		if ((m_nodeDerived->*(chapterNodeHelper<T>::handler)).find(stepIndex) == (m_nodeDerived->*(chapterNodeHelper<T>::handler)).end()) {
-			//throw someObj
+	bool containsStep(index stepIndex) {
+		auto iter{ (m_nodeDerived->*(chapterNodeHelper<T>::handler)).find(stepIndex) };
+
+		if (iter == (m_nodeDerived->*(chapterNodeHelper<T>::handler)).end()) {
+			return false;
 		}
 
-		return (m_nodeDerived->*(chapterNodeHelper<T>::handler))[stepIndex];
+		return true;
+	}
+
+	template <class T>
+	std::vector<T>* getStepActions(int stepIndex) {
+		auto iter{ (m_nodeDerived->*(chapterNodeHelper<T>::handler)).find(stepIndex) };
+
+		if (iter == (m_nodeDerived->*(chapterNodeHelper<T>::handler)).end()) {
+			return nullptr;
+		}
+
+		return &(iter->second);
 	}
 
 	/*template <class T>

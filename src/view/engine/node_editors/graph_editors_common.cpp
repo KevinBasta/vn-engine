@@ -1,5 +1,5 @@
 
-#include "node_editors_common.h"
+#include "graph_editors_common.h"
 
 bool operator==(const NodeLinkKey& keyOne, const NodeLinkKey& keyTwo) {
 	NodeLinkKeyHasher hasher{};

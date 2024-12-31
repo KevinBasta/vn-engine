@@ -29,8 +29,8 @@ private:
 	static bool drawInternal(T* obj);
 
 public:
-	static T getObj() { return m_obj; }
-	static void clearObj() { m_obj = {}; }
+	static T getStaticObj() { return m_obj; }
+	static void clearStaticObj() { m_obj = {}; }
 	
 	// Set m_drawnObj to m_obj and drawInternal()
 	static bool drawField() {
@@ -42,12 +42,13 @@ public:
 		bool modified = false;
 		
 		if (node == nullptr) { return modified; }
-		std::vector<T>& objects = ChapterNodeBuilder{ node }.getStepActions<T>(index);
-		if (objects.size() == 0) { return modified; }
+		std::vector<T>* objects = ChapterNodeBuilder{ node }.getStepActions<T>(index);
+		if (objects == nullptr) { return modified; }
+		if (objects->size() == 0) { return modified; }
 
 		// Group actions together if they allow more than one of the same action type
 		if (ActionHelper{ std::in_place_type<T> }.getType() == ActionAmount::VECTOR) {
-			std::string actionTitle{ std::string(ActionHelper{std::in_place_type<T>}.getName()) + "##" + std::to_string((unsigned long long)(void**)&objects) };
+			std::string actionTitle{ std::string(ActionHelper{std::in_place_type<T>}.getName()) + "##" + std::to_string((unsigned long long)(void**)objects) };
 			
 			bool isTreeOpen = ImGui::TreeNode(actionTitle.c_str());
 
@@ -79,7 +80,7 @@ public:
 			}
 
 			if (isTreeOpen) {
-				for (auto& obj : objects) {
+				for (auto& obj : *objects) {
 					modified |= drawInternal(&obj);
 				}
 
@@ -87,7 +88,7 @@ public:
 			}
 		}
 		else {
-			for (auto& obj : objects) {
+			for (auto& obj : *objects) {
 				modified |= drawInternal(&obj);
 			}
 		}

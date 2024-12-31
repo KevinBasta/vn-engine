@@ -1,5 +1,5 @@
-#ifndef VN_ENGINE_NODE_EDITOR_H
-#define VN_ENGINE_NODE_EDITOR_H
+#ifndef VN_ENGINE_NODE_EDITOR_SIDEBAR_H
+#define VN_ENGINE_NODE_EDITOR_SIDEBAR_H
 
 #include "id.h"
 
@@ -54,23 +54,93 @@ private:
 	// Encapsulate the combo header of this section
 	class ComboActions {
 	private:
-		static int s_selectedIndex;
+		static int s_selectedComboIndex;
+		static index s_selectedStep;
 
 		static std::string addComboId(const char* str) { return (std::string(str) + std::string("##ComboChoiceId")); }
 
 	public:
+		static void draw() {
+			if (ImGui::TreeNodeEx(addComboId("Add Action").c_str(), ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_DefaultOpen)) {
+				ImGui::Spacing();
+
+				drawCombo();
+
+				ImGui::Spacing();
+
+				drawSelection();
+
+				ImGui::Spacing();
+
+				addActionToStep();
+
+				ImGui::Spacing();
+
+				ImGui::TreePop();
+			}
+		}
+
+		static bool addActionToStep() {
+			std::string buttonName{};
+			//ChapterNode* node{ static_cast<ChapterNode*>(ModelEngineInterface::getChapterById(m_stateSubject->getNodeId())) };
+
+			if ((s_items.at(s_selectedComboIndex)).getType() == ActionAmount::SINGLE) {
+				if (s_items.at(s_selectedComboIndex).containsStep(m_stateSubject->getNodeId(), s_selectedStep)) {
+					buttonName = "Replace";
+				}
+				else {
+					buttonName = "Set";
+				}
+			}
+			else {
+				buttonName = "Add";
+			}
+
+
+			ImGui::Text("Step Index:");
+			
+			ImGui::SameLine();
+			
+			ImGui::PushItemWidth(100.0f);
+			if (ImGui::InputInt(addComboId("##InputSelectedStep").c_str(), &s_selectedStep)) {
+				ChapterNode* node{ static_cast<ChapterNode*>(ModelEngineInterface::getNodeById(m_stateSubject->getNodeId())) };
+				if (node == nullptr) { 
+					s_selectedStep = 0;
+				}
+				else {
+					index totalSteps{ node->getTotalSteps() };
+					if (s_selectedStep > totalSteps - 1) { s_selectedStep = totalSteps - 1; }
+					if (s_selectedStep < 0) { s_selectedStep = 0; }
+				}
+			}
+			ImGui::PopItemWidth();
+
+			ImGui::SameLine();
+
+			if (ImGui::Button(addComboId(buttonName.c_str()).c_str(), ImVec2(150.0f, 0.0f))) {
+				s_items.at(s_selectedComboIndex).addStaticObjToNodeAtStep(m_stateSubject->getNodeId(), s_selectedStep);
+				NodeSteps::reloadStateToStep(s_selectedStep);
+			}
+
+			return false;
+		}
+
 		static bool drawSelection() {
-			return (s_items.at(s_selectedIndex)).drawNew();
+			return (s_items.at(s_selectedComboIndex)).drawNew();
 		}
 
 		static void drawCombo() {
-			if (ImGui::BeginCombo("Action", addComboId(s_items.at(s_selectedIndex).getName()).c_str(), NULL))
+			ImGui::Text("Action Type:");
+
+			ImGui::SameLine();
+
+			if (ImGui::BeginCombo("##InputComboType", addComboId(s_items.at(s_selectedComboIndex).getName()).c_str(), NULL))
 			{
 				for (int i{ 0 }; i < s_items.size(); i++)
 				{
-					const bool isSelected = (i == s_selectedIndex);
+					const bool isSelected = (i == s_selectedComboIndex);
 					if (ImGui::Selectable(addComboId(s_items.at(i).getName()).c_str(), isSelected)) {
-						s_selectedIndex = i;
+						s_selectedComboIndex = i;
 					}
 
 					// Set the initial focus when opening the combo (scrolling + keyboard navigation focus)
@@ -80,6 +150,7 @@ private:
 				}
 				ImGui::EndCombo();
 			}
+
 		}
 	};
 
@@ -109,20 +180,22 @@ private:
 
 			std::string stepTitle{ "Step #" + std::to_string(stepIndex) };
 
-			bool isTreeOpen = ImGui::TreeNode(stepTitle.c_str());
+			bool isTreeOpen = ImGui::TreeNodeEx(stepTitle.c_str(), ImGuiTreeNodeFlags_Framed);
 
 			if (ImGui::BeginDragDropTarget())
 			{
 				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ACTION_DRAG"))
 				{
 					assert(payload->DataSize == sizeof(ActionDragDropPayload));
+
+					bool reloadState{ false };
 					ActionDragDropPayload payloadCast = *(const ActionDragDropPayload*)payload->Data;
 					payloadCast.m_destinationStepIndex = stepIndex;
 
 					ActionDragMode mode = ActionDragMode::DRAG_MOVE;
 					if (mode == ActionDragMode::DRAG_MOVE)
 					{
-						s_items.at(payloadCast.m_typeIndex).performMove(payloadCast);
+						reloadState = s_items.at(payloadCast.m_typeIndex).performMove(payloadCast);
 					}
 					if (mode == ActionDragMode::DRAG_COPY)
 					{
@@ -133,12 +206,13 @@ private:
 						// TODO
 					}
 
-
-					if (payloadCast.m_destinationStepIndex < payloadCast.m_sourceStepIndex) {
-						reloadStateToStep(payloadCast.m_destinationStepIndex);
-					}
-					else {
-						reloadStateToStep(payloadCast.m_sourceStepIndex);
+					if (reloadState) {
+						if (payloadCast.m_destinationStepIndex < payloadCast.m_sourceStepIndex) {
+							reloadStateToStep(payloadCast.m_destinationStepIndex);
+						}
+						else {
+							reloadStateToStep(payloadCast.m_sourceStepIndex);
+						}
 					}
 				}
 				ImGui::EndDragDropTarget();
@@ -167,6 +241,13 @@ private:
 		}
 	};
 
+	class nodeEditorOptions {
+		static void draw() {
+			// radio buttons for the drag type move, copy, swap
+			// delete button that handles drag events
+			// Add step button
+		}
+	};
 
 private:
 	// TODO: is this needed?
@@ -176,12 +257,10 @@ private:
 
 public:
 	void draw() {
-		ComboActions::drawCombo();
+		ComboActions::draw();
 
 		ImGui::Spacing();
-
-		ComboActions::drawSelection();
-
+		ImGui::Separator();
 		ImGui::Spacing();
 
 		NodeSteps::drawNodeSteps();
@@ -189,4 +268,4 @@ public:
 };
 
 
-#endif // VN_ENGINE_NODE_EDITOR_H
+#endif // VN_ENGINE_NODE_EDITOR_SIDEBAR_H

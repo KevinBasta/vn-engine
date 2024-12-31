@@ -7,7 +7,7 @@
 
 #include "model_subject.h"
 #include "engine_chapter_manager.h"
-#include "node_editors_common.h"
+#include "graph_editors_common.h"
 
 #include "imgui.h"
 #include "imgui_impl_glfw.h"

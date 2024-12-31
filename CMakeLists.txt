@@ -165,7 +165,7 @@ add_executable (
 	 
 	"src/model/stores/sound_store.h" 
 	"src/model/stores/sound_store.cpp" 
- "src/view/engine/sidebar/engine_node_editor.cpp"
+ "src/view/engine/sidebar/engine_node_editor_sidebar.cpp"
  "src/view/engine/sidebar/engine_node_action_fields.h"
  "src/view/engine/sidebar/engine_node_action_fields.cpp" 
  "src/common/structs/action_type_mappers.h"
@@ -173,8 +173,8 @@ add_executable (
  "src/view/engine/node_editors/timelines/engine_timeline.h"
  "src/view/engine/node_editors/timelines/engine_step_timeline.h" 
  "src/view/engine/node_editors/timelines/engine_animations_timeline.h" 
- "src/view/engine/node_editors/node_editors_common.h" 
- "src/view/engine/node_editors/node_editors_common.cpp"
+ "src/view/engine/node_editors/graph_editors_common.h" 
+ "src/view/engine/node_editors/graph_editors_common.cpp"
  "src/model/subject_state/components/state_background.cpp" "src/model/subject_state/components/state_dialogue.cpp" "src/model/subject_state/components/state_next_chapter.cpp" "src/model/subject_state/components/state_next_node.cpp" "src/model/subject_state/interface/state_common_interface.h" "src/model/subject_state/interface/state_engine_interface.h" "src/model/subject_state/interface/state_runtime_interface.h" "test/old_files/temp.cpp"  "src/view/engine/sidebar/engine_action_type_list.h" "src/common/structs/engine_drag_drop_payload.h" "src/common/structs/action_type_mappers.cpp")
 
 target_include_directories(

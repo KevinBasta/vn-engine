@@ -9,7 +9,7 @@
 #include "engine_chapter_graph.h"
 #include "engine_node_graph.h"
 #include "engine_preview.h"
-#include "engine_node_editor.h"
+#include "engine_node_editor_sidebar.h"
 
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
