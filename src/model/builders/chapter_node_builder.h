@@ -4,6 +4,8 @@
 #include "chapter_node.h"
 #include "chapter_node_types.h"
 
+#include "engine_drag_drop_payload.h"
+
 #include "linkable_builder.h"
 
 #include <vector>
@@ -82,6 +84,42 @@ public:
 			auto item{ (m_nodeDerived->*(chapterNodeHelper<T>::handler))[oldStepIndex] };
 			(m_nodeDerived->*(chapterNodeHelper<T>::handler)).erase(iter);
 			(m_nodeDerived->*(chapterNodeHelper<T>::handler))[newStepIndex] = item;
+		}
+	}
+
+	template <class T>
+	void moveStep(ActionDragDropPayload payload) {
+		std::cout << "MOVE CALLED" << std::endl;
+		auto sourceStepIter{ (m_nodeDerived->*(chapterNodeHelper<T>::handler)).find(payload.m_sourceStepIndex) };
+
+		if (sourceStepIter != (m_nodeDerived->*(chapterNodeHelper<T>::handler)).end()) {
+			// Assumes that payload only sets pick one if it is a vector (not single) type
+			if (payload.m_pickOne) {
+				// Move one of the actions inside the step for type T
+				if (payload.m_replace) {
+					(m_nodeDerived->*(chapterNodeHelper<T>::handler))[payload.m_destinationStepIndex].clear();
+					(m_nodeDerived->*(chapterNodeHelper<T>::handler))[payload.m_destinationStepIndex].push_back(sourceStepIter->second.at(payload.m_souceStepPickOneIndex));
+				}
+				else {
+					(m_nodeDerived->*(chapterNodeHelper<T>::handler))[payload.m_destinationStepIndex].push_back(sourceStepIter->second.at(payload.m_souceStepPickOneIndex));
+				}
+			}
+			else {
+				// Move all the actions inside the step for type T
+				if (payload.m_replace) {
+					(m_nodeDerived->*(chapterNodeHelper<T>::handler))[payload.m_destinationStepIndex] = sourceStepIter->second;
+				}
+				else {
+					((m_nodeDerived->*(chapterNodeHelper<T>::handler))[payload.m_destinationStepIndex]).insert(
+						(m_nodeDerived->*(chapterNodeHelper<T>::handler))[payload.m_destinationStepIndex].end(),
+						sourceStepIter->second.begin(),
+						sourceStepIter->second.end()
+					);
+				}
+			}
+
+			// Erase the entry from the source step
+			(m_nodeDerived->*(chapterNodeHelper<T>::handler)).erase(sourceStepIter);
 		}
 	}
 

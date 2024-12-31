@@ -5,6 +5,10 @@
 #include "chapter_node_builder.h"
 #include "chapter_node.h"
 
+#include "engine_action_type_list.h"
+
+#include "engine_drag_drop_payload.h"
+
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
@@ -12,6 +16,8 @@
 #include "imgui_node_editor.h"
 
 #include <string>
+#include <vector>
+#include <algorithm>
 
 enum ActionAmount;
 struct ActionHelper;
@@ -43,7 +49,36 @@ public:
 		if (ActionHelper{ std::in_place_type<T> }.getType() == ActionAmount::VECTOR) {
 			std::string actionTitle{ std::string(ActionHelper{std::in_place_type<T>}.getName()) + "##" + std::to_string((unsigned long long)(void**)&objects) };
 			
-			if (ImGui::TreeNode(actionTitle.c_str())) {
+			bool isTreeOpen = ImGui::TreeNode(actionTitle.c_str());
+
+			if (ImGui::BeginDragDropSource())
+			{
+				// Set payload to carry the index of our item (could be anything)
+				ActionDragDropPayload payload{};
+				
+				ActionHelper currentTypeHelper{ std::in_place_type<T> };
+				auto typeEntryIter = find_if(s_items.begin(), s_items.end(), [&currentTypeHelper](ActionHelper listTypeHelper) {
+					return currentTypeHelper.equals(listTypeHelper);
+				});
+
+				payload.m_typeIndex = typeEntryIter - s_items.begin();
+				payload.m_nodeId = node->getId();
+				payload.m_sourceStepIndex = index;
+				payload.m_pickOne = false;
+				payload.m_replace = false;
+
+				ImGui::SetDragDropPayload("ACTION_DRAG", &payload, sizeof(ActionDragDropPayload));
+
+				ImGui::Text("Dragging %s", ActionHelper{ std::in_place_type<T> }.getName());
+				// Display preview (could be anything, e.g. when dragging an image we could decide to display
+				// the filename and a small preview of the image, etc.)
+				// if (mode == Mode_Copy) { ImGui::Text("Copy %s", names[n]); }
+				// if (mode == Mode_Move) { ImGui::Text("Move %s", names[n]); }
+				// if (mode == Mode_Swap) { ImGui::Text("Swap %s", names[n]); }
+				ImGui::EndDragDropSource();
+			}
+
+			if (isTreeOpen) {
 				for (auto& obj : objects) {
 					modified |= drawInternal(&obj);
 				}

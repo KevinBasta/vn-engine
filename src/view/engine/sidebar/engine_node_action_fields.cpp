@@ -105,8 +105,8 @@ bool ActionField<ActionSpriteProperty>::drawInternal(ActionSpriteProperty* obj) 
 
 	TextureStore* currentStore{ textureStores.at(obj->m_texture.m_textureStoreId).get() };
 	const std::string& textureStoreName{ currentStore->getName() };
-	//std::string actionTitle{ textureStoreName + "::[" + std::to_string(obj->m_texture.m_textureIndex) + "]::" + toString(obj->m_property) +  "##" + std::to_string((unsigned long long)(void**)obj)};
-	std::string actionTitle{ "Sprite Property" };
+	std::string actionTitle{ textureStoreName + "::[" + std::to_string(obj->m_texture.m_textureIndex) + "]::" + toString(obj->m_property) +  "##" + std::to_string((unsigned long long)(void**)obj)};
+	//std::string actionTitle{ "Sprite Property" };
 
 	if (ImGui::TreeNode(actionTitle.c_str()))
 	{

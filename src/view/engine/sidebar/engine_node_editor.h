@@ -5,13 +5,19 @@
 
 #include "window.h"
 #include "context.h"
+
 #include "model_engine_interface.h"
 #include "state_subject.h"
+
 #include "node.h"
 #include "chapter_node.h"
 #include "chapter_node_builder.h"
-#include "engine_node_action_fields.h"
+
 #include "action_type_mappers.h"
+#include "engine_node_action_fields.h"
+#include "engine_action_type_list.h"
+
+#include "engine_drag_drop_payload.h"
 
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
@@ -26,6 +32,11 @@
 #include <functional>
 #include <utility>
 
+enum ActionDragMode {
+	DRAG_COPY,
+	DRAG_MOVE,
+	DRAG_SWAP
+};
 
 class VnEngineNodeEditor {
 protected:
@@ -38,10 +49,6 @@ public:
 	}
 
 	~VnEngineNodeEditor() { }
-
-
-private:
-	static const std::vector<ActionHelper> s_items;
 
 private:
 	// Encapsulate the combo header of this section
@@ -102,7 +109,42 @@ private:
 
 			std::string stepTitle{ "Step #" + std::to_string(stepIndex) };
 
-			if (ImGui::TreeNode(stepTitle.c_str()))
+			bool isTreeOpen = ImGui::TreeNode(stepTitle.c_str());
+
+			if (ImGui::BeginDragDropTarget())
+			{
+				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ACTION_DRAG"))
+				{
+					assert(payload->DataSize == sizeof(ActionDragDropPayload));
+					ActionDragDropPayload payloadCast = *(const ActionDragDropPayload*)payload->Data;
+					payloadCast.m_destinationStepIndex = stepIndex;
+
+					ActionDragMode mode = ActionDragMode::DRAG_MOVE;
+					if (mode == ActionDragMode::DRAG_MOVE)
+					{
+						s_items.at(payloadCast.m_typeIndex).performMove(payloadCast);
+					}
+					if (mode == ActionDragMode::DRAG_COPY)
+					{
+						// TODO	
+					}
+					if (mode == ActionDragMode::DRAG_SWAP)
+					{
+						// TODO
+					}
+
+
+					if (payloadCast.m_destinationStepIndex < payloadCast.m_sourceStepIndex) {
+						reloadStateToStep(payloadCast.m_destinationStepIndex);
+					}
+					else {
+						reloadStateToStep(payloadCast.m_sourceStepIndex);
+					}
+				}
+				ImGui::EndDragDropTarget();
+			}
+
+			if (isTreeOpen)
 			{
 				for (int i{ 0 }; i < s_items.size(); i++)
 				{
