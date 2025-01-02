@@ -20,7 +20,6 @@
 #include "relations.h"
 //#include "chapter.h"
 #include "chapter_iterator.h"
-#include "model_subject.h"
 
 #include <string>
 #include <string_view>
@@ -69,7 +68,9 @@ public:
 				endAutoActions();
 				clearAutoAction();
 				notify();
-			}
+			} 
+			// TODO: MAYBE IF EDITING ANIMATIONS IT WOULD BE HELPFUL TO NOT CLEAR THEM
+			// IN THE CASE THAT i == stepIndex. Maybe should be an option in ui? or default behaviour?
 		}	
 	}
 

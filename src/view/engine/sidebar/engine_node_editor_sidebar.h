@@ -81,30 +81,29 @@ private:
 		}
 
 		static bool addActionToStep() {
+			// Decide the text displayed on the button
 			std::string buttonName{};
-			//ChapterNode* node{ static_cast<ChapterNode*>(ModelEngineInterface::getChapterById(m_stateSubject->getNodeId())) };
 
 			if ((s_items.at(s_selectedComboIndex)).getType() == ActionAmount::SINGLE) {
-				if (s_items.at(s_selectedComboIndex).containsStep(m_stateSubject->getNodeId(), s_selectedStep)) {
-					buttonName = "Replace";
-				}
-				else {
-					buttonName = "Set";
-				}
+				// TODO: relying on deep error handling here to check that the node in state subject is valid. can check earlier
+				if (s_items.at(s_selectedComboIndex).containsStep(m_stateSubject->getNodeId(), s_selectedStep)) { buttonName = "Replace"; }
+				else { buttonName = "Set"; }
 			}
-			else {
-				buttonName = "Add";
+			else { 
+				buttonName = "Add"; 
 			}
-
-
+			
+			// Used in the next two sections
+			ChapterNode* node{ static_cast<ChapterNode*>(ModelEngineInterface::getNodeById(m_stateSubject->getNodeId())) };
+			
+			// Step Index picking
 			ImGui::Text("Step Index:");
 			
 			ImGui::SameLine();
 			
 			ImGui::PushItemWidth(100.0f);
 			if (ImGui::InputInt(addComboId("##InputSelectedStep").c_str(), &s_selectedStep)) {
-				ChapterNode* node{ static_cast<ChapterNode*>(ModelEngineInterface::getNodeById(m_stateSubject->getNodeId())) };
-				if (node == nullptr) { 
+				if (node == nullptr) {
 					s_selectedStep = 0;
 				}
 				else {
@@ -117,9 +116,13 @@ private:
 
 			ImGui::SameLine();
 
+			// Button submission
 			if (ImGui::Button(addComboId(buttonName.c_str()).c_str(), ImVec2(150.0f, 0.0f))) {
-				s_items.at(s_selectedComboIndex).addStaticObjToNodeAtStep(m_stateSubject->getNodeId(), s_selectedStep);
-				NodeSteps::reloadStateToStep(s_selectedStep);
+				if (node != nullptr) {
+					// TODO: need to handle null errors in both these funcitons.
+					s_items.at(s_selectedComboIndex).addStaticObjToNodeAtStep(m_stateSubject->getNodeId(), s_selectedStep);
+					NodeSteps::reloadStateToStep(s_selectedStep);
+				}
 			}
 
 			return false;
@@ -192,18 +195,27 @@ private:
 					ActionDragDropPayload payloadCast = *(const ActionDragDropPayload*)payload->Data;
 					payloadCast.m_destinationStepIndex = stepIndex;
 
-					ActionDragMode mode = ActionDragMode::DRAG_MOVE;
-					if (mode == ActionDragMode::DRAG_MOVE)
+					if (nodeEditorOptions::getMode() == ActionDragMode::DRAG_MOVE)
 					{
 						reloadState = s_items.at(payloadCast.m_typeIndex).performMove(payloadCast);
+						if (!reloadState) {
+							// TODO: currently does not output (cond true for one render)
+							ImGui::SetMouseCursor(ImGuiMouseCursor_NotAllowed);
+							ImGui::SetTooltip("Nothing to move here!");
+						}
 					}
-					if (mode == ActionDragMode::DRAG_COPY)
+					if (nodeEditorOptions::getMode() == ActionDragMode::DRAG_COPY)
 					{
-						// TODO	
+						reloadState = s_items.at(payloadCast.m_typeIndex).performCopy(payloadCast);
 					}
-					if (mode == ActionDragMode::DRAG_SWAP)
+					if (nodeEditorOptions::getMode() == ActionDragMode::DRAG_SWAP)
 					{
-						// TODO
+						reloadState = s_items.at(payloadCast.m_typeIndex).performSwap(payloadCast);
+						if (!reloadState) {
+							// TODO: currently does not output (cond true for one render)
+							ImGui::SetMouseCursor(ImGuiMouseCursor_NotAllowed);
+							ImGui::SetTooltip("Nothing to swap here!");
+						}
 					}
 
 					if (reloadState) {
@@ -242,7 +254,28 @@ private:
 	};
 
 	class nodeEditorOptions {
+	private:
+		static ActionDragMode m_mode;
+	
+	public:
+		static ActionDragMode getMode() { return m_mode; }
+
 		static void draw() {
+
+			ImGui::Text("Action Dragging Mode: ");
+
+			ImGui::SameLine();
+
+			if (ImGui::RadioButton("Move", m_mode == ActionDragMode::DRAG_MOVE)) { m_mode = ActionDragMode::DRAG_MOVE; } 
+			
+			ImGui::SameLine();
+			
+			if (ImGui::RadioButton("Copy", m_mode == ActionDragMode::DRAG_COPY)) { m_mode = ActionDragMode::DRAG_COPY; } 
+			
+			ImGui::SameLine();
+			
+			if (ImGui::RadioButton("Swap", m_mode == ActionDragMode::DRAG_SWAP)) { m_mode = ActionDragMode::DRAG_SWAP; }
+			
 			// radio buttons for the drag type move, copy, swap
 			// delete button that handles drag events
 			// Add step button
@@ -264,6 +297,8 @@ public:
 		ImGui::Spacing();
 
 		NodeSteps::drawNodeSteps();
+
+		nodeEditorOptions::draw();
 	}
 };
 

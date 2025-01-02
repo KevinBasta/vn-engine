@@ -89,6 +89,7 @@ public:
 
 	template <class T>
 	void replaceAction(index stepIndex, T obj) {
+		// TODO: when replacing at step, validate that the step is in the step range?
 		(m_nodeDerived->*(chapterNodeHelper<T>::handler))[stepIndex] = { obj };
 	}
 
@@ -100,6 +101,7 @@ public:
 
 	template <class T>
 	bool moveStep(ActionDragDropPayload payload) {
+		// Don't allow the source to be the destination because then the action gets deleted
 		if (payload.m_sourceStepIndex == payload.m_destinationStepIndex) { return false; }
 
 		auto sourceStepIter{ (m_nodeDerived->*(chapterNodeHelper<T>::handler)).find(payload.m_sourceStepIndex) };
@@ -137,6 +139,68 @@ public:
 
 		//TODO: perhaps report error at this point
 		return false;
+	}
+
+	template <class T>
+	bool copyStep(ActionDragDropPayload payload) {
+		auto sourceStepIter{ (m_nodeDerived->*(chapterNodeHelper<T>::handler)).find(payload.m_sourceStepIndex) };
+
+		if (sourceStepIter != (m_nodeDerived->*(chapterNodeHelper<T>::handler)).end()) {
+			// Assumes that payload only sets pick one if it is a vector (not single) type
+			if (payload.m_pickOne) {
+				// Move one of the actions inside the step for type T
+				if (payload.m_replace) {
+					(m_nodeDerived->*(chapterNodeHelper<T>::handler))[payload.m_destinationStepIndex].clear();
+					(m_nodeDerived->*(chapterNodeHelper<T>::handler))[payload.m_destinationStepIndex].push_back(sourceStepIter->second.at(payload.m_souceStepPickOneIndex));
+				}
+				else {
+					(m_nodeDerived->*(chapterNodeHelper<T>::handler))[payload.m_destinationStepIndex].push_back(sourceStepIter->second.at(payload.m_souceStepPickOneIndex));
+				}
+			}
+			else {
+				// Move all the actions inside the step for type T
+				if (payload.m_replace) {
+					(m_nodeDerived->*(chapterNodeHelper<T>::handler))[payload.m_destinationStepIndex] = sourceStepIter->second;
+				}
+				else {
+					((m_nodeDerived->*(chapterNodeHelper<T>::handler))[payload.m_destinationStepIndex]).insert(
+						(m_nodeDerived->*(chapterNodeHelper<T>::handler))[payload.m_destinationStepIndex].end(),
+						sourceStepIter->second.begin(),
+						sourceStepIter->second.end()
+					);
+				}
+			}
+
+			return true;
+		}
+
+		//TODO: perhaps report error at this point
+		return false;
+	}
+
+	template <class T>
+	bool swapStep(ActionDragDropPayload payload) {
+		auto sourceStepIter{ (m_nodeDerived->*(chapterNodeHelper<T>::handler)).find(payload.m_sourceStepIndex) };
+		auto destinationStepIter{ (m_nodeDerived->*(chapterNodeHelper<T>::handler)).find(payload.m_destinationStepIndex) };
+
+		// Validate swap
+		// The payload cannot be a pick one from a vector action type
+		// The source and destination must have the the action
+		if (
+			payload.m_pickOne ||
+			destinationStepIter == (m_nodeDerived->*(chapterNodeHelper<T>::handler)).end() ||
+			sourceStepIter == (m_nodeDerived->*(chapterNodeHelper<T>::handler)).end()
+		   )
+		{
+			return false;
+		}
+
+		// Perform swap
+		auto tempSourceActionCopy{ sourceStepIter->second };
+		sourceStepIter->second = destinationStepIter->second;
+		destinationStepIter->second = tempSourceActionCopy;
+	
+		return true;
 	}
 
 	template <class T>

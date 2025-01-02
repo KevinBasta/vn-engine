@@ -29,6 +29,15 @@ public:
 		return model->m_modelChapters.getNodeById(nodeId);
 	}
 
+	/*static Node* getNodeById(StateSubject* stateSubject) {
+		ModelSubject* model{ ModelSubject::validateInstance() };
+
+		if (stateSubject == nullptr) { return nullptr; }
+		id nodeId{ stateSubject->getNodeId() };
+
+		return model->m_modelChapters.getNodeById(nodeId);
+	}*/
+
 	static ChapterIterator iter() {
 		ModelSubject* model{ ModelSubject::validateInstance() };
 
