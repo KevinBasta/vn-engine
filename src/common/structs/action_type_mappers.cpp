@@ -31,19 +31,25 @@ ActionHelper::ActionHelper(std::in_place_type_t<T>) {
 		ChapterNode* node = static_cast<ChapterNode*>(ModelEngineInterface::getNodeById(payload.m_nodeId));
 		if (node == nullptr) { return false; }
 
-		return ChapterNodeBuilder{ node }.moveStep<T>(payload);
+		return ChapterNodeBuilder{ node }.moveAction<T>(payload);
 	};
 	this->performCopy = [](ActionDragDropPayload payload) {
 		ChapterNode* node = static_cast<ChapterNode*>(ModelEngineInterface::getNodeById(payload.m_nodeId));
 		if (node == nullptr) { return false; }
 
-		return ChapterNodeBuilder{ node }.copyStep<T>(payload);
+		return ChapterNodeBuilder{ node }.copyAction<T>(payload);
 	};
 	this->performSwap = [](ActionDragDropPayload payload) {
 		ChapterNode* node = static_cast<ChapterNode*>(ModelEngineInterface::getNodeById(payload.m_nodeId));
 		if (node == nullptr) { return false; }
 
-		return ChapterNodeBuilder{ node }.swapStep<T>(payload);
+		return ChapterNodeBuilder{ node }.swapAction<T>(payload);
+	};
+	this->performDelete = [](ActionDragDropPayload payload) {
+		ChapterNode* node = static_cast<ChapterNode*>(ModelEngineInterface::getNodeById(payload.m_nodeId));
+		if (node == nullptr) { return false; }
+
+		return ChapterNodeBuilder{ node }.deleteAction<T>(payload);
 	};
 	this->containsStep = [](id nodeId, index stepIndex) {
 		ChapterNode* node = static_cast<ChapterNode*>(ModelEngineInterface::getNodeById(nodeId));

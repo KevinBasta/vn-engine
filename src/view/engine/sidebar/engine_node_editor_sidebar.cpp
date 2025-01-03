@@ -8,4 +8,10 @@ StateSubject* VnEngineNodeEditor::m_stateSubject{ nullptr };
 
 int VnEngineNodeEditor::ComboActions::s_selectedComboIndex{ 0 };
 int VnEngineNodeEditor::ComboActions::s_selectedStep{ 0 };
-ActionDragMode VnEngineNodeEditor::nodeEditorOptions::m_mode{ ActionDragMode::DRAG_MOVE };
+
+ActionDragMode VnEngineNodeEditor::NodeEditorOptions::m_mode{ ActionDragMode::DRAG_MOVE };
+
+bool VnEngineNodeEditor::NodeEditorToolTip::m_active{ false };
+std::chrono::time_point<std::chrono::steady_clock> VnEngineNodeEditor::NodeEditorToolTip::m_start{};
+std::chrono::time_point<std::chrono::steady_clock> VnEngineNodeEditor::NodeEditorToolTip::m_goal{};
+std::string VnEngineNodeEditor::NodeEditorToolTip::m_tip{ "" };

@@ -100,7 +100,7 @@ public:
 	}
 
 	template <class T>
-	bool moveStep(ActionDragDropPayload payload) {
+	bool moveAction(ActionDragDropPayload payload) {
 		// Don't allow the source to be the destination because then the action gets deleted
 		if (payload.m_sourceStepIndex == payload.m_destinationStepIndex) { return false; }
 
@@ -142,7 +142,7 @@ public:
 	}
 
 	template <class T>
-	bool copyStep(ActionDragDropPayload payload) {
+	bool copyAction(ActionDragDropPayload payload) {
 		auto sourceStepIter{ (m_nodeDerived->*(chapterNodeHelper<T>::handler)).find(payload.m_sourceStepIndex) };
 
 		if (sourceStepIter != (m_nodeDerived->*(chapterNodeHelper<T>::handler)).end()) {
@@ -154,6 +154,7 @@ public:
 					(m_nodeDerived->*(chapterNodeHelper<T>::handler))[payload.m_destinationStepIndex].push_back(sourceStepIter->second.at(payload.m_souceStepPickOneIndex));
 				}
 				else {
+					// TODO: could use more bounds checks on vector access?
 					(m_nodeDerived->*(chapterNodeHelper<T>::handler))[payload.m_destinationStepIndex].push_back(sourceStepIter->second.at(payload.m_souceStepPickOneIndex));
 				}
 			}
@@ -179,7 +180,7 @@ public:
 	}
 
 	template <class T>
-	bool swapStep(ActionDragDropPayload payload) {
+	bool swapAction(ActionDragDropPayload payload) {
 		auto sourceStepIter{ (m_nodeDerived->*(chapterNodeHelper<T>::handler)).find(payload.m_sourceStepIndex) };
 		auto destinationStepIter{ (m_nodeDerived->*(chapterNodeHelper<T>::handler)).find(payload.m_destinationStepIndex) };
 
@@ -188,6 +189,7 @@ public:
 		// The source and destination must have the the action
 		if (
 			payload.m_pickOne ||
+			sourceStepIter == destinationStepIter ||
 			destinationStepIter == (m_nodeDerived->*(chapterNodeHelper<T>::handler)).end() ||
 			sourceStepIter == (m_nodeDerived->*(chapterNodeHelper<T>::handler)).end()
 		   )
@@ -200,6 +202,32 @@ public:
 		sourceStepIter->second = destinationStepIter->second;
 		destinationStepIter->second = tempSourceActionCopy;
 	
+		return true;
+	}
+
+	template <class T>
+	bool deleteAction(ActionDragDropPayload payload) {
+		auto sourceStepIter{ (m_nodeDerived->*(chapterNodeHelper<T>::handler)).find(payload.m_sourceStepIndex) };
+
+		if (sourceStepIter == (m_nodeDerived->*(chapterNodeHelper<T>::handler)).end()) {
+			return false;
+		}
+
+		if (payload.m_pickOne) {
+			// Erase the entry within the vector for the step
+			auto pickOneIter{ sourceStepIter->second.begin() + (payload.m_souceStepPickOneIndex) };
+				
+			if (pickOneIter >= sourceStepIter->second.end()) {
+				return false;
+			}
+
+			sourceStepIter->second.erase(pickOneIter);
+		}
+		else {
+			// Erase the entire step for this type
+			(m_nodeDerived->*(chapterNodeHelper<T>::handler)).erase(sourceStepIter);
+		}
+
 		return true;
 	}
 

@@ -31,6 +31,7 @@
 #include <vector>
 #include <functional>
 #include <utility>
+#include <chrono>
 
 enum ActionDragMode {
 	DRAG_COPY,
@@ -195,26 +196,35 @@ private:
 					ActionDragDropPayload payloadCast = *(const ActionDragDropPayload*)payload->Data;
 					payloadCast.m_destinationStepIndex = stepIndex;
 
-					if (nodeEditorOptions::getMode() == ActionDragMode::DRAG_MOVE)
+					if (NodeEditorOptions::getMode() == ActionDragMode::DRAG_MOVE)
 					{
 						reloadState = s_items.at(payloadCast.m_typeIndex).performMove(payloadCast);
 						if (!reloadState) {
-							// TODO: currently does not output (cond true for one render)
-							ImGui::SetMouseCursor(ImGuiMouseCursor_NotAllowed);
-							ImGui::SetTooltip("Nothing to move here!");
+							NodeEditorToolTip::setTooltipFor(500, "Nothing to move here!");
+						}
+						else {
+							NodeEditorToolTip::setTooltipFor(500, "Moved!");
 						}
 					}
-					if (nodeEditorOptions::getMode() == ActionDragMode::DRAG_COPY)
+					if (NodeEditorOptions::getMode() == ActionDragMode::DRAG_COPY)
 					{
 						reloadState = s_items.at(payloadCast.m_typeIndex).performCopy(payloadCast);
+						if (!reloadState) {
+							NodeEditorToolTip::setTooltipFor(500, "Nothing to copy here!");
+						}
+						else {
+							NodeEditorToolTip::setTooltipFor(500, "Copied!");
+						}
+						
 					}
-					if (nodeEditorOptions::getMode() == ActionDragMode::DRAG_SWAP)
+					if (NodeEditorOptions::getMode() == ActionDragMode::DRAG_SWAP)
 					{
 						reloadState = s_items.at(payloadCast.m_typeIndex).performSwap(payloadCast);
 						if (!reloadState) {
-							// TODO: currently does not output (cond true for one render)
-							ImGui::SetMouseCursor(ImGuiMouseCursor_NotAllowed);
-							ImGui::SetTooltip("Nothing to swap here!");
+							NodeEditorToolTip::setTooltipFor(500, "Nothing to swap here!");
+						}
+						else {
+							NodeEditorToolTip::setTooltipFor(500, "Swapped!");
 						}
 					}
 
@@ -253,7 +263,7 @@ private:
 		}
 	};
 
-	class nodeEditorOptions {
+	class NodeEditorOptions {
 	private:
 		static ActionDragMode m_mode;
 	
@@ -276,9 +286,60 @@ private:
 			
 			if (ImGui::RadioButton("Swap", m_mode == ActionDragMode::DRAG_SWAP)) { m_mode = ActionDragMode::DRAG_SWAP; }
 			
+			ImGui::Button("Delete", ImVec2(100, 100));
+			if (ImGui::BeginDragDropTarget())
+			{
+				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ACTION_DRAG"))
+				{
+					assert(payload->DataSize == sizeof(ActionDragDropPayload));
+
+					bool reloadState{ false };
+					ActionDragDropPayload payloadCast = *(const ActionDragDropPayload*)payload->Data;
+
+					reloadState = s_items.at(payloadCast.m_typeIndex).performDelete(payloadCast);
+
+					if (reloadState) {
+						NodeSteps::reloadStateToStep(payloadCast.m_sourceStepIndex);
+						NodeEditorToolTip::setTooltipFor(500, "Deleted!");
+					}
+				}
+				ImGui::EndDragDropTarget();
+			}
+
 			// radio buttons for the drag type move, copy, swap
 			// delete button that handles drag events
 			// Add step button
+		}
+	};
+
+	class NodeEditorToolTip {
+	private:
+		static bool m_active;
+		static std::chrono::time_point<std::chrono::steady_clock> m_start;
+		static std::chrono::time_point<std::chrono::steady_clock> m_goal;
+
+		static std::string m_tip;
+		
+	public:
+		// TODO: unsure if this should be kept or not
+		static void setTooltipFor(int ms, std::string tip) {
+			m_active = true;
+			
+			m_start = std::chrono::steady_clock::now();
+			m_goal = m_start + std::chrono::milliseconds(ms);
+			
+			m_tip = tip;
+		}
+
+		static void draw() {
+			if (m_active) {
+				if (std::chrono::steady_clock::now() <= m_goal) {
+					ImGui::SetTooltip(m_tip.c_str());
+				}
+				else {
+					m_active = false;
+				}
+			}
 		}
 	};
 
@@ -290,6 +351,8 @@ private:
 
 public:
 	void draw() {
+		NodeEditorToolTip::draw();
+
 		ComboActions::draw();
 
 		ImGui::Spacing();
@@ -298,7 +361,11 @@ public:
 
 		NodeSteps::drawNodeSteps();
 
-		nodeEditorOptions::draw();
+		ImGui::Spacing();
+		ImGui::Separator();
+		ImGui::Spacing();
+
+		NodeEditorOptions::draw();
 	}
 };
 
