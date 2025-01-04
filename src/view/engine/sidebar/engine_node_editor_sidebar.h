@@ -186,57 +186,31 @@ private:
 
 			bool isTreeOpen = ImGui::TreeNodeEx(stepTitle.c_str(), ImGuiTreeNodeFlags_Framed);
 
+			// Dragging an entire step
+			if (ImGui::BeginDragDropSource())
+			{
+				// Set payload to carry the index of our item (could be anything)
+				ActionDragDropPayload payload{ 0, node->getId(), stepIndex };
+
+				ImGui::SetDragDropPayload("ENTIRE_STEP", &payload, sizeof(ActionDragDropPayload));
+
+				ImGui::Text("Dragging %s", stepTitle.c_str());
+
+				ImGui::EndDragDropSource();
+			}
+
+			// Moving, copying, and swapping actions between steps
 			if (ImGui::BeginDragDropTarget())
 			{
 				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ACTION_DRAG"))
 				{
-					assert(payload->DataSize == sizeof(ActionDragDropPayload));
-
-					bool reloadState{ false };
-					ActionDragDropPayload payloadCast = *(const ActionDragDropPayload*)payload->Data;
-					payloadCast.m_destinationStepIndex = stepIndex;
-
-					if (NodeEditorOptions::getMode() == ActionDragMode::DRAG_MOVE)
-					{
-						reloadState = s_items.at(payloadCast.m_typeIndex).performMove(payloadCast);
-						if (!reloadState) {
-							NodeEditorToolTip::setTooltipFor(500, "Nothing to move here!");
-						}
-						else {
-							NodeEditorToolTip::setTooltipFor(500, "Moved!");
-						}
-					}
-					if (NodeEditorOptions::getMode() == ActionDragMode::DRAG_COPY)
-					{
-						reloadState = s_items.at(payloadCast.m_typeIndex).performCopy(payloadCast);
-						if (!reloadState) {
-							NodeEditorToolTip::setTooltipFor(500, "Nothing to copy here!");
-						}
-						else {
-							NodeEditorToolTip::setTooltipFor(500, "Copied!");
-						}
-						
-					}
-					if (NodeEditorOptions::getMode() == ActionDragMode::DRAG_SWAP)
-					{
-						reloadState = s_items.at(payloadCast.m_typeIndex).performSwap(payloadCast);
-						if (!reloadState) {
-							NodeEditorToolTip::setTooltipFor(500, "Nothing to swap here!");
-						}
-						else {
-							NodeEditorToolTip::setTooltipFor(500, "Swapped!");
-						}
-					}
-
-					if (reloadState) {
-						if (payloadCast.m_destinationStepIndex < payloadCast.m_sourceStepIndex) {
-							reloadStateToStep(payloadCast.m_destinationStepIndex);
-						}
-						else {
-							reloadStateToStep(payloadCast.m_sourceStepIndex);
-						}
-					}
+					handleDragDropPayload(payload, stepIndex, false);
 				}
+				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ENTIRE_STEP"))
+				{
+					handleDragDropPayload(payload, stepIndex, true);
+				}
+
 				ImGui::EndDragDropTarget();
 			}
 
@@ -251,7 +225,80 @@ private:
 				ImGui::TreePop();
 			}
 		}
+		
+		static void handleDragDropPayload(const ImGuiPayload* payload, index stepIndex, bool isEntireStep) {
+			assert(payload->DataSize == sizeof(ActionDragDropPayload));
 
+			bool reloadState{ false };
+			ActionDragDropPayload payloadCast = *(const ActionDragDropPayload*)payload->Data;
+			payloadCast.m_destinationStepIndex = stepIndex;
+
+			if (NodeEditorOptions::getMode() == ActionDragMode::DRAG_MOVE)
+			{
+				if (isEntireStep) {
+					for (auto& item : s_items) {
+						reloadState |= item.performMove(payloadCast);
+					}
+				}
+				else {
+					reloadState = s_items.at(payloadCast.m_typeIndex).performMove(payloadCast);
+				}
+
+				if (!reloadState) {
+					NodeEditorToolTip::setTooltipFor(500, "Nothing to move here!");
+				}
+				else {
+					NodeEditorToolTip::setTooltipFor(500, "Moved!");
+				}
+			}
+			if (NodeEditorOptions::getMode() == ActionDragMode::DRAG_COPY)
+			{
+				if (isEntireStep) {
+					for (auto& item : s_items) {
+						reloadState |= item.performCopy(payloadCast);
+					}
+				}
+				else {
+					reloadState = s_items.at(payloadCast.m_typeIndex).performCopy(payloadCast);
+				}
+				
+				if (!reloadState) {
+					NodeEditorToolTip::setTooltipFor(500, "Nothing to copy here!");
+				}
+				else {
+					NodeEditorToolTip::setTooltipFor(500, "Copied!");
+				}
+
+			}
+			if (NodeEditorOptions::getMode() == ActionDragMode::DRAG_SWAP)
+			{
+				if (isEntireStep) {
+					for (auto& item : s_items) {
+						reloadState |= item.performSwap(payloadCast);
+					}
+				}
+				else {
+					reloadState = s_items.at(payloadCast.m_typeIndex).performSwap(payloadCast);
+				}
+				
+				if (!reloadState) {
+					NodeEditorToolTip::setTooltipFor(500, "Nothing to swap here!");
+				}
+				else {
+					NodeEditorToolTip::setTooltipFor(500, "Swapped!");
+				}
+			}
+
+			if (reloadState) {
+				if (payloadCast.m_destinationStepIndex < payloadCast.m_sourceStepIndex) {
+					reloadStateToStep(payloadCast.m_destinationStepIndex);
+				}
+				else {
+					reloadStateToStep(payloadCast.m_sourceStepIndex);
+				}
+			}
+		}
+	
 		static void reloadStateToStep(int stepIndex) {
 			// If any of the fields (of the model) were moditifer, then update the state subject if 
 			// currently viewing the step that was edited or a step after the step that was edited
@@ -303,6 +350,47 @@ private:
 						NodeEditorToolTip::setTooltipFor(500, "Deleted!");
 					}
 				}
+				ImGui::EndDragDropTarget();
+			}
+
+			if (ImGui::BeginDragDropTarget())
+			{
+				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ENTIRE_STEP"))
+				{
+					assert(payload->DataSize == sizeof(ActionDragDropPayload));
+
+					ChapterNode* node{ static_cast<ChapterNode*>(ModelEngineInterface::getNodeById(m_stateSubject->getNodeId())) };
+					
+					if (node != nullptr && node->getTotalSteps() > 1) {
+						ActionDragDropPayload payloadCast = *(const ActionDragDropPayload*) payload->Data;
+
+						for (auto& item : s_items) {
+							item.performDelete(payloadCast);
+						}
+
+						for (index i{ payloadCast.m_sourceStepIndex + 1 }; i < node->getTotalSteps(); i++) {
+							for (auto& item : s_items) {
+								item.performMove({0, payloadCast.m_nodeId, i, i - 1});
+							}
+						}
+
+						ChapterNodeBuilder{ node }.decrementSteps();
+	
+						if (payloadCast.m_sourceStepIndex == node->getTotalSteps()) {
+							m_stateSubject->goToStepIndex(node->getTotalSteps() - 1);
+						}
+						else {
+							NodeSteps::reloadStateToStep(payloadCast.m_sourceStepIndex);
+						}
+
+						NodeEditorToolTip::setTooltipFor(500, "Deleted!");
+					}
+					else {
+						NodeEditorToolTip::setTooltipFor(500, "Can't delete 0th step!");
+					}
+
+				}
+
 				ImGui::EndDragDropTarget();
 			}
 

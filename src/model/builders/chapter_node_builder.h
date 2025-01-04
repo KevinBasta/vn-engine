@@ -72,8 +72,15 @@ public:
 	}*/
 
 	template <class T>
-	void removeStep(int stepIndex) {
-		(m_nodeDerived->*(chapterNodeHelper<T>::handler)).erase(stepIndex);
+	bool removeStep(index stepIndex) {
+		auto iter{ (m_nodeDerived->*(chapterNodeHelper<T>::handler)).find(stepIndex) };
+
+		if (iter == (m_nodeDerived->*(chapterNodeHelper<T>::handler)).end()) {
+			return false;
+		}
+
+		(m_nodeDerived->*(chapterNodeHelper<T>::handler)).erase(iter);
+		return true;
 	}
 
 	template <class T>
@@ -262,6 +269,15 @@ public:
 	std::unordered_map<int, std::vector<T>>& getStep(int stepIndex) {
 		return (m_nodeDerived->*(chapterNodeHelper<T>::handler))[stepIndex];
 	}*/
+
+
+	void decrementSteps() {
+		m_nodeDerived->m_totalSteps--;
+	}
+
+	void incrementSteps() {
+		m_nodeDerived->m_totalSteps++;
+	}
 
 private:
 	void updateStepActionsArray() {

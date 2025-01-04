@@ -32,10 +32,13 @@ public:
  
 	// Calling ChapterBuilder member functions
 	std::function<void(id nodeId, index stepIndex)> addStaticObjToNodeAtStep;
+	
+	// Action functions
 	std::function<bool(ActionDragDropPayload)> performMove;
 	std::function<bool(ActionDragDropPayload)> performCopy;
 	std::function<bool(ActionDragDropPayload)> performSwap;
 	std::function<bool(ActionDragDropPayload)> performDelete;
+	
 	std::function<bool(id nodeId, index stepIndex)> containsStep;
 	
 	// Other Helpers
