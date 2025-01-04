@@ -274,7 +274,7 @@ private:
 			{
 				if (isEntireStep) {
 					for (auto& item : s_items) {
-						reloadState |= item.performSwap(payloadCast);
+						reloadState |= item.forceSwap(payloadCast);
 					}
 				}
 				else {

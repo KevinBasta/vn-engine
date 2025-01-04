@@ -5,6 +5,7 @@
 #include "chapter_node_types.h"
 
 #include "engine_drag_drop_payload.h"
+#include "action_type_mappers_helpers.h"
 
 #include "linkable_builder.h"
 
@@ -116,21 +117,15 @@ public:
 		if (sourceStepIter != (m_nodeDerived->*(chapterNodeHelper<T>::handler)).end()) {
 			// Assumes that payload only sets pick one if it is a vector (not single) type
 			if (payload.m_pickOne) {
-				// Move one of the actions inside the step for type T
-				if (payload.m_replace) {
-					(m_nodeDerived->*(chapterNodeHelper<T>::handler))[payload.m_destinationStepIndex].clear();
-					(m_nodeDerived->*(chapterNodeHelper<T>::handler))[payload.m_destinationStepIndex].push_back(sourceStepIter->second.at(payload.m_souceStepPickOneIndex));
-				}
-				else {
-					(m_nodeDerived->*(chapterNodeHelper<T>::handler))[payload.m_destinationStepIndex].push_back(sourceStepIter->second.at(payload.m_souceStepPickOneIndex));
-				}
+				// TODO: error handling
+				(m_nodeDerived->*(chapterNodeHelper<T>::handler))[payload.m_destinationStepIndex].push_back(sourceStepIter->second.at(payload.m_souceStepPickOneIndex));
 			}
 			else {
 				// Move all the actions inside the step for type T
-				if (payload.m_replace) {
+				if (ActionToType<T>::type == ActionAmount::SINGLE) {
 					(m_nodeDerived->*(chapterNodeHelper<T>::handler))[payload.m_destinationStepIndex] = sourceStepIter->second;
 				}
-				else {
+				else if (ActionToType<T>::type == ActionAmount::VECTOR) {
 					((m_nodeDerived->*(chapterNodeHelper<T>::handler))[payload.m_destinationStepIndex]).insert(
 						(m_nodeDerived->*(chapterNodeHelper<T>::handler))[payload.m_destinationStepIndex].end(),
 						sourceStepIter->second.begin(),
@@ -155,22 +150,15 @@ public:
 		if (sourceStepIter != (m_nodeDerived->*(chapterNodeHelper<T>::handler)).end()) {
 			// Assumes that payload only sets pick one if it is a vector (not single) type
 			if (payload.m_pickOne) {
-				// Move one of the actions inside the step for type T
-				if (payload.m_replace) {
-					(m_nodeDerived->*(chapterNodeHelper<T>::handler))[payload.m_destinationStepIndex].clear();
-					(m_nodeDerived->*(chapterNodeHelper<T>::handler))[payload.m_destinationStepIndex].push_back(sourceStepIter->second.at(payload.m_souceStepPickOneIndex));
-				}
-				else {
-					// TODO: could use more bounds checks on vector access?
-					(m_nodeDerived->*(chapterNodeHelper<T>::handler))[payload.m_destinationStepIndex].push_back(sourceStepIter->second.at(payload.m_souceStepPickOneIndex));
-				}
+				// TODO: could use more bounds checks on vector access?
+				(m_nodeDerived->*(chapterNodeHelper<T>::handler))[payload.m_destinationStepIndex].push_back(sourceStepIter->second.at(payload.m_souceStepPickOneIndex));
 			}
 			else {
 				// Move all the actions inside the step for type T
-				if (payload.m_replace) {
+				if (ActionToType<T>::type == ActionAmount::SINGLE) {
 					(m_nodeDerived->*(chapterNodeHelper<T>::handler))[payload.m_destinationStepIndex] = sourceStepIter->second;
 				}
-				else {
+				else if (ActionToType<T>::type == ActionAmount::VECTOR) {
 					((m_nodeDerived->*(chapterNodeHelper<T>::handler))[payload.m_destinationStepIndex]).insert(
 						(m_nodeDerived->*(chapterNodeHelper<T>::handler))[payload.m_destinationStepIndex].end(),
 						sourceStepIter->second.begin(),
@@ -209,6 +197,42 @@ public:
 		sourceStepIter->second = destinationStepIter->second;
 		destinationStepIter->second = tempSourceActionCopy;
 	
+		return true;
+	}
+
+	template <class T>
+	bool forceSwap(ActionDragDropPayload payload) {
+		auto sourceStepIter{ (m_nodeDerived->*(chapterNodeHelper<T>::handler)).find(payload.m_sourceStepIndex) };
+		auto destinationStepIter{ (m_nodeDerived->*(chapterNodeHelper<T>::handler)).find(payload.m_destinationStepIndex) };
+
+		// Validate swap
+		if (sourceStepIter == destinationStepIter)
+		{
+			return false;
+		}
+
+		// Perform swap
+		if (sourceStepIter == (m_nodeDerived->*(chapterNodeHelper<T>::handler)).end()) {
+			if (destinationStepIter == (m_nodeDerived->*(chapterNodeHelper<T>::handler)).end()) {
+				return false;
+			}
+			else {
+				(m_nodeDerived->*(chapterNodeHelper<T>::handler))[payload.m_sourceStepIndex] = destinationStepIter->second;
+				removeStep<T>(payload.m_destinationStepIndex);
+			}
+		}
+		else {
+			if (destinationStepIter == (m_nodeDerived->*(chapterNodeHelper<T>::handler)).end()) {
+				(m_nodeDerived->*(chapterNodeHelper<T>::handler))[payload.m_destinationStepIndex] = sourceStepIter->second;
+				removeStep<T>(payload.m_sourceStepIndex);
+			}
+			else {
+				auto tempSourceActionCopy{ sourceStepIter->second };
+				sourceStepIter->second = destinationStepIter->second;
+				destinationStepIter->second = tempSourceActionCopy;
+			}
+		}
+
 		return true;
 	}
 

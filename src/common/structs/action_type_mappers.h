@@ -7,14 +7,10 @@
 #include "chapter_node_builder.h"
 
 #include "model_engine_interface.h"
+#include "action_type_mappers_helpers.h"
 #include "engine_drag_drop_payload.h"
 
 #include <functional>
-
-enum ActionAmount {
-	SINGLE,
-	VECTOR
-};
 
 // Helper to avoid having to specify more data with the specific types T
 struct ActionHelper {
@@ -38,6 +34,7 @@ public:
 	std::function<bool(ActionDragDropPayload)> performCopy;
 	std::function<bool(ActionDragDropPayload)> performSwap;
 	std::function<bool(ActionDragDropPayload)> performDelete;
+	std::function<bool(ActionDragDropPayload)> forceSwap;
 	
 	std::function<bool(id nodeId, index stepIndex)> containsStep;
 	

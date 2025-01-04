@@ -2,14 +2,12 @@
 #ifndef VN_ACTION_TYPE_MAPPERS_HELPERS_H
 #define VN_ACTION_TYPE_MAPPERS_HELPERS_H
 
-#include "state_subject.h"
-#include "chapter_node.h"
 #include "chapter_node_types.h"
-#include "action_type_mappers.h"
 
-#include <string>
-
-enum ActionAmount;
+enum ActionAmount {
+	SINGLE,
+	VECTOR
+};
 
 // For engine_node_editor.h
 template<typename> struct ActionToActionName;

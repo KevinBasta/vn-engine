@@ -45,6 +45,12 @@ ActionHelper::ActionHelper(std::in_place_type_t<T>) {
 
 		return ChapterNodeBuilder{ node }.swapAction<T>(payload);
 	};
+	this->forceSwap = [](ActionDragDropPayload payload) {
+		ChapterNode* node = static_cast<ChapterNode*>(ModelEngineInterface::getNodeById(payload.m_nodeId));
+		if (node == nullptr) { return false; }
+
+		return ChapterNodeBuilder{ node }.forceSwap<T>(payload);
+	};
 	this->performDelete = [](ActionDragDropPayload payload) {
 		ChapterNode* node = static_cast<ChapterNode*>(ModelEngineInterface::getNodeById(payload.m_nodeId));
 		if (node == nullptr) { return false; }
