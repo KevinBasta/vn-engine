@@ -62,23 +62,19 @@ private:
 
 	public:
 		static void draw() {
-			if (ImGui::TreeNodeEx(addComboId("Add Action").c_str(), ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_DefaultOpen)) {
-				ImGui::Spacing();
-
-				drawCombo();
-
-				ImGui::Spacing();
-
-				drawSelection();
-
-				ImGui::Spacing();
-
-				addActionToStep();
-
-				ImGui::Spacing();
-
-				ImGui::TreePop();
-			}
+			ImGui::Spacing();
+			ImGui::SeparatorText("Add Action");
+			
+			ImGui::Spacing();
+			drawCombo();
+			
+			ImGui::Spacing();
+			drawSelection();
+			
+			ImGui::Spacing();
+			addActionToStep();
+			
+			ImGui::Spacing();
 		}
 
 		static bool addActionToStep() {
@@ -162,7 +158,7 @@ private:
 	// Encapsulate the Steps of the node in this section
 	class NodeSteps {
 	public:
-		static void drawNodeSteps() {
+		static void draw() {
 			if (m_stateSubject == nullptr) { return; }
 
 			id nodeId{ m_stateSubject->getNodeId() };
@@ -173,6 +169,10 @@ private:
 			// do dynamic cast and handle failure of the cast?
 			ChapterNode* node{ static_cast<ChapterNode*>(nodeBase) };
 
+			ImGui::Spacing();
+			ImGui::SeparatorText(node->getName().c_str());
+			ImGui::Spacing();
+			
 			for (index i{ 0 }; i < node->getTotalSteps(); i++) {
 				drawStep(node, i);
 			}
@@ -318,7 +318,9 @@ private:
 		static ActionDragMode getMode() { return m_mode; }
 
 		static void draw() {
+			ImGui::SeparatorText("Node Editor Options");
 
+			// Dragging radio button options
 			ImGui::Text("Action Dragging Mode: ");
 
 			ImGui::SameLine();
@@ -333,7 +335,19 @@ private:
 			
 			if (ImGui::RadioButton("Swap", m_mode == ActionDragMode::DRAG_SWAP)) { m_mode = ActionDragMode::DRAG_SWAP; }
 			
-			ImGui::Button("Delete", ImVec2(100, 100));
+
+			// Add and delete step buttons
+			if (ImGui::Button("Add Step", ImVec2(200, 50))) {
+				ChapterNode* node{ static_cast<ChapterNode*>(ModelEngineInterface::getNodeById(m_stateSubject->getNodeId())) };
+
+				if (node != nullptr) {
+					ChapterNodeBuilder{ node }.incrementSteps();
+				}
+			}
+
+			ImGui::SameLine();
+
+			bool deleteButton = ImGui::Button("Delete", ImVec2(75, 50));
 			if (ImGui::BeginDragDropTarget())
 			{
 				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ACTION_DRAG"))
@@ -376,11 +390,12 @@ private:
 
 						ChapterNodeBuilder{ node }.decrementSteps();
 	
-						if (payloadCast.m_sourceStepIndex == node->getTotalSteps()) {
+						m_stateSubject->goToNodeId(payloadCast.m_nodeId);
+						if (m_stateSubject->getStepIndex() == node->getTotalSteps()) {
 							m_stateSubject->goToStepIndex(node->getTotalSteps() - 1);
 						}
 						else {
-							NodeSteps::reloadStateToStep(payloadCast.m_sourceStepIndex);
+							m_stateSubject->goToStepIndex(m_stateSubject->getStepIndex());
 						}
 
 						NodeEditorToolTip::setTooltipFor(500, "Deleted!");
@@ -394,9 +409,11 @@ private:
 				ImGui::EndDragDropTarget();
 			}
 
-			// radio buttons for the drag type move, copy, swap
-			// delete button that handles drag events
-			// Add step button
+			if (deleteButton) {
+				NodeEditorToolTip::setTooltipFor(500, "Drag steps/actions here to delete!");
+			}
+
+			// TODO: undo buttons?
 		}
 	};
 
@@ -440,18 +457,10 @@ private:
 public:
 	void draw() {
 		NodeEditorToolTip::draw();
-
+		
 		ComboActions::draw();
 
-		ImGui::Spacing();
-		ImGui::Separator();
-		ImGui::Spacing();
-
-		NodeSteps::drawNodeSteps();
-
-		ImGui::Spacing();
-		ImGui::Separator();
-		ImGui::Spacing();
+		NodeSteps::draw();
 
 		NodeEditorOptions::draw();
 	}

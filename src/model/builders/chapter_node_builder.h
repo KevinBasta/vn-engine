@@ -213,24 +213,17 @@ public:
 
 		// Perform swap
 		if (sourceStepIter == (m_nodeDerived->*(chapterNodeHelper<T>::handler)).end()) {
-			if (destinationStepIter == (m_nodeDerived->*(chapterNodeHelper<T>::handler)).end()) {
-				return false;
-			}
-			else {
-				(m_nodeDerived->*(chapterNodeHelper<T>::handler))[payload.m_sourceStepIndex] = destinationStepIter->second;
-				removeStep<T>(payload.m_destinationStepIndex);
-			}
+			(m_nodeDerived->*(chapterNodeHelper<T>::handler))[payload.m_sourceStepIndex] = destinationStepIter->second;
+			removeStep<T>(payload.m_destinationStepIndex);
+		}
+		else if (destinationStepIter == (m_nodeDerived->*(chapterNodeHelper<T>::handler)).end()) {
+			(m_nodeDerived->*(chapterNodeHelper<T>::handler))[payload.m_destinationStepIndex] = sourceStepIter->second;
+			removeStep<T>(payload.m_sourceStepIndex);
 		}
 		else {
-			if (destinationStepIter == (m_nodeDerived->*(chapterNodeHelper<T>::handler)).end()) {
-				(m_nodeDerived->*(chapterNodeHelper<T>::handler))[payload.m_destinationStepIndex] = sourceStepIter->second;
-				removeStep<T>(payload.m_sourceStepIndex);
-			}
-			else {
-				auto tempSourceActionCopy{ sourceStepIter->second };
-				sourceStepIter->second = destinationStepIter->second;
-				destinationStepIter->second = tempSourceActionCopy;
-			}
+			auto tempSourceActionCopy{ sourceStepIter->second };
+			sourceStepIter->second = destinationStepIter->second;
+			destinationStepIter->second = tempSourceActionCopy;
 		}
 
 		return true;

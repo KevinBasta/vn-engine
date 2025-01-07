@@ -2,6 +2,8 @@
 #include "engine_node_editor_sidebar.h"
 #include "action_type_mappers.h"
 
+#include "imgui.h"
+
 #include <utility>
 
 StateSubject* VnEngineNodeEditor::m_stateSubject{ nullptr };

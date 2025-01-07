@@ -44,6 +44,7 @@ public:
 // Game Operations:
 	virtual NodeState action(StateSubject* stateSubject, int stepIndex) = 0;
 	virtual index getTotalSteps() = 0;
+	std::string getName() { return m_temp; }
 
 	// maybe repurpose for writing out to file how to construct this node in cpp for to create runtime or make separte function
 	friend std::ostream& operator<<(std::ostream& out, Node& node);
