@@ -20,6 +20,7 @@
 #include <locale>
 #include <codecvt>
 #include <string>
+#include <algorithm>
 
 static std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> myconv;
 
@@ -49,6 +50,7 @@ static std::string toString(enum class SpriteProperty property) {
 }
 
 bool drawTextureAndTextureStore(TextureIdentifier& texture) {
+	static ImGuiComboFlags flags = 0;
 	bool modified = false;
 
 	ModelEngineInterface::TextureStoreMap& textureStores{ ModelEngineInterface::getTextureStoreMap() };
@@ -56,17 +58,52 @@ bool drawTextureAndTextureStore(TextureIdentifier& texture) {
 	// In the case that the texture store is invalid
 	if (!textureStores.contains(texture.m_textureStoreId)) {
 		texture.m_textureStoreId = (textureStores.begin())->first;
+		// TODO: implicit that texture stores have 1 entry (0)??
 	}
 
 	TextureStore* currentStore{ textureStores.at(texture.m_textureStoreId).get() };
-
-	// Draw the texture store options
 	const std::string& textureStoreName{ currentStore->getName() };
-	modified |= ImGui::SliderInt("Texture Store", &(texture.m_textureStoreId), 1, textureStores.size(), textureStoreName.c_str()); // Use ImGuiSliderFlags_NoInput flag to disable CTRL+Click here.
+
+	if (ImGui::BeginCombo("Texture Store", textureStoreName.c_str(), flags)) {		
+		for (auto iter{ textureStores.begin() }; iter != textureStores.end(); iter++) {
+			const bool isSelected = (iter->first == texture.m_textureStoreId);
+			if (ImGui::Selectable(iter->second.get()->getName().c_str(), isSelected)) {
+				// avoid needless update
+				if (texture.m_textureStoreId != iter->first) {
+					texture.m_textureStoreId = iter->first;
+					modified = true;
+				}
+			}
+
+			if (isSelected) {
+				ImGui::SetItemDefaultFocus();
+			}
+		}
+		ImGui::EndCombo();
+	}
 
 	std::pair<int, int> texturesRange{ currentStore->getTexturesRange() };
 	std::string currentTextureIndex{ std::to_string(texture.m_textureIndex) };
-	modified |= ImGui::SliderInt("Texture", &(texture.m_textureIndex), texturesRange.first, texturesRange.second, currentTextureIndex.c_str());
+
+	// TODO: update with preview image
+	if (ImGui::BeginCombo("Texture", currentTextureIndex.c_str(), flags)) {
+		for (int i{ texturesRange.first }; i < texturesRange.second; i++) {
+			const bool isSelected = (i == texture.m_textureIndex);
+			std::string currentIndexStr{ std::to_string(i) };
+			if (ImGui::Selectable(currentIndexStr.c_str(), isSelected)) {
+				// avoid needless update
+				if (texture.m_textureIndex != i) {
+					texture.m_textureIndex = i;
+					modified = true;
+				}
+			}
+
+			if (isSelected) {
+				ImGui::SetItemDefaultFocus();
+			}
+		}
+		ImGui::EndCombo();
+	}
 
 	return modified;
 }
