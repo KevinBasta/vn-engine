@@ -49,6 +49,9 @@ static std::string toString(enum class SpriteProperty property) {
 	return "NONE";
 }
 
+/*
+* Common drawing units that are reused by several actions.
+*/
 bool drawTextureAndTextureStore(TextureIdentifier& texture) {
 	static ImGuiComboFlags flags = 0;
 	bool modified = false;
@@ -108,6 +111,11 @@ bool drawTextureAndTextureStore(TextureIdentifier& texture) {
 	return modified;
 }
 
+
+/*
+* Background actions
+*/
+
 template<>
 bool ActionField<ActionBackgroundTexture>::drawInternal(ActionBackgroundTexture* obj) {
 	bool modified = false;
@@ -115,8 +123,10 @@ bool ActionField<ActionBackgroundTexture>::drawInternal(ActionBackgroundTexture*
 
 	std::string actionTitle{ "Background Texture##" + std::to_string((unsigned long long)(void**)obj) };
 
-	if (ImGui::TreeNode(actionTitle.c_str()))
-	{
+	bool isTreeOpen = ImGui::TreeNode(actionTitle.c_str());
+	dragDropSourceSet();
+
+	if (isTreeOpen) {
 		modified |= drawTextureAndTextureStore(obj->m_texture);
 
 		ImGui::TreePop();
@@ -126,7 +136,9 @@ bool ActionField<ActionBackgroundTexture>::drawInternal(ActionBackgroundTexture*
 }
 
 
-
+/*
+* Sprite actions
+*/
 
 template<>
 bool ActionField<ActionSpriteProperty>::drawInternal(ActionSpriteProperty* obj) {
@@ -145,8 +157,10 @@ bool ActionField<ActionSpriteProperty>::drawInternal(ActionSpriteProperty* obj) 
 	std::string actionTitle{ textureStoreName + "::[" + std::to_string(obj->m_texture.m_textureIndex) + "]::" + toString(obj->m_property) +  "##" + std::to_string((unsigned long long)(void**)obj)};
 	//std::string actionTitle{ "Sprite Property" };
 
-	if (ImGui::TreeNode(actionTitle.c_str()))
-	{
+	bool isTreeOpen = ImGui::TreeNode(actionTitle.c_str());
+	dragDropSourceSet();
+
+	if (isTreeOpen) {
 		modified |= drawTextureAndTextureStore(obj->m_texture);
 
 
@@ -239,7 +253,9 @@ bool ActionField<ActionTextOverrideColor>::drawInternal(ActionTextOverrideColor*
 }
 
 
-
+/*
+* Relations
+*/
 
 bool ActionField<ActionRelationModify>::drawInternal(ActionRelationModify* obj) {
 	bool modified = false;
@@ -258,7 +274,9 @@ bool ActionField<ActionRelationSetNextChapter>::drawInternal(ActionRelationSetNe
 }
 
 
-
+/*
+* Direct setting actions (next chapter)
+*/
 
 bool ActionField<ActionSetNextChapter>::drawInternal(ActionSetNextChapter* obj) {
 	bool modified = false;
@@ -267,6 +285,9 @@ bool ActionField<ActionSetNextChapter>::drawInternal(ActionSetNextChapter* obj) 
 }
 
 
+/*
+* Choice actions
+*/
 
 bool ActionField<ActionChoice>::drawInternal(ActionChoice* obj) {
 	bool modified = false;

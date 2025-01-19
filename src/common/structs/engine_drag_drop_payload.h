@@ -12,7 +12,7 @@ struct ActionDragDropPayload {
 	index m_destinationStepIndex{};
 
 	bool m_pickOne{ false };
-	int m_souceStepPickOneIndex{};
+	int m_souceStepPickOneIndex{ 0 };
 
 	bool m_replace{ false };
 };

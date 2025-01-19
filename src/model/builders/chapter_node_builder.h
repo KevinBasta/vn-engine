@@ -112,30 +112,39 @@ public:
 		// Don't allow the source to be the destination because then the action gets deleted
 		if (payload.m_sourceStepIndex == payload.m_destinationStepIndex) { return false; }
 
-		auto sourceStepIter{ (m_nodeDerived->*(chapterNodeHelper<T>::handler)).find(payload.m_sourceStepIndex) };
+		auto sourceMapPairIter{ (m_nodeDerived->*(chapterNodeHelper<T>::handler)).find(payload.m_sourceStepIndex) };
 
-		if (sourceStepIter != (m_nodeDerived->*(chapterNodeHelper<T>::handler)).end()) {
+		if (sourceMapPairIter != (m_nodeDerived->*(chapterNodeHelper<T>::handler)).end()) {
 			// Assumes that payload only sets pick one if it is a vector (not single) type
 			if (payload.m_pickOne) {
 				// TODO: error handling
-				(m_nodeDerived->*(chapterNodeHelper<T>::handler))[payload.m_destinationStepIndex].push_back(sourceStepIter->second.at(payload.m_souceStepPickOneIndex));
+				// Check that m_souceStepPickOneIndex is within vector range
+				if (payload.m_souceStepPickOneIndex < 0 || payload.m_souceStepPickOneIndex >= sourceMapPairIter->second.size()) {
+					return false;
+				}
+
+				// Add the source sub step to destination step
+				(m_nodeDerived->*(chapterNodeHelper<T>::handler))[payload.m_destinationStepIndex].push_back(sourceMapPairIter->second.at(payload.m_souceStepPickOneIndex));
+				
+				// Remove the source sub step from source
+				sourceMapPairIter->second.erase(sourceMapPairIter->second.begin() + payload.m_souceStepPickOneIndex);
 			}
 			else {
 				// Move all the actions inside the step for type T
 				if (ActionToType<T>::type == ActionAmount::SINGLE) {
-					(m_nodeDerived->*(chapterNodeHelper<T>::handler))[payload.m_destinationStepIndex] = sourceStepIter->second;
+					(m_nodeDerived->*(chapterNodeHelper<T>::handler))[payload.m_destinationStepIndex] = sourceMapPairIter->second;
 				}
 				else if (ActionToType<T>::type == ActionAmount::VECTOR) {
-					((m_nodeDerived->*(chapterNodeHelper<T>::handler))[payload.m_destinationStepIndex]).insert(
+					(m_nodeDerived->*(chapterNodeHelper<T>::handler))[payload.m_destinationStepIndex].insert(
 						(m_nodeDerived->*(chapterNodeHelper<T>::handler))[payload.m_destinationStepIndex].end(),
-						sourceStepIter->second.begin(),
-						sourceStepIter->second.end()
+						sourceMapPairIter->second.begin(),
+						sourceMapPairIter->second.end()
 					);
 				}
-			}
 
-			// Erase the entry from the source step
-			(m_nodeDerived->*(chapterNodeHelper<T>::handler)).erase(sourceStepIter);
+				// Erase the entire source step pair from map
+				(m_nodeDerived->*(chapterNodeHelper<T>::handler)).erase(sourceMapPairIter);
+			}
 			return true;
 		}
 
