@@ -30,14 +30,23 @@ private:
 	static bool drawInternal(T* obj);
 	
 	static inline ActionDragDropPayload m_dragDropPayload{};
-	static void dragDropSourceSet() {
+	static void dragDropSourceSet(T* obj, bool overrideName = false, std::string newName = "") {
+		// Function to be called after TreeNode function calls.
+
 		// TODO: could make it so that if it's a new object, it's an easier way
-		// to add an action to a step
+		// to add an action to a step, currently just disabling dragging on the new (static) objects
+		if (obj == &m_obj) { return; }
+
 		if (ImGui::BeginDragDropSource())
 		{
 			ImGui::SetDragDropPayload("ACTION_DRAG", &m_dragDropPayload, sizeof(ActionDragDropPayload));
 
-			ImGui::Text("Dragging %s", ActionHelper{ std::in_place_type<T> }.getName());
+			if (overrideName) {
+				ImGui::Text("Dragging %s", newName.c_str());
+			}
+			else {
+				ImGui::Text("Dragging %s", ActionHelper{ std::in_place_type<T> }.getName());
+			}
 			// Display preview (could be anything, e.g. when dragging an image we could decide to display
 			// the filename and a small preview of the image, etc.)
 			// if (mode == Mode_Copy) { ImGui::Text("Copy %s", names[n]); }
@@ -84,7 +93,7 @@ public:
 			std::string actionTitle{ std::string(ActionHelper{std::in_place_type<T>}.getName()) + "##" + std::to_string((unsigned long long)(void**)objects) };
 			
 			bool isTreeOpen = ImGui::TreeNode(actionTitle.c_str());
-			dragDropSourceSet();
+			dragDropSourceSet(nullptr /* hacky way to pass the check and allow drag drop on action category */);
 
 			if (isTreeOpen) {
 				// Reuse the dragDropPayload for each sub action

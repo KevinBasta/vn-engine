@@ -24,7 +24,7 @@
 
 static std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> myconv;
 
-static std::string addIdFromPtr(std::string name, void* ptr) { return name + std::to_string((unsigned long long)(void**)ptr); }
+static std::string addIdFromPtr(std::string name, void* ptr) { return name + "##" + std::to_string((unsigned long long)(void**)ptr); }
 static std::string addIdFromPtr(std::wstring name, void* ptr) { 
 	return myconv.to_bytes(name) + std::to_string((unsigned long long)(void**)ptr);
 }
@@ -124,7 +124,7 @@ bool ActionField<ActionBackgroundTexture>::drawInternal(ActionBackgroundTexture*
 	std::string actionTitle{ "Background Texture##" + std::to_string((unsigned long long)(void**)obj) };
 
 	bool isTreeOpen = ImGui::TreeNode(actionTitle.c_str());
-	dragDropSourceSet();
+	dragDropSourceSet(obj);
 
 	if (isTreeOpen) {
 		modified |= drawTextureAndTextureStore(obj->m_texture);
@@ -154,16 +154,41 @@ bool ActionField<ActionSpriteProperty>::drawInternal(ActionSpriteProperty* obj) 
 
 	TextureStore* currentStore{ textureStores.at(obj->m_texture.m_textureStoreId).get() };
 	const std::string& textureStoreName{ currentStore->getName() };
-	std::string actionTitle{ textureStoreName + "::[" + std::to_string(obj->m_texture.m_textureIndex) + "]::" + toString(obj->m_property) +  "##" + std::to_string((unsigned long long)(void**)obj)};
-	//std::string actionTitle{ "Sprite Property" };
+	std::string actionTitle{ textureStoreName + "::[" + std::to_string(obj->m_texture.m_textureIndex) + "]::" + toString(obj->m_property) +  "###" + std::to_string((unsigned long long)(void**)obj)};
 
 	bool isTreeOpen = ImGui::TreeNode(actionTitle.c_str());
-	dragDropSourceSet();
+	dragDropSourceSet(obj);
 
 	if (isTreeOpen) {
+		// Draw Texture Picker
+		ImGui::Text("Texture");
 		modified |= drawTextureAndTextureStore(obj->m_texture);
+		
+		// Draw Sprite Property Picker
+		ImGui::Text("Sprite Property");
+		static std::vector<SpriteProperty> propertyTypeChoices {SpriteProperty::NONE,SpriteProperty::XPOS,SpriteProperty::YPOS,SpriteProperty::ZPOS,SpriteProperty::SCALE,SpriteProperty::OPACITY};
 
+		if (ImGui::BeginCombo(addIdFromPtr("Property Type", obj).c_str(), toString(obj->m_property).c_str(), 0)) {
+			for (auto iter{ propertyTypeChoices.begin() }; iter != propertyTypeChoices.end(); iter++) {
+				const bool isSelected = (obj->m_property == *iter);
+				
+				if (ImGui::Selectable(toString(*iter).c_str(), isSelected)) {
+					// avoid needless update
+					if (obj->m_property != *iter) {
+						obj->m_property = *iter;
+						modified = true;
+					}
+				}
 
+				if (isSelected) {
+					ImGui::SetItemDefaultFocus();
+				}
+			}
+			ImGui::EndCombo();
+		}
+
+		// Draw Sprite Property Amount Picker
+		modified |= ImGui::DragFloat("Property Amount", &obj->m_value, 0.1f);
 
 		ImGui::TreePop();
 	}
