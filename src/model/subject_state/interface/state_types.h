@@ -15,9 +15,9 @@ enum class StateDelta {
 };
 
 struct SpriteState {
-	float m_xPos{ 0.0f };
-	float m_yPos{ 0.0f };
-	float m_zPos{ 0.0f };
+	float m_xpos{ 0.0f };
+	float m_ypos{ 0.0f };
+	float m_zpos{ 0.0f };
 
 	float m_scale{ 1.0f };
 	float m_opacity{ 1.0f };

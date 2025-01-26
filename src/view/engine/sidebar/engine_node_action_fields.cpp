@@ -195,6 +195,90 @@ bool ActionField<ActionSpriteProperty>::drawInternal(ActionSpriteProperty* obj) 
 	
 	return modified;
 }
+
+// Draw field and implement constraints depending on property
+bool drawSpritePropertyField(SpriteProperty property, float& value, bool& enabled) {
+	bool modified{ false };
+	float minMaxStep[3]{ -FLT_MAX, FLT_MAX, 0.5f };
+	
+	switch (property) {
+	case SpriteProperty::XPOS:
+	{
+		minMaxStep[2] = 5.0f;
+	}
+	break;
+	case SpriteProperty::YPOS:
+	{
+		minMaxStep[2] = 5.0f;
+	}
+	break;
+	case SpriteProperty::ZPOS:
+	{
+		minMaxStep[2] = 1.0f;
+	}
+	break;
+	case SpriteProperty::SCALE:
+	{
+		minMaxStep[2] = 0.005f;
+	}
+	break;
+	case SpriteProperty::OPACITY:
+	{
+		minMaxStep[0] = 0.0f;
+		minMaxStep[1] = 1.0f;
+		minMaxStep[2] = 0.005f;
+	}
+	break;
+	}
+
+	ImGui::Text(toString(property).c_str());
+	ImGui::SameLine(130);
+	modified |= ImGui::DragFloat(addIdFromPtr("##SpritePropertyField", &value).c_str(), &value, minMaxStep[2], minMaxStep[0], minMaxStep[1], "%.3f", ImGuiSliderFlags_AlwaysClamp);
+	ImGui::SameLine();
+	modified |= ImGui::Checkbox(addIdFromPtr("##SpriteCheckbox", &value).c_str(), &enabled);
+
+	return modified;
+}
+
+template<>
+bool ActionField<ActionSpriteAllProperties>::drawInternal(ActionSpriteAllProperties* obj) {
+	bool modified = false;
+	if (obj == nullptr) { return modified; }
+
+	ModelEngineInterface::TextureStoreMap& textureStores{ ModelEngineInterface::getTextureStoreMap() };
+
+	// In the case that the texture store is invalid
+	if (!textureStores.contains(obj->m_texture.m_textureStoreId)) {
+		obj->m_texture.m_textureStoreId = (textureStores.begin())->first;
+	}
+
+	TextureStore* currentStore{ textureStores.at(obj->m_texture.m_textureStoreId).get() };
+	const std::string& textureStoreName{ currentStore->getName() };
+	std::string actionTitle{ textureStoreName + "::[" + std::to_string(obj->m_texture.m_textureIndex) + "]::" + "###" + std::to_string((unsigned long long)(void**)obj) };
+
+	bool isTreeOpen = ImGui::TreeNode(actionTitle.c_str());
+	dragDropSourceSet(obj);
+
+	if (isTreeOpen) {
+		// Draw Texture Picker
+		ImGui::Text("Texture");
+		modified |= drawTextureAndTextureStore(obj->m_texture);
+
+		// Draw Sprite Property Picker
+		ImGui::Spacing();
+		ImGui::Text("Sprite Properties");
+		
+		modified |= drawSpritePropertyField(SpriteProperty::XPOS, obj->m_xpos, obj->m_xposEnabled);
+		modified |= drawSpritePropertyField(SpriteProperty::YPOS, obj->m_ypos, obj->m_yposEnabled);
+		modified |= drawSpritePropertyField(SpriteProperty::ZPOS, obj->m_zpos, obj->m_zposEnabled);
+		modified |= drawSpritePropertyField(SpriteProperty::SCALE, obj->m_scale, obj->m_scaleEnabled);
+		modified |= drawSpritePropertyField(SpriteProperty::OPACITY, obj->m_opacity, obj->m_opacityEnabled);
+
+		ImGui::TreePop();
+	}
+	return modified;
+}
+
 template<>
 bool ActionField<ActionSpriteAnimationGeneric>::drawInternal(ActionSpriteAnimationGeneric* obj) {
 	bool modified = false;

@@ -12,6 +12,7 @@ const std::vector<ActionHelper> s_items{
 	ActionHelper{std::in_place_type<ActionBackgroundTexture>},
 
 	ActionHelper{std::in_place_type<ActionSpriteProperty>},
+	ActionHelper{std::in_place_type<ActionSpriteAllProperties>},
 	ActionHelper{std::in_place_type<ActionSpriteAnimationGeneric>},
 
 	ActionHelper{std::in_place_type<ActionTextRender>},

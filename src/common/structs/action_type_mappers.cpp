@@ -27,6 +27,7 @@ ActionHelper::ActionHelper(std::in_place_type_t<T>) {
 			ChapterNodeBuilder{ node }.addAction<T>(stepIndex, obj);
 		}
 	};
+
 	this->performMove = [](ActionDragDropPayload payload) {
 		ChapterNode* node = static_cast<ChapterNode*>(ModelEngineInterface::getNodeById(payload.m_nodeId));
 		if (node == nullptr) { return false; }
@@ -45,6 +46,7 @@ ActionHelper::ActionHelper(std::in_place_type_t<T>) {
 
 		return ChapterNodeBuilder{ node }.swapAction<T>(payload);
 	};
+
 	this->forceSwap = [](ActionDragDropPayload payload) {
 		ChapterNode* node = static_cast<ChapterNode*>(ModelEngineInterface::getNodeById(payload.m_nodeId));
 		if (node == nullptr) { return false; }

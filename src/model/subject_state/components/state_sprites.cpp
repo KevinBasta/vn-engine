@@ -16,17 +16,17 @@ void StateSprites::handle(const ActionSpriteProperty& action) {
 	{
 	case SpriteProperty::XPOS:
 	{
-		m_spriteRenderData[action.m_texture].m_xPos = action.m_value;
+		m_spriteRenderData[action.m_texture].m_xpos = action.m_value;
 		break;
 	}
 	case SpriteProperty::YPOS:
 	{
-		m_spriteRenderData[action.m_texture].m_yPos = action.m_value;
+		m_spriteRenderData[action.m_texture].m_ypos = action.m_value;
 		break;
 	}
 	case SpriteProperty::ZPOS:
 	{
-		m_spriteRenderData[action.m_texture].m_zPos = action.m_value;
+		m_spriteRenderData[action.m_texture].m_zpos = action.m_value;
 		break;
 	}
 	case SpriteProperty::SCALE:
@@ -41,6 +41,35 @@ void StateSprites::handle(const ActionSpriteProperty& action) {
 	}
 	default:
 		break;
+	}
+}
+
+void StateSprites::handle(const ActionSpriteAllProperties& action) {
+	if (m_spriteRenderData.find(action.m_texture) == m_spriteRenderData.end()) {
+		// TODO: handle error/exceptions
+
+		// TODO: should propergate error from load texture!
+		ModelRuntimeInterface::loadTexture(action.m_texture);
+	}
+
+	if (action.m_xposEnabled) {
+		m_spriteRenderData[action.m_texture].m_xpos = action.m_xpos;
+	}
+
+	if (action.m_yposEnabled) {
+		m_spriteRenderData[action.m_texture].m_ypos = action.m_ypos;
+	}
+
+	if (action.m_zposEnabled) {
+		m_spriteRenderData[action.m_texture].m_zpos = action.m_zpos;
+	}
+
+	if (action.m_scaleEnabled) {
+		m_spriteRenderData[action.m_texture].m_scale = action.m_scale;
+	}
+	
+	if (action.m_opacityEnabled) {
+		m_spriteRenderData[action.m_texture].m_opacity = action.m_opacity;
 	}
 }
 
@@ -68,13 +97,13 @@ bool StateSprites::tick(std::pair<stepIndex, ActionSpriteAnimationGeneric>& anim
 
 	switch (animation.second.m_stepType) {
 	case (SpriteProperty::XPOS):
-		currentValue = &(characterState.m_xPos);
+		currentValue = &(characterState.m_xpos);
 		break;
 	case (SpriteProperty::YPOS):
-		currentValue = &(characterState.m_yPos);
+		currentValue = &(characterState.m_ypos);
 		break;
 	case (SpriteProperty::ZPOS):
-		currentValue = &(characterState.m_zPos);
+		currentValue = &(characterState.m_zpos);
 		break;
 	case (SpriteProperty::SCALE):
 		currentValue = &(characterState.m_scale);
@@ -172,19 +201,19 @@ bool StateSprites::endSpriteAnimations() {
 		case (SpriteProperty::XPOS):
 		{
 			std::cout << "XPOS END SPRITE ANIMATION" << std::endl;
-			characterPos.m_xPos = endValue;
+			characterPos.m_xpos = endValue;
 			break;
 		}
 		case (SpriteProperty::YPOS):
 		{
 			std::cout << "YPOS END SPRITE ANIMATION" << std::endl;
-			characterPos.m_yPos = endValue;
+			characterPos.m_ypos = endValue;
 			break;
 		}
 		case (SpriteProperty::ZPOS):
 		{
 			std::cout << "ZPOS END SPRITE ANIMATION" << std::endl;
-			characterPos.m_zPos = endValue;
+			characterPos.m_zpos = endValue;
 			break;
 		}
 		case (SpriteProperty::SCALE):

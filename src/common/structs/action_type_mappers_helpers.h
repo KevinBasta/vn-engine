@@ -14,6 +14,7 @@ template<typename> struct ActionToActionName;
 template<> struct ActionToActionName<ActionBackgroundTexture>		{ static constexpr const char* name = "ActionBackgroundTexture"; };
 
 template<> struct ActionToActionName<ActionSpriteProperty>			{ static constexpr const char* name = "ActionSpriteProperty"; };
+template<> struct ActionToActionName<ActionSpriteAllProperties>		{ static constexpr const char* name = "ActionSpriteAllProperties"; };
 template<> struct ActionToActionName<ActionSpriteAnimationGeneric>	{ static constexpr const char* name = "ActionSpriteAnimationGeneric"; };
 
 template<> struct ActionToActionName<ActionTextRender>				{ static constexpr const char* name = "ActionTextRender"; };
@@ -34,10 +35,13 @@ template<> struct ActionToActionName<ActionChoiceSetNextChapter>	{ static conste
 
 
 // For engine_node_editor.h and other
+// If there can only be one of the action per step, then ActionAmount::SINGLE
+// If there can be more than one of the action per step, then ActionAmount::VECTOR
 template<typename> struct ActionToType;
 template<> struct ActionToType<ActionBackgroundTexture>			{ static constexpr ActionAmount type = ActionAmount::SINGLE; };
 
 template<> struct ActionToType<ActionSpriteProperty>			{ static constexpr ActionAmount type = ActionAmount::VECTOR; };
+template<> struct ActionToType<ActionSpriteAllProperties>		{ static constexpr ActionAmount type = ActionAmount::VECTOR; };
 template<> struct ActionToType<ActionSpriteAnimationGeneric>	{ static constexpr ActionAmount type = ActionAmount::VECTOR; };
 
 template<> struct ActionToType<ActionTextRender>				{ static constexpr ActionAmount type = ActionAmount::SINGLE; };

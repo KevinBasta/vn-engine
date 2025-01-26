@@ -57,6 +57,7 @@ private:
 	// TODO: consider a way to make the z index more intuative? maybe the background should be 
 	// set at a specific z index (or setable by user) then the rest of the z > than that 
 	// is usable for sprites?
+	ActionStepMap<ActionSpriteAllProperties> m_spriteAllPropertiesSteps{};
 
 	ActionStepMap<ActionSpriteProperty> m_spriteTextureSteps{
 		{ 0, std::vector<ActionSpriteProperty>{ {{1, 0}, SpriteProperty::OPACITY, 0.0f}} },

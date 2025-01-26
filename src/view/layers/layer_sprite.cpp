@@ -22,9 +22,9 @@ void SpriteLayer::drawSprite(const FrameDimensions& frame, const TextureIdentifi
 	glm::mat4 model = glm::mat4(1.0f);
 	//model = glm::translate(model, glm::vec3((static_cast<float>(m_window->width()) / 2) - (static_cast<float>(texture->width()) / 2), 0.0f, 0.0f));
 	model = glm::translate(model,
-		glm::vec3(spriteState.m_xPos * frame.scale,
-				  spriteState.m_yPos * frame.scale,
-				  spriteState.m_zPos - 10.0f));
+		glm::vec3(spriteState.m_xpos * frame.scale,
+				  spriteState.m_ypos * frame.scale,
+				  spriteState.m_zpos - 10.0f));
 
 	//std::cout << "scale to view port" << scale << std::endl;
 	//std::cout << "scale to view port" << spriteState.m_position.m_xCoord << std::endl;

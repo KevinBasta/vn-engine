@@ -67,6 +67,24 @@ enum class SpriteProperty {
 };
 
 
+struct ActionSpriteAllProperties {
+	TextureIdentifier m_texture{};
+	bool m_xposEnabled{ false };
+	float m_xpos{ 1.0f };
+
+	bool m_yposEnabled{ false };
+	float m_ypos{ 1.0f };
+
+	bool m_zposEnabled{ false };
+	float m_zpos{ 1.0f };
+
+	bool m_scaleEnabled{ false };
+	float m_scale{ 1.0f };
+
+	bool m_opacityEnabled{ false };
+	float m_opacity{ 1.0f };
+};
+
 struct ActionSpriteProperty {
 	TextureIdentifier m_texture{};
 	SpriteProperty m_property{ SpriteProperty::NONE };
