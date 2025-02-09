@@ -10,6 +10,8 @@
 
 class StateSubject;
 
+
+// TODO: disallow negative seconds
 class StateSprites {
 private:
 	StateSubject* m_stateSubject{ nullptr };

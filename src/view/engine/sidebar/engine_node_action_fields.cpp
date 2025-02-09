@@ -112,6 +112,9 @@ bool drawTextureAndTextureStore(TextureIdentifier& texture) {
 }
 
 
+
+
+
 /*
 * Background actions
 */
@@ -136,71 +139,21 @@ bool ActionField<ActionBackgroundTexture>::drawInternal(ActionBackgroundTexture*
 }
 
 
+
+
+
+
 /*
 * Sprite actions
 */
 
-template<>
-bool ActionField<ActionSpriteProperty>::drawInternal(ActionSpriteProperty* obj) {
-	bool modified = false;
-	if (obj == nullptr) { return modified; }
-
-	ModelEngineInterface::TextureStoreMap& textureStores{ ModelEngineInterface::getTextureStoreMap() };
-	
-	// In the case that the texture store is invalid
-	if (!textureStores.contains(obj->m_texture.m_textureStoreId)) {
-		obj->m_texture.m_textureStoreId = (textureStores.begin())->first;
-	}
-
-	TextureStore* currentStore{ textureStores.at(obj->m_texture.m_textureStoreId).get() };
-	const std::string& textureStoreName{ currentStore->getName() };
-	std::string actionTitle{ textureStoreName + "::[" + std::to_string(obj->m_texture.m_textureIndex) + "]::" + toString(obj->m_property) +  "###" + std::to_string((unsigned long long)(void**)obj)};
-
-	bool isTreeOpen = ImGui::TreeNode(actionTitle.c_str());
-	dragDropSourceSet(obj);
-
-	if (isTreeOpen) {
-		// Draw Texture Picker
-		ImGui::Text("Texture");
-		modified |= drawTextureAndTextureStore(obj->m_texture);
-		
-		// Draw Sprite Property Picker
-		ImGui::Text("Sprite Property");
-		static std::vector<SpriteProperty> propertyTypeChoices {SpriteProperty::NONE,SpriteProperty::XPOS,SpriteProperty::YPOS,SpriteProperty::ZPOS,SpriteProperty::SCALE,SpriteProperty::OPACITY};
-
-		if (ImGui::BeginCombo(addIdFromPtr("Property Type", obj).c_str(), toString(obj->m_property).c_str(), 0)) {
-			for (auto iter{ propertyTypeChoices.begin() }; iter != propertyTypeChoices.end(); iter++) {
-				const bool isSelected = (obj->m_property == *iter);
-				
-				if (ImGui::Selectable(toString(*iter).c_str(), isSelected)) {
-					// avoid needless update
-					if (obj->m_property != *iter) {
-						obj->m_property = *iter;
-						modified = true;
-					}
-				}
-
-				if (isSelected) {
-					ImGui::SetItemDefaultFocus();
-				}
-			}
-			ImGui::EndCombo();
-		}
-
-		// Draw Sprite Property Amount Picker
-		modified |= ImGui::DragFloat("Property Amount", &obj->m_value, 0.1f);
-
-		ImGui::TreePop();
-	}
-	
-	return modified;
-}
+// SECTION HELPERS
 
 // Draw field and implement constraints depending on property
 bool drawSpritePropertyField(SpriteProperty property, float& value, bool& enabled) {
 	bool modified{ false };
 	float minMaxStep[3]{ -FLT_MAX, FLT_MAX, 0.5f };
-	
+
 	switch (property) {
 	case SpriteProperty::XPOS:
 	{
@@ -240,6 +193,73 @@ bool drawSpritePropertyField(SpriteProperty property, float& value, bool& enable
 	return modified;
 }
 
+bool drawSpritePropertyPicker(SpriteProperty& property) {
+	bool modified{ false };
+
+	// Draw Sprite Property Picker
+	ImGui::Text("Sprite Property");
+	static std::vector<SpriteProperty> propertyTypeChoices{ SpriteProperty::NONE,SpriteProperty::XPOS,SpriteProperty::YPOS,SpriteProperty::ZPOS,SpriteProperty::SCALE,SpriteProperty::OPACITY };
+
+	if (ImGui::BeginCombo(addIdFromPtr("Property Type", &property).c_str(), toString(property).c_str(), 0)) {
+		for (auto iter{ propertyTypeChoices.begin() }; iter != propertyTypeChoices.end(); iter++) {
+			const bool isSelected = (property == *iter);
+
+			if (ImGui::Selectable(toString(*iter).c_str(), isSelected)) {
+				// avoid needless update
+				if (property != *iter) {
+					property = *iter;
+					modified = true;
+				}
+			}
+
+			if (isSelected) {
+				ImGui::SetItemDefaultFocus();
+			}
+		}
+		ImGui::EndCombo();
+	}
+
+	return modified;
+}
+
+
+// SECTION ACTIONS
+template<>
+bool ActionField<ActionSpriteProperty>::drawInternal(ActionSpriteProperty* obj) {
+	bool modified = false;
+	if (obj == nullptr) { return modified; }
+
+	ModelEngineInterface::TextureStoreMap& textureStores{ ModelEngineInterface::getTextureStoreMap() };
+	
+	// In the case that the texture store is invalid
+	if (!textureStores.contains(obj->m_texture.m_textureStoreId)) {
+		obj->m_texture.m_textureStoreId = (textureStores.begin())->first;
+	}
+
+	TextureStore* currentStore{ textureStores.at(obj->m_texture.m_textureStoreId).get() };
+	const std::string& textureStoreName{ currentStore->getName() };
+	std::string actionTitle{ textureStoreName + "::[" + std::to_string(obj->m_texture.m_textureIndex) + "]::" + toString(obj->m_property) +  "###" + std::to_string((unsigned long long)(void**)obj)};
+
+	bool isTreeOpen = ImGui::TreeNode(actionTitle.c_str());
+	dragDropSourceSet(obj);
+
+	if (isTreeOpen) {
+		// Draw Texture Picker
+		ImGui::Text("Texture");
+		modified |= drawTextureAndTextureStore(obj->m_texture);
+		
+		// Draw Sprite Property Picker
+		modified |= drawSpritePropertyPicker(obj->m_property);
+
+		// Draw Sprite Property Amount Picker
+		modified |= ImGui::DragFloat(addIdFromPtr("Property Amount", obj).c_str(), &obj->m_value, 0.1f);
+
+		ImGui::TreePop();
+	}
+	
+	return modified;
+}
+
 template<>
 bool ActionField<ActionSpriteAllProperties>::drawInternal(ActionSpriteAllProperties* obj) {
 	bool modified = false;
@@ -254,7 +274,7 @@ bool ActionField<ActionSpriteAllProperties>::drawInternal(ActionSpriteAllPropert
 
 	TextureStore* currentStore{ textureStores.at(obj->m_texture.m_textureStoreId).get() };
 	const std::string& textureStoreName{ currentStore->getName() };
-	std::string actionTitle{ textureStoreName + "::[" + std::to_string(obj->m_texture.m_textureIndex) + "]::" + "###" + std::to_string((unsigned long long)(void**)obj) };
+	std::string actionTitle{ textureStoreName + "::[" + std::to_string(obj->m_texture.m_textureIndex) + "]" + "###" + std::to_string((unsigned long long)(void**)obj) };
 
 	bool isTreeOpen = ImGui::TreeNode(actionTitle.c_str());
 	dragDropSourceSet(obj);
@@ -282,9 +302,74 @@ bool ActionField<ActionSpriteAllProperties>::drawInternal(ActionSpriteAllPropert
 template<>
 bool ActionField<ActionSpriteAnimationGeneric>::drawInternal(ActionSpriteAnimationGeneric* obj) {
 	bool modified = false;
+	if (obj == nullptr) { return modified; }
+
+	ModelEngineInterface::TextureStoreMap& textureStores{ ModelEngineInterface::getTextureStoreMap() };
+
+	// In the case that the texture store is invalid
+	if (!textureStores.contains(obj->m_texture.m_textureStoreId)) {
+		obj->m_texture.m_textureStoreId = (textureStores.begin())->first;
+	}
+
+	TextureStore* currentStore{ textureStores.at(obj->m_texture.m_textureStoreId).get() };
+	const std::string& textureStoreName{ currentStore->getName() };
+	std::string actionTitle{ textureStoreName + "::[" + std::to_string(obj->m_texture.m_textureIndex) + "]::" + toString(obj->m_stepType) +"###" + std::to_string((unsigned long long)(void**)obj) };
+
+	bool isTreeOpen = ImGui::TreeNode(actionTitle.c_str());
+	dragDropSourceSet(obj);
+
+	if (isTreeOpen) {
+		// Draw Texture Picker
+		ImGui::Text("Texture");
+		modified |= drawTextureAndTextureStore(obj->m_texture);
+
+		// Draw Sprite Property Picker
+		ImGui::Spacing();
+		modified |= drawSpritePropertyPicker(obj->m_stepType);
+
+		ImGui::Spacing();
+		ImGui::Text("Animation Steps");
+
+		int i{ 0 };
+		for (auto iter{ obj->m_steps.begin() }; iter != obj->m_steps.end(); iter++) {
+			ImGui::Text((std::string("#") + std::to_string(i)).c_str());
+			ImGui::SameLine();
+			
+			ImGui::PushItemWidth(100.0f);
+			// TODO: disallow negative
+			modified |= ImGui::DragFloat(addIdFromPtr("Value", &iter).c_str(), &(iter->m_value), 0.1f);
+			ImGui::SameLine();
+			modified |= ImGui::DragFloat(addIdFromPtr("Seconds", &iter).c_str(), &(iter->m_transitionSeconds), 0.1f);
+			ImGui::PopItemWidth();
+
+			ImGui::SameLine();
+			if (ImGui::Button(addIdFromPtr("Delete", &iter).c_str(), ImVec2(150.0f, 0.0f))) {
+				iter = obj->m_steps.erase(iter);
+				modified = true;
+
+				if (iter == obj->m_steps.end()) {
+					break;
+				}
+			}
+
+			i++;
+		}
+
+		// Button submission
+		if (ImGui::Button(addIdFromPtr("Add Step", obj).c_str(), ImVec2(150.0f, 0.0f))) {
+			obj->m_steps.emplace_back();
+			modified = true;
+		}
+		
+		ImGui::TreePop();
+	}
+
 
 	return modified;
 }
+
+
+
 
 
 /**

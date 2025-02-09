@@ -64,7 +64,7 @@ public:
 		
 			// If autoactions are set by the action, clear them so 
 			// that the next action isn't an autostep clearing action
-			if (inAutoAction()) {
+			if (i != stepIndex && inAutoAction()) {
 				endAutoActions();
 				clearAutoAction();
 				notify();

@@ -88,6 +88,7 @@ bool StateSprites::tick(std::pair<stepIndex, ActionSpriteAnimationGeneric>& anim
 		return true;
 	}
 
+	// TODO: error when engine modifies this
 	auto& animationStepIndex{ animation.first };
 	auto& currentAction{ animation.second.m_steps[animation.first] };
 

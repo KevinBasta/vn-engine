@@ -104,6 +104,43 @@ struct ActionSpriteAnimationGeneric {
 	std::vector<ActionSpriteKeyframeGeneric> m_steps{};
 };
 
+struct ActionSpriteAnimationAsycProperties {
+	TextureIdentifier m_texture{};
+	
+	// Property transition times are independant
+	std::vector<ActionSpriteKeyframeGeneric> m_xpos{};
+	std::vector<ActionSpriteKeyframeGeneric> m_ypos{};
+	std::vector<ActionSpriteKeyframeGeneric> m_zpos{};
+	std::vector<ActionSpriteKeyframeGeneric> m_opacity{};
+	std::vector<ActionSpriteKeyframeGeneric> m_scale{};
+	
+	bool m_xposEnabled{ false };
+	bool m_yposEnabled{ false };
+	bool m_zposEnabled{ false };
+	bool m_opacityEnabled{ false };
+	bool m_scaleEnabled{ false };
+};
+
+
+struct ActionSpriteAnimationSyncProperties {
+	TextureIdentifier m_texture{};
+
+	// Property transition times are the same
+	std::vector<float> m_transitionSeconds{};
+
+	std::vector<float> m_xpos{};
+	std::vector<float> m_ypos{};
+	std::vector<float> m_zpos{};
+	std::vector<float> m_opacity{};
+	std::vector<float> m_scale{};
+
+	bool m_xposEnabled{ false };
+	bool m_yposEnabled{ false };
+	bool m_zposEnabled{ false };
+	bool m_opacityEnabled{ false };
+	bool m_scaleEnabled{ false };
+};
+
 
 
 /**
