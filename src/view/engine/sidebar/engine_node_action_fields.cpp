@@ -124,9 +124,9 @@ bool ActionField<ActionBackgroundTexture>::drawInternal(ActionBackgroundTexture*
 	bool modified = false;
 	if (obj == nullptr) { return modified; }
 
-	std::string actionTitle{ "Background Texture##" + std::to_string((unsigned long long)(void**)obj) };
+	std::string actionTitle{ ActionHelper{ std::in_place_type<ActionBackgroundTexture> }.getName() };
 
-	bool isTreeOpen = ImGui::TreeNode(actionTitle.c_str());
+	bool isTreeOpen = ImGui::TreeNode(addIdFromPtr(actionTitle, obj).c_str());
 	dragDropSourceSet(obj);
 
 	if (isTreeOpen) {
@@ -375,22 +375,17 @@ bool ActionField<ActionSpriteAnimationGeneric>::drawInternal(ActionSpriteAnimati
 /**
  * Text Action Types
  */
-
-bool ActionField<ActionTextRender>::drawInternal(ActionTextRender* obj) {
-	bool modified = false;
-	
-	return modified;
-}
-
 template<>
 bool ActionField<ActionTextLine>::drawInternal(ActionTextLine* obj) {	
 	bool modified = false;
 
-	std::string actionTitle{ "ActionTextLine##" + std::to_string((unsigned long long)(void**)obj) };
+	std::string actionTitle{ ActionHelper{ std::in_place_type<ActionTextLine> }.getName() };
 
-	if (ImGui::TreeNode(actionTitle.c_str()))
+	bool isTreeOpen = ImGui::TreeNode(addIdFromPtr(actionTitle, obj).c_str());
+	dragDropSourceSet(obj);
+
+	if (isTreeOpen)
 	{
-
 		// Character selection
 		const ModelEngineInterface::CharacterMap& characterMap{ ModelEngineInterface::getCharacterMap() };
 		
@@ -435,13 +430,79 @@ bool ActionField<ActionTextLine>::drawInternal(ActionTextLine* obj) {
 	return modified;
 }
 
-bool ActionField<ActionTextOverrideSpeaker>::drawInternal(ActionTextOverrideSpeaker* obj) {
+
+
+bool ActionField<ActionTextOverrides>::drawInternal(ActionTextOverrides* obj) {
 	bool modified = false;
 
-	return modified;
-}
-bool ActionField<ActionTextOverrideColor>::drawInternal(ActionTextOverrideColor* obj) {
-	bool modified = false;
+	std::string actionTitle{ ActionHelper{ std::in_place_type<ActionTextOverrides> }.getName() };
+
+	bool isTreeOpen = ImGui::TreeNode(addIdFromPtr(actionTitle, obj).c_str());
+	dragDropSourceSet(obj);
+
+	if (isTreeOpen)
+	{
+		// Speaker text apprering override
+		bool renderModified = false;
+
+		ImGui::Text("Render Dialogue: ");
+
+		modified |= ImGui::Checkbox(addIdFromPtr("##render", obj).c_str(), &(obj->m_renderEnabled));
+		ImGui::SameLine();
+		
+		if (!obj->m_renderEnabled) { ImGui::BeginDisabled(); }
+		int textRenderState{ (obj->m_render) ? 1 : 0 };
+		ImGui::PushItemWidth(150.0f);
+		renderModified |= ImGui::SliderInt(addIdFromPtr("##renderSlider", obj).c_str(), &(textRenderState), 0, 1, (obj->m_render) ? "YES" : "NO");
+		ImGui::PopItemWidth();
+		if (renderModified) { 
+			(textRenderState == 1) ? obj->m_render = true : obj->m_render = false; 
+			if (obj->m_renderEnabled) { modified = true; }
+		};
+		if (!obj->m_renderEnabled) { ImGui::EndDisabled(); }
+
+
+
+		// Speaker text color override
+		bool colorModified = false;
+		ImGuiColorEditFlags colorFlags = 0;
+
+		ImGui::Text("Override Color: ");
+
+		modified |= ImGui::Checkbox(addIdFromPtr("##color", obj).c_str(), &(obj->m_colorEnabled));
+		ImGui::SameLine();
+
+		if (!obj->m_colorEnabled) { ImGui::BeginDisabled(); }
+		ImVec4 color = ImVec4(obj->m_color.r, obj->m_color.g, obj->m_color.b, 1.0f);
+		colorModified |= ImGui::ColorEdit3(addIdFromPtr("##colorPicker", obj).c_str(), (float*)&color, colorFlags);
+		obj->m_color = { color.x, color.y, color.z };
+		
+		if (colorModified && obj->m_colorEnabled) { modified = true; }
+		if (!obj->m_colorEnabled) { ImGui::EndDisabled(); }
+
+
+
+		// Speaker name override
+		bool nameModified = false;
+		static ImGuiInputTextFlags textFlags{ 0 };
+
+		ImGui::Text("Override Speaker: ");
+
+		modified |= ImGui::Checkbox(addIdFromPtr("##speaker", obj).c_str(), &(obj->m_speakerEnabled));
+		ImGui::SameLine();
+		
+		if (!obj->m_speakerEnabled) { ImGui::BeginDisabled(); }
+		std::string convertedName = myconv.to_bytes(obj->m_speaker);
+		ImGui::PushItemWidth(150.0f);
+		nameModified |= ImGui::InputText(addIdFromPtr("##speakerName", obj).c_str(), &(convertedName), textFlags);
+		ImGui::PopItemWidth();
+		obj->m_speaker = myconv.from_bytes(convertedName);
+
+		if (nameModified && obj->m_speakerEnabled) { modified = true; }
+		if (!obj->m_speakerEnabled) { ImGui::EndDisabled(); }
+
+		ImGui::TreePop();
+	}
 
 	return modified;
 }

@@ -15,10 +15,8 @@ const std::vector<ActionHelper> s_items{
 	ActionHelper{std::in_place_type<ActionSpriteAllProperties>},
 	ActionHelper{std::in_place_type<ActionSpriteAnimationGeneric>},
 
-	ActionHelper{std::in_place_type<ActionTextRender>},
 	ActionHelper{std::in_place_type<ActionTextLine>},
-	ActionHelper{std::in_place_type<ActionTextOverrideSpeaker>},
-	ActionHelper{std::in_place_type<ActionTextOverrideColor>},
+	ActionHelper{std::in_place_type<ActionTextOverrides>},
 
 	ActionHelper{std::in_place_type<ActionRelationModify>},
 	ActionHelper{std::in_place_type<ActionRelationSetNextNode>},

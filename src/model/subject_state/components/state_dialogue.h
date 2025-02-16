@@ -27,6 +27,7 @@ public:
 	//
 	void handle(const ActionTextLine& action) {
 		m_dialogueState.m_line = action.m_line;
+		m_dialogueState.m_render = true;
 
 		// TODO: should the character data be updatable? or just overriden by the actions?
 		Character* character = ModelRuntimeInterface::getCharacterById(action.m_characterID);
@@ -41,16 +42,18 @@ public:
 		}
 	}
 
-	void handle(const ActionTextOverrideSpeaker& action) {
-		m_dialogueState.m_speakerName = action.m_speakerName;
-	}
+	void handle(const ActionTextOverrides& action) {
+		if (action.m_renderEnabled) {
+			m_dialogueState.m_render = action.m_render;
+		}
 
-	void handle(const ActionTextOverrideColor& action) {
-		m_dialogueState.m_color = action.m_textColor;
-	}
+		if (action.m_colorEnabled) {
+			m_dialogueState.m_color = action.m_color;
+		}
 
-	void handle(const ActionTextRender& action) {
-		m_dialogueState.m_render = action.m_render;
+		if (action.m_speakerEnabled) {
+			m_dialogueState.m_speakerName = action.m_speaker;
+		}
 	}
 };
 

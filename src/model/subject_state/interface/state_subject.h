@@ -63,8 +63,10 @@ public:
 			action();
 		
 			// If autoactions are set by the action, clear them so 
-			// that the next action isn't an autostep clearing action
-			if (i != stepIndex && inAutoAction()) {
+			// that the next action (click) isn't an autostep clearing action
+			// TODO: i != stepIndex allows for the autoactions at the target step
+			// to play. Perhaps can be only for a special case where the engine modifies the autoaction
+			if (/*i != stepIndex && */inAutoAction()) {
 				endAutoActions();
 				clearAutoAction();
 				notify();

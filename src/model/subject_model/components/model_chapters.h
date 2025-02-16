@@ -45,7 +45,7 @@ private:
 
 		ChapterNodeBuilder{ head }.link(oneone);
 		ChapterNodeBuilder{ head }.setStep<ActionTextLine>(1, ActionTextLine{ 1, L"builder test hello!" });
-		ChapterNodeBuilder{ head }.moveStep<ActionTextOverrideSpeaker>(2, 1);
+		ChapterNodeBuilder{ head }.moveStep<ActionTextOverrides>(2, 1);
 		//ChapterNodeBuilder{ head }.removeStep<ActionTextLine>(1);
 		ChapterNodeBuilder{ head }.link(onetwo);
 		ChapterNodeBuilder{ oneone }.link(twoone);

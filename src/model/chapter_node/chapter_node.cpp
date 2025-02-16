@@ -21,10 +21,8 @@ template<> struct stateHelper<ActionSpriteProperty>			{ static constexpr auto ha
 template<> struct stateHelper<ActionSpriteAllProperties>	{ static constexpr auto handler = &StateSubject::m_sprites; };
 template<> struct stateHelper<ActionSpriteAnimationGeneric>	{ static constexpr auto handler = &StateSubject::m_sprites; };
 
-template<> struct stateHelper<ActionTextRender>				{ static constexpr auto handler = &StateSubject::m_dialogue; };
 template<> struct stateHelper<ActionTextLine>				{ static constexpr auto handler = &StateSubject::m_dialogue; };
-template<> struct stateHelper<ActionTextOverrideSpeaker>	{ static constexpr auto handler = &StateSubject::m_dialogue; };
-template<> struct stateHelper<ActionTextOverrideColor>		{ static constexpr auto handler = &StateSubject::m_dialogue; };
+template<> struct stateHelper<ActionTextOverrides>			{ static constexpr auto handler = &StateSubject::m_dialogue; };
 
 template<> struct stateHelper<ActionRelationModify>			{ static constexpr auto handler = &StateSubject::m_relations; };
 template<> struct stateHelper<ActionRelationSetNextNode>	{ static constexpr auto handler = &StateSubject::m_relations; };
@@ -86,10 +84,8 @@ bool ChapterNode::doStep(StateSubject* stateSubject, int stepIndex) {
 	stepExists |= handle(stateSubject, stepIndex, m_spriteAllPropertiesSteps);
 	stepExists |= handle(stateSubject, stepIndex, m_spriteGenericAnimationSteps);
 
-	stepExists |= handle(stateSubject, stepIndex, m_textRenderSteps);
 	stepExists |= handle(stateSubject, stepIndex, m_textLineSteps);
-	stepExists |= handle(stateSubject, stepIndex, m_textOverrideSpeakerSteps);
-	stepExists |= handle(stateSubject, stepIndex, m_textOverrideColorSteps);
+	stepExists |= handle(stateSubject, stepIndex, m_textOverrideSteps);
 
 	stepExists |= handle(stateSubject, stepIndex, m_relationshipModifySteps);
 	stepExists |= handle(stateSubject, stepIndex, m_relationshipChooseNode);

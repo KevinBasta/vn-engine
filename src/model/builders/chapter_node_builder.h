@@ -319,10 +319,8 @@ private:
 	template<> struct chapterNodeHelper<ActionSpriteAllProperties> { static constexpr auto handler = &ChapterNode::m_spriteAllPropertiesSteps; };
 	template<> struct chapterNodeHelper<ActionSpriteAnimationGeneric> { static constexpr auto handler = &ChapterNode::m_spriteGenericAnimationSteps; };
 
-	template<> struct chapterNodeHelper<ActionTextRender> { static constexpr auto handler = &ChapterNode::m_textRenderSteps; };
 	template<> struct chapterNodeHelper<ActionTextLine> { static constexpr auto handler = &ChapterNode::m_textLineSteps; };
-	template<> struct chapterNodeHelper<ActionTextOverrideSpeaker> { static constexpr auto handler = &ChapterNode::m_textOverrideSpeakerSteps; };
-	template<> struct chapterNodeHelper<ActionTextOverrideColor> { static constexpr auto handler = &ChapterNode::m_textOverrideColorSteps; };
+	template<> struct chapterNodeHelper<ActionTextOverrides> { static constexpr auto handler = &ChapterNode::m_textOverrideSteps; };
 
 	template<> struct chapterNodeHelper<ActionRelationModify> { static constexpr auto handler = &ChapterNode::m_relationshipModifySteps; };
 	template<> struct chapterNodeHelper<ActionRelationSetNextNode> { static constexpr auto handler = &ChapterNode::m_relationshipChooseNode; };

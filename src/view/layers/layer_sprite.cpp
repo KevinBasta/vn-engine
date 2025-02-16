@@ -30,6 +30,7 @@ void SpriteLayer::drawSprite(const FrameDimensions& frame, const TextureIdentifi
 	//std::cout << "scale to view port" << spriteState.m_position.m_xCoord << std::endl;
 	//std::cout << "scale to view port" << spriteState.m_position.m_yCoord << std::endl;
 	//std::cout << "scale to view port" << spriteState.m_position.m_zCoord << std::endl;
+	//model = glm::rotate(model, glm::radians(30.0f), glm::vec3(0.0, 0.0, 1.0));
 	model = glm::scale(model, glm::vec3(scale, scale, 0.0f));
 
 	unsigned int modelLocation = glGetUniformLocation(m_defaultShader.ID(), "inModel");

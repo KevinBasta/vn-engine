@@ -147,23 +147,21 @@ struct ActionSpriteAnimationSyncProperties {
  * TEXT ACTIONS
  * 
  */
-struct ActionTextRender {
-	bool m_render{ false };
-};
-
 struct ActionTextLine {
 	int m_characterID{};
 	std::wstring m_line{};
 };
 
-struct ActionTextOverrideSpeaker {
-	std::wstring m_speakerName{};
-};
+struct ActionTextOverrides {
+	bool m_renderEnabled{ false };
+	bool m_render{ false };
 
-struct ActionTextOverrideColor {
-	glm::vec3 m_textColor{};
-};
+	bool m_speakerEnabled{ false };
+	std::wstring m_speaker{};
 
+	bool m_colorEnabled{ false };
+	glm::vec3 m_color{};
+};
 
 
 /**

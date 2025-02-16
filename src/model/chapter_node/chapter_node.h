@@ -82,13 +82,6 @@ private:
 	//
 	// Text actions
 	//
-
-	ActionStepMap<ActionTextRender> m_textRenderSteps{
-		{ 0, {{ true }} },
-		{ 1, {{ true }} },
-		{ 3, {{ false }} },
-	};
-
 	ActionStepMap<ActionTextLine> m_textLineSteps {
 		{ 0, {{1, L"\tありがとうaaa"}} },
 		{ 1, {{1, L"hello, this is garu! I came from a far away land to do something important. That is to foil Brazazaza. Why you ask? Well... it's because he... he... well I am actually not very sure myself."}} },
@@ -96,17 +89,12 @@ private:
 		//{ 3, std::vector<ActionTextLine>{{1, L"hello, this is a potato"}} }
 	};	
 	
-	ActionStepMap<ActionTextOverrideSpeaker> m_textOverrideSpeakerSteps{
-		{ 0, {{L"???"}} },
-		{ 2, {{L"???"}} },
-		//{ 3, std::vector<ActionTextOverrideSpeaker>{{"potato man"}}}
+	ActionStepMap<ActionTextOverrides> m_textOverrideSteps{ 
+		{0, {{true, true, true, L"???", true, glm::vec3(1.0f, 0.0f, 0.0f)}}},
+		{1, {{true, true}}},
+		{2, {{false, true, true, L"???", true, glm::vec3(0.0f, 1.0f, 0.5f)}}},
+		{3, {{true, false}}}
 	};
-
-	ActionStepMap<ActionTextOverrideColor> m_textOverrideColorSteps{
-		{ 0, {{glm::vec3(1.0f, 0.0f, 0.0f)}} },
-		{ 2, {{glm::vec3(0.0f, 1.0f, 0.5f)}} }
-	};
-
 	
 	//
 	// Relation mutation actions
