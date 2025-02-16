@@ -6,44 +6,6 @@
 #include "state_sprites.h"
 #include "chapter_node_types.h"
 
-void StateSprites::handle(const ActionSpriteProperty& action) {
-	if (m_spriteRenderData.find(action.m_texture) == m_spriteRenderData.end()) {
-		// TODO: handle error/exceptions
-		ModelRuntimeInterface::loadTexture(action.m_texture);		
-	}
-
-	switch (action.m_property)
-	{
-	case SpriteProperty::XPOS:
-	{
-		m_spriteRenderData[action.m_texture].m_xpos = action.m_value;
-		break;
-	}
-	case SpriteProperty::YPOS:
-	{
-		m_spriteRenderData[action.m_texture].m_ypos = action.m_value;
-		break;
-	}
-	case SpriteProperty::ZPOS:
-	{
-		m_spriteRenderData[action.m_texture].m_zpos = action.m_value;
-		break;
-	}
-	case SpriteProperty::SCALE:
-	{
-		m_spriteRenderData[action.m_texture].m_scale = action.m_value;
-		break;
-	}
-	case SpriteProperty::OPACITY:
-	{
-		m_spriteRenderData[action.m_texture].m_opacity = action.m_value;
-		break;
-	}
-	default:
-		break;
-	}
-}
-
 void StateSprites::handle(const ActionSpriteAllProperties& action) {
 	if (m_spriteRenderData.find(action.m_texture) == m_spriteRenderData.end()) {
 		// TODO: handle error/exceptions

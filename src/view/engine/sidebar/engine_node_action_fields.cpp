@@ -225,42 +225,6 @@ bool drawSpritePropertyPicker(SpriteProperty& property) {
 
 // SECTION ACTIONS
 template<>
-bool ActionField<ActionSpriteProperty>::drawInternal(ActionSpriteProperty* obj) {
-	bool modified = false;
-	if (obj == nullptr) { return modified; }
-
-	ModelEngineInterface::TextureStoreMap& textureStores{ ModelEngineInterface::getTextureStoreMap() };
-	
-	// In the case that the texture store is invalid
-	if (!textureStores.contains(obj->m_texture.m_textureStoreId)) {
-		obj->m_texture.m_textureStoreId = (textureStores.begin())->first;
-	}
-
-	TextureStore* currentStore{ textureStores.at(obj->m_texture.m_textureStoreId).get() };
-	const std::string& textureStoreName{ currentStore->getName() };
-	std::string actionTitle{ textureStoreName + "::[" + std::to_string(obj->m_texture.m_textureIndex) + "]::" + toString(obj->m_property) +  "###" + std::to_string((unsigned long long)(void**)obj)};
-
-	bool isTreeOpen = ImGui::TreeNode(actionTitle.c_str());
-	dragDropSourceSet(obj);
-
-	if (isTreeOpen) {
-		// Draw Texture Picker
-		ImGui::Text("Texture");
-		modified |= drawTextureAndTextureStore(obj->m_texture);
-		
-		// Draw Sprite Property Picker
-		modified |= drawSpritePropertyPicker(obj->m_property);
-
-		// Draw Sprite Property Amount Picker
-		modified |= ImGui::DragFloat(addIdFromPtr("Property Amount", obj).c_str(), &obj->m_value, 0.1f);
-
-		ImGui::TreePop();
-	}
-	
-	return modified;
-}
-
-template<>
 bool ActionField<ActionSpriteAllProperties>::drawInternal(ActionSpriteAllProperties* obj) {
 	bool modified = false;
 	if (obj == nullptr) { return modified; }
@@ -337,13 +301,13 @@ bool ActionField<ActionSpriteAnimationGeneric>::drawInternal(ActionSpriteAnimati
 			
 			ImGui::PushItemWidth(100.0f);
 			// TODO: disallow negative
-			modified |= ImGui::DragFloat(addIdFromPtr("Value", &iter).c_str(), &(iter->m_value), 0.1f);
+			modified |= ImGui::DragFloat(addIdFromPtr("Value", &iter->m_value).c_str(), &(iter->m_value), 0.1f);
 			ImGui::SameLine();
-			modified |= ImGui::DragFloat(addIdFromPtr("Seconds", &iter).c_str(), &(iter->m_transitionSeconds), 0.1f);
+			modified |= ImGui::DragFloat(addIdFromPtr("Seconds", &iter->m_transitionSeconds).c_str(), &(iter->m_transitionSeconds), 0.1f);
 			ImGui::PopItemWidth();
 
 			ImGui::SameLine();
-			if (ImGui::Button(addIdFromPtr("Delete", &iter).c_str(), ImVec2(150.0f, 0.0f))) {
+			if (ImGui::Button(addIdFromPtr("Delete", &iter->m_value).c_str(), ImVec2(150.0f, 0.0f))) {
 				iter = obj->m_steps.erase(iter);
 				modified = true;
 

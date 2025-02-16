@@ -36,7 +36,6 @@ public:
 	//
 	// Node interface
 	//
-	void handle(const ActionSpriteProperty& action);
 	void handle(const ActionSpriteAllProperties& action);
 	void handle(const ActionSpriteAnimationGeneric& action);
 	

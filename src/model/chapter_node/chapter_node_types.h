@@ -85,13 +85,6 @@ struct ActionSpriteAllProperties {
 	float m_opacity{ 1.0f };
 };
 
-struct ActionSpriteProperty {
-	TextureIdentifier m_texture{};
-	SpriteProperty m_property{ SpriteProperty::NONE };
-
-	float m_value{ 1.0f };
-};
-
 struct ActionSpriteKeyframeGeneric {
 	float m_transitionSeconds{ 0.0f };
 	float m_value{ 0.0f };

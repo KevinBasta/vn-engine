@@ -315,8 +315,7 @@ private:
 
 	template<> struct chapterNodeHelper<ActionBackgroundTexture> { static constexpr auto handler = &ChapterNode::m_backgroundSteps; };
 
-	template<> struct chapterNodeHelper<ActionSpriteProperty> { static constexpr auto handler = &ChapterNode::m_spriteTextureSteps; };
-	template<> struct chapterNodeHelper<ActionSpriteAllProperties> { static constexpr auto handler = &ChapterNode::m_spriteAllPropertiesSteps; };
+	template<> struct chapterNodeHelper<ActionSpriteAllProperties> { static constexpr auto handler = &ChapterNode::m_spritePropertySteps; };
 	template<> struct chapterNodeHelper<ActionSpriteAnimationGeneric> { static constexpr auto handler = &ChapterNode::m_spriteGenericAnimationSteps; };
 
 	template<> struct chapterNodeHelper<ActionTextLine> { static constexpr auto handler = &ChapterNode::m_textLineSteps; };
