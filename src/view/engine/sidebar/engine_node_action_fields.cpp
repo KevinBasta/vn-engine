@@ -40,6 +40,8 @@ static std::string toString(enum class SpriteProperty property) {
 		return "ZPOS";
 	case SpriteProperty::SCALE:
 		return "SCALE";
+	case SpriteProperty::ROTATE:
+		return "ROTATE";
 	case SpriteProperty::OPACITY:
 		return "OPACITY";
 	default:
@@ -152,6 +154,7 @@ bool ActionField<ActionBackgroundTexture>::drawInternal(ActionBackgroundTexture*
 // Draw field and implement constraints depending on property
 bool drawSpritePropertyField(SpriteProperty property, float& value, bool& enabled) {
 	bool modified{ false };
+	// Min value, Max value, Step value
 	float minMaxStep[3]{ -FLT_MAX, FLT_MAX, 0.5f };
 
 	switch (property) {
@@ -175,6 +178,11 @@ bool drawSpritePropertyField(SpriteProperty property, float& value, bool& enable
 		minMaxStep[2] = 0.005f;
 	}
 	break;
+	case SpriteProperty::ROTATE:
+	{
+		minMaxStep[2] = 0.1f;
+	}
+	break;
 	case SpriteProperty::OPACITY:
 	{
 		minMaxStep[0] = 0.0f;
@@ -186,7 +194,8 @@ bool drawSpritePropertyField(SpriteProperty property, float& value, bool& enable
 
 	ImGui::Text(toString(property).c_str());
 	ImGui::SameLine(130);
-	modified |= ImGui::DragFloat(addIdFromPtr("##SpritePropertyField", &value).c_str(), &value, minMaxStep[2], minMaxStep[0], minMaxStep[1], "%.3f", ImGuiSliderFlags_AlwaysClamp);
+	bool tempModified = ImGui::DragFloat(addIdFromPtr("##SpritePropertyField", &value).c_str(), &value, minMaxStep[2], minMaxStep[0], minMaxStep[1], "%.3f", ImGuiSliderFlags_AlwaysClamp);
+	if (enabled) { modified = tempModified; }	
 	ImGui::SameLine();
 	modified |= ImGui::Checkbox(addIdFromPtr("##SpriteCheckbox", &value).c_str(), &enabled);
 
@@ -256,6 +265,7 @@ bool ActionField<ActionSpriteAllProperties>::drawInternal(ActionSpriteAllPropert
 		modified |= drawSpritePropertyField(SpriteProperty::YPOS, obj->m_ypos, obj->m_yposEnabled);
 		modified |= drawSpritePropertyField(SpriteProperty::ZPOS, obj->m_zpos, obj->m_zposEnabled);
 		modified |= drawSpritePropertyField(SpriteProperty::SCALE, obj->m_scale, obj->m_scaleEnabled);
+		modified |= drawSpritePropertyField(SpriteProperty::ROTATE, obj->m_rotate, obj->m_rotateEnabled);
 		modified |= drawSpritePropertyField(SpriteProperty::OPACITY, obj->m_opacity, obj->m_opacityEnabled);
 
 		ImGui::TreePop();

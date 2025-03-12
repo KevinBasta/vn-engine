@@ -21,16 +21,20 @@ void SpriteLayer::drawSprite(const FrameDimensions& frame, const TextureIdentifi
 
 	glm::mat4 model = glm::mat4(1.0f);
 	//model = glm::translate(model, glm::vec3((static_cast<float>(m_window->width()) / 2) - (static_cast<float>(texture->width()) / 2), 0.0f, 0.0f));
+	
+	float centeredX = (spriteState.m_xpos * frame.scale) - ((texture->width() * frame.scale) / 2.0f);
+	float centeredY = (spriteState.m_ypos * frame.scale) - ((texture->height() * frame.scale) / 2.0f);
+
 	model = glm::translate(model,
-		glm::vec3(spriteState.m_xpos * frame.scale,
-				  spriteState.m_ypos * frame.scale,
+		glm::vec3(centeredX,
+				  centeredY,
 				  spriteState.m_zpos - 10.0f));
 
 	//std::cout << "scale to view port" << scale << std::endl;
 	//std::cout << "scale to view port" << spriteState.m_position.m_xCoord << std::endl;
 	//std::cout << "scale to view port" << spriteState.m_position.m_yCoord << std::endl;
 	//std::cout << "scale to view port" << spriteState.m_position.m_zCoord << std::endl;
-	//model = glm::rotate(model, glm::radians(30.0f), glm::vec3(0.0, 0.0, 1.0));
+	model = glm::rotate(model, glm::radians(spriteState.m_rotation), glm::vec3(0.0, 0.0, 1.0));
 	model = glm::scale(model, glm::vec3(scale, scale, 0.0f));
 
 	unsigned int modelLocation = glGetUniformLocation(m_defaultShader.ID(), "inModel");

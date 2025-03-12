@@ -20,6 +20,7 @@ struct SpriteState {
 	float m_zpos{ 0.0f };
 
 	float m_scale{ 1.0f };
+	float m_rotation{ 0.0f };
 	float m_opacity{ 1.0f };
 	// Can add vertex shader, fragment shader to use here too
 };

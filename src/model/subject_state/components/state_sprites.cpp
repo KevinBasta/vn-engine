@@ -33,6 +33,10 @@ void StateSprites::handle(const ActionSpriteAllProperties& action) {
 	if (action.m_opacityEnabled) {
 		m_spriteRenderData[action.m_texture].m_opacity = action.m_opacity;
 	}
+
+	if (action.m_rotateEnabled) {
+		m_spriteRenderData[action.m_texture].m_rotation = action.m_rotate;
+	}
 }
 
 void StateSprites::handle(const ActionSpriteAnimationGeneric& action)

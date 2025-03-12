@@ -63,6 +63,7 @@ enum class SpriteProperty {
 	YPOS,
 	ZPOS,
 	SCALE,
+	ROTATE,
 	OPACITY
 };
 
@@ -81,6 +82,9 @@ struct ActionSpriteAllProperties {
 	bool m_scaleEnabled{ false };
 	float m_scale{ 1.0f };
 
+	bool m_rotateEnabled{ false };
+	float m_rotate{ 0.0f };
+
 	bool m_opacityEnabled{ false };
 	float m_opacity{ 1.0f };
 };
@@ -97,43 +101,28 @@ struct ActionSpriteAnimationGeneric {
 	std::vector<ActionSpriteKeyframeGeneric> m_steps{};
 };
 
-struct ActionSpriteAnimationAsycProperties {
-	TextureIdentifier m_texture{};
-	
-	// Property transition times are independant
-	std::vector<ActionSpriteKeyframeGeneric> m_xpos{};
-	std::vector<ActionSpriteKeyframeGeneric> m_ypos{};
-	std::vector<ActionSpriteKeyframeGeneric> m_zpos{};
-	std::vector<ActionSpriteKeyframeGeneric> m_opacity{};
-	std::vector<ActionSpriteKeyframeGeneric> m_scale{};
-	
-	bool m_xposEnabled{ false };
-	bool m_yposEnabled{ false };
-	bool m_zposEnabled{ false };
-	bool m_opacityEnabled{ false };
-	bool m_scaleEnabled{ false };
-};
-
-
-struct ActionSpriteAnimationSyncProperties {
+struct ActionSpriteAnimation {
 	TextureIdentifier m_texture{};
 
 	// Property transition times are the same
-	std::vector<float> m_transitionSeconds{};
-
-	std::vector<float> m_xpos{};
-	std::vector<float> m_ypos{};
-	std::vector<float> m_zpos{};
-	std::vector<float> m_opacity{};
-	std::vector<float> m_scale{};
-
+	bool m_synchronous{ false };
+	
+	// Property transition times are independant
 	bool m_xposEnabled{ false };
+	std::vector<ActionSpriteKeyframeGeneric> m_xpos{};
+	
 	bool m_yposEnabled{ false };
+	std::vector<ActionSpriteKeyframeGeneric> m_ypos{};
+	
 	bool m_zposEnabled{ false };
+	std::vector<ActionSpriteKeyframeGeneric> m_zpos{};
+	
 	bool m_opacityEnabled{ false };
+	std::vector<ActionSpriteKeyframeGeneric> m_opacity{};
+	
 	bool m_scaleEnabled{ false };
+	std::vector<ActionSpriteKeyframeGeneric> m_scale{};
 };
-
 
 
 /**

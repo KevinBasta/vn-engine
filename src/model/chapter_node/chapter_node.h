@@ -58,8 +58,8 @@ private:
 	// set at a specific z index (or setable by user) then the rest of the z > than that 
 	// is usable for sprites?
 	ActionStepMap<ActionSpriteAllProperties> m_spritePropertySteps{
-		{ 0, { {{1, 0}, false, 0, false, 0, false, 0, false, 0, true, 0.0f}} },
-		{ 1, { {{1, 0}, true, 100.0f, true, -100.0f, true, -1.0f, true, 1.0f, true, 1.0f }} },
+		{ 0, { {{1, 0}, false, 0, false, 0, false, 0, false, 0, false, 0, true, 0.0f}} },
+		{ 1, { {{1, 0}, true, 100.0f, true, -100.0f, true, -1.0f, true, 1.0f, false, 0, true, 1.0f }} },
 	};
 
 	ActionStepMap<ActionSpriteAnimationGeneric> m_spriteGenericAnimationSteps{
