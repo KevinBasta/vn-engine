@@ -14,8 +14,8 @@
 
 #include "model_subject.h"
 
-#define TEMP_FRAMEBUFFER_VERTEX		VN_BASE_PATH"/src/view/glsl/vertex_framebuffer.glsl"
-#define TEMP_FRAMEBUFFER_FRAGMENT	VN_BASE_PATH"/src/view/glsl/fragment_framebuffer.glsl"
+#define TEMP_FRAMEBUFFER_VERTEX		VN_BASE_PATH"/src/game_internals/glsl/vertex_framebuffer.glsl"
+#define TEMP_FRAMEBUFFER_FRAGMENT	VN_BASE_PATH"/src/game_internals/glsl/fragment_framebuffer.glsl"
 
 // TODO: init both shaders here first then pass to the layers
 // TODO: put camera object in context to contain ortho?

@@ -7,8 +7,8 @@
 #include "state_types.h"
 #include "state_subject.h"
 
-#define TEMP_VERTEX_PATH	VN_BASE_PATH"/src/view/glsl/vertex_texture.glsl"
-#define TEMP_FRAGMENT_PATH	VN_BASE_PATH"/src/view/glsl/fragment_texture.glsl"
+#define TEMP_VERTEX_PATH	VN_BASE_PATH"/src/game_internals/glsl/vertex_texture.glsl"
+#define TEMP_FRAGMENT_PATH	VN_BASE_PATH"/src/game_internals/glsl/fragment_texture.glsl"
 
 class SpriteLayer {
 private:

@@ -14,8 +14,8 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-#define DBG_VERTEX_PATH	VN_BASE_PATH"/src/view/glsl/vertex_debug.glsl"
-#define DBG_FRAGMENT_PATH	VN_BASE_PATH"/src/view/glsl/fragment_debug.glsl"
+#define DBG_VERTEX_PATH	VN_BASE_PATH"/src/game_internals/glsl/vertex_debug.glsl"
+#define DBG_FRAGMENT_PATH	VN_BASE_PATH"/src/game_internals/glsl/fragment_debug.glsl"
 
 class GameContext {
 public:
