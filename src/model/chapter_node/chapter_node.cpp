@@ -18,7 +18,7 @@ template<typename> struct stateHelper;
 template<> struct stateHelper<ActionBackgroundTexture>		{ static constexpr auto handler = &StateSubject::m_background; };
 
 template<> struct stateHelper<ActionSpriteAllProperties>	{ static constexpr auto handler = &StateSubject::m_sprites; };
-template<> struct stateHelper<ActionSpriteAnimationGeneric>	{ static constexpr auto handler = &StateSubject::m_sprites; };
+template<> struct stateHelper<ActionSpriteAnimation>		{ static constexpr auto handler = &StateSubject::m_sprites; };
 
 template<> struct stateHelper<ActionTextLine>				{ static constexpr auto handler = &StateSubject::m_dialogue; };
 template<> struct stateHelper<ActionTextOverrides>			{ static constexpr auto handler = &StateSubject::m_dialogue; };
@@ -80,7 +80,7 @@ bool ChapterNode::doStep(StateSubject* stateSubject, int stepIndex) {
 	stepExists |= handle(stateSubject, stepIndex, m_backgroundSteps);
 
 	stepExists |= handle(stateSubject, stepIndex, m_spritePropertySteps);
-	stepExists |= handle(stateSubject, stepIndex, m_spriteGenericAnimationSteps);
+	stepExists |= handle(stateSubject, stepIndex, m_spriteAnimationSteps);
 
 	stepExists |= handle(stateSubject, stepIndex, m_textLineSteps);
 	stepExists |= handle(stateSubject, stepIndex, m_textOverrideSteps);

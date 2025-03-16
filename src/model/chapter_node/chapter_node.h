@@ -62,15 +62,18 @@ private:
 		{ 1, { {{1, 0}, true, 100.0f, true, -100.0f, true, -1.0f, true, 1.0f, false, 0, true, 1.0f }} },
 	};
 
-	ActionStepMap<ActionSpriteAnimationGeneric> m_spriteGenericAnimationSteps{
-		{ 2, std::vector<ActionSpriteAnimationGeneric>{ {{1, 0}, SpriteProperty::XPOS, {{0.1f, 1000.0f}, {0.2f, 100.0f}} },
-														{{1, 0}, SpriteProperty::YPOS, {{0.1f, 200.0f} , {0.2f, -100.0f}} },
-														{{1, 0}, SpriteProperty::OPACITY, {{3.0f, 0.3f}} },
-														//{{1, 0}, SpriteProperty::SCALE, {{3.1f, 0.5f}} },
-													  }
+	ActionStepMap<ActionSpriteAnimation> m_spriteAnimationSteps{
+		{ 2, { 
+				{
+					{1, 0}, 
+					true, {{0.1f, 1000.0f}, {0.2f, 100.0f}},
+					true, {{0.1f, 200.0f} , {0.2f, -100.0f}},
+					false, {}, false, {}, false, {},
+					true, {{3.0f, 0.3f}}
+				}
+			}
 		}
 	};
-
 
 	//
 	// Text actions

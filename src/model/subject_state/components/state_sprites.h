@@ -13,52 +13,68 @@ class StateSubject;
 
 // TODO: disallow negative seconds
 class StateSprites {
+
+//
+// General and constructor
+//
+
 private:
 	StateSubject* m_stateSubject{ nullptr };
 
-	using stepIndex = index;
-	
-	using spriteRenderMap = std::unordered_map<TextureIdentifier, SpriteState, TextureIdentifierHasher>;
-	spriteRenderMap m_spriteRenderData{};
-	
-	using activeSpriteAnimationsMap = std::list<std::pair<stepIndex, ActionSpriteAnimationGeneric>>;
-	activeSpriteAnimationsMap m_activeSpriteAnimations{};
-	
 public:
-	StateSprites(StateSubject* stateSubject) : m_stateSubject{ stateSubject } {}
+	StateSprites(StateSubject* stateSubject) :
+		m_stateSubject{ stateSubject }
+	{
+	}
 
 	void reset() {
 		m_spriteRenderData.clear();
 		m_activeSpriteAnimations.clear();
 	}
 
+
+
+//
+// SPRITE PROPERIES
+//
+
+private:
+	using spriteRenderMap = std::unordered_map<TextureIdentifier, SpriteState, TextureIdentifierHasher>;
+	spriteRenderMap m_spriteRenderData{};
+
 public:
-	//
 	// Node interface
-	//
 	void handle(const ActionSpriteAllProperties& action);
-	void handle(const ActionSpriteAnimationGeneric& action);
-	
+
+	// View interface
+	const spriteRenderMap& getSpriteRenderData() { return m_spriteRenderData; }
+
+
+
+//
+// SPRITE ANIMATIONS (auto actions)
+//
+
+private:
+	struct StepIndices { index x; index y; index z; index scale; index rotation; index opacity; };
+	using activeSpriteAnimationsMap = std::list<std::pair<StepIndices, ActionSpriteAnimation>>;
+	activeSpriteAnimationsMap m_activeSpriteAnimations{};
+
 public:
-	//
+	// Node interface
+	void handle(const ActionSpriteAnimation& action);
+
 	// Auto actions interface
-	//
 	bool tickAutoActions(float timePassed);
 	void endAutoActions() { endSpriteAnimations(); }
 
 private:
-	//
-	// Auto action helpers
-	//
-	bool tick(std::pair<stepIndex, ActionSpriteAnimationGeneric>& animation, float timePassed);
+	// Internal auto actions helpers
+	bool tick(std::pair<StepIndices, ActionSpriteAnimation>& animation, float timePassed);
+	bool tickPropertyAnimation(bool& enabled, float timePassed, index& stepIndex, std::vector<SpriteAnimationKeyframe>& keyframes, float& currentState);
 	bool tickSpriteAnimations(float timePassed);
 	bool endSpriteAnimations();
-
-public:
-	//
-	// View interface
-	//
-	const spriteRenderMap& getSpriteRenderData() { return m_spriteRenderData; }
+	void endPropertyAnimation(bool& enabled, index& stepIndex, std::vector<SpriteAnimationKeyframe>& keyframes, float& currentState);
 
 public:
 	void load() {}

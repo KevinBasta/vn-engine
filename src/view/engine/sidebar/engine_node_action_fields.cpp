@@ -202,7 +202,8 @@ bool drawSpritePropertyField(SpriteProperty property, float& value, bool& enable
 	return modified;
 }
 
-bool drawSpritePropertyPicker(SpriteProperty& property) {
+// FOR PICKING FROM A DROPDOWN/COMBOBOX OF A LIST OF ELEMENTS
+bool drawSpritePropertyPicker(SpriteProperty property) {
 	bool modified{ false };
 
 	// Draw Sprite Property Picker
@@ -265,7 +266,7 @@ bool ActionField<ActionSpriteAllProperties>::drawInternal(ActionSpriteAllPropert
 		modified |= drawSpritePropertyField(SpriteProperty::YPOS, obj->m_ypos, obj->m_yposEnabled);
 		modified |= drawSpritePropertyField(SpriteProperty::ZPOS, obj->m_zpos, obj->m_zposEnabled);
 		modified |= drawSpritePropertyField(SpriteProperty::SCALE, obj->m_scale, obj->m_scaleEnabled);
-		modified |= drawSpritePropertyField(SpriteProperty::ROTATE, obj->m_rotate, obj->m_rotateEnabled);
+		modified |= drawSpritePropertyField(SpriteProperty::ROTATE, obj->m_rotation, obj->m_rotationEnabled);
 		modified |= drawSpritePropertyField(SpriteProperty::OPACITY, obj->m_opacity, obj->m_opacityEnabled);
 
 		ImGui::TreePop();
@@ -273,8 +274,46 @@ bool ActionField<ActionSpriteAllProperties>::drawInternal(ActionSpriteAllPropert
 	return modified;
 }
 
+
+bool drawPropertyAnimationFields(auto& keyframes) {
+	bool modified{ false };
+
+	int i{ 0 };
+	for (auto iter{ keyframes.begin() }; iter != keyframes.end(); iter++) {
+		ImGui::Text((std::string("#") + std::to_string(i)).c_str());
+		ImGui::SameLine();
+
+		ImGui::PushItemWidth(100.0f);
+		// TODO: disallow negative
+		modified |= ImGui::DragFloat(addIdFromPtr("Value", &iter->m_value).c_str(), &(iter->m_value), 0.1f);
+		ImGui::SameLine();
+		modified |= ImGui::DragFloat(addIdFromPtr("Seconds", &iter->m_transitionSeconds).c_str(), &(iter->m_transitionSeconds), 0.1f);
+		ImGui::PopItemWidth();
+
+		ImGui::SameLine();
+		if (ImGui::Button(addIdFromPtr("Delete", &iter->m_value).c_str(), ImVec2(150.0f, 0.0f))) {
+			iter = keyframes.erase(iter);
+			modified = true;
+
+			if (iter == keyframes.end()) {
+				break;
+			}
+		}
+
+		i++;
+	}
+
+	// Button submission
+	if (ImGui::Button(addIdFromPtr("Add Step", &keyframes).c_str(), ImVec2(150.0f, 0.0f))) {
+		keyframes.emplace_back();
+		modified = true;
+	}
+
+	return modified;
+}
+
 template<>
-bool ActionField<ActionSpriteAnimationGeneric>::drawInternal(ActionSpriteAnimationGeneric* obj) {
+bool ActionField<ActionSpriteAnimation>::drawInternal(ActionSpriteAnimation* obj) {
 	bool modified = false;
 	if (obj == nullptr) { return modified; }
 
@@ -287,7 +326,7 @@ bool ActionField<ActionSpriteAnimationGeneric>::drawInternal(ActionSpriteAnimati
 
 	TextureStore* currentStore{ textureStores.at(obj->m_texture.m_textureStoreId).get() };
 	const std::string& textureStoreName{ currentStore->getName() };
-	std::string actionTitle{ textureStoreName + "::[" + std::to_string(obj->m_texture.m_textureIndex) + "]::" + toString(obj->m_stepType) +"###" + std::to_string((unsigned long long)(void**)obj) };
+	std::string actionTitle{ textureStoreName + "::[" + std::to_string(obj->m_texture.m_textureIndex) + "]::###" + std::to_string((unsigned long long)(void**)obj) };
 
 	bool isTreeOpen = ImGui::TreeNode(actionTitle.c_str());
 	dragDropSourceSet(obj);
@@ -297,53 +336,50 @@ bool ActionField<ActionSpriteAnimationGeneric>::drawInternal(ActionSpriteAnimati
 		ImGui::Text("Texture");
 		modified |= drawTextureAndTextureStore(obj->m_texture);
 
-		// Draw Sprite Property Picker
-		ImGui::Spacing();
-		modified |= drawSpritePropertyPicker(obj->m_stepType);
-
-		ImGui::Spacing();
-		ImGui::Text("Animation Steps");
-
-		int i{ 0 };
-		for (auto iter{ obj->m_steps.begin() }; iter != obj->m_steps.end(); iter++) {
-			ImGui::Text((std::string("#") + std::to_string(i)).c_str());
-			ImGui::SameLine();
-			
-			ImGui::PushItemWidth(100.0f);
-			// TODO: disallow negative
-			modified |= ImGui::DragFloat(addIdFromPtr("Value", &iter->m_value).c_str(), &(iter->m_value), 0.1f);
-			ImGui::SameLine();
-			modified |= ImGui::DragFloat(addIdFromPtr("Seconds", &iter->m_transitionSeconds).c_str(), &(iter->m_transitionSeconds), 0.1f);
-			ImGui::PopItemWidth();
-
-			ImGui::SameLine();
-			if (ImGui::Button(addIdFromPtr("Delete", &iter->m_value).c_str(), ImVec2(150.0f, 0.0f))) {
-				iter = obj->m_steps.erase(iter);
-				modified = true;
-
-				if (iter == obj->m_steps.end()) {
-					break;
-				}
-			}
-
-			i++;
-		}
-
-		// Button submission
-		if (ImGui::Button(addIdFromPtr("Add Step", obj).c_str(), ImVec2(150.0f, 0.0f))) {
-			obj->m_steps.emplace_back();
-			modified = true;
-		}
+		ImGui::Separator();
 		
+		ImGui::Spacing();
+		ImGui::Text("X POS");
+		ImGui::SameLine();
+		modified |= ImGui::Checkbox(addIdFromPtr("##SpriteCheckbox", &obj->m_xposEnabled).c_str(), &obj->m_xposEnabled);
+		modified |= drawPropertyAnimationFields(obj->m_xpos);
+
+		ImGui::Spacing();
+		ImGui::Text("Y POS");
+		ImGui::SameLine();
+		modified |= ImGui::Checkbox(addIdFromPtr("##SpriteCheckbox", &obj->m_yposEnabled).c_str(), &obj->m_yposEnabled);
+		modified |= drawPropertyAnimationFields(obj->m_ypos);
+
+		ImGui::Spacing();
+		ImGui::Text("Z POS");
+		ImGui::SameLine();
+		modified |= ImGui::Checkbox(addIdFromPtr("##SpriteCheckbox", &obj->m_zposEnabled).c_str(), &obj->m_zposEnabled);
+		modified |= drawPropertyAnimationFields(obj->m_zpos);
+
+		ImGui::Spacing();
+		ImGui::Text("SCALE");
+		ImGui::SameLine();
+		modified |= ImGui::Checkbox(addIdFromPtr("##SpriteCheckbox", &obj->m_scaleEnabled).c_str(), &obj->m_scaleEnabled);
+		modified |= drawPropertyAnimationFields(obj->m_scale);
+
+		ImGui::Spacing();
+		ImGui::Text("ROTATION");
+		ImGui::SameLine();
+		modified |= ImGui::Checkbox(addIdFromPtr("##SpriteCheckbox", &obj->m_rotationEnabled).c_str(), &obj->m_rotationEnabled);
+		modified |= drawPropertyAnimationFields(obj->m_rotation);
+
+		ImGui::Spacing();
+		ImGui::Text("OPACITY");
+		ImGui::SameLine();
+		modified |= ImGui::Checkbox(addIdFromPtr("##SpriteCheckbox", &obj->m_opacityEnabled).c_str(), &obj->m_opacityEnabled);
+		modified |= drawPropertyAnimationFields(obj->m_opacity);
+
 		ImGui::TreePop();
 	}
 
 
 	return modified;
 }
-
-
-
 
 
 /**

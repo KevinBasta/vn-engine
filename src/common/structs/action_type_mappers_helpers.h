@@ -14,7 +14,7 @@ template<typename> struct ActionToActionName;
 template<> struct ActionToActionName<ActionBackgroundTexture>		{ static constexpr const char* name = "ActionBackgroundTexture"; };
 
 template<> struct ActionToActionName<ActionSpriteAllProperties>		{ static constexpr const char* name = "ActionSpriteAllProperties"; };
-template<> struct ActionToActionName<ActionSpriteAnimationGeneric>	{ static constexpr const char* name = "ActionSpriteAnimationGeneric"; };
+template<> struct ActionToActionName<ActionSpriteAnimation>			{ static constexpr const char* name = "ActionSpriteAnimation"; };
 
 template<> struct ActionToActionName<ActionTextLine>				{ static constexpr const char* name = "ActionTextLine"; };
 template<> struct ActionToActionName<ActionTextOverrides>			{ static constexpr const char* name = "ActionTextOverrides"; };
@@ -38,7 +38,7 @@ template<typename> struct ActionToType;
 template<> struct ActionToType<ActionBackgroundTexture>			{ static constexpr ActionAmount type = ActionAmount::SINGLE; };
 
 template<> struct ActionToType<ActionSpriteAllProperties>		{ static constexpr ActionAmount type = ActionAmount::VECTOR; };
-template<> struct ActionToType<ActionSpriteAnimationGeneric>	{ static constexpr ActionAmount type = ActionAmount::VECTOR; };
+template<> struct ActionToType<ActionSpriteAnimation>			{ static constexpr ActionAmount type = ActionAmount::VECTOR; };
 
 template<> struct ActionToType<ActionTextLine>					{ static constexpr ActionAmount type = ActionAmount::SINGLE; };
 template<> struct ActionToType<ActionTextOverrides>				{ static constexpr ActionAmount type = ActionAmount::SINGLE; };

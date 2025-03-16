@@ -43,8 +43,8 @@ add_executable (
 	"src/common/timer.h"
 	"src/common/id.cpp"
 	"src/common/id.h"
-	"src/common/logs/debug_log.h" 
-	"src/common/logs/debug_log.cpp" 
+	"src/common/log.h" 
+	"src/common/log.cpp" 
 	"src/common/index.h"
 
 	# model
