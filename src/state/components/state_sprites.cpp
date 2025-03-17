@@ -13,35 +13,35 @@
 //
 
 void StateSprites::handle(const ActionSpriteAllProperties& action) {
-	if (m_spriteRenderData.find(action.m_texture) == m_spriteRenderData.end()) {
+	if (m_spriteRenderData.find(action.texture) == m_spriteRenderData.end()) {
 		// TODO: handle error/exceptions
 
 		// TODO: should propergate error from load texture!
-		ModelRuntimeInterface::loadTexture(action.m_texture);
+		ModelRuntimeInterface::loadTexture(action.texture);
 	}
 
-	if (action.m_xposEnabled) {
-		m_spriteRenderData[action.m_texture].m_xpos = action.m_xpos;
+	if (action.xposEnabled) {
+		m_spriteRenderData[action.texture].xpos = action.xpos;
 	}
 
-	if (action.m_yposEnabled) {
-		m_spriteRenderData[action.m_texture].m_ypos = action.m_ypos;
+	if (action.yposEnabled) {
+		m_spriteRenderData[action.texture].ypos = action.ypos;
 	}
 
-	if (action.m_zposEnabled) {
-		m_spriteRenderData[action.m_texture].m_zpos = action.m_zpos;
+	if (action.zposEnabled) {
+		m_spriteRenderData[action.texture].zpos = action.zpos;
 	}
 
-	if (action.m_scaleEnabled) {
-		m_spriteRenderData[action.m_texture].m_scale = action.m_scale;
+	if (action.scaleEnabled) {
+		m_spriteRenderData[action.texture].scale = action.scale;
 	}
 	
-	if (action.m_rotationEnabled) {
-		m_spriteRenderData[action.m_texture].m_rotation = action.m_rotation;
+	if (action.rotationEnabled) {
+		m_spriteRenderData[action.texture].rotation = action.rotation;
 	}
 
-	if (action.m_opacityEnabled) {
-		m_spriteRenderData[action.m_texture].m_opacity = action.m_opacity;
+	if (action.opacityEnabled) {
+		m_spriteRenderData[action.texture].opacity = action.opacity;
 	}
 
 }
@@ -83,8 +83,8 @@ bool StateSprites::tickSpriteAnimations(float timePassed) {
 		tick(obj, timePassed);
 
 		bool active{ 
-			properties.m_xposEnabled || properties.m_yposEnabled || properties.m_zposEnabled || 
-			properties.m_scaleEnabled || properties.m_rotationEnabled || properties.m_opacityEnabled 
+			properties.xposEnabled || properties.yposEnabled || properties.zposEnabled || 
+			properties.scaleEnabled || properties.rotationEnabled || properties.opacityEnabled 
 		};
 
 		if (!active) {
@@ -111,35 +111,35 @@ bool StateSprites::tick(std::pair<StepIndices, ActionSpriteAnimation>& animation
 	bool active{ false };
 	StepIndices& indicies{ animation.first };
 	ActionSpriteAnimation& properties{ animation.second };
-	SpriteState& state{ m_spriteRenderData[properties.m_texture] };
+	SpriteState& state{ m_spriteRenderData[properties.texture] };
 
-	if (properties.m_xposEnabled) {
-		tickPropertyAnimation(properties.m_xposEnabled, timePassed, indicies.x, properties.m_xpos, state.m_xpos);
+	if (properties.xposEnabled) {
+		tickPropertyAnimation(properties.xposEnabled, timePassed, indicies.xpos, properties.xpos, state.xpos);
 		active = true;
 	}
 
-	if (properties.m_yposEnabled) {
-		tickPropertyAnimation(properties.m_yposEnabled, timePassed, indicies.y, properties.m_ypos, state.m_ypos);
+	if (properties.yposEnabled) {
+		tickPropertyAnimation(properties.yposEnabled, timePassed, indicies.ypos, properties.ypos, state.ypos);
 		active = true;
 	}
 
-	if (properties.m_zposEnabled) {
-		tickPropertyAnimation(properties.m_zposEnabled, timePassed, indicies.z, properties.m_zpos, state.m_zpos);
+	if (properties.zposEnabled) {
+		tickPropertyAnimation(properties.zposEnabled, timePassed, indicies.zpos, properties.zpos, state.zpos);
 		active = true;
 	}
 
-	if (properties.m_scaleEnabled) {
-		tickPropertyAnimation(properties.m_scaleEnabled, timePassed, indicies.scale, properties.m_scale, state.m_scale);
+	if (properties.scaleEnabled) {
+		tickPropertyAnimation(properties.scaleEnabled, timePassed, indicies.scale, properties.scale, state.scale);
 		active = true;
 	}
 
-	if (properties.m_rotationEnabled) {
-		tickPropertyAnimation(properties.m_rotationEnabled, timePassed, indicies.rotation, properties.m_rotation, state.m_rotation);
+	if (properties.rotationEnabled) {
+		tickPropertyAnimation(properties.rotationEnabled, timePassed, indicies.rotation, properties.rotation, state.rotation);
 		active = true;
 	}
 
-	if (properties.m_opacityEnabled) {
-		tickPropertyAnimation(properties.m_opacityEnabled, timePassed, indicies.opacity, properties.m_opacity, state.m_opacity);
+	if (properties.opacityEnabled) {
+		tickPropertyAnimation(properties.opacityEnabled, timePassed, indicies.opacity, properties.opacity, state.opacity);
 		active = true;
 	}
 
@@ -154,9 +154,9 @@ bool StateSprites::tickPropertyAnimation(bool& enabled, float timePassed, index&
 
 	// TODO: error when engine modifies this
 	auto& currentAction{ keyframes[stepIndex] };
-	float goalValue = (currentAction.m_value);
+	float goalValue = (currentAction.value);
 
-	float fractionOfTimePassed = currentAction.m_transitionSeconds / timePassed;
+	float fractionOfTimePassed = currentAction.transitionSeconds / timePassed;
 
 	float delta = (std::max(currentState, goalValue) - std::min(currentState, goalValue)) / fractionOfTimePassed;
 
@@ -177,12 +177,12 @@ bool StateSprites::tickPropertyAnimation(bool& enabled, float timePassed, index&
 		}
 	}
 
-	currentAction.m_transitionSeconds -= timePassed;
+	currentAction.transitionSeconds -= timePassed;
 
 	// If the character value state is close enough to the goal value and the transition seconds left is low
 	// Then set the character value state to the goal state and set the goal to the next step or end the animation
-	if (std::abs(currentState - currentAction.m_value) <= 5.0f && currentAction.m_transitionSeconds < 0.1f) {
-		currentState = currentAction.m_value;
+	if (std::abs(currentState - currentAction.value) <= 5.0f && currentAction.transitionSeconds < 0.1f) {
+		currentState = currentAction.value;
 
 		if (stepIndex + 1 > keyframes.size() - 1) {
 			enabled = false;
@@ -201,7 +201,7 @@ void StateSprites::endPropertyAnimation(bool& enabled, index& stepIndex, std::ve
 
 	if (keyframes.size() > 0) {
 		stepIndex = keyframes.size() - 1;
-		currentState = keyframes.back().m_value;
+		currentState = keyframes.back().value;
 	}
 }
 
@@ -211,30 +211,30 @@ bool StateSprites::endSpriteAnimations() {
 	for (; animation != m_activeSpriteAnimations.end(); animation++) {
 		StepIndices& indicies{ animation->first };
 		ActionSpriteAnimation& properties{ animation->second };
-		SpriteState& state{ m_spriteRenderData[properties.m_texture] };
+		SpriteState& state{ m_spriteRenderData[properties.texture] };
 
-		if (properties.m_xposEnabled) {
-			endPropertyAnimation(properties.m_xposEnabled, indicies.x, properties.m_xpos, state.m_xpos);
+		if (properties.xposEnabled) {
+			endPropertyAnimation(properties.xposEnabled, indicies.xpos, properties.xpos, state.xpos);
 		}
 
-		if (properties.m_yposEnabled) {
-			endPropertyAnimation(properties.m_yposEnabled, indicies.y, properties.m_ypos, state.m_ypos);
+		if (properties.yposEnabled) {
+			endPropertyAnimation(properties.yposEnabled, indicies.ypos, properties.ypos, state.ypos);
 		}
 
-		if (properties.m_zposEnabled) {
-			endPropertyAnimation(properties.m_zposEnabled, indicies.z, properties.m_zpos, state.m_zpos);
+		if (properties.zposEnabled) {
+			endPropertyAnimation(properties.zposEnabled, indicies.zpos, properties.zpos, state.zpos);
 		}
 
-		if (properties.m_scaleEnabled) {
-			endPropertyAnimation(properties.m_scaleEnabled, indicies.scale, properties.m_scale, state.m_scale);
+		if (properties.scaleEnabled) {
+			endPropertyAnimation(properties.scaleEnabled, indicies.scale, properties.scale, state.scale);
 		}
 
-		if (properties.m_rotationEnabled) {
-			endPropertyAnimation(properties.m_rotationEnabled, indicies.rotation, properties.m_rotation, state.m_rotation);
+		if (properties.rotationEnabled) {
+			endPropertyAnimation(properties.rotationEnabled, indicies.rotation, properties.rotation, state.rotation);
 		}
 
-		if (properties.m_opacityEnabled) {
-			endPropertyAnimation(properties.m_opacityEnabled, indicies.opacity, properties.m_opacity, state.m_opacity);
+		if (properties.opacityEnabled) {
+			endPropertyAnimation(properties.opacityEnabled, indicies.opacity, properties.opacity, state.opacity);
 		}
 	}
 

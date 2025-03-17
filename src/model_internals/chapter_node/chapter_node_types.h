@@ -29,18 +29,18 @@ enum class ChapterNodeActionType {
  */
 
 struct TextureIdentifier {
-	id m_textureStoreId{ 0 };
-	index m_textureIndex{ 0 };
+	id textureStoreId{ 0 };
+	index textureIndex{ 0 };
 
 	friend bool operator==(const TextureIdentifier& idOne, const TextureIdentifier& idTwo) {
-		return idOne.m_textureStoreId == idTwo.m_textureStoreId && idOne.m_textureIndex == idTwo.m_textureIndex;
+		return idOne.textureStoreId == idTwo.textureStoreId && idOne.textureIndex == idTwo.textureIndex;
 	}
 };
 
 struct TextureIdentifierHasher {
 	size_t operator()(const TextureIdentifier& textureIdentifier) const {
-		return std::hash<id>()(textureIdentifier.m_textureStoreId) ^
-			(std::hash<index>()(textureIdentifier.m_textureIndex) << 1);
+		return std::hash<id>()(textureIdentifier.textureStoreId) ^
+			(std::hash<index>()(textureIdentifier.textureIndex) << 1);
 	}
 };
 
@@ -49,7 +49,7 @@ struct TextureIdentifierHasher {
  *
  */
 struct ActionBackgroundTexture {
-	TextureIdentifier m_texture{};
+	TextureIdentifier texture{};
 };
 
 
@@ -63,56 +63,57 @@ enum class SpriteProperty {
 	YPOS,
 	ZPOS,
 	SCALE,
-	ROTATE,
+	ROTATION,
 	OPACITY
 };
 
 struct ActionSpriteAllProperties {
-	TextureIdentifier m_texture{};
-	bool m_xposEnabled{ false };
-	float m_xpos{ 1.0f };
+	TextureIdentifier texture{};
 
-	bool m_yposEnabled{ false };
-	float m_ypos{ 1.0f };
+	bool xposEnabled{ false };
+	float xpos{ 1.0f };
 
-	bool m_zposEnabled{ false };
-	float m_zpos{ 1.0f };
+	bool yposEnabled{ false };
+	float ypos{ 1.0f };
 
-	bool m_scaleEnabled{ false };
-	float m_scale{ 1.0f };
+	bool zposEnabled{ false };
+	float zpos{ 1.0f };
 
-	bool m_rotationEnabled{ false };
-	float m_rotation{ 0.0f };
+	bool scaleEnabled{ false };
+	float scale{ 1.0f };
 
-	bool m_opacityEnabled{ false };
-	float m_opacity{ 1.0f };
+	bool rotationEnabled{ false };
+	float rotation{ 0.0f };
+
+	bool opacityEnabled{ false };
+	float opacity{ 1.0f };
 };
 
 struct SpriteAnimationKeyframe {
-	float m_transitionSeconds{ 0.0f };
-	float m_value{ 0.0f };
+	float transitionSeconds{ 0.0f };
+	float value{ 0.0f };
 };
 
 struct ActionSpriteAnimation {
-	TextureIdentifier m_texture{};
+	TextureIdentifier texture{};
 
-	bool m_xposEnabled{ false };
-	std::vector<SpriteAnimationKeyframe> m_xpos{};
+	bool xposEnabled{ false };
+	std::vector<SpriteAnimationKeyframe> xpos{};
 
-	bool m_yposEnabled{ false };
-	std::vector<SpriteAnimationKeyframe> m_ypos{};
+	bool yposEnabled{ false };
+	std::vector<SpriteAnimationKeyframe> ypos{};
 
-	bool m_zposEnabled{ false };
-	std::vector<SpriteAnimationKeyframe> m_zpos{};
+	bool zposEnabled{ false };
+	std::vector<SpriteAnimationKeyframe> zpos{};
 
-	bool m_scaleEnabled{ false };
-	std::vector<SpriteAnimationKeyframe> m_scale{};
+	bool scaleEnabled{ false };
+	std::vector<SpriteAnimationKeyframe> scale{};
 
-	bool m_rotationEnabled{ false };
-	std::vector<SpriteAnimationKeyframe> m_rotation{};
+	bool rotationEnabled{ false };
+	std::vector<SpriteAnimationKeyframe> rotation{};
 
-	bool m_opacityEnabled{ false };
-	std::vector<SpriteAnimationKeyframe> m_opacity{};
+	bool opacityEnabled{ false };
+	std::vector<SpriteAnimationKeyframe> opacity{};
 };
 
 

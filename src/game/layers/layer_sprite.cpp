@@ -17,24 +17,24 @@ void SpriteLayer::drawSprite(const FrameDimensions& frame, const TextureIdentifi
 		return;
 	}
 
-	float scale{ texture->getScaleToFrame(frame.width, frame.height) * spriteState.m_scale };
+	float scale{ texture->getScaleToFrame(frame.width, frame.height) * spriteState.scale };
 
 	glm::mat4 model = glm::mat4(1.0f);
 	//model = glm::translate(model, glm::vec3((static_cast<float>(m_window->width()) / 2) - (static_cast<float>(texture->width()) / 2), 0.0f, 0.0f));
 	
-	float centeredX = (spriteState.m_xpos * frame.scale) - ((texture->width() * frame.scale) / 2.0f);
-	float centeredY = (spriteState.m_ypos * frame.scale) - ((texture->height() * frame.scale) / 2.0f);
+	float centeredX = (spriteState.xpos * frame.scale) - ((texture->width() * frame.scale) / 2.0f);
+	float centeredY = (spriteState.ypos * frame.scale) - ((texture->height() * frame.scale) / 2.0f);
 
 	model = glm::translate(model,
 		glm::vec3(centeredX,
 				  centeredY,
-				  spriteState.m_zpos - 10.0f));
+				  spriteState.zpos - 10.0f));
 
 	//std::cout << "scale to view port" << scale << std::endl;
 	//std::cout << "scale to view port" << spriteState.m_position.m_xCoord << std::endl;
 	//std::cout << "scale to view port" << spriteState.m_position.m_yCoord << std::endl;
 	//std::cout << "scale to view port" << spriteState.m_position.m_zCoord << std::endl;
-	model = glm::rotate(model, glm::radians(spriteState.m_rotation), glm::vec3(0.0, 0.0, 1.0));
+	model = glm::rotate(model, glm::radians(spriteState.rotation), glm::vec3(0.0, 0.0, 1.0));
 	model = glm::scale(model, glm::vec3(scale, scale, 0.0f));
 
 	unsigned int modelLocation = glGetUniformLocation(m_defaultShader.ID(), "inModel");
@@ -53,7 +53,7 @@ void SpriteLayer::drawSprite(const FrameDimensions& frame, const TextureIdentifi
 	glUniformMatrix4fv(orthoLocation, 1, GL_FALSE, glm::value_ptr(ortho));
 
 	unsigned int opacityLocation = glGetUniformLocation(m_defaultShader.ID(), "inOpacity");
-	glUniform1f(opacityLocation, spriteState.m_opacity);
+	glUniform1f(opacityLocation, spriteState.opacity);
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -67,7 +67,7 @@ void SpriteLayer::pollAndDraw(const FrameDimensions& frame) {
 
 	auto iter{ data.begin() };
 	for (; iter != data.end(); iter++) {
-		if (iter->second.m_opacity > 0.0f) {
+		if (iter->second.opacity > 0.0f) {
 			drawSprite(frame, iter->first, iter->second);
 		}
 	}

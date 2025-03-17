@@ -40,8 +40,8 @@ static std::string toString(enum class SpriteProperty property) {
 		return "ZPOS";
 	case SpriteProperty::SCALE:
 		return "SCALE";
-	case SpriteProperty::ROTATE:
-		return "ROTATE";
+	case SpriteProperty::ROTATION:
+		return "ROTATION";
 	case SpriteProperty::OPACITY:
 		return "OPACITY";
 	default:
@@ -61,21 +61,21 @@ bool drawTextureAndTextureStore(TextureIdentifier& texture) {
 	ModelEngineInterface::TextureStoreMap& textureStores{ ModelEngineInterface::getTextureStoreMap() };
 
 	// In the case that the texture store is invalid
-	if (!textureStores.contains(texture.m_textureStoreId)) {
-		texture.m_textureStoreId = (textureStores.begin())->first;
+	if (!textureStores.contains(texture.textureStoreId)) {
+		texture.textureStoreId = (textureStores.begin())->first;
 		// TODO: implicit that texture stores have 1 entry (0)??
 	}
 
-	TextureStore* currentStore{ textureStores.at(texture.m_textureStoreId).get() };
+	TextureStore* currentStore{ textureStores.at(texture.textureStoreId).get() };
 	const std::string& textureStoreName{ currentStore->getName() };
 
 	if (ImGui::BeginCombo("Texture Store", textureStoreName.c_str(), flags)) {		
 		for (auto iter{ textureStores.begin() }; iter != textureStores.end(); iter++) {
-			const bool isSelected = (iter->first == texture.m_textureStoreId);
+			const bool isSelected = (iter->first == texture.textureStoreId);
 			if (ImGui::Selectable(iter->second.get()->getName().c_str(), isSelected)) {
 				// avoid needless update
-				if (texture.m_textureStoreId != iter->first) {
-					texture.m_textureStoreId = iter->first;
+				if (texture.textureStoreId != iter->first) {
+					texture.textureStoreId = iter->first;
 					modified = true;
 				}
 			}
@@ -88,17 +88,17 @@ bool drawTextureAndTextureStore(TextureIdentifier& texture) {
 	}
 
 	std::pair<int, int> texturesRange{ currentStore->getTexturesRange() };
-	std::string currentTextureIndex{ std::to_string(texture.m_textureIndex) };
+	std::string currentTextureIndex{ std::to_string(texture.textureIndex) };
 
 	// TODO: update with preview image
 	if (ImGui::BeginCombo("Texture", currentTextureIndex.c_str(), flags)) {
 		for (int i{ texturesRange.first }; i < texturesRange.second; i++) {
-			const bool isSelected = (i == texture.m_textureIndex);
+			const bool isSelected = (i == texture.textureIndex);
 			std::string currentIndexStr{ std::to_string(i) };
 			if (ImGui::Selectable(currentIndexStr.c_str(), isSelected)) {
 				// avoid needless update
-				if (texture.m_textureIndex != i) {
-					texture.m_textureIndex = i;
+				if (texture.textureIndex != i) {
+					texture.textureIndex = i;
 					modified = true;
 				}
 			}
@@ -132,7 +132,7 @@ bool ActionField<ActionBackgroundTexture>::drawInternal(ActionBackgroundTexture*
 	dragDropSourceSet(obj);
 
 	if (isTreeOpen) {
-		modified |= drawTextureAndTextureStore(obj->m_texture);
+		modified |= drawTextureAndTextureStore(obj->texture);
 
 		ImGui::TreePop();
 	}
@@ -178,7 +178,7 @@ bool drawSpritePropertyField(SpriteProperty property, float& value, bool& enable
 		minMaxStep[2] = 0.005f;
 	}
 	break;
-	case SpriteProperty::ROTATE:
+	case SpriteProperty::ROTATION:
 	{
 		minMaxStep[2] = 0.1f;
 	}
@@ -242,13 +242,13 @@ bool ActionField<ActionSpriteAllProperties>::drawInternal(ActionSpriteAllPropert
 	ModelEngineInterface::TextureStoreMap& textureStores{ ModelEngineInterface::getTextureStoreMap() };
 
 	// In the case that the texture store is invalid
-	if (!textureStores.contains(obj->m_texture.m_textureStoreId)) {
-		obj->m_texture.m_textureStoreId = (textureStores.begin())->first;
+	if (!textureStores.contains(obj->texture.textureStoreId)) {
+		obj->texture.textureStoreId = (textureStores.begin())->first;
 	}
 
-	TextureStore* currentStore{ textureStores.at(obj->m_texture.m_textureStoreId).get() };
+	TextureStore* currentStore{ textureStores.at(obj->texture.textureStoreId).get() };
 	const std::string& textureStoreName{ currentStore->getName() };
-	std::string actionTitle{ textureStoreName + "::[" + std::to_string(obj->m_texture.m_textureIndex) + "]" + "###" + std::to_string((unsigned long long)(void**)obj) };
+	std::string actionTitle{ textureStoreName + "::[" + std::to_string(obj->texture.textureIndex) + "]" + "###" + std::to_string((unsigned long long)(void**)obj) };
 
 	bool isTreeOpen = ImGui::TreeNode(actionTitle.c_str());
 	dragDropSourceSet(obj);
@@ -256,18 +256,18 @@ bool ActionField<ActionSpriteAllProperties>::drawInternal(ActionSpriteAllPropert
 	if (isTreeOpen) {
 		// Draw Texture Picker
 		ImGui::Text("Texture");
-		modified |= drawTextureAndTextureStore(obj->m_texture);
+		modified |= drawTextureAndTextureStore(obj->texture);
 
 		// Draw Sprite Property Picker
 		ImGui::Spacing();
 		ImGui::Text("Sprite Properties");
 		
-		modified |= drawSpritePropertyField(SpriteProperty::XPOS, obj->m_xpos, obj->m_xposEnabled);
-		modified |= drawSpritePropertyField(SpriteProperty::YPOS, obj->m_ypos, obj->m_yposEnabled);
-		modified |= drawSpritePropertyField(SpriteProperty::ZPOS, obj->m_zpos, obj->m_zposEnabled);
-		modified |= drawSpritePropertyField(SpriteProperty::SCALE, obj->m_scale, obj->m_scaleEnabled);
-		modified |= drawSpritePropertyField(SpriteProperty::ROTATE, obj->m_rotation, obj->m_rotationEnabled);
-		modified |= drawSpritePropertyField(SpriteProperty::OPACITY, obj->m_opacity, obj->m_opacityEnabled);
+		modified |= drawSpritePropertyField(SpriteProperty::XPOS, obj->xpos, obj->xposEnabled);
+		modified |= drawSpritePropertyField(SpriteProperty::YPOS, obj->ypos, obj->yposEnabled);
+		modified |= drawSpritePropertyField(SpriteProperty::ZPOS, obj->zpos, obj->zposEnabled);
+		modified |= drawSpritePropertyField(SpriteProperty::SCALE, obj->scale, obj->scaleEnabled);
+		modified |= drawSpritePropertyField(SpriteProperty::ROTATION, obj->rotation, obj->rotationEnabled);
+		modified |= drawSpritePropertyField(SpriteProperty::OPACITY, obj->opacity, obj->opacityEnabled);
 
 		ImGui::TreePop();
 	}
@@ -285,13 +285,13 @@ bool drawPropertyAnimationFields(auto& keyframes) {
 
 		ImGui::PushItemWidth(100.0f);
 		// TODO: disallow negative
-		modified |= ImGui::DragFloat(addIdFromPtr("Value", &iter->m_value).c_str(), &(iter->m_value), 0.1f);
+		modified |= ImGui::DragFloat(addIdFromPtr("Value", &iter->value).c_str(), &(iter->value), 0.1f);
 		ImGui::SameLine();
-		modified |= ImGui::DragFloat(addIdFromPtr("Seconds", &iter->m_transitionSeconds).c_str(), &(iter->m_transitionSeconds), 0.1f);
+		modified |= ImGui::DragFloat(addIdFromPtr("Seconds", &iter->transitionSeconds).c_str(), &(iter->transitionSeconds), 0.1f);
 		ImGui::PopItemWidth();
 
 		ImGui::SameLine();
-		if (ImGui::Button(addIdFromPtr("Delete", &iter->m_value).c_str(), ImVec2(150.0f, 0.0f))) {
+		if (ImGui::Button(addIdFromPtr("Delete", &iter->value).c_str(), ImVec2(150.0f, 0.0f))) {
 			iter = keyframes.erase(iter);
 			modified = true;
 
@@ -320,13 +320,13 @@ bool ActionField<ActionSpriteAnimation>::drawInternal(ActionSpriteAnimation* obj
 	ModelEngineInterface::TextureStoreMap& textureStores{ ModelEngineInterface::getTextureStoreMap() };
 
 	// In the case that the texture store is invalid
-	if (!textureStores.contains(obj->m_texture.m_textureStoreId)) {
-		obj->m_texture.m_textureStoreId = (textureStores.begin())->first;
+	if (!textureStores.contains(obj->texture.textureStoreId)) {
+		obj->texture.textureStoreId = (textureStores.begin())->first;
 	}
 
-	TextureStore* currentStore{ textureStores.at(obj->m_texture.m_textureStoreId).get() };
+	TextureStore* currentStore{ textureStores.at(obj->texture.textureStoreId).get() };
 	const std::string& textureStoreName{ currentStore->getName() };
-	std::string actionTitle{ textureStoreName + "::[" + std::to_string(obj->m_texture.m_textureIndex) + "]::###" + std::to_string((unsigned long long)(void**)obj) };
+	std::string actionTitle{ textureStoreName + "::[" + std::to_string(obj->texture.textureIndex) + "]::###" + std::to_string((unsigned long long)(void**)obj) };
 
 	bool isTreeOpen = ImGui::TreeNode(actionTitle.c_str());
 	dragDropSourceSet(obj);
@@ -334,45 +334,45 @@ bool ActionField<ActionSpriteAnimation>::drawInternal(ActionSpriteAnimation* obj
 	if (isTreeOpen) {
 		// Draw Texture Picker
 		ImGui::Text("Texture");
-		modified |= drawTextureAndTextureStore(obj->m_texture);
+		modified |= drawTextureAndTextureStore(obj->texture);
 
 		ImGui::Separator();
 		
 		ImGui::Spacing();
 		ImGui::Text("X POS");
 		ImGui::SameLine();
-		modified |= ImGui::Checkbox(addIdFromPtr("##SpriteCheckbox", &obj->m_xposEnabled).c_str(), &obj->m_xposEnabled);
-		modified |= drawPropertyAnimationFields(obj->m_xpos);
+		modified |= ImGui::Checkbox(addIdFromPtr("##SpriteCheckbox", &obj->xposEnabled).c_str(), &obj->xposEnabled);
+		modified |= drawPropertyAnimationFields(obj->xpos);
 
 		ImGui::Spacing();
 		ImGui::Text("Y POS");
 		ImGui::SameLine();
-		modified |= ImGui::Checkbox(addIdFromPtr("##SpriteCheckbox", &obj->m_yposEnabled).c_str(), &obj->m_yposEnabled);
-		modified |= drawPropertyAnimationFields(obj->m_ypos);
+		modified |= ImGui::Checkbox(addIdFromPtr("##SpriteCheckbox", &obj->yposEnabled).c_str(), &obj->yposEnabled);
+		modified |= drawPropertyAnimationFields(obj->ypos);
 
 		ImGui::Spacing();
 		ImGui::Text("Z POS");
 		ImGui::SameLine();
-		modified |= ImGui::Checkbox(addIdFromPtr("##SpriteCheckbox", &obj->m_zposEnabled).c_str(), &obj->m_zposEnabled);
-		modified |= drawPropertyAnimationFields(obj->m_zpos);
+		modified |= ImGui::Checkbox(addIdFromPtr("##SpriteCheckbox", &obj->zposEnabled).c_str(), &obj->zposEnabled);
+		modified |= drawPropertyAnimationFields(obj->zpos);
 
 		ImGui::Spacing();
 		ImGui::Text("SCALE");
 		ImGui::SameLine();
-		modified |= ImGui::Checkbox(addIdFromPtr("##SpriteCheckbox", &obj->m_scaleEnabled).c_str(), &obj->m_scaleEnabled);
-		modified |= drawPropertyAnimationFields(obj->m_scale);
+		modified |= ImGui::Checkbox(addIdFromPtr("##SpriteCheckbox", &obj->scaleEnabled).c_str(), &obj->scaleEnabled);
+		modified |= drawPropertyAnimationFields(obj->scale);
 
 		ImGui::Spacing();
 		ImGui::Text("ROTATION");
 		ImGui::SameLine();
-		modified |= ImGui::Checkbox(addIdFromPtr("##SpriteCheckbox", &obj->m_rotationEnabled).c_str(), &obj->m_rotationEnabled);
-		modified |= drawPropertyAnimationFields(obj->m_rotation);
+		modified |= ImGui::Checkbox(addIdFromPtr("##SpriteCheckbox", &obj->rotationEnabled).c_str(), &obj->rotationEnabled);
+		modified |= drawPropertyAnimationFields(obj->rotation);
 
 		ImGui::Spacing();
 		ImGui::Text("OPACITY");
 		ImGui::SameLine();
-		modified |= ImGui::Checkbox(addIdFromPtr("##SpriteCheckbox", &obj->m_opacityEnabled).c_str(), &obj->m_opacityEnabled);
-		modified |= drawPropertyAnimationFields(obj->m_opacity);
+		modified |= ImGui::Checkbox(addIdFromPtr("##SpriteCheckbox", &obj->opacityEnabled).c_str(), &obj->opacityEnabled);
+		modified |= drawPropertyAnimationFields(obj->opacity);
 
 		ImGui::TreePop();
 	}

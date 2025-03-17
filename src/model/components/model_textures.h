@@ -40,10 +40,10 @@ private:
 	}
 
 	void loadTexture(const TextureIdentifier& textureId) {
-		auto iter{ m_textureStores.find(textureId.m_textureStoreId) };
+		auto iter{ m_textureStores.find(textureId.textureStoreId) };
 
 		if (iter != m_textureStores.end()) {
-			iter->second.get()->loadTexture(textureId.m_textureIndex);
+			iter->second.get()->loadTexture(textureId.textureIndex);
 		}
 		else {
 			// TODO: throw exception

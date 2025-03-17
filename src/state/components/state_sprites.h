@@ -56,7 +56,7 @@ public:
 //
 
 private:
-	struct StepIndices { index x; index y; index z; index scale; index rotation; index opacity; };
+	struct StepIndices { index xpos; index ypos; index zpos; index scale; index rotation; index opacity; };
 	using activeSpriteAnimationsMap = std::list<std::pair<StepIndices, ActionSpriteAnimation>>;
 	activeSpriteAnimationsMap m_activeSpriteAnimations{};
 

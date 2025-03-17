@@ -17,12 +17,12 @@ public:
 
 	void handle(const ActionBackgroundTexture& backgroundAction) {
 		// TODO: Error handling
-		m_currentBackground = backgroundAction.m_texture;
+		m_currentBackground = backgroundAction.texture;
 
 		// TODO: have load texture return a true if success
 		// if fail then fall back to a base image for background
 		// or a solid color?
-		ModelRuntimeInterface::loadTexture(backgroundAction.m_texture);
+		ModelRuntimeInterface::loadTexture(backgroundAction.texture);
 
 		//m_stateDelta.push_back(StateDelta::BACKGROUND);
 	}
