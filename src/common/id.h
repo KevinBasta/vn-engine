@@ -12,8 +12,16 @@ private:
 public:
 	IdGenerator() = delete;
 
-	static void setId(int i) {
-		m_currentId = i;
+	static void setId(id i) {
+		if (i > m_currentId) {
+			m_currentId = i;
+		}
+	}
+
+	static void setIdToAfter(id i) {
+		if (i + 1 > m_currentId) {
+			m_currentId = i + 1;
+		}
 	}
 
 	static const id returnGreatestId() {

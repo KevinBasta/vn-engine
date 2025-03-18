@@ -119,7 +119,9 @@ add_executable (
 	"src/model/components/model_characters.cpp" 
 	"src/model/components/model_characters.h" 
 	"src/model/components/model_relations.h" 
-	"src/model/components/model_realtions.cpp" 
+	"src/model/components/model_realtions.cpp"
+	"src/model/components/model_relation_types.h" 
+	"src/model/components/model_relation_types.cpp"
     "src/model/components/model_textures.cpp" 
     "src/model/components/model_textures.h" 
 
@@ -143,10 +145,6 @@ add_executable (
 
 	"src/model_internals/character/character.cpp"
 	"src/model_internals/character/character.h"
-	"src/model_internals/character/relations.cpp"
-	"src/model_internals/character/relations.h"
-	"src/model_internals/character/relation_types.cpp" 
-	"src/model_internals/character/relation_types.h" 
 	
 	"src/model_internals/iterators/chapter_iterator.cpp"
 	"src/model_internals/iterators/chapter_iterator.h"
@@ -160,6 +158,11 @@ add_executable (
 	"src/model_internals/linkable/linkable.cpp" 
 	"src/model_internals/linkable/linkable.h" 
 	
+	"src/model_internals/relations/relations.cpp"
+	"src/model_internals/relations/relations.h"
+	 
+	 
+
 	"src/model_internals/resource_managers/engine_chapter_manager.h"
 	"src/model_internals/resource_managers/engine_node_manager.h"
 	"src/model_internals/resource_managers/runtime_chapter_manager.h"
@@ -231,6 +234,7 @@ target_include_directories(
 	"src/model_internals/character"
 	"src/model_internals/iterators"
 	"src/model_internals/linkable"
+	"src/model_internals/relations"
 	"src/model_internals/resource_managers"
 	"src/model_internals/serialize"
 	"src/model_internals/stores"

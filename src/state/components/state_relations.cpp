@@ -8,14 +8,14 @@
 #include <unordered_map>
 #include <memory>
 
-Relations::RelationValue StateRelations::getRelationValue(RelationRequested& relation) {
+Relations::RelationValue StateRelations::getRelationValue(CharacterRelation& relation) {
 	Relations::RelationValue relationValue{ 0 };
 
-	auto iter{ m_characterRelationsData.find(relation.m_characterOneId) };
+	auto iter{ m_characterRelationsData.find(relation.characterOneId) };
 	if (iter != m_characterRelationsData.end()) {
 		relationValue = iter->second.get()->getCharacterRelation(
-			relation.m_characterTwoId,
-			relation.m_relationTypeId
+			relation.characterTwoId,
+			relation.relationTypeId
 		);
 	}
 
@@ -138,15 +138,15 @@ void StateRelations::handle(const ActionRelationSetNextChapter& action) {
 }
 
 void StateRelations::handle(const ActionRelationModify& action) {
-	if (m_characterRelationsData[action.m_relation.m_characterOneId].get() == nullptr) {
-		m_characterRelationsData[action.m_relation.m_characterOneId] = std::make_unique<Relations>();
+	if (m_characterRelationsData[action.relation.characterOneId].get() == nullptr) {
+		m_characterRelationsData[action.relation.characterOneId] = std::make_unique<Relations>();
 	}
 
-	m_characterRelationsData[action.m_relation.m_characterOneId].get()->modifyCharacterRelation(
-		action.m_relation.m_characterTwoId,
-		action.m_relation.m_relationTypeId,
-		action.m_modificationType,
-		action.m_modificationValue
+	m_characterRelationsData[action.relation.characterOneId].get()->modifyCharacterRelation(
+		action.relation.characterTwoId,
+		action.relation.relationTypeId,
+		action.modificationType,
+		action.modificationValue
 	);
 
 	print();

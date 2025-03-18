@@ -26,16 +26,16 @@ public:
 	// Node interface
 	//
 	void handle(const ActionTextLine& action) {
-		m_dialogueState.m_line = action.m_line;
-		m_dialogueState.m_render = true;
+		m_dialogueState.line = action.line;
+		m_dialogueState.render = true;
 
 		// TODO: should the character data be updatable? or just overriden by the actions?
-		Character* character = ModelRuntimeInterface::getCharacterById(action.m_characterID);
+		Character* character = ModelRuntimeInterface::getCharacterById(action.characterId);
 
 		if (character != nullptr) {
-			m_dialogueState.m_speakerName = character->getName();
+			m_dialogueState.speakerName = character->getName();
 			// TODO: text color override? Depends on order of actions. Make it order independant?
-			m_dialogueState.m_color = character->getTextColor(); 
+			m_dialogueState.color = character->getTextColor(); 
 		}
 		else {
 			std::cout << "handle ActionTextLine half failed" << std::endl;
@@ -43,16 +43,16 @@ public:
 	}
 
 	void handle(const ActionTextOverrides& action) {
-		if (action.m_renderEnabled) {
-			m_dialogueState.m_render = action.m_render;
+		if (action.renderEnabled) {
+			m_dialogueState.render = action.render;
 		}
 
-		if (action.m_colorEnabled) {
-			m_dialogueState.m_color = action.m_color;
+		if (action.colorEnabled) {
+			m_dialogueState.color = action.color;
 		}
 
-		if (action.m_speakerEnabled) {
-			m_dialogueState.m_speakerName = action.m_speaker;
+		if (action.speakerEnabled) {
+			m_dialogueState.speakerName = action.speaker;
 		}
 	}
 };

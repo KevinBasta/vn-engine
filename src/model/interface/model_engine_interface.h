@@ -4,6 +4,7 @@
 
 #include "model_subject.h"
 #include "model_common_interface.h"
+#include "model_relation_types.h"
 
 class ModelEngineInterface : public ModelCommonInterface {
 public:
@@ -20,6 +21,14 @@ public:
 
 		return model->m_modelCharacters.m_characters;
 	}
+
+	using RelationTypeMap = ModelRelationTypes::TypeIdToNameMap;
+	static RelationTypeMap& getRelationTypesMap() {
+		ModelSubject* model{ ModelSubject::validateInstance() };
+
+		return model->m_modelRelationTypes.m_relationTypeIdToName;
+	}
+
 };
 
 #endif // MODEL_INTERFACE_ENGINE_H

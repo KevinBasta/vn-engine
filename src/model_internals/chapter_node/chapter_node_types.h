@@ -122,19 +122,19 @@ struct ActionSpriteAnimation {
  * 
  */
 struct ActionTextLine {
-	int m_characterID{};
-	std::wstring m_line{};
+	int characterId{};
+	std::wstring line{};
 };
 
 struct ActionTextOverrides {
-	bool m_renderEnabled{ false };
-	bool m_render{ false };
+	bool renderEnabled{ false };
+	bool render{ false };
 
-	bool m_speakerEnabled{ false };
-	std::wstring m_speaker{};
+	bool speakerEnabled{ false };
+	std::wstring speaker{};
 
-	bool m_colorEnabled{ false };
-	glm::vec3 m_color{};
+	bool colorEnabled{ false };
+	glm::vec3 color{};
 };
 
 
@@ -151,18 +151,20 @@ enum class RelationModification {
 	DIVIDE
 };
 
-struct RelationRequested {
-	int m_characterOneId{};
-	int m_characterTwoId{};
+struct CharacterRelation {
+	int characterOneId{};
+	int characterTwoId{};
 
-	int m_relationTypeId{};
+	int relationTypeId{};
 };
 
 struct ActionRelationModify {
-	RelationRequested m_relation{};
-	RelationModification m_modificationType{};
-	int m_modificationValue{};
+	CharacterRelation relation{};
+	RelationModification modificationType{};
+	int modificationValue{};
 };
+
+
 
 
 // Relation condition (single)
@@ -175,14 +177,14 @@ enum class RelationComparisonOperator {
 };
 
 struct RelationValueComparison {
-	RelationRequested m_relation{};
+	CharacterRelation m_relation{};
 	int m_valueToCompare{}; // Value is on the right side i.e. (relationValue operator m_valueToCompare)
 	RelationComparisonOperator m_comparisonOperator{};
 };
 
 struct RelationRelationComparison {
-	RelationRequested m_relationOne{};
-	RelationRequested m_relationTwo{};
+	CharacterRelation m_relationOne{};
+	CharacterRelation m_relationTwo{};
 	RelationComparisonOperator m_comparisonOperator{};
 };
 

@@ -1,7 +1,6 @@
 
 #include "id.h"
 #include "relations.h"
-#include "relation_types.h"
 #include "chapter_node_types.h"
 
 #include <string>

@@ -377,7 +377,6 @@ bool ActionField<ActionSpriteAnimation>::drawInternal(ActionSpriteAnimation* obj
 		ImGui::TreePop();
 	}
 
-
 	return modified;
 }
 
@@ -400,11 +399,11 @@ bool ActionField<ActionTextLine>::drawInternal(ActionTextLine* obj) {
 		const ModelEngineInterface::CharacterMap& characterMap{ ModelEngineInterface::getCharacterMap() };
 		
 		// Set the object character to the first valid instance if it's not valid
-		if (!characterMap.contains(obj->m_characterID)) {
-			obj->m_characterID = characterMap.begin()->first;
+		if (!characterMap.contains(obj->characterId)) {
+			obj->characterId = characterMap.begin()->first;
 		}
 		
-		id selected = obj->m_characterID;
+		id selected = obj->characterId;
 
 		if (ImGui::BeginCombo("Character", myconv.to_bytes(characterMap.at(selected).get()->getName()).c_str(), NULL))
 		{
@@ -412,7 +411,7 @@ bool ActionField<ActionTextLine>::drawInternal(ActionTextLine* obj) {
 			{
 				const bool isSelected = (idCharacterPair.first == selected);
 				if (ImGui::Selectable(myconv.to_bytes(idCharacterPair.second.get()->getName()).c_str(), isSelected)) {
-					obj->m_characterID = idCharacterPair.first;
+					obj->characterId = idCharacterPair.first;
 					modified |= true;
 				}
 
@@ -430,9 +429,9 @@ bool ActionField<ActionTextLine>::drawInternal(ActionTextLine* obj) {
 		flags |= ImGuiInputTextFlags_AllowTabInput;
 
 		// Conver wstring to string, draw multiline input, convert string to wstring
-		std::string convertedName = myconv.to_bytes(obj->m_line);
+		std::string convertedName = myconv.to_bytes(obj->line);
 		modified |= ImGui::InputTextMultiline("Text Line", &(convertedName), ImVec2(0, 0), flags); //TODO: imgui id
-		obj->m_line = myconv.from_bytes(convertedName);
+		obj->line = myconv.from_bytes(convertedName);
 		
 		ImGui::TreePop();
 	}
@@ -457,19 +456,19 @@ bool ActionField<ActionTextOverrides>::drawInternal(ActionTextOverrides* obj) {
 
 		ImGui::Text("Render Dialogue: ");
 
-		modified |= ImGui::Checkbox(addIdFromPtr("##render", obj).c_str(), &(obj->m_renderEnabled));
+		modified |= ImGui::Checkbox(addIdFromPtr("##render", obj).c_str(), &(obj->renderEnabled));
 		ImGui::SameLine();
 		
-		if (!obj->m_renderEnabled) { ImGui::BeginDisabled(); }
-		int textRenderState{ (obj->m_render) ? 1 : 0 };
+		if (!obj->renderEnabled) { ImGui::BeginDisabled(); }
+		int textRenderState{ (obj->render) ? 1 : 0 };
 		ImGui::PushItemWidth(150.0f);
-		renderModified |= ImGui::SliderInt(addIdFromPtr("##renderSlider", obj).c_str(), &(textRenderState), 0, 1, (obj->m_render) ? "YES" : "NO");
+		renderModified |= ImGui::SliderInt(addIdFromPtr("##renderSlider", obj).c_str(), &(textRenderState), 0, 1, (obj->render) ? "YES" : "NO");
 		ImGui::PopItemWidth();
 		if (renderModified) { 
-			(textRenderState == 1) ? obj->m_render = true : obj->m_render = false; 
-			if (obj->m_renderEnabled) { modified = true; }
+			(textRenderState == 1) ? obj->render = true : obj->render = false; 
+			if (obj->renderEnabled) { modified = true; }
 		};
-		if (!obj->m_renderEnabled) { ImGui::EndDisabled(); }
+		if (!obj->renderEnabled) { ImGui::EndDisabled(); }
 
 
 
@@ -479,16 +478,16 @@ bool ActionField<ActionTextOverrides>::drawInternal(ActionTextOverrides* obj) {
 
 		ImGui::Text("Override Color: ");
 
-		modified |= ImGui::Checkbox(addIdFromPtr("##color", obj).c_str(), &(obj->m_colorEnabled));
+		modified |= ImGui::Checkbox(addIdFromPtr("##color", obj).c_str(), &(obj->colorEnabled));
 		ImGui::SameLine();
 
-		if (!obj->m_colorEnabled) { ImGui::BeginDisabled(); }
-		ImVec4 color = ImVec4(obj->m_color.r, obj->m_color.g, obj->m_color.b, 1.0f);
+		if (!obj->colorEnabled) { ImGui::BeginDisabled(); }
+		ImVec4 color = ImVec4(obj->color.r, obj->color.g, obj->color.b, 1.0f);
 		colorModified |= ImGui::ColorEdit3(addIdFromPtr("##colorPicker", obj).c_str(), (float*)&color, colorFlags);
-		obj->m_color = { color.x, color.y, color.z };
+		obj->color = { color.x, color.y, color.z };
 		
-		if (colorModified && obj->m_colorEnabled) { modified = true; }
-		if (!obj->m_colorEnabled) { ImGui::EndDisabled(); }
+		if (colorModified && obj->colorEnabled) { modified = true; }
+		if (!obj->colorEnabled) { ImGui::EndDisabled(); }
 
 
 
@@ -498,18 +497,18 @@ bool ActionField<ActionTextOverrides>::drawInternal(ActionTextOverrides* obj) {
 
 		ImGui::Text("Override Speaker: ");
 
-		modified |= ImGui::Checkbox(addIdFromPtr("##speaker", obj).c_str(), &(obj->m_speakerEnabled));
+		modified |= ImGui::Checkbox(addIdFromPtr("##speaker", obj).c_str(), &(obj->speakerEnabled));
 		ImGui::SameLine();
 		
-		if (!obj->m_speakerEnabled) { ImGui::BeginDisabled(); }
-		std::string convertedName = myconv.to_bytes(obj->m_speaker);
+		if (!obj->speakerEnabled) { ImGui::BeginDisabled(); }
+		std::string convertedName = myconv.to_bytes(obj->speaker);
 		ImGui::PushItemWidth(150.0f);
 		nameModified |= ImGui::InputText(addIdFromPtr("##speakerName", obj).c_str(), &(convertedName), textFlags);
 		ImGui::PopItemWidth();
-		obj->m_speaker = myconv.from_bytes(convertedName);
+		obj->speaker = myconv.from_bytes(convertedName);
 
-		if (nameModified && obj->m_speakerEnabled) { modified = true; }
-		if (!obj->m_speakerEnabled) { ImGui::EndDisabled(); }
+		if (nameModified && obj->speakerEnabled) { modified = true; }
+		if (!obj->speakerEnabled) { ImGui::EndDisabled(); }
 
 		ImGui::TreePop();
 	}

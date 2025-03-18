@@ -2,7 +2,7 @@
 #define VN_MODEL_RELATIONS_H
 
 #include "id.h"
-#include "relation_types.h"
+#include "model_relation_types.h"
 
 #include "relations.h"
 #include "relations_builder.h"
@@ -26,24 +26,16 @@ private:
 	
 	RelationsMap m_baseRelations{};
 
-	static void initRelationTypes() {
-		RelationTypes::addRelationType("friendship");
-		RelationTypes::addRelationType("respect");
-		RelationTypes::addRelationType("hatred");
-		RelationTypes::print();
-	}
-
 	void initBaseRelations() {
-		initRelationTypes();
 		id garuId{ 1 };
 		id brzId{ 2 };
 
 		RelationsBuilder garuRelations{ };
 		RelationsBuilder brzRelations{ };
 
-		int friendshipId = RelationTypes::getRelationId("friendship");
-		int respectId = RelationTypes::getRelationId("respect");
-		int hatredId = RelationTypes::getRelationId("hatred");
+		int friendshipId = 1;
+		int respectId = 2;
+		int hatredId = 3;
 
 		garuRelations.setRelationValue(brzId, friendshipId, 1);
 		garuRelations.setRelationValue(brzId, hatredId, 20);

@@ -33,12 +33,12 @@ struct SpriteState {
 //};
 
 struct TextState {
-	bool m_render{ false };
-	//TextAction m_currentState{};
+	bool render{ false };
+	std::wstring speakerName{};
+	std::wstring line{};
+	glm::vec3 color{};
 
-	std::wstring m_speakerName{};
-	std::wstring m_line{};
-	glm::vec3 m_color{};
+	//TextAction m_currentState{};
 };
 
 

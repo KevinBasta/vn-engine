@@ -13,11 +13,11 @@
 #include "texture_store.h"
 
 #include "relations.h"
-#include "relation_types.h"
 
 #include "model_chapters.h"
 #include "model_textures.h"
 #include "model_relations.h"
+#include "model_relation_types.h"
 #include "model_characters.h"
 
 #include "engine_chapter_manager.h"
@@ -77,6 +77,7 @@ private:
 
 	ModelChapters m_modelChapters{};
 	ModelTextures m_modelTextures{};
+	ModelRelationTypes m_modelRelationTypes{};
 	ModelRelations m_modelRelations{};
 	ModelCharacters m_modelCharacters{};
 
@@ -95,19 +96,21 @@ public:
 
 		model->m_modelChapters.createChapterOne();
 		model->m_modelTextures.initTextureStores();
-		//model->m_modelRelations.initRelationTypes();
+		model->m_modelRelationTypes.init();
 		model->m_modelRelations.initBaseRelations();
 		model->m_modelCharacters.initCharacters();
 		*/
 
 		// With multithreading
 		std::thread chaptersThread(&ModelChapters::createChapterOne, &model->m_modelChapters);
+		std::thread relationTypesThread(&ModelRelationTypes::init, &model->m_modelRelationTypes);
 		std::thread relationsThread(&ModelRelations::initBaseRelations, &model->m_modelRelations);
 		std::thread charactersThread(&ModelCharacters::initCharacters, &model->m_modelCharacters);
 		std::thread texturesThread(&ModelTextures::initTextureStores, &model->m_modelTextures);
 
 		// Wait for the threads to finish
 		chaptersThread.join();
+		relationTypesThread.join();
 		relationsThread.join();
 		charactersThread.join();
 		texturesThread.join();

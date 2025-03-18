@@ -14,7 +14,7 @@ private:
 	StateSubject* m_stateSubject{ nullptr };
 	std::unordered_map<id, std::unique_ptr<Relations>> m_characterRelationsData{};
 
-	Relations::RelationValue getRelationValue(RelationRequested& relation);
+	Relations::RelationValue getRelationValue(CharacterRelation& relation);
 	bool eval(Relations::RelationValue valueOne, Relations::RelationValue valueTwo, RelationComparisonOperator comparisonOperator);
 	bool eval(RelationValueComparison& condition);
 	bool eval(RelationRelationComparison& condition);
@@ -27,7 +27,11 @@ private:
 	}
 
 public:
-	StateRelations(StateSubject* stateSubject) : m_stateSubject{ stateSubject } {}
+	StateRelations(StateSubject* stateSubject) : 
+		m_stateSubject{ stateSubject } 
+	{
+	
+	}
 
 	void reset() {
 		m_characterRelationsData.clear();
@@ -44,8 +48,9 @@ public:
 	//
 	// Node interface
 	//
-	void handle(const ActionRelationSetNextNode& action);
 	void handle(const ActionRelationModify& action);
+
+	void handle(const ActionRelationSetNextNode& action);
 	void handle(const ActionRelationSetNextChapter& action);
 
 public:

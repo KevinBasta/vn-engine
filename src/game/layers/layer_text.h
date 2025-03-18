@@ -89,15 +89,15 @@ public:
 			return;
 		}
 
-		if (state.m_render != false) {
+		if (state.render != false) {
 			drawText(frame,
-				state.m_speakerName,
-				state.m_color,
+				state.speakerName,
+				state.color,
 				200.0f);
 
 			drawText(frame,
-				state.m_line,
-				state.m_color,
+				state.line,
+				state.color,
 				150.0f);
 		}
 	}
