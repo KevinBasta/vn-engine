@@ -13,14 +13,11 @@ enum ActionAmount {
 template<typename> struct ActionToActionName;
 template<> struct ActionToActionName<ActionBackgroundTexture>		{ static constexpr const char* name = "ActionBackgroundTexture"; };
 
-template<> struct ActionToActionName<ActionSpriteProperty>			{ static constexpr const char* name = "ActionSpriteProperty"; };
 template<> struct ActionToActionName<ActionSpriteAllProperties>		{ static constexpr const char* name = "ActionSpriteAllProperties"; };
-template<> struct ActionToActionName<ActionSpriteAnimationGeneric>	{ static constexpr const char* name = "ActionSpriteAnimationGeneric"; };
+template<> struct ActionToActionName<ActionSpriteAnimation>			{ static constexpr const char* name = "ActionSpriteAnimation"; };
 
-template<> struct ActionToActionName<ActionTextRender>				{ static constexpr const char* name = "ActionTextRender"; };
 template<> struct ActionToActionName<ActionTextLine>				{ static constexpr const char* name = "ActionTextLine"; };
-template<> struct ActionToActionName<ActionTextOverrideSpeaker>		{ static constexpr const char* name = "ActionTextOverrideSpeaker"; };
-template<> struct ActionToActionName<ActionTextOverrideColor>		{ static constexpr const char* name = "ActionTextOverrideColor"; };
+template<> struct ActionToActionName<ActionTextOverrides>			{ static constexpr const char* name = "ActionTextOverrides"; };
 
 template<> struct ActionToActionName<ActionRelationModify>			{ static constexpr const char* name = "ActionRelationModify"; };
 template<> struct ActionToActionName<ActionRelationSetNextNode>		{ static constexpr const char* name = "ActionRelationSetNextNode"; };
@@ -40,14 +37,11 @@ template<> struct ActionToActionName<ActionChoiceSetNextChapter>	{ static conste
 template<typename> struct ActionToType;
 template<> struct ActionToType<ActionBackgroundTexture>			{ static constexpr ActionAmount type = ActionAmount::SINGLE; };
 
-template<> struct ActionToType<ActionSpriteProperty>			{ static constexpr ActionAmount type = ActionAmount::VECTOR; };
 template<> struct ActionToType<ActionSpriteAllProperties>		{ static constexpr ActionAmount type = ActionAmount::VECTOR; };
-template<> struct ActionToType<ActionSpriteAnimationGeneric>	{ static constexpr ActionAmount type = ActionAmount::VECTOR; };
+template<> struct ActionToType<ActionSpriteAnimation>			{ static constexpr ActionAmount type = ActionAmount::VECTOR; };
 
-template<> struct ActionToType<ActionTextRender>				{ static constexpr ActionAmount type = ActionAmount::SINGLE; };
 template<> struct ActionToType<ActionTextLine>					{ static constexpr ActionAmount type = ActionAmount::SINGLE; };
-template<> struct ActionToType<ActionTextOverrideSpeaker>		{ static constexpr ActionAmount type = ActionAmount::SINGLE; };
-template<> struct ActionToType<ActionTextOverrideColor>			{ static constexpr ActionAmount type = ActionAmount::SINGLE; };
+template<> struct ActionToType<ActionTextOverrides>				{ static constexpr ActionAmount type = ActionAmount::SINGLE; };
 
 template<> struct ActionToType<ActionRelationModify>			{ static constexpr ActionAmount type = ActionAmount::SINGLE; }; // TODO: THIS SHOULD BE VECTOR
 template<> struct ActionToType<ActionRelationSetNextNode>		{ static constexpr ActionAmount type = ActionAmount::VECTOR; };

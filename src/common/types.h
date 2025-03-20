@@ -1,7 +1,16 @@
+#ifndef VN_TYPES_H
+#define VN_TYPES_H
 
-#ifndef VN_ID_H
-#define VN_ID_H
+//
+// INDEX
+// For use in
+//
+using index = int;
 
+//
+// ID
+// For use in
+//
 using id = int;
 
 template <class T>
@@ -12,16 +21,8 @@ private:
 public:
 	IdGenerator() = delete;
 
-	static void setId(id i) {
-		if (i > m_currentId) {
-			m_currentId = i;
-		}
-	}
-
-	static void setIdToAfter(id i) {
-		if (i + 1 > m_currentId) {
-			m_currentId = i + 1;
-		}
+	static void setId(int i) {
+		m_currentId = i;
 	}
 
 	static const id returnGreatestId() {
@@ -36,4 +37,4 @@ public:
 template <class T>
 int IdGenerator<T>::m_currentId{ 1 };
 
-#endif // VN_ID_H
+#endif // VN_TYPES_H
