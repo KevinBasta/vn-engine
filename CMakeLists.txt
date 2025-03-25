@@ -201,7 +201,7 @@ add_executable (
 	"src/state/interface/state_subject.cpp"
 	"src/state/interface/state_subject.h"
 	"src/state/interface/state_types.h"
-)
+ "src/engine/sidebar/engine_relation_types.h")
 
 target_include_directories(
 	"vn_engine"

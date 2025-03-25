@@ -44,7 +44,7 @@ private:
 		ChapterNode* threeone{ new ChapterNode("three one node") };
 
 		ChapterNodeBuilder{ head }.link(oneone);
-		ChapterNodeBuilder{ head }.setStep<ActionTextLine>(1, ActionTextLine{ 1, L"builder test hello!" });
+		ChapterNodeBuilder{ head }.setStep<ActionTextLine>(1, ActionTextLine{ false, 1, L"builder test hello!" });
 		ChapterNodeBuilder{ head }.moveStep<ActionTextOverrides>(2, 1);
 		//ChapterNodeBuilder{ head }.removeStep<ActionTextLine>(1);
 		ChapterNodeBuilder{ head }.link(onetwo);

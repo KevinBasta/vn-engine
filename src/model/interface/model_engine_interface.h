@@ -23,7 +23,7 @@ public:
 	}
 
 	using RelationTypeMap = ModelRelationTypes::TypeIdToNameMap;
-	static RelationTypeMap& getRelationTypesMap() {
+	static const RelationTypeMap& getRelationTypesMap() {
 		ModelSubject* model{ ModelSubject::validateInstance() };
 
 		return model->m_modelRelationTypes.m_relationTypeIdToName;

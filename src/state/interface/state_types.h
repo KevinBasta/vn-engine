@@ -34,8 +34,13 @@ struct SpriteState {
 
 struct TextState {
 	bool render{ false };
+
+	bool speakerEnabled{ false };
 	std::wstring speakerName{};
+
+	bool narrationBackground{ false };
 	std::wstring line{};
+
 	glm::vec3 color{};
 
 	//TextAction m_currentState{};

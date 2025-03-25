@@ -8,7 +8,7 @@
 #include <unordered_map>
 #include <iostream>
 
-int Relations::getCharacterRelation(int characterId, int relationId) {
+int Relations::getRelationWith(int characterId, int relationId) {
 	CharacterToRelationMap::iterator relationWithCharacter{ m_relationships.find(characterId) };
 
 	if (relationWithCharacter == m_relationships.end()) {
@@ -24,7 +24,7 @@ int Relations::getCharacterRelation(int characterId, int relationId) {
 	return relationWithCharacter->second[relationId];
 }
 
-bool Relations::modifyCharacterRelation(int characterId, int relationId, RelationModification modification, int amount) {
+bool Relations::modifyRelationWith(int characterId, int relationId, RelationModification modification, int amount) {
 	bool operationDone{ false };
 	
 	switch (modification)

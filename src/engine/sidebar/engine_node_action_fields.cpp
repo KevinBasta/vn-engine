@@ -51,6 +51,26 @@ static std::string toString(enum class SpriteProperty property) {
 	return "NONE";
 }
 
+static std::string toString(enum class RelationModification modification) {
+	switch (modification) 
+	{
+	case RelationModification::SET:
+		return "SET";
+	case RelationModification::ADD:
+		return "ADD";
+	case RelationModification::SUBTRACT:
+		return "SUBTRACT";
+	case RelationModification::MULTIPLY:
+		return "MULTIPLY";
+	case RelationModification::DIVIDE:
+		return "DIVIDE";
+	default: 
+		break;
+	}
+
+	return "NONE";
+}
+
 /*
 * Common drawing units that are reused by several actions.
 */
@@ -68,7 +88,7 @@ bool drawTextureAndTextureStore(TextureIdentifier& texture) {
 
 	TextureStore* currentStore{ textureStores.at(texture.textureStoreId).get() };
 	const std::string& textureStoreName{ currentStore->getName() };
-
+	// TODO: add id ptr to selectable
 	if (ImGui::BeginCombo("Texture Store", textureStoreName.c_str(), flags)) {		
 		for (auto iter{ textureStores.begin() }; iter != textureStores.end(); iter++) {
 			const bool isSelected = (iter->first == texture.textureStoreId);
@@ -152,7 +172,7 @@ bool ActionField<ActionBackgroundTexture>::drawInternal(ActionBackgroundTexture*
 // SECTION HELPERS
 
 // Draw field and implement constraints depending on property
-bool drawSpritePropertyField(SpriteProperty property, float& value, bool& enabled) {
+static bool drawSpritePropertyField(SpriteProperty property, float& value, bool& enabled) {
 	bool modified{ false };
 	// Min value, Max value, Step value
 	float minMaxStep[3]{ -FLT_MAX, FLT_MAX, 0.5f };
@@ -203,7 +223,7 @@ bool drawSpritePropertyField(SpriteProperty property, float& value, bool& enable
 }
 
 // FOR PICKING FROM A DROPDOWN/COMBOBOX OF A LIST OF ELEMENTS
-bool drawSpritePropertyPicker(SpriteProperty property) {
+static bool drawSpritePropertyPicker(SpriteProperty property) {
 	bool modified{ false };
 
 	// Draw Sprite Property Picker
@@ -275,7 +295,7 @@ bool ActionField<ActionSpriteAllProperties>::drawInternal(ActionSpriteAllPropert
 }
 
 
-bool drawPropertyAnimationFields(auto& keyframes) {
+static bool drawPropertyAnimationFields(auto& keyframes) {
 	bool modified{ false };
 
 	int i{ 0 };
@@ -384,6 +404,40 @@ bool ActionField<ActionSpriteAnimation>::drawInternal(ActionSpriteAnimation* obj
 /**
  * Text Action Types
  */
+
+// SECTION HELPERS
+static bool characterCombo(id& characterId) {
+	bool modified{ false };
+
+	// Character selection
+	const ModelEngineInterface::CharacterMap& characterMap{ ModelEngineInterface::getCharacterMap() };
+
+	// Set the object character to the first valid instance if it's not valid
+	if (!characterMap.contains(characterId)) {
+		characterId = characterMap.begin()->first;
+	}
+
+	if (ImGui::BeginCombo(addIdFromPtr("###", &characterId).c_str(), myconv.to_bytes(characterMap.at(characterId).get()->getName()).c_str(), NULL))
+	{
+		for (const auto& idCharacterPair : characterMap)
+		{
+			const bool isSelected = (idCharacterPair.first == characterId);
+			if (ImGui::Selectable(myconv.to_bytes(idCharacterPair.second.get()->getName()).c_str(), isSelected)) {
+				characterId = idCharacterPair.first;
+				modified |= true;
+			}
+
+			// Set the initial focus when opening the combo (scrolling + keyboard navigation focus)
+			if (isSelected) {
+				ImGui::SetItemDefaultFocus();
+			}
+		}
+		ImGui::EndCombo();
+	}
+
+	return modified;
+}
+
 template<>
 bool ActionField<ActionTextLine>::drawInternal(ActionTextLine* obj) {	
 	bool modified = false;
@@ -394,34 +448,20 @@ bool ActionField<ActionTextLine>::drawInternal(ActionTextLine* obj) {
 	dragDropSourceSet(obj);
 
 	if (isTreeOpen)
-	{
+	{		
+		ImGui::Text("Narration: ");
+		ImGui::SameLine();
+		modified |= ImGui::Checkbox(addIdFromPtr("##TextLineAction", &obj->narration).c_str(), &obj->narration);
+
+		// Disable character selection if narration is enabled
+		if (obj->narration) { ImGui::BeginDisabled(); }
+
 		// Character selection
-		const ModelEngineInterface::CharacterMap& characterMap{ ModelEngineInterface::getCharacterMap() };
-		
-		// Set the object character to the first valid instance if it's not valid
-		if (!characterMap.contains(obj->characterId)) {
-			obj->characterId = characterMap.begin()->first;
-		}
-		
-		id selected = obj->characterId;
+		modified |= characterCombo(obj->characterId);
+		ImGui::SameLine();
+		ImGui::Text("Character");
 
-		if (ImGui::BeginCombo("Character", myconv.to_bytes(characterMap.at(selected).get()->getName()).c_str(), NULL))
-		{
-			for (const auto& idCharacterPair : characterMap)
-			{
-				const bool isSelected = (idCharacterPair.first == selected);
-				if (ImGui::Selectable(myconv.to_bytes(idCharacterPair.second.get()->getName()).c_str(), isSelected)) {
-					obj->characterId = idCharacterPair.first;
-					modified |= true;
-				}
-
-				// Set the initial focus when opening the combo (scrolling + keyboard navigation focus)
-				if (isSelected) {
-					ImGui::SetItemDefaultFocus();
-				}
-			}
-			ImGui::EndCombo();
-		}
+		if (obj->narration) { ImGui::EndDisabled(); }
 
 		// TODO: decide if tabs should be allowed at all or not.
 		//ImGui::DebugTextEncoding((const char*)u8"こんにちは");
@@ -429,9 +469,17 @@ bool ActionField<ActionTextLine>::drawInternal(ActionTextLine* obj) {
 		flags |= ImGuiInputTextFlags_AllowTabInput;
 
 		// Conver wstring to string, draw multiline input, convert string to wstring
-		std::string convertedName = myconv.to_bytes(obj->line);
-		modified |= ImGui::InputTextMultiline("Text Line", &(convertedName), ImVec2(0, 0), flags); //TODO: imgui id
-		obj->line = myconv.from_bytes(convertedName);
+		std::string convertedLine = myconv.to_bytes(obj->line);
+		modified |= ImGui::InputTextMultiline(addIdFromPtr("###", &obj->line).c_str(), &(convertedLine), ImVec2(0, 0), flags);
+		obj->line = myconv.from_bytes(convertedLine);
+		ImGui::SameLine();
+
+		if (obj->narration) {
+			ImGui::Text("Narration Line");
+		}
+		else {
+			ImGui::Text("Dialogue Line");
+		}
 		
 		ImGui::TreePop();
 	}
@@ -517,6 +565,8 @@ bool ActionField<ActionTextOverrides>::drawInternal(ActionTextOverrides* obj) {
 }
 
 
+
+
 /*
 * Relations
 */
@@ -524,8 +574,86 @@ bool ActionField<ActionTextOverrides>::drawInternal(ActionTextOverrides* obj) {
 bool ActionField<ActionRelationModify>::drawInternal(ActionRelationModify* obj) {
 	bool modified = false;
 
+	std::string actionTitle{ ActionHelper{ std::in_place_type<ActionRelationModify> }.getName() };
+
+	bool isTreeOpen = ImGui::TreeNode(addIdFromPtr(actionTitle, obj).c_str());
+	dragDropSourceSet(obj);
+
+	if (isTreeOpen)
+	{
+		const ModelEngineInterface::RelationTypeMap& relationTypes{ ModelEngineInterface::getRelationTypesMap() };
+		const ModelEngineInterface::CharacterMap& characterMap{ ModelEngineInterface::getCharacterMap() };
+		
+		if (characterMap.size() == 0) { ImGui::BeginDisabled(); }
+
+		ImGui::PushItemWidth(150.0f);
+		ImGui::Text("Relation Of: ");
+		ImGui::SameLine();
+		characterCombo(obj->relation.characterOneId);
+
+		ImGui::Text("With:        ");
+		ImGui::SameLine();
+		characterCombo(obj->relation.characterTwoId);
+
+		ImGui::Text("Relationship Type: ");
+		ImGui::SameLine();
+		// TODO: relationTypes.at can fail when size is 0
+		if (ImGui::BeginCombo(addIdFromPtr("###", &obj->relation.relationTypeId).c_str(), relationTypes.at(obj->relation.relationTypeId).c_str(), 0)) {
+			for (auto iter{ relationTypes.begin() }; iter != relationTypes.end(); iter++) {
+				const bool isSelected = (obj->relation.relationTypeId == iter->first);
+
+				if (ImGui::Selectable(iter->second.c_str(), isSelected)) {
+					// avoid needless update by only updating if a new item is selected
+					if (obj->relation.relationTypeId != iter->first) {
+						obj->relation.relationTypeId = iter->first;
+						modified = true;
+						ImGui::SetItemDefaultFocus();
+					}
+				}
+
+			}
+			ImGui::EndCombo();
+		}
+		ImGui::PopItemWidth();
+
+
+		ImGui::PushItemWidth(100.0f);
+		ImGui::Text("Modification Type: ");
+		ImGui::SameLine();
+		static std::vector<RelationModification> modificationChoices{RelationModification::SET,RelationModification::ADD,RelationModification::SUBTRACT,RelationModification::MULTIPLY,RelationModification::DIVIDE};
+		if (ImGui::BeginCombo(addIdFromPtr("###", &obj->modificationType).c_str(), toString(obj->modificationType).c_str(), 0)) {
+			for (auto iter{ modificationChoices.begin() }; iter != modificationChoices.end(); iter++) {
+				const bool isSelected = (obj->modificationType == *iter);
+
+				if (ImGui::Selectable(toString(*iter).c_str(), isSelected)) {
+					// avoid needless update by only updating if a new item is selected
+					if (obj->modificationType != *iter) {
+						obj->modificationType = *iter;
+						modified = true;
+						ImGui::SetItemDefaultFocus();
+					}
+				}
+
+			}
+			ImGui::EndCombo();
+		}
+		ImGui::PopItemWidth();
+
+		ImGui::Text("Value: ");
+		ImGui::SameLine();
+		int min{ obj->modificationType == RelationModification::DIVIDE ? 1 : 0 };
+		modified |= ImGui::DragInt(addIdFromPtr("###", &obj->modificationValue).c_str(), &(obj->modificationValue), 1, min, INT_MAX, "%d", ImGuiSliderFlags_AlwaysClamp);
+
+		if (characterMap.size() == 0) { ImGui::EndDisabled(); }
+
+		ImGui::TreePop();
+	}
+
 	return modified;
 }
+
+
+
 bool ActionField<ActionRelationSetNextNode>::drawInternal(ActionRelationSetNextNode* obj) {
 	bool modified = false;
 

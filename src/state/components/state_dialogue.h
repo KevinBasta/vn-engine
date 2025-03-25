@@ -10,7 +10,7 @@ class StateDialogue {
 	// TODO add text style type for background translusent black for character thoughts
 	// TextAction m_textAction{ TextAction::EMPTY };
 private:
-	TextState m_dialogueState{ false, L"", L"", glm::vec3() };
+	TextState m_dialogueState{ false, false, L"", false, L"", glm::vec3() };
 
 public:
 	TextState get() {
@@ -18,7 +18,7 @@ public:
 	}
 
 	void reset() {
-		m_dialogueState = { false, L"", L"", glm::vec3() };
+		m_dialogueState = { false, false, L"", false, L"", glm::vec3() };
 	}
 
 public:
@@ -26,19 +26,29 @@ public:
 	// Node interface
 	//
 	void handle(const ActionTextLine& action) {
-		m_dialogueState.line = action.line;
 		m_dialogueState.render = true;
+		m_dialogueState.line = action.line;
 
-		// TODO: should the character data be updatable? or just overriden by the actions?
-		Character* character = ModelRuntimeInterface::getCharacterById(action.characterId);
-
-		if (character != nullptr) {
-			m_dialogueState.speakerName = character->getName();
-			// TODO: text color override? Depends on order of actions. Make it order independant?
-			m_dialogueState.color = character->getTextColor(); 
+		if (action.narration) {
+			m_dialogueState.speakerEnabled = false;
+			m_dialogueState.speakerName = L"";
+			m_dialogueState.narrationBackground = true;
+			m_dialogueState.color = { 1.0f, 1.0f, 1.0f };
 		}
 		else {
-			std::cout << "handle ActionTextLine half failed" << std::endl;
+			// TODO: should the character data be updatable? or just overriden by the actions?
+			Character* character = ModelRuntimeInterface::getCharacterById(action.characterId);
+
+			if (character != nullptr) {
+				m_dialogueState.speakerEnabled = true;
+				m_dialogueState.speakerName = character->getName();
+				m_dialogueState.narrationBackground = false;
+				m_dialogueState.color = character->getTextColor(); // TODO: text color override? Depends on order of actions. Make it order independant?
+			}
+			else {
+				m_dialogueState = { false, false, L"", false, L"", glm::vec3() };
+				std::cout << "handle ActionTextLine half failed" << std::endl;
+			}
 		}
 	}
 

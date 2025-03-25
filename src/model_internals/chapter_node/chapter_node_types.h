@@ -122,6 +122,7 @@ struct ActionSpriteAnimation {
  * 
  */
 struct ActionTextLine {
+	bool narration{};
 	int characterId{};
 	std::wstring line{};
 };
