@@ -6,7 +6,7 @@
 
 #include "action_type_mappers.h"
 
-#include "engine_node_action_fields.h"
+#include "engine_scene_action_editor.h"
 
 #include "texture_store.h"
 

@@ -16,7 +16,7 @@
 
 class StateSubject;
 class ChapterNodeBuilder;
-class VnEngineNodeEditor;
+class VnEngineSceneEditor;
 
 class ChapterNode : public Node {
 private:

@@ -9,7 +9,7 @@
 #include "engine_chapter_graph.h"
 #include "engine_node_graph.h"
 #include "engine_preview.h"
-#include "engine_node_editor_sidebar.h"
+#include "engine_scene_editor.h"
 
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
@@ -27,7 +27,7 @@ VnEngine::VnEngine(VnWindow* window, StateSubject* stateSubject, GameContext* co
 	m_engineChapterGraph{ stateSubject },
 	m_engineStepTimeline{ stateSubject },
 	m_enginePreview{ context },
-	m_engineNodeEditor{ stateSubject }
+	m_engineSceneEditor{ stateSubject }
 {
 	initImgui();
 }
@@ -111,7 +111,10 @@ void VnEngine::createDockspace() {
 				ImGui::DockBuilderDockWindow(WINDOW_CHAPTER_GRAPH, dockspace_id);
 				ImGui::DockBuilderDockWindow(WINDOW_NODE_GRAPH, dockspace_id);
 				ImGui::DockBuilderDockWindow(WINDOW_STEP_TIMELINE, dockspace_id);
-				ImGui::DockBuilderDockWindow(WINDOW_NODE_EDITOR, dockspace_id);
+				ImGui::DockBuilderDockWindow(WINDOW_SCENE_EDITOR, dockspace_id);
+				ImGui::DockBuilderDockWindow(WINDOW_CHARACTERS_CONFIG, dockspace_id);
+				ImGui::DockBuilderDockWindow(WINDOW_TEXTURES_CONFIG, dockspace_id);
+				ImGui::DockBuilderDockWindow(WINDOW_RELATIONS_CONFIG, dockspace_id);
 				//ImGui::DockBuilderDockWindow(WINDOW_IMGUI_DEMO, dockspace_id);
 			}
 			else {
@@ -126,7 +129,10 @@ void VnEngine::createDockspace() {
 				ImGui::DockBuilderDockWindow(WINDOW_CHAPTER_GRAPH, dock_id_down);
 				ImGui::DockBuilderDockWindow(WINDOW_NODE_GRAPH, dock_id_down);
 				ImGui::DockBuilderDockWindow(WINDOW_STEP_TIMELINE, dock_id_down);
-				ImGui::DockBuilderDockWindow(WINDOW_NODE_EDITOR, dock_id_left);
+				ImGui::DockBuilderDockWindow(WINDOW_SCENE_EDITOR, dock_id_left);
+				ImGui::DockBuilderDockWindow(WINDOW_CHARACTERS_CONFIG, dock_id_left);
+				ImGui::DockBuilderDockWindow(WINDOW_TEXTURES_CONFIG, dock_id_left);
+				ImGui::DockBuilderDockWindow(WINDOW_RELATIONS_CONFIG, dock_id_left);
 				//ImGui::DockBuilderDockWindow(WINDOW_IMGUI_DEMO, dock_id_left);
 			}
 
@@ -201,11 +207,25 @@ void VnEngine::draw() {
 	}
 	ImGui::End();
 
-	if (ImGui::Begin(WINDOW_NODE_EDITOR)) {
-		m_engineNodeEditor.draw();
+	if (ImGui::Begin(WINDOW_CHARACTERS_CONFIG)) {
+		
 	}
 	ImGui::End();
 
+	if (ImGui::Begin(WINDOW_TEXTURES_CONFIG)) {
+
+	}
+	ImGui::End();
+
+	if (ImGui::Begin(WINDOW_RELATIONS_CONFIG)) {
+
+	}
+	ImGui::End();
+
+	if (ImGui::Begin(WINDOW_SCENE_EDITOR)) {
+		m_engineSceneEditor.draw();
+	}
+	ImGui::End();
 
 	//ImGui::ShowDemoWindow();
 

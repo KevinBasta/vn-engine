@@ -14,8 +14,8 @@
 #include "chapter_node_builder.h"
 
 #include "action_type_mappers.h"
-#include "engine_node_action_fields.h"
-#include "engine_action_type_list.h"
+#include "engine_scene_action_editor.h"
+#include "engine_scene_action_type_list.h"
 
 #include "engine_drag_drop_payload.h"
 
@@ -39,17 +39,17 @@ enum ActionDragMode {
 	DRAG_SWAP
 };
 
-class VnEngineNodeEditor {
+class VnEngineSceneEditor {
 protected:
 	static StateSubject* m_stateSubject;
 
 public:
-	VnEngineNodeEditor(StateSubject* stateSubject) 
+	VnEngineSceneEditor(StateSubject* stateSubject) 
 	{ 
 		m_stateSubject = stateSubject;
 	}
 
-	~VnEngineNodeEditor() { }
+	~VnEngineSceneEditor() { }
 
 private:
 	// Encapsulate the combo header of this section

@@ -11,7 +11,7 @@
 #include "engine_node_graph.h"
 #include "engine_step_timeline.h"
 #include "engine_preview.h"
-#include "engine_node_editor_sidebar.h"
+#include "engine_scene_editor.h"
 
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
@@ -21,12 +21,15 @@
 
 #include <GLFW/glfw3.h>
 
-#define WINDOW_VIEWPORT_PREVIEW "VIEWPORT PREVIEW"
-#define WINDOW_CHAPTER_GRAPH	"CHAPTER GRAPH"
-#define WINDOW_NODE_GRAPH		"NODE GRAPH"
-#define WINDOW_STEP_TIMELINE	"STEP TIMELINE"
-#define WINDOW_NODE_EDITOR		"NODE EDITOR"
-#define WINDOW_IMGUI_DEMO		"Dear ImGui Demo"
+#define WINDOW_VIEWPORT_PREVIEW		"VIEWPORT PREVIEW"
+#define WINDOW_CHAPTER_GRAPH		"CHAPTER GRAPH"
+#define WINDOW_NODE_GRAPH			"NODE GRAPH"
+#define WINDOW_STEP_TIMELINE		"STEP TIMELINE"
+#define WINDOW_SCENE_EDITOR			"SCENE EDITOR"
+#define WINDOW_CHARACTERS_CONFIG	"CHARACTERS CONFIG"
+#define WINDOW_TEXTURES_CONFIG		"TEXTURES CONFIG"
+#define WINDOW_RELATIONS_CONFIG		"RELATIONS CONFIG"
+#define WINDOW_IMGUI_DEMO			"Dear ImGui Demo"
 
 static void printTest() {
 	std::cout << "imgui test" << std::endl;
@@ -42,11 +45,11 @@ private:
 	bool m_expandedDockingView{ false };
 	VnEnginePreview m_enginePreview;
 	
-	VnEngineChapterGraph m_engineChapterGraph;
-	VnEngineNodeGraph m_engineNodeGraph;
-	VnEngineStepTimeline m_engineStepTimeline;
+	VnEngineChapterGraph	m_engineChapterGraph;
+	VnEngineNodeGraph		m_engineNodeGraph;
+	VnEngineStepTimeline	m_engineStepTimeline;
 
-	VnEngineNodeEditor m_engineNodeEditor;
+	VnEngineSceneEditor m_engineSceneEditor;
 
 
 	void initImgui();
