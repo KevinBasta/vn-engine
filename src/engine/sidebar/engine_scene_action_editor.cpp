@@ -71,6 +71,20 @@ static std::string toString(enum class RelationModification modification) {
 	return "NONE";
 }
 
+static std::string toString(enum class ChoiceStyle style) {
+	switch (style)
+	{
+	case ChoiceStyle::LIST_MID_SCREEN:
+		return "LIST MID SCREEN";
+	case ChoiceStyle::LIST_TEXT_AREA:
+		return "LIST TEXT AREA";
+	default:
+		break;
+	}
+
+	return "NONE";
+}
+
 /*
 * Common drawing units that are reused by several actions.
 */
@@ -586,14 +600,19 @@ bool ActionField<ActionRelationModify>::drawInternal(ActionRelationModify* obj) 
 		
 		if (characterMap.size() == 0) { ImGui::BeginDisabled(); }
 
+		// Validate the current relation type id
+		if (!relationTypes.contains(obj->relation.relationTypeId)) {
+			obj->relation.relationTypeId = relationTypes.begin()->first;
+		}
+
 		ImGui::PushItemWidth(150.0f);
 		ImGui::Text("Relation Of: ");
 		ImGui::SameLine();
-		characterCombo(obj->relation.characterOneId);
+		modified |= characterCombo(obj->relation.characterOneId);
 
 		ImGui::Text("With:        ");
 		ImGui::SameLine();
-		characterCombo(obj->relation.characterTwoId);
+		modified |= characterCombo(obj->relation.characterTwoId);
 
 		ImGui::Text("Relationship Type: ");
 		ImGui::SameLine();
@@ -684,6 +703,77 @@ bool ActionField<ActionSetNextChapter>::drawInternal(ActionSetNextChapter* obj) 
 bool ActionField<ActionChoice>::drawInternal(ActionChoice* obj) {
 	bool modified = false;
 
+	std::string actionTitle{ ActionHelper{ std::in_place_type<ActionChoice> }.getName() };
+
+	bool isTreeOpen = ImGui::TreeNode(addIdFromPtr(actionTitle, obj).c_str());
+	dragDropSourceSet(obj);
+
+	if (isTreeOpen)
+	{
+		ImGui::Text("Choice Style: ");
+		ImGui::SameLine();
+
+		ImGui::PushItemWidth(170.0f);
+		static std::vector<ChoiceStyle> modificationChoices{ ChoiceStyle::LIST_TEXT_AREA, ChoiceStyle::LIST_MID_SCREEN };
+		if (ImGui::BeginCombo(addIdFromPtr("###", &obj->m_style).c_str(), toString(obj->m_style).c_str(), 0)) {
+			for (auto iter{ modificationChoices.begin() }; iter != modificationChoices.end(); iter++) {
+				const bool isSelected = (obj->m_style == *iter);
+
+				if (ImGui::Selectable(toString(*iter).c_str(), isSelected)) {
+					// avoid needless update by only updating if a new item is selected
+					if (obj->m_style != *iter) {
+						obj->m_style = *iter;
+						modified = true;
+						ImGui::SetItemDefaultFocus();
+					}
+				}
+
+			}
+			ImGui::EndCombo();
+		}
+		ImGui::PopItemWidth();
+
+		
+		ImGui::Text("Choices: ");
+
+		int i{ 0 };
+		for (auto iter{ obj->m_choices.begin() }; iter != obj->m_choices.end(); iter++) {
+			ImGui::Text((std::string("#") + std::to_string(i)).c_str());
+			ImGui::SameLine();
+
+			// Conver wstring to string, draw single line input, convert string to wstring
+			static ImGuiInputTextFlags flags{ 0 };
+			flags |= ImGuiInputTextFlags_AllowTabInput;
+
+			std::string convertedName = myconv.to_bytes(*iter);
+			ImGui::PushItemWidth(350.0f);
+			modified |= ImGui::InputText(addIdFromPtr("###", &(*iter)).c_str(), &(convertedName), flags);
+			ImGui::PopItemWidth();
+			*iter = myconv.from_bytes(convertedName);
+
+			// Button: delete a choice
+			ImGui::SameLine();
+			if (ImGui::Button(addIdFromPtr("Delete", &(*iter)).c_str(), ImVec2(150.0f, 0.0f))) {
+				iter = obj->m_choices.erase(iter);
+				modified = true;
+
+				if (iter == obj->m_choices.end()) {
+					break;
+				}
+			}
+
+			i++;
+		}
+
+		// Button: add a choice
+		if (ImGui::Button(addIdFromPtr("Add Choice", &obj->m_choices).c_str(), ImVec2(150.0f, 0.0f))) {
+			obj->m_choices.emplace_back();
+			modified = true;
+		}
+		
+		ImGui::TreePop();
+	}
+
 	return modified;
 }
 bool ActionField<ActionChoiceSetNextNode>::drawInternal(ActionChoiceSetNextNode* obj) {
@@ -691,12 +781,12 @@ bool ActionField<ActionChoiceSetNextNode>::drawInternal(ActionChoiceSetNextNode*
 
 	return modified;
 }
-bool ActionField<ActionChoiceModifyRelation>::drawInternal(ActionChoiceModifyRelation* obj) {
+bool ActionField<ActionChoiceSetNextChapter>::drawInternal(ActionChoiceSetNextChapter* obj) {
 	bool modified = false;
 
 	return modified;
 }
-bool ActionField<ActionChoiceSetNextChapter>::drawInternal(ActionChoiceSetNextChapter* obj) {
+bool ActionField<ActionChoiceModifyRelation>::drawInternal(ActionChoiceModifyRelation* obj) {
 	bool modified = false;
 
 	return modified;
