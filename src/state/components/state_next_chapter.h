@@ -30,7 +30,7 @@ public:
 public:
 	void handle(const ActionSetNextChapter& action) {
 		std::cout << "set next chapter" << std::endl;
-		set(action.m_chapterId);
+		set(action.chapterId);
 	}
 };
 

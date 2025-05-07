@@ -723,14 +723,14 @@ bool ActionField<ActionChoice>::drawInternal(ActionChoice* obj) {
 
 		ImGui::PushItemWidth(170.0f);
 		static std::vector<ChoiceStyle> modificationChoices{ ChoiceStyle::LIST_TEXT_AREA, ChoiceStyle::LIST_MID_SCREEN };
-		if (ImGui::BeginCombo(addIdFromPtr("###", &obj->m_style).c_str(), toString(obj->m_style).c_str(), 0)) {
+		if (ImGui::BeginCombo(addIdFromPtr("###", &obj->style).c_str(), toString(obj->style).c_str(), 0)) {
 			for (auto iter{ modificationChoices.begin() }; iter != modificationChoices.end(); iter++) {
-				const bool isSelected = (obj->m_style == *iter);
+				const bool isSelected = (obj->style == *iter);
 
 				if (ImGui::Selectable(toString(*iter).c_str(), isSelected)) {
 					// avoid needless update by only updating if a new item is selected
-					if (obj->m_style != *iter) {
-						obj->m_style = *iter;
+					if (obj->style != *iter) {
+						obj->style = *iter;
 						modified = true;
 						ImGui::SetItemDefaultFocus();
 					}
@@ -745,7 +745,7 @@ bool ActionField<ActionChoice>::drawInternal(ActionChoice* obj) {
 		ImGui::Text("Choices: ");
 
 		int i{ 0 };
-		for (auto iter{ obj->m_choices.begin() }; iter != obj->m_choices.end(); iter++) {
+		for (auto iter{ obj->choices.begin() }; iter != obj->choices.end(); iter++) {
 			ImGui::Text((std::string("#") + std::to_string(i)).c_str());
 			ImGui::SameLine();
 
@@ -762,10 +762,10 @@ bool ActionField<ActionChoice>::drawInternal(ActionChoice* obj) {
 			// Button: delete a choice
 			ImGui::SameLine();
 			if (ImGui::Button(addIdFromPtr("Delete", &(*iter)).c_str(), ImVec2(150.0f, 0.0f))) {
-				iter = obj->m_choices.erase(iter);
+				iter = obj->choices.erase(iter);
 				modified = true;
 
-				if (iter == obj->m_choices.end()) {
+				if (iter == obj->choices.end()) {
 					break;
 				}
 			}
@@ -774,8 +774,8 @@ bool ActionField<ActionChoice>::drawInternal(ActionChoice* obj) {
 		}
 
 		// Button: add a choice
-		if (ImGui::Button(addIdFromPtr("Add Choice", &obj->m_choices).c_str(), ImVec2(150.0f, 0.0f))) {
-			obj->m_choices.emplace_back();
+		if (ImGui::Button(addIdFromPtr("Add Choice", &obj->choices).c_str(), ImVec2(150.0f, 0.0f))) {
+			obj->choices.emplace_back();
 			modified = true;
 		}
 		
@@ -794,7 +794,7 @@ bool ActionField<ActionChoiceSetNextNode>::drawInternal(ActionChoiceSetNextNode*
 
 	if (isTreeOpen)
 	{
-		for (auto iter{ obj->m_nodeId.begin() }; iter != obj->m_nodeId.end(); iter++) {
+		for (auto iter{ obj->nodeId.begin() }; iter != obj->nodeId.end(); iter++) {
 			// Slider: which choice index
 			bool choiceIndexModified{ false };
 			ChoiceIndex tempIndex{ iter->first };
@@ -805,7 +805,10 @@ bool ActionField<ActionChoiceSetNextNode>::drawInternal(ActionChoiceSetNextNode*
 			choiceIndexModified = ImGui::DragScalar(addIdFromPtr("###", &(iter->first)).c_str(), ImGuiDataType_U32, &tempIndex, 1, 0);
 			ImGui::PopItemWidth();
 			if (choiceIndexModified) {
-				if (std::find_if(obj->m_nodeId.begin(), obj->m_nodeId.end(), [&tempIndex](auto& indexAndNodeId) { return (tempIndex == indexAndNodeId.first); }) == obj->m_nodeId.end()) {
+				if (std::find_if(obj->nodeId.begin(), 
+					obj->nodeId.end(), 
+					[&tempIndex](auto& indexAndNodeId) { return (tempIndex == indexAndNodeId.first); }) == obj->nodeId.end()) 
+				{
 					iter->first = tempIndex;
 					modified = true;
 				}
@@ -822,10 +825,10 @@ bool ActionField<ActionChoiceSetNextNode>::drawInternal(ActionChoiceSetNextNode*
 			// Button: delete an action
 			ImGui::SameLine();
 			if (ImGui::Button(addIdFromPtr("Delete", &(iter->second)).c_str(), ImVec2(75.0f, 0.0f))) {
-				iter = obj->m_nodeId.erase(iter);
+				iter = obj->nodeId.erase(iter);
 				modified = true;
 
-				if (iter == obj->m_nodeId.end()) {
+				if (iter == obj->nodeId.end()) {
 					break;
 				}
 			}
@@ -835,11 +838,14 @@ bool ActionField<ActionChoiceSetNextNode>::drawInternal(ActionChoiceSetNextNode*
 		if (ImGui::Button(addIdFromPtr("Add Choice Action", obj).c_str(), ImVec2(150.0f, 0.0f))) {
 			int choiceIndex{ 0 };
 
-			while (std::find_if(obj->m_nodeId.begin(), obj->m_nodeId.end(), [&choiceIndex](auto& indexAndNodeId) { return (choiceIndex == indexAndNodeId.first); }) != obj->m_nodeId.end()) {
+			while (std::find_if(obj->nodeId.begin(), 
+				obj->nodeId.end(), 
+				[&choiceIndex](auto& indexAndNodeId) { return (choiceIndex == indexAndNodeId.first); }) != obj->nodeId.end()) 
+			{
 				choiceIndex++;
 			}
 		
-			obj->m_nodeId.emplace_back(std::pair(choiceIndex, 0));
+			obj->nodeId.emplace_back(std::pair(choiceIndex, 0));
 			modified = true;
 		}
 
@@ -858,7 +864,7 @@ bool ActionField<ActionChoiceSetNextChapter>::drawInternal(ActionChoiceSetNextCh
 
 	if (isTreeOpen)
 	{
-		for (auto iter{ obj->m_chapterId.begin() }; iter != obj->m_chapterId.end(); iter++) {
+		for (auto iter{ obj->chapterId.begin() }; iter != obj->chapterId.end(); iter++) {
 			// Slider: which choice index
 			bool choiceIndexModified{ false };
 			ChoiceIndex tempIndex{ iter->first };
@@ -869,7 +875,10 @@ bool ActionField<ActionChoiceSetNextChapter>::drawInternal(ActionChoiceSetNextCh
 			choiceIndexModified = ImGui::DragScalar(addIdFromPtr("###", &(iter->first)).c_str(), ImGuiDataType_U32, &tempIndex, 1, 0);
 			ImGui::PopItemWidth();
 			if (choiceIndexModified) {
-				if (std::find_if(obj->m_chapterId.begin(), obj->m_chapterId.end(), [&tempIndex](auto& indexAndNodeId) { return (tempIndex == indexAndNodeId.first); }) == obj->m_chapterId.end()) {
+				if (std::find_if(obj->chapterId.begin(), 
+					obj->chapterId.end(), 
+					[&tempIndex](auto& indexAndNodeId) { return (tempIndex == indexAndNodeId.first); }) == obj->chapterId.end()) 
+				{
 					iter->first = tempIndex;
 					modified = true;
 				}
@@ -886,10 +895,10 @@ bool ActionField<ActionChoiceSetNextChapter>::drawInternal(ActionChoiceSetNextCh
 			// Button: delete an action
 			ImGui::SameLine();
 			if (ImGui::Button(addIdFromPtr("Delete", &(iter->second)).c_str(), ImVec2(75.0f, 0.0f))) {
-				iter = obj->m_chapterId.erase(iter);
+				iter = obj->chapterId.erase(iter);
 				modified = true;
 
-				if (iter == obj->m_chapterId.end()) {
+				if (iter == obj->chapterId.end()) {
 					break;
 				}
 			}
@@ -899,11 +908,14 @@ bool ActionField<ActionChoiceSetNextChapter>::drawInternal(ActionChoiceSetNextCh
 		if (ImGui::Button(addIdFromPtr("Add Choice Action", obj).c_str(), ImVec2(150.0f, 0.0f))) {
 			int choiceIndex{ 0 };
 
-			while (std::find_if(obj->m_chapterId.begin(), obj->m_chapterId.end(), [&choiceIndex](auto& indexAndNodeId) { return (choiceIndex == indexAndNodeId.first); }) != obj->m_chapterId.end()) {
+			while (std::find_if(obj->chapterId.begin(), 
+				obj->chapterId.end(), 
+				[&choiceIndex](auto& indexAndNodeId) { return (choiceIndex == indexAndNodeId.first); }) != obj->chapterId.end()) 
+			{
 				choiceIndex++;
 			}
 
-			obj->m_chapterId.emplace_back(std::pair(choiceIndex, 0));
+			obj->chapterId.emplace_back(std::pair(choiceIndex, 0));
 			modified = true;
 		}
 
@@ -922,7 +934,7 @@ bool ActionField<ActionChoiceModifyRelation>::drawInternal(ActionChoiceModifyRel
 
 	if (isTreeOpen)
 	{
-		for (auto iter{ obj->m_relationModifications.begin() }; iter != obj->m_relationModifications.end(); iter++) {
+		for (auto iter{ obj->relationModifications.begin() }; iter != obj->relationModifications.end(); iter++) {
 			// Slider: which choice index
 			bool choiceIndexModified{ false };
 			ChoiceIndex tempIndex{ iter->first };
@@ -933,7 +945,10 @@ bool ActionField<ActionChoiceModifyRelation>::drawInternal(ActionChoiceModifyRel
 			choiceIndexModified = ImGui::DragScalar(addIdFromPtr("###", &(iter->first)).c_str(), ImGuiDataType_U32, &tempIndex, 1, 0);
 			ImGui::PopItemWidth();
 			if (choiceIndexModified) {
-				if (std::find_if(obj->m_relationModifications.begin(), obj->m_relationModifications.end(), [&tempIndex](auto& indexAndNodeId) { return (tempIndex == indexAndNodeId.first); }) == obj->m_relationModifications.end()) {
+				if (std::find_if(obj->relationModifications.begin(), 
+					obj->relationModifications.end(), 
+					[&tempIndex](auto& indexAndNodeId) { return (tempIndex == indexAndNodeId.first); }) == obj->relationModifications.end()) 
+				{
 					iter->first = tempIndex;
 					modified = true;
 				}
@@ -956,36 +971,44 @@ bool ActionField<ActionChoiceModifyRelation>::drawInternal(ActionChoiceModifyRel
 					}
 				}
 				ImGui::Unindent(30.0f);
+				ImGui::Spacing();
 			}
 
 			if (ImGui::Button(addIdFromPtr("Add Relation Modification", &(iter->second)).c_str(), ImVec2(250.0f, 0.0f))) {
 				iter->second.emplace_back();
 				modified = true;
 			}
+			ImGui::Spacing();
+			ImGui::Spacing();
 
 			ImGui::Unindent(30.0f);
 
 
 			// Button: delete an action
 			if (ImGui::Button(addIdFromPtr("Delete Choice Action", &(iter->second)).c_str(), ImVec2(200.0f, 0.0f))) {
-				iter = obj->m_relationModifications.erase(iter);
+				iter = obj->relationModifications.erase(iter);
 				modified = true;
 
-				if (iter == obj->m_relationModifications.end()) {
+				if (iter == obj->relationModifications.end()) {
 					break;
 				}
 			}
+			ImGui::Spacing();
+			ImGui::Spacing();
 		}
 
 		// Button: add an action
 		if (ImGui::Button(addIdFromPtr("Add Choice Action", obj).c_str(), ImVec2(200.0f, 0.0f))) {
 			int choiceIndex{ 0 };
 
-			while (std::find_if(obj->m_relationModifications.begin(), obj->m_relationModifications.end(), [&choiceIndex](auto& indexAndNodeId) { return (choiceIndex == indexAndNodeId.first); }) != obj->m_relationModifications.end()) {
+			while (std::find_if(obj->relationModifications.begin(), 
+				obj->relationModifications.end(), 
+				[&choiceIndex](auto& indexAndNodeId) { return (choiceIndex == indexAndNodeId.first); }) != obj->relationModifications.end()) 
+			{
 				choiceIndex++;
 			}
 
-			obj->m_relationModifications.emplace_back(std::pair(choiceIndex, 0));
+			obj->relationModifications.emplace_back(std::pair(choiceIndex, 0));
 			modified = true;
 		}
 
