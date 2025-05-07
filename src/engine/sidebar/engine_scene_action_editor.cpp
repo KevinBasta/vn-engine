@@ -585,6 +585,82 @@ bool ActionField<ActionTextOverrides>::drawInternal(ActionTextOverrides* obj) {
 * Relations
 */
 
+static bool relationModifier(ActionRelationModify& obj) {
+	bool modified{ false };
+
+	const ModelEngineInterface::RelationTypeMap& relationTypes{ ModelEngineInterface::getRelationTypesMap() };
+	const ModelEngineInterface::CharacterMap& characterMap{ ModelEngineInterface::getCharacterMap() };
+
+	if (characterMap.size() == 0) { ImGui::BeginDisabled(); }
+
+	// Validate the current relation type id
+	if (!relationTypes.contains(obj.relation.relationTypeId)) {
+		obj.relation.relationTypeId = relationTypes.begin()->first;
+	}
+
+	ImGui::PushItemWidth(150.0f);
+	ImGui::Text("Relation Of: ");
+	ImGui::SameLine();
+	modified |= characterCombo(obj.relation.characterOneId);
+
+	ImGui::Text("With:        ");
+	ImGui::SameLine();
+	modified |= characterCombo(obj.relation.characterTwoId);
+
+	ImGui::Text("Relationship Type: ");
+	ImGui::SameLine();
+	// TODO: relationTypes.at can fail when size is 0
+	if (ImGui::BeginCombo(addIdFromPtr("###", &obj.relation.relationTypeId).c_str(), relationTypes.at(obj.relation.relationTypeId).c_str(), 0)) {
+		for (auto iter{ relationTypes.begin() }; iter != relationTypes.end(); iter++) {
+			const bool isSelected = (obj.relation.relationTypeId == iter->first);
+
+			if (ImGui::Selectable(iter->second.c_str(), isSelected)) {
+				// avoid needless update by only updating if a new item is selected
+				if (obj.relation.relationTypeId != iter->first) {
+					obj.relation.relationTypeId = iter->first;
+					modified = true;
+					ImGui::SetItemDefaultFocus();
+				}
+			}
+
+		}
+		ImGui::EndCombo();
+	}
+	ImGui::PopItemWidth();
+
+
+	ImGui::PushItemWidth(100.0f);
+	ImGui::Text("Modification Type: ");
+	ImGui::SameLine();
+	static std::vector<RelationModification> modificationChoices{ RelationModification::SET,RelationModification::ADD,RelationModification::SUBTRACT,RelationModification::MULTIPLY,RelationModification::DIVIDE };
+	if (ImGui::BeginCombo(addIdFromPtr("###", &obj.modificationType).c_str(), toString(obj.modificationType).c_str(), 0)) {
+		for (auto iter{ modificationChoices.begin() }; iter != modificationChoices.end(); iter++) {
+			const bool isSelected = (obj.modificationType == *iter);
+
+			if (ImGui::Selectable(toString(*iter).c_str(), isSelected)) {
+				// avoid needless update by only updating if a new item is selected
+				if (obj.modificationType != *iter) {
+					obj.modificationType = *iter;
+					modified = true;
+					ImGui::SetItemDefaultFocus();
+				}
+			}
+
+		}
+		ImGui::EndCombo();
+	}
+	ImGui::PopItemWidth();
+
+	ImGui::Text("Value: ");
+	ImGui::SameLine();
+	int min{ obj.modificationType == RelationModification::DIVIDE ? 1 : 0 };
+	modified |= ImGui::DragInt(addIdFromPtr("###", &obj.modificationValue).c_str(), &(obj.modificationValue), 1, min, INT_MAX, "%d", ImGuiSliderFlags_AlwaysClamp);
+
+	if (characterMap.size() == 0) { ImGui::EndDisabled(); }
+
+	return modified;
+}
+
 bool ActionField<ActionRelationModify>::drawInternal(ActionRelationModify* obj) {
 	bool modified = false;
 
@@ -595,75 +671,7 @@ bool ActionField<ActionRelationModify>::drawInternal(ActionRelationModify* obj) 
 
 	if (isTreeOpen)
 	{
-		const ModelEngineInterface::RelationTypeMap& relationTypes{ ModelEngineInterface::getRelationTypesMap() };
-		const ModelEngineInterface::CharacterMap& characterMap{ ModelEngineInterface::getCharacterMap() };
-		
-		if (characterMap.size() == 0) { ImGui::BeginDisabled(); }
-
-		// Validate the current relation type id
-		if (!relationTypes.contains(obj->relation.relationTypeId)) {
-			obj->relation.relationTypeId = relationTypes.begin()->first;
-		}
-
-		ImGui::PushItemWidth(150.0f);
-		ImGui::Text("Relation Of: ");
-		ImGui::SameLine();
-		modified |= characterCombo(obj->relation.characterOneId);
-
-		ImGui::Text("With:        ");
-		ImGui::SameLine();
-		modified |= characterCombo(obj->relation.characterTwoId);
-
-		ImGui::Text("Relationship Type: ");
-		ImGui::SameLine();
-		// TODO: relationTypes.at can fail when size is 0
-		if (ImGui::BeginCombo(addIdFromPtr("###", &obj->relation.relationTypeId).c_str(), relationTypes.at(obj->relation.relationTypeId).c_str(), 0)) {
-			for (auto iter{ relationTypes.begin() }; iter != relationTypes.end(); iter++) {
-				const bool isSelected = (obj->relation.relationTypeId == iter->first);
-
-				if (ImGui::Selectable(iter->second.c_str(), isSelected)) {
-					// avoid needless update by only updating if a new item is selected
-					if (obj->relation.relationTypeId != iter->first) {
-						obj->relation.relationTypeId = iter->first;
-						modified = true;
-						ImGui::SetItemDefaultFocus();
-					}
-				}
-
-			}
-			ImGui::EndCombo();
-		}
-		ImGui::PopItemWidth();
-
-
-		ImGui::PushItemWidth(100.0f);
-		ImGui::Text("Modification Type: ");
-		ImGui::SameLine();
-		static std::vector<RelationModification> modificationChoices{RelationModification::SET,RelationModification::ADD,RelationModification::SUBTRACT,RelationModification::MULTIPLY,RelationModification::DIVIDE};
-		if (ImGui::BeginCombo(addIdFromPtr("###", &obj->modificationType).c_str(), toString(obj->modificationType).c_str(), 0)) {
-			for (auto iter{ modificationChoices.begin() }; iter != modificationChoices.end(); iter++) {
-				const bool isSelected = (obj->modificationType == *iter);
-
-				if (ImGui::Selectable(toString(*iter).c_str(), isSelected)) {
-					// avoid needless update by only updating if a new item is selected
-					if (obj->modificationType != *iter) {
-						obj->modificationType = *iter;
-						modified = true;
-						ImGui::SetItemDefaultFocus();
-					}
-				}
-
-			}
-			ImGui::EndCombo();
-		}
-		ImGui::PopItemWidth();
-
-		ImGui::Text("Value: ");
-		ImGui::SameLine();
-		int min{ obj->modificationType == RelationModification::DIVIDE ? 1 : 0 };
-		modified |= ImGui::DragInt(addIdFromPtr("###", &obj->modificationValue).c_str(), &(obj->modificationValue), 1, min, INT_MAX, "%d", ImGuiSliderFlags_AlwaysClamp);
-
-		if (characterMap.size() == 0) { ImGui::EndDisabled(); }
+		modified |= relationModifier(*obj);
 
 		ImGui::TreePop();
 	}
@@ -779,15 +787,210 @@ bool ActionField<ActionChoice>::drawInternal(ActionChoice* obj) {
 bool ActionField<ActionChoiceSetNextNode>::drawInternal(ActionChoiceSetNextNode* obj) {
 	bool modified = false;
 
+	std::string actionTitle{ ActionHelper{ std::in_place_type<ActionChoiceSetNextNode> }.getName() };
+
+	bool isTreeOpen = ImGui::TreeNode(addIdFromPtr(actionTitle, obj).c_str());
+	dragDropSourceSet(obj);
+
+	if (isTreeOpen)
+	{
+		for (auto iter{ obj->m_nodeId.begin() }; iter != obj->m_nodeId.end(); iter++) {
+			// Slider: which choice index
+			bool choiceIndexModified{ false };
+			ChoiceIndex tempIndex{ iter->first };
+
+			ImGui::Text("Choice #");
+			ImGui::SameLine();
+			ImGui::PushItemWidth(50.0f);
+			choiceIndexModified = ImGui::DragScalar(addIdFromPtr("###", &(iter->first)).c_str(), ImGuiDataType_U32, &tempIndex, 1, 0);
+			ImGui::PopItemWidth();
+			if (choiceIndexModified) {
+				if (std::find_if(obj->m_nodeId.begin(), obj->m_nodeId.end(), [&tempIndex](auto& indexAndNodeId) { return (tempIndex == indexAndNodeId.first); }) == obj->m_nodeId.end()) {
+					iter->first = tempIndex;
+					modified = true;
+				}
+			}
+
+			// Slider: which node
+			ImGui::SameLine();
+			ImGui::Text("Node Id ");
+			ImGui::SameLine();
+			ImGui::PushItemWidth(50.0f);
+			modified |= ImGui::DragScalar(addIdFromPtr("###", &(iter->second)).c_str(), ImGuiDataType_U32, &(iter->second), 1, 0);
+			ImGui::PopItemWidth();
+
+			// Button: delete an action
+			ImGui::SameLine();
+			if (ImGui::Button(addIdFromPtr("Delete", &(iter->second)).c_str(), ImVec2(75.0f, 0.0f))) {
+				iter = obj->m_nodeId.erase(iter);
+				modified = true;
+
+				if (iter == obj->m_nodeId.end()) {
+					break;
+				}
+			}
+		}
+
+		// Button: add an action
+		if (ImGui::Button(addIdFromPtr("Add Choice Action", obj).c_str(), ImVec2(150.0f, 0.0f))) {
+			int choiceIndex{ 0 };
+
+			while (std::find_if(obj->m_nodeId.begin(), obj->m_nodeId.end(), [&choiceIndex](auto& indexAndNodeId) { return (choiceIndex == indexAndNodeId.first); }) != obj->m_nodeId.end()) {
+				choiceIndex++;
+			}
+		
+			obj->m_nodeId.emplace_back(std::pair(choiceIndex, 0));
+			modified = true;
+		}
+
+		ImGui::TreePop();
+	}
+
 	return modified;
 }
 bool ActionField<ActionChoiceSetNextChapter>::drawInternal(ActionChoiceSetNextChapter* obj) {
 	bool modified = false;
 
+	std::string actionTitle{ ActionHelper{ std::in_place_type<ActionChoiceSetNextChapter> }.getName() };
+
+	bool isTreeOpen = ImGui::TreeNode(addIdFromPtr(actionTitle, obj).c_str());
+	dragDropSourceSet(obj);
+
+	if (isTreeOpen)
+	{
+		for (auto iter{ obj->m_chapterId.begin() }; iter != obj->m_chapterId.end(); iter++) {
+			// Slider: which choice index
+			bool choiceIndexModified{ false };
+			ChoiceIndex tempIndex{ iter->first };
+
+			ImGui::Text("Choice #");
+			ImGui::SameLine();
+			ImGui::PushItemWidth(50.0f);
+			choiceIndexModified = ImGui::DragScalar(addIdFromPtr("###", &(iter->first)).c_str(), ImGuiDataType_U32, &tempIndex, 1, 0);
+			ImGui::PopItemWidth();
+			if (choiceIndexModified) {
+				if (std::find_if(obj->m_chapterId.begin(), obj->m_chapterId.end(), [&tempIndex](auto& indexAndNodeId) { return (tempIndex == indexAndNodeId.first); }) == obj->m_chapterId.end()) {
+					iter->first = tempIndex;
+					modified = true;
+				}
+			}
+
+			// Slider: which node
+			ImGui::SameLine();
+			ImGui::Text("Chapter Id ");
+			ImGui::SameLine();
+			ImGui::PushItemWidth(50.0f);
+			modified |= ImGui::DragScalar(addIdFromPtr("###", &(iter->second)).c_str(), ImGuiDataType_U32, &(iter->second), 1, 0);
+			ImGui::PopItemWidth();
+
+			// Button: delete an action
+			ImGui::SameLine();
+			if (ImGui::Button(addIdFromPtr("Delete", &(iter->second)).c_str(), ImVec2(75.0f, 0.0f))) {
+				iter = obj->m_chapterId.erase(iter);
+				modified = true;
+
+				if (iter == obj->m_chapterId.end()) {
+					break;
+				}
+			}
+		}
+
+		// Button: add an action
+		if (ImGui::Button(addIdFromPtr("Add Choice Action", obj).c_str(), ImVec2(150.0f, 0.0f))) {
+			int choiceIndex{ 0 };
+
+			while (std::find_if(obj->m_chapterId.begin(), obj->m_chapterId.end(), [&choiceIndex](auto& indexAndNodeId) { return (choiceIndex == indexAndNodeId.first); }) != obj->m_chapterId.end()) {
+				choiceIndex++;
+			}
+
+			obj->m_chapterId.emplace_back(std::pair(choiceIndex, 0));
+			modified = true;
+		}
+
+		ImGui::TreePop();
+	}
+
 	return modified;
 }
 bool ActionField<ActionChoiceModifyRelation>::drawInternal(ActionChoiceModifyRelation* obj) {
 	bool modified = false;
+
+	std::string actionTitle{ ActionHelper{ std::in_place_type<ActionChoiceModifyRelation> }.getName() };
+
+	bool isTreeOpen = ImGui::TreeNode(addIdFromPtr(actionTitle, obj).c_str());
+	dragDropSourceSet(obj);
+
+	if (isTreeOpen)
+	{
+		for (auto iter{ obj->m_relationModifications.begin() }; iter != obj->m_relationModifications.end(); iter++) {
+			// Slider: which choice index
+			bool choiceIndexModified{ false };
+			ChoiceIndex tempIndex{ iter->first };
+
+			ImGui::Text("Choice #");
+			ImGui::SameLine();
+			ImGui::PushItemWidth(50.0f);
+			choiceIndexModified = ImGui::DragScalar(addIdFromPtr("###", &(iter->first)).c_str(), ImGuiDataType_U32, &tempIndex, 1, 0);
+			ImGui::PopItemWidth();
+			if (choiceIndexModified) {
+				if (std::find_if(obj->m_relationModifications.begin(), obj->m_relationModifications.end(), [&tempIndex](auto& indexAndNodeId) { return (tempIndex == indexAndNodeId.first); }) == obj->m_relationModifications.end()) {
+					iter->first = tempIndex;
+					modified = true;
+				}
+			}
+
+			// Slider: which node
+			ImGui::SameLine();
+			ImGui::Text("Relation Modifications:");
+			ImGui::Indent(30.0f);
+			for (auto modification{ iter->second.begin() }; modification != iter->second.end(); modification++) {
+				modified |= relationModifier(*modification);
+				
+				ImGui::Indent(30.0f);
+				if (ImGui::Button(addIdFromPtr("Delete Relation Modification", &(*modification)).c_str(), ImVec2(250.0f, 0.0f))) {
+					modification = iter->second.erase(modification);
+					modified = true;
+
+					if (modification == iter->second.end()) {
+						break;
+					}
+				}
+				ImGui::Unindent(30.0f);
+			}
+
+			if (ImGui::Button(addIdFromPtr("Add Relation Modification", &(iter->second)).c_str(), ImVec2(250.0f, 0.0f))) {
+				iter->second.emplace_back();
+				modified = true;
+			}
+
+			ImGui::Unindent(30.0f);
+
+
+			// Button: delete an action
+			if (ImGui::Button(addIdFromPtr("Delete Choice Action", &(iter->second)).c_str(), ImVec2(200.0f, 0.0f))) {
+				iter = obj->m_relationModifications.erase(iter);
+				modified = true;
+
+				if (iter == obj->m_relationModifications.end()) {
+					break;
+				}
+			}
+		}
+
+		// Button: add an action
+		if (ImGui::Button(addIdFromPtr("Add Choice Action", obj).c_str(), ImVec2(200.0f, 0.0f))) {
+			int choiceIndex{ 0 };
+
+			while (std::find_if(obj->m_relationModifications.begin(), obj->m_relationModifications.end(), [&choiceIndex](auto& indexAndNodeId) { return (choiceIndex == indexAndNodeId.first); }) != obj->m_relationModifications.end()) {
+				choiceIndex++;
+			}
+
+			obj->m_relationModifications.emplace_back(std::pair(choiceIndex, 0));
+			modified = true;
+		}
+
+		ImGui::TreePop();
+	}
 
 	return modified;
 }

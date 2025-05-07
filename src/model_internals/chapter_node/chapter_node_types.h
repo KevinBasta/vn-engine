@@ -228,15 +228,15 @@ struct ActionRelationSetNextChapter {
 using ChoiceIndex = int;
 
 struct ActionChoiceModifyRelation {
-	std::unordered_map<ChoiceIndex, std::vector<ActionRelationModify>> m_relationModifications{};
+	std::vector<std::pair<ChoiceIndex, std::vector<ActionRelationModify>>> m_relationModifications{};
 };
 
 struct ActionChoiceSetNextNode {
-	std::unordered_map<ChoiceIndex, id> m_nodeId{};
+	std::vector<std::pair<ChoiceIndex, id>> m_nodeId{};
 };
 
 struct ActionChoiceSetNextChapter {
-	std::unordered_map<ChoiceIndex, id> m_chapterId{};
+	std::vector<std::pair<ChoiceIndex, id>> m_chapterId{};
 };
 
 

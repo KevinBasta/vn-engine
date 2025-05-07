@@ -29,7 +29,11 @@ void StateChoices::chooseDownChoice() {
 void StateChoices::applySetNextNodeId() {
 	if (m_choiceSetNextNode == nullptr) { return; }
 
-	auto nodeId{ m_choiceSetNextNode->m_nodeId.find(m_currentChoiceIndex) };
+	auto nodeId{
+		std::find_if(m_choiceSetNextNode->m_nodeId.begin(), 
+				  m_choiceSetNextNode->m_nodeId.end(), 
+				  [current = m_currentChoiceIndex](auto& iter) { return (current == iter.first); })
+	};
 
 	if (nodeId != m_choiceSetNextNode->m_nodeId.end()) {
 		m_stateSubject->m_nextNode.set(nodeId->second);
@@ -39,7 +43,11 @@ void StateChoices::applySetNextNodeId() {
 void StateChoices::applySetNextChapterId() {
 	if (m_choiceSetNextChapter == nullptr) { return; }
 
-	auto chapterId{ m_choiceSetNextChapter->m_chapterId.find(m_currentChoiceIndex) };
+	auto chapterId{ 
+		std::find_if(m_choiceSetNextChapter->m_chapterId.begin(), 
+				  m_choiceSetNextChapter->m_chapterId.end(), 
+				  [current = m_currentChoiceIndex](auto& iter) { return (current == iter.first); })
+	};
 
 	if (chapterId != m_choiceSetNextChapter->m_chapterId.end()) {
 		m_stateSubject->m_nextChapter.set(chapterId->second);
@@ -49,7 +57,11 @@ void StateChoices::applySetNextChapterId() {
 void StateChoices::applyRelationModifications() {
 	if (m_choiceModifyRelations == nullptr || m_stateSubject == nullptr) { return; }
 
-	auto modificationsIter{ m_choiceModifyRelations->m_relationModifications.find(m_currentChoiceIndex) };
+	auto modificationsIter{
+		std::find_if(m_choiceModifyRelations->m_relationModifications.begin(), 
+				  m_choiceModifyRelations->m_relationModifications.end(), 
+				  [current = m_currentChoiceIndex](auto& iter) { return (current == iter.first); })
+	};
 
 	if (modificationsIter != m_choiceModifyRelations->m_relationModifications.end()) {
 		for (auto modification : modificationsIter->second) {
