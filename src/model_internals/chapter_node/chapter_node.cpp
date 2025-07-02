@@ -150,7 +150,7 @@ bool ChapterNode::doStep(StateSubject* stateSubject, int stepIndex) {
 NodeState ChapterNode::action(StateSubject* stateSubject, int stepIndex) 
 {
 	// TODO: Remove m_temp
-	std::cout << "test speaker" << " said: " << m_temp << std::endl;
+	std::cout << "test speaker" << " said: " << m_name << std::endl;
 	std::cout << "step #" << stepIndex << std::endl;
 
 	//if (stepIndex < m_steps.size()) {

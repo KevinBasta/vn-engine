@@ -201,7 +201,13 @@ add_executable (
 	"src/state/interface/state_subject.cpp"
 	"src/state/interface/state_subject.h"
 	"src/state/interface/state_types.h"
- "src/engine/sidebar/engine_relations_config.h" "src/engine/sidebar/engine_relations_config.cpp" "src/engine/sidebar/engine_characters_config.h" "src/engine/sidebar/engine_characters_config.cpp" "src/engine/sidebar/engine_textures_config.h" "src/engine/sidebar/engine_textures_config.cpp")
+ "src/engine/sidebar/engine_relations_config.h" 
+ "src/engine/sidebar/engine_relations_config.cpp" 
+ "src/engine/sidebar/engine_characters_config.h" 
+ "src/engine/sidebar/engine_characters_config.cpp" 
+ "src/engine/sidebar/engine_textures_config.h" 
+ "src/engine/sidebar/engine_textures_config.cpp" 
+ "src/engine/engine_helpers.h")
 
 target_include_directories(
 	"vn_engine"

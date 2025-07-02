@@ -8,7 +8,7 @@
 NodeRunner Node::iter() { return NodeRunner(this); }
 
 Node::~Node() {
-	std::cout << "Destructing NODE: " << m_temp << std::endl;
+	std::cout << "Destructing NODE: " << m_name << std::endl;
 }
 
 std::ostream& operator<<(std::ostream& out, Node& node) {

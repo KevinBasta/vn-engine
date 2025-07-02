@@ -160,7 +160,7 @@ public:
 	virtual void print(bool printChildren) {
 		std::cout << "chapter node" << std::endl;
 		std::cout << "id:		 " << m_id << std::endl;
-		std::cout << "temp data: " << m_temp << std::endl;
+		std::cout << "temp data: " << m_name << std::endl;
 	}
 };
 

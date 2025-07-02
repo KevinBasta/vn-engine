@@ -14,12 +14,14 @@
 #include "chapter_node_builder.h"
 
 #include "action_type_mappers.h"
+#include "engine_helpers.h"
 #include "engine_scene_action_editor.h"
 #include "engine_scene_action_type_list.h"
 
 #include "engine_drag_drop_payload.h"
 
 #include "imgui.h"
+#include "imgui_stdlib.h"
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
 #include "imgui_internal.h"
@@ -32,6 +34,9 @@
 #include <functional>
 #include <utility>
 #include <chrono>
+#include <locale>
+#include <codecvt>
+#include <algorithm>
 
 enum ActionDragMode {
 	DRAG_COPY,
@@ -448,6 +453,83 @@ private:
 		}
 	};
 
+	class NodeProperties {
+	private:
+		static bool drawLinkedNodesGrouping(std::set<id>& set) {
+			bool modified{ false };
+
+			int i{ 0 };
+			for (auto iter{ set.begin() }; iter != set.end(); iter++) {
+				ImGui::Text((std::string("#") + std::to_string(i)).c_str());
+				ImGui::SameLine();
+
+				ImGui::PushItemWidth(100.0f);
+				// TODO: disallow negative
+				int current = *iter;
+				ImGui::DragInt(addIdFromPtr("Value", &iter).c_str(), &current, 0.0f, *iter, *iter, "%d", 0);
+				ImGui::PopItemWidth();
+
+				ImGui::SameLine();
+				if (ImGui::Button(addIdFromPtr("Delete", &iter).c_str(), ImVec2(150.0f, 0.0f))) {
+					iter = set.erase(iter);
+					modified = true;
+
+					if (iter == set.end()) {
+						break;
+					}
+				}
+
+				i++;
+			}
+
+			// Button submission
+			if (ImGui::Button(addIdFromPtr("Add", &set).c_str(), ImVec2(150.0f, 0.0f))) {
+				set.insert(0);
+				modified = true;
+			}
+		
+			return modified;
+		}
+
+
+	public:
+		static void draw() {
+			ImGui::Spacing();
+			ImGui::SeparatorText("Node Properties");
+
+			if (m_stateSubject == nullptr) { return; }
+
+			id nodeId{ m_stateSubject->getNodeId() };
+			Node* nodeBase{ ModelEngineInterface::getNodeById(nodeId) };
+			if (nodeBase == nullptr) { return; }
+
+			// TODO: node objects to be brought into one object OR
+			// do dynamic cast and handle failure of the cast?
+			ChapterNode* node{ static_cast<ChapterNode*>(nodeBase) };
+
+			// Edit node name
+			static ImGuiInputTextFlags textFlags{ 0 };
+			std::string nodeName = ChapterNodeBuilder{ node }.getName();
+			ImGui::PushItemWidth(150.0f);
+			bool nodeNameModified{ ImGui::InputText(addIdFromPtr("##nodeName", &(node->m_name)).c_str(), &(nodeName), textFlags) };
+			ImGui::PopItemWidth();
+
+			if (nodeNameModified) { ChapterNodeBuilder{ node }.setName(nodeName); }
+			
+			// Builder actions
+			// Add/remove node parents
+			ImGui::Text("Node Parents");
+			bool parentsModified = drawLinkedNodesGrouping(ChapterNodeBuilder{ node }.getParentsSet());
+
+			ImGui::Spacing();
+
+			// Add/remove node children
+			ImGui::Text("Node Children");
+			bool childrenModified = drawLinkedNodesGrouping(ChapterNodeBuilder{ node }.getChildrenSet());
+		}
+	};
+
+
 private:
 	// TODO: is this needed?
 	void updateViewport() {
@@ -458,6 +540,8 @@ public:
 	void draw() {
 		NodeEditorToolTip::draw();
 		
+		NodeProperties::draw();
+
 		ComboActions::draw();
 
 		NodeSteps::draw();
