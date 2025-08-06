@@ -10,13 +10,13 @@
 #include "state_subject.h"
 
 #include "node.h"
-#include "node.h"
 #include "node_builder.h"
 
 #include "action_type_mappers.h"
 #include "engine_helpers.h"
 #include "engine_scene_action_editor.h"
 #include "engine_scene_action_type_list.h"
+#include "linkable_builder.h"
 
 #include "engine_drag_drop_payload.h"
 
@@ -30,7 +30,7 @@
 #include <GLFW/glfw3.h>
 
 #include <string>
-#include <vector>
+#include <set>
 #include <functional>
 #include <utility>
 #include <chrono>
@@ -455,63 +455,80 @@ private:
 
 	class NodeProperties {
 	private:
+		inline static id nodeIdToAdd{ 0 };
+
 		static bool nodeExists(id nodeId) {
 			return ModelCommonInterface::getNodeById(nodeId) != nullptr;
 		}
 
-		static bool drawLinkedNodesGrouping(Node* node, std::vector<id>& list, bool children) {
+		static bool drawLinkedNodesGrouping(Node* node, std::set<id>& list, bool isParentOf) {
 			bool modified{ false };
 
-			int i{ 0 };
-			for (auto iter{ list.begin() }; iter != list.end(); iter++) {
-				ImGui::Text((std::string("#") + std::to_string(i)).c_str());
-				ImGui::SameLine();
+			bool isTreeOpen{ false };
 
-				ImGui::PushItemWidth(100.0f);
-				// TODO: disallow negative
-				id current = *iter;
-				ImGui::DragInt(addIdFromPtr("Value", &(*iter)).c_str(), &current, 0.0f, *iter, *iter, "%d", 0);
-				if (current != *iter && current > 0 && nodeExists(current) && std::find(list.begin(), list.end(), current) == list.end()) {
-					id oldid = *iter;
-					*iter = current;
-
-					Node* oldConnectedNode{ ModelCommonInterface::getNodeById(oldid) };
-					Node* newConnectedNode{ ModelCommonInterface::getNodeById(current) };
-					if (oldConnectedNode == nullptr || newConnectedNode == nullptr) { break; }
-
-					if (children) {
-						NodeBuilder{ node }.link(newConnectedNode);
-						NodeBuilder{ node }.unlink(oldConnectedNode);
-					}
-					else {
-						NodeBuilder{ newConnectedNode }.link(node);
-						NodeBuilder{ oldConnectedNode }.unlink(node);
-					}
-					iter = std::find(list.begin(), list.end(), current);
-					modified = true;
-				}
-
-				ImGui::PopItemWidth();
-
-				ImGui::SameLine();
-				if (ImGui::Button(addIdFromPtr("Delete", &(*iter)).c_str(), ImVec2(150.0f, 0.0f))) {
-					if (*iter == 0) {
-						iter = list.erase(iter);
-					}
-					else {
-						NodeBuilder{ node }.unlink(ModelCommonInterface::getNodeById(*iter));
-					}
-					modified = true;
-					break;
-				}
-
-				i++;
+			if (isParentOf) {
+				isTreeOpen = ImGui::TreeNodeEx(addIdFromPtr("Node Children###stayopen", &list).c_str(), ImGuiTreeNodeFlags_Framed);
+			}
+			else {
+				isTreeOpen = ImGui::TreeNodeEx(addIdFromPtr("Node Parents###stayopen", &list).c_str(), ImGuiTreeNodeFlags_Framed);
 			}
 
-			// Button submission
-			if (ImGui::Button(addIdFromPtr("Add", &list).c_str(), ImVec2(150.0f, 0.0f)) && std::find(list.begin(), list.end(), 0) == list.end()) {
-				list.emplace_back(0);
+			if (ImGui::BeginDragDropTarget())
+			{
+				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ADD_TO_SET"))
+				{
+					assert(payload->DataSize == sizeof(id));
+					id payloadCast = *(const id*)payload->Data;
+
+					if (payloadCast > 0 && nodeExists(payloadCast)) {
+						if (isParentOf) {
+							NodeBuilder{ node }.link(ModelCommonInterface::getNodeById(payloadCast));
+						}
+						else {
+							NodeBuilder{ ModelCommonInterface::getNodeById(payloadCast) }.link(node);
+						}
+					}
+				}
+				
 				modified = true;
+
+				ImGui::EndDragDropTarget();
+			}
+
+			if (isTreeOpen) {
+				int i{ 0 };
+				for (auto iter{ list.begin() }; iter != list.end(); iter++) {
+					ImGui::Text((std::string("#") + std::to_string(i)).c_str());
+					ImGui::SameLine();
+					ImGui::PushItemWidth(100.0f);
+
+					id dummyInt{ *iter };
+					ImGui::DragInt(addIdFromPtr("Value", &(*iter)).c_str(), &dummyInt, 0.0f, *iter, *iter, "%d", 0);
+
+					if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None))
+					{
+						std::string idAsStr{ std::to_string(*iter) };
+
+						if (isParentOf) {
+							ImGui::SetDragDropPayload("DELETE_CHILD", &(*iter), sizeof(id));
+							ImGui::Text((std::string("child node ") + idAsStr).c_str());
+						}
+						else {
+							ImGui::SetDragDropPayload("DELETE_PARENT", &(*iter), sizeof(id));
+							ImGui::Text((std::string("parent node ") + idAsStr).c_str());
+						}
+
+						ImGui::EndDragDropSource();
+					}
+
+					ImGui::PopItemWidth();
+
+					i++;
+				}
+
+
+
+				ImGui::TreePop();
 			}
 		
 			return modified;
@@ -526,32 +543,71 @@ private:
 			if (m_stateSubject == nullptr) { return; }
 
 			id nodeId{ m_stateSubject->getNodeId() };
-			Node* nodeBase{ ModelEngineInterface::getNodeById(nodeId) };
-			if (nodeBase == nullptr) { return; }
-
-			// TODO: node objects to be brought into one object OR
-			// do dynamic cast and handle failure of the cast?
-			Node* node{ static_cast<Node*>(nodeBase) };
+			Node* node{ ModelEngineInterface::getNodeById(nodeId) };
+			if (node == nullptr) { return; }
 
 			// Edit node name
 			static ImGuiInputTextFlags textFlags{ 0 };
 			std::string nodeName = NodeBuilder{ node }.getName();
 			ImGui::PushItemWidth(150.0f);
+			ImGui::Text("Node Name:");
+			ImGui::SameLine();
 			bool nodeNameModified{ ImGui::InputText(addIdFromPtr("##nodeName", &(node->m_name)).c_str(), &(nodeName), textFlags) };
 			ImGui::PopItemWidth();
 
 			if (nodeNameModified) { NodeBuilder{ node }.setName(nodeName); }
 			
-			// Builder actions
-			// Add/remove node parents
-			ImGui::Text("Node Parents");
-			bool parentsModified = drawLinkedNodesGrouping(node, NodeBuilder{ node }.getParents(), true);
+			bool isTreeOpen = ImGui::TreeNodeEx("Parents and Children###stayopen", ImGuiTreeNodeFlags_Framed);
 
-			ImGui::Spacing();
+			if (isTreeOpen) {
+				// Add/remove node parents
+				bool parentsModified = drawLinkedNodesGrouping(node, LinkableBuilder{ node }.getParents(), false);
 
-			// Add/remove node children
-			ImGui::Text("Node Children");
-			bool childrenModified = drawLinkedNodesGrouping(node, NodeBuilder{ node }.getChildren(), false);
+				ImGui::Spacing();
+
+				// Add/remove node children
+				bool childrenModified = drawLinkedNodesGrouping(node, LinkableBuilder{ node }.getChildren(), true);
+
+				// Delete button for parents or children
+				ImGui::Button("Delete##DeleteAParentOrChildNodeLink", ImVec2(260.0f, 0.0f));
+				if (ImGui::BeginDragDropTarget())
+				{
+					if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DELETE_PARENT"))
+					{
+						assert(payload->DataSize == sizeof(id));
+						id payloadCast = *(const id*)payload->Data;
+
+						NodeBuilder{ ModelCommonInterface::getNodeById(payloadCast) }.unlink(node);
+					}
+					if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DELETE_CHILD"))
+					{
+						assert(payload->DataSize == sizeof(id));
+						id payloadCast = *(const id*)payload->Data;
+
+						NodeBuilder{ node }.unlink(ModelCommonInterface::getNodeById(payloadCast));
+					}
+
+					ImGui::EndDragDropTarget();
+				}
+
+				// Add a new node as parent or child
+				ImGui::Text("Drag To Add: ");
+				ImGui::SameLine();
+
+				ImGui::PushItemWidth(149.0f);
+				ImGui::DragInt(addIdFromPtr("####", &(nodeIdToAdd)).c_str(), &nodeIdToAdd, 0.0f, nodeIdToAdd, nodeIdToAdd, "%d", 0);
+				ImGui::PopItemWidth();
+				
+				if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None))
+				{
+					ImGui::SetDragDropPayload("ADD_TO_SET", &(nodeIdToAdd), sizeof(id));
+					ImGui::Text((std::string("Adding ") + std::to_string(nodeIdToAdd)).c_str());
+
+					ImGui::EndDragDropSource();
+				}
+
+				ImGui::TreePop();
+			}
 		}
 	};
 

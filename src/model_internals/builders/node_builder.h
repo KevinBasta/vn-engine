@@ -313,9 +313,6 @@ public:
 		m_nodeDerived->m_name = newName;
 	}
 
-	std::vector<id>& getParents() { return m_nodeDerived->m_parents; }
-	std::vector<id>& getChildren() { return m_nodeDerived->m_children; }
-
 private:
 	void updateStepActionsArray() {
 
