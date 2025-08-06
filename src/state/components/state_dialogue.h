@@ -2,7 +2,7 @@
 #define VN_STATE_DIALOGUE_H
 
 #include "state_types.h"
-#include "chapter_node_types.h"
+#include "node_types.h"
 #include "model_subject.h"
 #include "model_runtime_interface.h"
 

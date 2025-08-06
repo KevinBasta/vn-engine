@@ -12,58 +12,58 @@ ActionHelper::ActionHelper(std::in_place_type_t<T>) {
 	this->getName = []() { return ActionToActionName<T>::name; };
 
 	this->drawNew = []() { return ActionField<T>::drawField(); };
-	this->drawExisting = [](ChapterNode* node, int index) { return ActionField<T>::drawField(node, index); };
+	this->drawExisting = [](Node* node, int index) { return ActionField<T>::drawField(node, index); };
 	
 	this->addStaticObjToNodeAtStep = [](id nodeId, index stepIndex) {
-		ChapterNode* node = static_cast<ChapterNode*>(ModelEngineInterface::getNodeById(nodeId));
+		Node* node = static_cast<Node*>(ModelEngineInterface::getNodeById(nodeId));
 		if (node == nullptr) { return; }
 
 		T obj = ActionField<T>::getStaticObj();
 
 		if (ActionToType<T>::type == ActionAmount::SINGLE) {
-			ChapterNodeBuilder{ node }.replaceAction<T>(stepIndex, obj);
+			NodeBuilder{ node }.replaceAction<T>(stepIndex, obj);
 		}
 		else if (ActionToType<T>::type == ActionAmount::VECTOR) {
-			ChapterNodeBuilder{ node }.addAction<T>(stepIndex, obj);
+			NodeBuilder{ node }.addAction<T>(stepIndex, obj);
 		}
 	};
 
 	this->performMove = [](ActionDragDropPayload payload) {
-		ChapterNode* node = static_cast<ChapterNode*>(ModelEngineInterface::getNodeById(payload.m_nodeId));
+		Node* node = static_cast<Node*>(ModelEngineInterface::getNodeById(payload.m_nodeId));
 		if (node == nullptr) { return false; }
 
-		return ChapterNodeBuilder{ node }.moveAction<T>(payload);
+		return NodeBuilder{ node }.moveAction<T>(payload);
 	};
 	this->performCopy = [](ActionDragDropPayload payload) {
-		ChapterNode* node = static_cast<ChapterNode*>(ModelEngineInterface::getNodeById(payload.m_nodeId));
+		Node* node = static_cast<Node*>(ModelEngineInterface::getNodeById(payload.m_nodeId));
 		if (node == nullptr) { return false; }
 
-		return ChapterNodeBuilder{ node }.copyAction<T>(payload);
+		return NodeBuilder{ node }.copyAction<T>(payload);
 	};
 	this->performSwap = [](ActionDragDropPayload payload) {
-		ChapterNode* node = static_cast<ChapterNode*>(ModelEngineInterface::getNodeById(payload.m_nodeId));
+		Node* node = static_cast<Node*>(ModelEngineInterface::getNodeById(payload.m_nodeId));
 		if (node == nullptr) { return false; }
 
-		return ChapterNodeBuilder{ node }.swapAction<T>(payload);
+		return NodeBuilder{ node }.swapAction<T>(payload);
 	};
 
 	this->forceSwap = [](ActionDragDropPayload payload) {
-		ChapterNode* node = static_cast<ChapterNode*>(ModelEngineInterface::getNodeById(payload.m_nodeId));
+		Node* node = static_cast<Node*>(ModelEngineInterface::getNodeById(payload.m_nodeId));
 		if (node == nullptr) { return false; }
 
-		return ChapterNodeBuilder{ node }.forceSwap<T>(payload);
+		return NodeBuilder{ node }.forceSwap<T>(payload);
 	};
 	this->performDelete = [](ActionDragDropPayload payload) {
-		ChapterNode* node = static_cast<ChapterNode*>(ModelEngineInterface::getNodeById(payload.m_nodeId));
+		Node* node = static_cast<Node*>(ModelEngineInterface::getNodeById(payload.m_nodeId));
 		if (node == nullptr) { return false; }
 
-		return ChapterNodeBuilder{ node }.deleteAction<T>(payload);
+		return NodeBuilder{ node }.deleteAction<T>(payload);
 	};
 	this->containsStep = [](id nodeId, index stepIndex) {
-		ChapterNode* node = static_cast<ChapterNode*>(ModelEngineInterface::getNodeById(nodeId));
+		Node* node = static_cast<Node*>(ModelEngineInterface::getNodeById(nodeId));
 		if (node == nullptr) { return false; }
 
-		return ChapterNodeBuilder{ node }.containsStep<T>(stepIndex);
+		return NodeBuilder{ node }.containsStep<T>(stepIndex);
 	};
 
 	this->equals =  [](ActionHelper helper) { return std::string(helper.getName()) == std::string(ActionToActionName<T>::name); };

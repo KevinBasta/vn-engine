@@ -3,7 +3,7 @@
 #define VN_RELATIONS_H
 
 #include "id.h"
-#include "chapter_node_types.h"
+#include "node_types.h"
 
 #include <utility>
 #include <string>

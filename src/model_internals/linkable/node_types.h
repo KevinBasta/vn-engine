@@ -14,7 +14,7 @@
 #include <list>
 #include <unordered_map>
 
-enum class ChapterNodeActionType {
+enum class NodeActionType {
 	BACKGROUND,
 	SPRITE,
 	TEXT,

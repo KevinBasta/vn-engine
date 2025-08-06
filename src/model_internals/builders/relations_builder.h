@@ -3,7 +3,7 @@
 
 #include "id.h"
 #include "relations.h"
-#include "chapter_node_types.h"
+#include "node_types.h"
 
 class RelationsBuilder {
 private:

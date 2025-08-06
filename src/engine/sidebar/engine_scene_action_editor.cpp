@@ -2,7 +2,7 @@
 #include "id.h"
 
 #include "model_engine_interface.h"
-#include "chapter_node_types.h"
+#include "node_types.h"
 
 #include "action_type_mappers.h"
 

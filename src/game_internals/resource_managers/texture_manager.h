@@ -3,7 +3,7 @@
 
 #include "id.h"
 #include "texture.h"
-#include "chapter_node_types.h"
+#include "node_types.h"
 
 #include <memory>
 #include <unordered_map>

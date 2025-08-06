@@ -133,15 +133,13 @@ add_executable (
 
 	# model internal
 	"src/model_internals/builders/chapter_builder.h"
-	"src/model_internals/builders/chapter_node_builder.h"
+	"src/model_internals/builders/node_builder.h"
 	"src/model_internals/builders/character_builder.h"
 	"src/model_internals/builders/linkable_builder.h"
 	"src/model_internals/builders/relations_builder.h"
 	"src/model_internals/builders/texture_store_builder.h"
 
-	"src/model_internals/chapter_node/chapter_node.cpp"
-	"src/model_internals/chapter_node/chapter_node.h"
-	"src/model_internals/chapter_node/chapter_node_types.h"
+	"src/model_internals/linkable/node_types.h"
 
 	"src/model_internals/character/character.cpp"
 	"src/model_internals/character/character.h"

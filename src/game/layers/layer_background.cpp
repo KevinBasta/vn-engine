@@ -6,7 +6,7 @@
 #include "texture.h"
 #include "state_subject.h"
 #include "state_background.h"
-#include "chapter_node_types.h"
+#include "node_types.h"
 
 void BackgroundLayer::drawBackground(const FrameDimensions& frame, TextureIdentifier& textureIdentifier) {
 	m_defaultShader.use();

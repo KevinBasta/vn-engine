@@ -79,7 +79,7 @@ public:
 	}
 
 	void unlink(Linkable* secondLinkableObject) {
-		if (m_linkableObject == nullptr || secondLinkableObject == nullptr) { std::cout << "LINKABLE BUILDER: ONE OF OBJECTS IS NULL" << std::endl; }
+		if (m_linkableObject == nullptr || secondLinkableObject == nullptr) { std::cout << "LINKABLE BUILDER: ONE OF OBJECTS IS NULL" << std::endl; return; }
 
 		if (secondLinkableObject != nullptr) {
 			removeChild(secondLinkableObject->getId());

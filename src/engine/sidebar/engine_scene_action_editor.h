@@ -1,9 +1,9 @@
 #ifndef VN_ENGINE_NODE_ACTION_FIELDS_H
 #define VN_ENGINE_NODE_ACTION_FIELDS_H
 
-#include "chapter_node_types.h"
-#include "chapter_node_builder.h"
-#include "chapter_node.h"
+#include "node_types.h"
+#include "node_builder.h"
+#include "node.h"
 
 #include "engine_scene_action_type_list.h"
 
@@ -66,13 +66,13 @@ public:
 	}
 
 	// Set m_drawnObj to obj inside node at index and drawInternal()
-	static bool drawField(ChapterNode* node, int index) {
+	static bool drawField(Node* node, int index) {
 		bool modified = false;
 		
 		
 		// Error checking and getting actions
 		if (node == nullptr) { return modified; }
-		std::vector<T>* objects = ChapterNodeBuilder{ node }.getStepActions<T>(index);
+		std::vector<T>* objects = NodeBuilder{ node }.getStepActions<T>(index);
 		if (objects == nullptr) { return modified; }
 		if (objects->size() == 0) { return modified; }
 

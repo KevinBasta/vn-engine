@@ -10,8 +10,8 @@
 #include "state_subject.h"
 
 #include "node.h"
-#include "chapter_node.h"
-#include "chapter_node_builder.h"
+#include "node.h"
+#include "node_builder.h"
 
 #include "action_type_mappers.h"
 #include "engine_helpers.h"
@@ -96,7 +96,7 @@ private:
 			}
 			
 			// Used in the next two sections
-			ChapterNode* node{ static_cast<ChapterNode*>(ModelEngineInterface::getNodeById(m_stateSubject->getNodeId())) };
+			Node* node{ static_cast<Node*>(ModelEngineInterface::getNodeById(m_stateSubject->getNodeId())) };
 			
 			// Step Index picking
 			ImGui::Text("Step Index:");
@@ -172,7 +172,7 @@ private:
 
 			// TODO: node objects to be brought into one object OR
 			// do dynamic cast and handle failure of the cast?
-			ChapterNode* node{ static_cast<ChapterNode*>(nodeBase) };
+			Node* node{ static_cast<Node*>(nodeBase) };
 
 			ImGui::Spacing();
 			ImGui::SeparatorText(node->getName().c_str());
@@ -184,7 +184,7 @@ private:
 		}
 
 
-		static void drawStep(ChapterNode* node, index stepIndex) {
+		static void drawStep(Node* node, index stepIndex) {
 			if (node == nullptr) { return; }
 
 			std::string stepTitle{ "Step #" + std::to_string(stepIndex) };
@@ -343,10 +343,10 @@ private:
 
 			// Add and delete step buttons
 			if (ImGui::Button("Add Step", ImVec2(200, 50))) {
-				ChapterNode* node{ static_cast<ChapterNode*>(ModelEngineInterface::getNodeById(m_stateSubject->getNodeId())) };
+				Node* node{ static_cast<Node*>(ModelEngineInterface::getNodeById(m_stateSubject->getNodeId())) };
 
 				if (node != nullptr) {
-					ChapterNodeBuilder{ node }.incrementSteps();
+					NodeBuilder{ node }.incrementSteps();
 				}
 			}
 
@@ -378,7 +378,7 @@ private:
 				{
 					assert(payload->DataSize == sizeof(ActionDragDropPayload));
 
-					ChapterNode* node{ static_cast<ChapterNode*>(ModelEngineInterface::getNodeById(m_stateSubject->getNodeId())) };
+					Node* node{ static_cast<Node*>(ModelEngineInterface::getNodeById(m_stateSubject->getNodeId())) };
 					
 					if (node != nullptr && node->getTotalSteps() > 1) {
 						ActionDragDropPayload payloadCast = *(const ActionDragDropPayload*) payload->Data;
@@ -393,7 +393,7 @@ private:
 							}
 						}
 
-						ChapterNodeBuilder{ node }.decrementSteps();
+						NodeBuilder{ node }.decrementSteps();
 	
 						m_stateSubject->goToNodeId(payloadCast.m_nodeId);
 						if (m_stateSubject->getStepIndex() == node->getTotalSteps()) {
@@ -459,7 +459,7 @@ private:
 			return ModelCommonInterface::getNodeById(nodeId) != nullptr;
 		}
 
-		static bool drawLinkedNodesGrouping(ChapterNode* node, std::vector<id>& list, bool children) {
+		static bool drawLinkedNodesGrouping(Node* node, std::vector<id>& list, bool children) {
 			bool modified{ false };
 
 			int i{ 0 };
@@ -480,12 +480,12 @@ private:
 					if (oldConnectedNode == nullptr || newConnectedNode == nullptr) { break; }
 
 					if (children) {
-						ChapterNodeBuilder{ node }.link(newConnectedNode);
-						ChapterNodeBuilder{ node }.unlink(oldConnectedNode);
+						NodeBuilder{ node }.link(newConnectedNode);
+						NodeBuilder{ node }.unlink(oldConnectedNode);
 					}
 					else {
-						//ChapterNodeBuilder{ newConnectedNode }.link(node);
-						//ChapterNodeBuilder{ oldConnectedNode }.unlink(node);
+						NodeBuilder{ newConnectedNode }.link(node);
+						NodeBuilder{ oldConnectedNode }.unlink(node);
 					}
 					iter = std::find(list.begin(), list.end(), current);
 					modified = true;
@@ -499,7 +499,7 @@ private:
 						iter = list.erase(iter);
 					}
 					else {
-						ChapterNodeBuilder{ node }.unlink(ModelCommonInterface::getNodeById(*iter));
+						NodeBuilder{ node }.unlink(ModelCommonInterface::getNodeById(*iter));
 					}
 					modified = true;
 					break;
@@ -531,27 +531,27 @@ private:
 
 			// TODO: node objects to be brought into one object OR
 			// do dynamic cast and handle failure of the cast?
-			ChapterNode* node{ static_cast<ChapterNode*>(nodeBase) };
+			Node* node{ static_cast<Node*>(nodeBase) };
 
 			// Edit node name
 			static ImGuiInputTextFlags textFlags{ 0 };
-			std::string nodeName = ChapterNodeBuilder{ node }.getName();
+			std::string nodeName = NodeBuilder{ node }.getName();
 			ImGui::PushItemWidth(150.0f);
 			bool nodeNameModified{ ImGui::InputText(addIdFromPtr("##nodeName", &(node->m_name)).c_str(), &(nodeName), textFlags) };
 			ImGui::PopItemWidth();
 
-			if (nodeNameModified) { ChapterNodeBuilder{ node }.setName(nodeName); }
+			if (nodeNameModified) { NodeBuilder{ node }.setName(nodeName); }
 			
 			// Builder actions
 			// Add/remove node parents
 			ImGui::Text("Node Parents");
-			bool parentsModified = drawLinkedNodesGrouping(node, ChapterNodeBuilder{ node }.getParents(), false);
+			bool parentsModified = drawLinkedNodesGrouping(node, NodeBuilder{ node }.getParents(), true);
 
 			ImGui::Spacing();
 
 			// Add/remove node children
 			ImGui::Text("Node Children");
-			bool childrenModified = drawLinkedNodesGrouping(node, ChapterNodeBuilder{ node }.getChildren(), true);
+			bool childrenModified = drawLinkedNodesGrouping(node, NodeBuilder{ node }.getChildren(), false);
 		}
 	};
 

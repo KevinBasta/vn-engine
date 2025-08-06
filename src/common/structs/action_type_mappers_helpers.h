@@ -2,7 +2,7 @@
 #ifndef VN_ACTION_TYPE_MAPPERS_HELPERS_H
 #define VN_ACTION_TYPE_MAPPERS_HELPERS_H
 
-#include "chapter_node_types.h"
+#include "node_types.h"
 
 enum ActionAmount {
 	SINGLE,
@@ -59,7 +59,7 @@ template<> struct ActionToType<ActionChoiceSetNextChapter>		{ static constexpr A
 // For chapter_node.cpp
 //template<typename> struct ActionToStateHandler;
 
-// For chapter_node_builder.h
+// For node_builder.h
 //template<typename> struct ActionToNodeVariable;
 
 //template<> struct ActionToStateHandler<ActionBackgroundTexture> { static constexpr auto handler = &StateSubject::m_background; };
@@ -84,25 +84,25 @@ template<> struct ActionToType<ActionChoiceSetNextChapter>		{ static constexpr A
 //template<> struct ActionToStateHandler<ActionChoiceSetNextChapter> { static constexpr auto handler = &StateSubject::m_choices; };
 
 
-//template<> struct ActionToNodeVariable<ActionBackgroundTexture> { static constexpr auto handler = &ChapterNode::m_backgroundSteps; };
+//template<> struct ActionToNodeVariable<ActionBackgroundTexture> { static constexpr auto handler = &Node::m_backgroundSteps; };
 //
-//template<> struct ActionToNodeVariable<ActionSpriteProperty> { static constexpr auto handler = &ChapterNode::m_spriteTextureSteps; };
-//template<> struct ActionToNodeVariable<ActionSpriteAnimationGeneric> { static constexpr auto handler = &ChapterNode::m_spriteGenericAnimationSteps; };
+//template<> struct ActionToNodeVariable<ActionSpriteProperty> { static constexpr auto handler = &Node::m_spriteTextureSteps; };
+//template<> struct ActionToNodeVariable<ActionSpriteAnimationGeneric> { static constexpr auto handler = &Node::m_spriteGenericAnimationSteps; };
 //
-//template<> struct ActionToNodeVariable<ActionTextRender> { static constexpr auto handler = &ChapterNode::m_textRenderSteps; };
-//template<> struct ActionToNodeVariable<ActionTextLine> { static constexpr auto handler = &ChapterNode::m_textLineSteps; };
-//template<> struct ActionToNodeVariable<ActionTextOverrideSpeaker> { static constexpr auto handler = &ChapterNode::m_textOverrideSpeakerSteps; };
-//template<> struct ActionToNodeVariable<ActionTextOverrideColor> { static constexpr auto handler = &ChapterNode::m_textOverrideColorSteps; };
+//template<> struct ActionToNodeVariable<ActionTextRender> { static constexpr auto handler = &Node::m_textRenderSteps; };
+//template<> struct ActionToNodeVariable<ActionTextLine> { static constexpr auto handler = &Node::m_textLineSteps; };
+//template<> struct ActionToNodeVariable<ActionTextOverrideSpeaker> { static constexpr auto handler = &Node::m_textOverrideSpeakerSteps; };
+//template<> struct ActionToNodeVariable<ActionTextOverrideColor> { static constexpr auto handler = &Node::m_textOverrideColorSteps; };
 //
-//template<> struct ActionToNodeVariable<ActionRelationModify> { static constexpr auto handler = &ChapterNode::m_relationshipModifySteps; };
-//template<> struct ActionToNodeVariable<ActionRelationSetNextNode> { static constexpr auto handler = &ChapterNode::m_relationshipChooseNode; };
-//template<> struct ActionToNodeVariable<ActionRelationSetNextChapter> { static constexpr auto handler = &ChapterNode::m_relationshipChooseChapter; };
+//template<> struct ActionToNodeVariable<ActionRelationModify> { static constexpr auto handler = &Node::m_relationshipModifySteps; };
+//template<> struct ActionToNodeVariable<ActionRelationSetNextNode> { static constexpr auto handler = &Node::m_relationshipChooseNode; };
+//template<> struct ActionToNodeVariable<ActionRelationSetNextChapter> { static constexpr auto handler = &Node::m_relationshipChooseChapter; };
 //
-//template<> struct ActionToNodeVariable<ActionSetNextChapter> { static constexpr auto handler = &ChapterNode::m_setNextChapter; };
+//template<> struct ActionToNodeVariable<ActionSetNextChapter> { static constexpr auto handler = &Node::m_setNextChapter; };
 //
-//template<> struct ActionToNodeVariable<ActionChoice> { static constexpr auto handler = &ChapterNode::m_choiceTextOptions; };
-//template<> struct ActionToNodeVariable<ActionChoiceSetNextNode> { static constexpr auto handler = &ChapterNode::m_choiceSetNextNode; };
-//template<> struct ActionToNodeVariable<ActionChoiceModifyRelation> { static constexpr auto handler = &ChapterNode::m_choiceRelationModifications; };
-//template<> struct ActionToNodeVariable<ActionChoiceSetNextChapter> { static constexpr auto handler = &ChapterNode::m_choiceSetNextChapter; };
+//template<> struct ActionToNodeVariable<ActionChoice> { static constexpr auto handler = &Node::m_choiceTextOptions; };
+//template<> struct ActionToNodeVariable<ActionChoiceSetNextNode> { static constexpr auto handler = &Node::m_choiceSetNextNode; };
+//template<> struct ActionToNodeVariable<ActionChoiceModifyRelation> { static constexpr auto handler = &Node::m_choiceRelationModifications; };
+//template<> struct ActionToNodeVariable<ActionChoiceSetNextChapter> { static constexpr auto handler = &Node::m_choiceSetNextChapter; };
 
 #endif // VN_ACTION_TYPE_MAPPERS_HELPERS_H

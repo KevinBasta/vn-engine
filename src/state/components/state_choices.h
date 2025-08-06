@@ -2,7 +2,7 @@
 #define VN_STATE_CHOICES_H
 
 #include "id.h"
-#include "chapter_node_types.h"
+#include "node_types.h"
 
 #include <vector>
 

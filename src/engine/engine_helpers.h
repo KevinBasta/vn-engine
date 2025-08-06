@@ -1,7 +1,7 @@
 #ifndef VN_ENGINE_HELPERS_H
 #define VN_ENGINE_HELPERS_H
 
-#include "chapter_node_types.h"
+#include "node_types.h"
 
 #include <locale>
 #include <codecvt>

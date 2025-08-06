@@ -8,7 +8,7 @@
 #include "texture.h"
 #include "character.h"
 #include "node.h"
-#include "chapter_node.h"
+#include "node.h"
 #include "chapter.h"
 #include "texture_store.h"
 
@@ -22,7 +22,7 @@
 
 #include "engine_chapter_manager.h"
 
-#include "chapter_node_builder.h"
+#include "node_builder.h"
 #include "character_builder.h"
 #include "chapter_builder.h"
 #include "relations_builder.h"

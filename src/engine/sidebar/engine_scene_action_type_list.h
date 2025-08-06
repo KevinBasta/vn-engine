@@ -2,7 +2,7 @@
 #ifndef VN_ENGINE_ACTION_TYPE_LIST_H
 #define VN_ENGINE_ACTION_TYPE_LIST_H
 
-#include "chapter_node_types.h"
+#include "node_types.h"
 #include "action_type_mappers.h"
 
 #include <vector>

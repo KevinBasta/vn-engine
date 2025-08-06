@@ -3,7 +3,7 @@
 
 #include "id.h"
 #include "state_types.h"
-#include "chapter_node_types.h"
+#include "node_types.h"
 
 #include <unordered_map>
 #include <list>
