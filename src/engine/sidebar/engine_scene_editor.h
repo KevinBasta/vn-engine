@@ -455,36 +455,62 @@ private:
 
 	class NodeProperties {
 	private:
-		static bool drawLinkedNodesGrouping(std::set<id>& set) {
+		static bool nodeExists(id nodeId) {
+			return ModelCommonInterface::getNodeById(nodeId) != nullptr;
+		}
+
+		static bool drawLinkedNodesGrouping(ChapterNode* node, std::vector<id>& list, bool children) {
 			bool modified{ false };
 
 			int i{ 0 };
-			for (auto iter{ set.begin() }; iter != set.end(); iter++) {
+			for (auto iter{ list.begin() }; iter != list.end(); iter++) {
 				ImGui::Text((std::string("#") + std::to_string(i)).c_str());
 				ImGui::SameLine();
 
 				ImGui::PushItemWidth(100.0f);
 				// TODO: disallow negative
-				int current = *iter;
-				ImGui::DragInt(addIdFromPtr("Value", &iter).c_str(), &current, 0.0f, *iter, *iter, "%d", 0);
+				id current = *iter;
+				ImGui::DragInt(addIdFromPtr("Value", &(*iter)).c_str(), &current, 0.0f, *iter, *iter, "%d", 0);
+				if (current != *iter && current > 0 && nodeExists(current) && std::find(list.begin(), list.end(), current) == list.end()) {
+					id oldid = *iter;
+					*iter = current;
+
+					Node* oldConnectedNode{ ModelCommonInterface::getNodeById(oldid) };
+					Node* newConnectedNode{ ModelCommonInterface::getNodeById(current) };
+					if (oldConnectedNode == nullptr || newConnectedNode == nullptr) { break; }
+
+					if (children) {
+						ChapterNodeBuilder{ node }.link(newConnectedNode);
+						ChapterNodeBuilder{ node }.unlink(oldConnectedNode);
+					}
+					else {
+						//ChapterNodeBuilder{ newConnectedNode }.link(node);
+						//ChapterNodeBuilder{ oldConnectedNode }.unlink(node);
+					}
+					iter = std::find(list.begin(), list.end(), current);
+					modified = true;
+				}
+
 				ImGui::PopItemWidth();
 
 				ImGui::SameLine();
-				if (ImGui::Button(addIdFromPtr("Delete", &iter).c_str(), ImVec2(150.0f, 0.0f))) {
-					iter = set.erase(iter);
-					modified = true;
-
-					if (iter == set.end()) {
-						break;
+				if (ImGui::Button(addIdFromPtr("Delete", &(*iter)).c_str(), ImVec2(150.0f, 0.0f))) {
+					if (*iter == 0) {
+						iter = list.erase(iter);
 					}
+					else {
+						ChapterNodeBuilder{ node }.unlink(ModelCommonInterface::getNodeById(*iter));
+					}
+					modified = true;
+					break;
 				}
 
 				i++;
 			}
 
 			// Button submission
-			if (ImGui::Button(addIdFromPtr("Add", &set).c_str(), ImVec2(150.0f, 0.0f))) {
-				set.insert(0);
+			if (ImGui::Button(addIdFromPtr("Add", &list).c_str(), ImVec2(150.0f, 0.0f)) && std::find(list.begin(), list.end(), 0) == list.end()) {
+				list.emplace_back(0);
 				modified = true;
 			}
 		
@@ -519,13 +545,13 @@ private:
 			// Builder actions
 			// Add/remove node parents
 			ImGui::Text("Node Parents");
-			bool parentsModified = drawLinkedNodesGrouping(ChapterNodeBuilder{ node }.getParentsSet());
+			bool parentsModified = drawLinkedNodesGrouping(node, ChapterNodeBuilder{ node }.getParents(), false);
 
 			ImGui::Spacing();
 
 			// Add/remove node children
 			ImGui::Text("Node Children");
-			bool childrenModified = drawLinkedNodesGrouping(ChapterNodeBuilder{ node }.getChildrenSet());
+			bool childrenModified = drawLinkedNodesGrouping(node, ChapterNodeBuilder{ node }.getChildren(), true);
 		}
 	};
 

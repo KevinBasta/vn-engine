@@ -11,6 +11,7 @@
 static std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> myconv;
 
 static std::string addIdFromPtr(std::string name, void* ptr) { return name + "##" + std::to_string((unsigned long long)(void**)ptr); }
+static std::string addIdFromPtr(std::string name, const void* ptr) { return name + "##" + std::to_string((unsigned long long)(void**)ptr); }
 static std::string addIdFromPtr(std::wstring name, void* ptr) {
 	return myconv.to_bytes(name) + std::to_string((unsigned long long)(void**)ptr);
 }

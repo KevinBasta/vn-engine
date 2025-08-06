@@ -13,5 +13,5 @@ id Linkable::getFirstChildId() const {
 }
 
 bool Linkable::hasChild(id childId) const {
-	return m_children.contains(childId);
+	return std::find(m_children.begin(), m_children.end(), childId) != m_children.end();
 }

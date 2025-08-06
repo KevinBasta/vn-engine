@@ -83,6 +83,9 @@ public:
 		m_pinOutIdToNodeId.clear();
 		m_drawnNodes.clear();
 		m_graphNodes.clear();
+		m_strayNodes.clear();
+		m_pendingStrayNodes.clear();
+		m_nodeIdToLinkableId.clear();
 
 		int x = 10;
 		int y = 10;
@@ -102,7 +105,7 @@ public:
 				continue;
 			}
 
-			for (auto parentId : currentLinkable->getParentsSet()) {
+			for (auto parentId : currentLinkable->getParents()) {
 				if (m_graphNodes.contains(parentId)) {
 					isStray = false;
 					break;
@@ -210,7 +213,7 @@ public:
 							LinkableBuilder{ parentLinkable }.unlink(childLinkable);
 
 							// Set child to be set as a stray node after checking next head graph render
-							m_pendingStrayNodes.insert(childId);
+							//m_pendingStrayNodes.insert(childId);
 
 							break;
 						}
@@ -313,7 +316,7 @@ public:
 	}
 
 	void populateParentLinks(const Linkable* linkable, ed::PinId inPinId) {
-		for (auto connectedLinkableId : linkable->getParentsSet()) {
+		for (auto connectedLinkableId : linkable->getParents()) {
 			if (m_currentLinks.find({ connectedLinkableId, linkable->getId() }) == m_currentLinks.end()) {
 				m_currentLinks[{ connectedLinkableId, linkable->getId() }].m_id = m_linkId++;
 			}
@@ -323,7 +326,7 @@ public:
 	}
 
 	void populateChildLinks(const Linkable* linkable, ed::PinId outPinId) {
-		for (auto connectedLinkableId : linkable->getChildrenSet()) {
+		for (auto connectedLinkableId : linkable->getChildren()) {
 			if (m_currentLinks.find({ linkable->getId(), connectedLinkableId }) == m_currentLinks.end()) {
 				m_currentLinks[{linkable->getId(), connectedLinkableId}].m_id = m_linkId++;
 			}
@@ -335,7 +338,7 @@ public:
 	void drawGraphChildNodes(const Linkable* linkable, int x = 0, int y = 0) {
 		// Create a list of linkable objects who's pointers are obtainable
 		std::list<const Linkable*> validChildLinkables{};
-		for (auto connectedLinkableId : linkable->getChildrenSet()) {
+		for (auto connectedLinkableId : linkable->getChildren()) {
 			const Linkable* childLinkable{ getLinkableById(connectedLinkableId) };
 
 			if (childLinkable != nullptr && connectedLinkableId != linkable->getId() && !m_drawnNodes.contains(connectedLinkableId)) {
