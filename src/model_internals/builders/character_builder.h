@@ -12,12 +12,12 @@ private:
 	Character* m_character{ nullptr };
 
 public:
-	CharacterBuilder() : m_character{ new Character{} } { std::cout << "CHARACTER BUILDRE CONSTRUCTOR" << std::endl; }
-	CharacterBuilder(Character* character) : m_character{ character } { std::cout << "CHARACTER BUILDRE CONSTRUCTOR" << std::endl; }
-	~CharacterBuilder() { std::cout << "CHARACTER BUILDER DESTRUCTOR" << std::endl; }
+	CharacterBuilder() : m_character{ new Character{} } {}
+	CharacterBuilder(Character* character) : m_character{ character } {}
+	~CharacterBuilder() {}
 
 	CharacterBuilder& setName(std::wstring name) {
-		if (m_character == nullptr) { return *this; }
+		if (m_character == nullptr) { std::cout << "CHARACTER NULL" << std::endl; return *this; }
 
 		m_character->m_name = name;
 
@@ -25,9 +25,18 @@ public:
 	}
 
 	CharacterBuilder& setTextColor(glm::vec3 color) {
-		if (m_character == nullptr) { return *this; }
+		if (m_character == nullptr) { std::cout << "CHARACTER NULL" << std::endl; return *this; }
 
 		m_character->m_textColor = color;
+		
+		return *this;
+	}
+
+	CharacterBuilder& reset() {
+		if (m_character == nullptr) { std::cout << "CHARACTER NULL" << std::endl; return *this; }
+
+		m_character->m_name = L"";
+		m_character->m_textColor = glm::vec3();
 		
 		return *this;
 	}

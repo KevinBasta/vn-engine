@@ -27,6 +27,7 @@ VnEngine::VnEngine(VnWindow* window, StateSubject* stateSubject, GameContext* co
 	m_engineChapterGraph{ stateSubject },
 	m_engineStepTimeline{ stateSubject },
 	m_enginePreview{ context },
+	m_engineCharacterEditor{ stateSubject },
 	m_engineSceneEditor{ stateSubject }
 {
 	initImgui();
@@ -112,6 +113,7 @@ void VnEngine::createDockspace() {
 				ImGui::DockBuilderDockWindow(WINDOW_NODE_GRAPH, dockspace_id);
 				ImGui::DockBuilderDockWindow(WINDOW_STEP_TIMELINE, dockspace_id);
 				ImGui::DockBuilderDockWindow(WINDOW_SCENE_EDITOR, dockspace_id);
+				ImGui::DockBuilderDockWindow(WINDOW_CHAPTERS_EDITOR, dockspace_id);
 				ImGui::DockBuilderDockWindow(WINDOW_CHARACTERS_CONFIG, dockspace_id);
 				ImGui::DockBuilderDockWindow(WINDOW_TEXTURES_CONFIG, dockspace_id);
 				ImGui::DockBuilderDockWindow(WINDOW_RELATIONS_CONFIG, dockspace_id);
@@ -130,6 +132,7 @@ void VnEngine::createDockspace() {
 				ImGui::DockBuilderDockWindow(WINDOW_NODE_GRAPH, dock_id_down);
 				ImGui::DockBuilderDockWindow(WINDOW_STEP_TIMELINE, dock_id_down);
 				ImGui::DockBuilderDockWindow(WINDOW_SCENE_EDITOR, dock_id_left);
+				ImGui::DockBuilderDockWindow(WINDOW_CHAPTERS_EDITOR, dock_id_left);
 				ImGui::DockBuilderDockWindow(WINDOW_CHARACTERS_CONFIG, dock_id_left);
 				ImGui::DockBuilderDockWindow(WINDOW_TEXTURES_CONFIG, dock_id_left);
 				ImGui::DockBuilderDockWindow(WINDOW_RELATIONS_CONFIG, dock_id_left);
@@ -208,7 +211,7 @@ void VnEngine::draw() {
 	ImGui::End();
 
 	if (ImGui::Begin(WINDOW_CHARACTERS_CONFIG)) {
-		
+		m_engineCharacterEditor.draw();
 	}
 	ImGui::End();
 
@@ -222,6 +225,11 @@ void VnEngine::draw() {
 	}
 	ImGui::End();
 
+	if (ImGui::Begin(WINDOW_CHAPTERS_EDITOR)) {
+		
+	}
+	ImGui::End();
+	
 	if (ImGui::Begin(WINDOW_SCENE_EDITOR)) {
 		m_engineSceneEditor.draw();
 	}

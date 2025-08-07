@@ -488,6 +488,9 @@ private:
 							NodeBuilder{ ModelCommonInterface::getNodeById(payloadCast) }.link(node);
 						}
 					}
+					else {
+						NodeEditorToolTip::setTooltipFor(500, "Invalid Node Id!");
+					}
 				}
 				
 				modified = true;
@@ -569,7 +572,7 @@ private:
 				bool childrenModified = drawLinkedNodesGrouping(node, LinkableBuilder{ node }.getChildren(), true);
 
 				// Delete button for parents or children
-				ImGui::Button("Delete##DeleteAParentOrChildNodeLink", ImVec2(260.0f, 0.0f));
+				bool deleteClicked = ImGui::Button("Delete##DeleteAParentOrChildNodeLink", ImVec2(260.0f, 0.0f));
 				if (ImGui::BeginDragDropTarget())
 				{
 					if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DELETE_PARENT"))
@@ -590,11 +593,15 @@ private:
 					ImGui::EndDragDropTarget();
 				}
 
+				if (deleteClicked) {
+					NodeEditorToolTip::setTooltipFor(500, "Drag parent/child here to delete a link!");
+				}
+
 				// Add a new node as parent or child
-				ImGui::Text("Drag To Add: ");
+				ImGui::Text("Drag To Add Node Id: ");
 				ImGui::SameLine();
 
-				ImGui::PushItemWidth(149.0f);
+				ImGui::PushItemWidth(129.0f);
 				ImGui::DragInt(addIdFromPtr("####", &(nodeIdToAdd)).c_str(), &nodeIdToAdd, 0.0f, nodeIdToAdd, nodeIdToAdd, "%d", 0);
 				ImGui::PopItemWidth();
 				

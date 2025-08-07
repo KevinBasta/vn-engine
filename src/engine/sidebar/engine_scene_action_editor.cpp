@@ -365,7 +365,8 @@ static bool characterCombo(id& characterId) {
 	const ModelEngineInterface::CharacterMap& characterMap{ ModelEngineInterface::getCharacterMap() };
 
 	// Set the object character to the first valid instance if it's not valid
-	if (!characterMap.contains(characterId)) {
+	if (characterMap.find(characterId) == characterMap.end()) {
+		std::cout << "ERROR MAP DOES NOT CONTAIN CHARACTER ID" << std::endl;
 		characterId = characterMap.begin()->first;
 	}
 

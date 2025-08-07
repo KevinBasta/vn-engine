@@ -16,7 +16,7 @@ public:
 	}
 
 	using CharacterMap = ModelCharacters::CharacterMap;
-	static const CharacterMap& getCharacterMap() {
+	static CharacterMap& getCharacterMap() {
 		ModelSubject* model{ ModelSubject::validateInstance() };
 
 		return model->m_modelCharacters.m_characters;

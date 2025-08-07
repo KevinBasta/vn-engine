@@ -11,6 +11,7 @@
 #include "engine_node_graph.h"
 #include "engine_step_timeline.h"
 #include "engine_preview.h"
+#include "engine_character_editor.h"
 #include "engine_scene_editor.h"
 
 #include "imgui.h"
@@ -26,6 +27,7 @@
 #define WINDOW_NODE_GRAPH			"NODE GRAPH"
 #define WINDOW_STEP_TIMELINE		"STEP TIMELINE"
 #define WINDOW_SCENE_EDITOR			"SCENE EDITOR"
+#define WINDOW_CHAPTERS_EDITOR		"CHAPTERS EDITOR"
 #define WINDOW_CHARACTERS_CONFIG	"CHARACTERS CONFIG"
 #define WINDOW_TEXTURES_CONFIG		"TEXTURES CONFIG"
 #define WINDOW_RELATIONS_CONFIG		"RELATIONS CONFIG"
@@ -49,6 +51,7 @@ private:
 	VnEngineNodeGraph		m_engineNodeGraph;
 	VnEngineStepTimeline	m_engineStepTimeline;
 
+	VnEngineCharacterEditor m_engineCharacterEditor;
 	VnEngineSceneEditor m_engineSceneEditor;
 
 

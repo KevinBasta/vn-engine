@@ -42,7 +42,6 @@ private:
 	friend class NodeBuilder;
 
 public:	
-	// Temp
 	std::string m_name{};
 
 public:
