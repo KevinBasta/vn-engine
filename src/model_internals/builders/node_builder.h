@@ -1,8 +1,8 @@
 #ifndef VN_CHAPTER_NODE_BUILDER_H
 #define VN_CHAPTER_NODE_BUILDER_H
 
-#include "chapter_node.h"
-#include "chapter_node_types.h"
+#include "node.h"
+#include "node_types.h"
 
 #include "engine_drag_drop_payload.h"
 #include "action_type_mappers_helpers.h"
@@ -12,38 +12,38 @@
 #include <vector>
 #include <unordered_map>
 
-class ChapterNodeBuilder : public LinkableBuilder {
+class NodeBuilder : public LinkableBuilder {
 private:
-	ChapterNode* m_nodeDerived{};
+	Node* m_nodeDerived{};
 
 public:
-	ChapterNodeBuilder() :
+	NodeBuilder() :
 		LinkableBuilder{ nullptr },
 		m_nodeDerived{ nullptr }
 	{
-		ChapterNode* node{ new ChapterNode };
+		Node* node{ new Node() };
 
 		m_linkableObject = node;
 		m_nodeDerived = node;
 	}
 
-	ChapterNodeBuilder(std::string text) :
+	NodeBuilder(std::string text) :
 		LinkableBuilder{ nullptr },
 		m_nodeDerived{ nullptr }
 	{
-		ChapterNode* node{ new ChapterNode(text) };
+		Node* node{ new Node(text) };
 
 		m_linkableObject = node;
 		m_nodeDerived = node;
 	}
 
-	ChapterNodeBuilder(ChapterNode* node) :
+	NodeBuilder(Node* node) :
 		LinkableBuilder{ node },
 		m_nodeDerived{ node }
 	{
 	}
 
-	ChapterNode* get() {
+	Node* get() {
 		return m_nodeDerived;
 	}
 
@@ -305,6 +305,14 @@ public:
 		m_nodeDerived->m_totalSteps++;
 	}
 
+	std::string getName() {
+		return m_nodeDerived->getName();
+	}
+
+	void setName(std::string newName) {
+		m_nodeDerived->m_name = newName;
+	}
+
 private:
 	void updateStepActionsArray() {
 
@@ -313,24 +321,24 @@ private:
 private:
 	template<typename> struct chapterNodeHelper;
 
-	template<> struct chapterNodeHelper<ActionBackgroundTexture> { static constexpr auto handler = &ChapterNode::m_backgroundSteps; };
+	template<> struct chapterNodeHelper<ActionBackgroundTexture> { static constexpr auto handler = &Node::m_backgroundSteps; };
 
-	template<> struct chapterNodeHelper<ActionSpriteAllProperties> { static constexpr auto handler = &ChapterNode::m_spritePropertySteps; };
-	template<> struct chapterNodeHelper<ActionSpriteAnimation> { static constexpr auto handler = &ChapterNode::m_spriteAnimationSteps; };
+	template<> struct chapterNodeHelper<ActionSpriteAllProperties> { static constexpr auto handler = &Node::m_spritePropertySteps; };
+	template<> struct chapterNodeHelper<ActionSpriteAnimation> { static constexpr auto handler = &Node::m_spriteAnimationSteps; };
 
-	template<> struct chapterNodeHelper<ActionTextLine> { static constexpr auto handler = &ChapterNode::m_textLineSteps; };
-	template<> struct chapterNodeHelper<ActionTextOverrides> { static constexpr auto handler = &ChapterNode::m_textOverrideSteps; };
+	template<> struct chapterNodeHelper<ActionTextLine> { static constexpr auto handler = &Node::m_textLineSteps; };
+	template<> struct chapterNodeHelper<ActionTextOverrides> { static constexpr auto handler = &Node::m_textOverrideSteps; };
 
-	template<> struct chapterNodeHelper<ActionRelationModify> { static constexpr auto handler = &ChapterNode::m_relationshipModifySteps; };
-	template<> struct chapterNodeHelper<ActionRelationSetNextNode> { static constexpr auto handler = &ChapterNode::m_relationshipChooseNode; };
-	template<> struct chapterNodeHelper<ActionRelationSetNextChapter> { static constexpr auto handler = &ChapterNode::m_relationshipChooseChapter; };
+	template<> struct chapterNodeHelper<ActionRelationModify> { static constexpr auto handler = &Node::m_relationshipModifySteps; };
+	template<> struct chapterNodeHelper<ActionRelationSetNextNode> { static constexpr auto handler = &Node::m_relationshipChooseNode; };
+	template<> struct chapterNodeHelper<ActionRelationSetNextChapter> { static constexpr auto handler = &Node::m_relationshipChooseChapter; };
 
-	template<> struct chapterNodeHelper<ActionSetNextChapter> { static constexpr auto handler = &ChapterNode::m_setNextChapter; };
+	template<> struct chapterNodeHelper<ActionSetNextChapter> { static constexpr auto handler = &Node::m_setNextChapter; };
 
-	template<> struct chapterNodeHelper<ActionChoice> { static constexpr auto handler = &ChapterNode::m_choiceTextOptions; };
-	template<> struct chapterNodeHelper<ActionChoiceSetNextNode> { static constexpr auto handler = &ChapterNode::m_choiceSetNextNode; };
-	template<> struct chapterNodeHelper<ActionChoiceModifyRelation> { static constexpr auto handler = &ChapterNode::m_choiceRelationModifications; };
-	template<> struct chapterNodeHelper<ActionChoiceSetNextChapter> { static constexpr auto handler = &ChapterNode::m_choiceSetNextChapter; };
+	template<> struct chapterNodeHelper<ActionChoice> { static constexpr auto handler = &Node::m_choiceTextOptions; };
+	template<> struct chapterNodeHelper<ActionChoiceSetNextNode> { static constexpr auto handler = &Node::m_choiceSetNextNode; };
+	template<> struct chapterNodeHelper<ActionChoiceModifyRelation> { static constexpr auto handler = &Node::m_choiceRelationModifications; };
+	template<> struct chapterNodeHelper<ActionChoiceSetNextChapter> { static constexpr auto handler = &Node::m_choiceSetNextChapter; };
 
 
 };

@@ -16,14 +16,14 @@ public:
 	}
 
 	using CharacterMap = ModelCharacters::CharacterMap;
-	static const CharacterMap& getCharacterMap() {
+	static CharacterMap& getCharacterMap() {
 		ModelSubject* model{ ModelSubject::validateInstance() };
 
 		return model->m_modelCharacters.m_characters;
 	}
 
 	using RelationTypeMap = ModelRelationTypes::TypeIdToNameMap;
-	static RelationTypeMap& getRelationTypesMap() {
+	static const RelationTypeMap& getRelationTypesMap() {
 		ModelSubject* model{ ModelSubject::validateInstance() };
 
 		return model->m_modelRelationTypes.m_relationTypeIdToName;

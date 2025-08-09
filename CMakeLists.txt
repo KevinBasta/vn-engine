@@ -74,11 +74,11 @@ add_executable (
 	"src/engine/node_editors/timelines/engine_step_timeline.h"
 	"src/engine/node_editors/timelines/engine_timeline.h"
 
-	"src/engine/sidebar/engine_action_type_list.h"
-	"src/engine/sidebar/engine_node_action_fields.cpp"
-	"src/engine/sidebar/engine_node_action_fields.h"
-	"src/engine/sidebar/engine_node_editor_sidebar.cpp"
-	"src/engine/sidebar/engine_node_editor_sidebar.h"
+	"src/engine/sidebar/engine_scene_action_type_list.h"
+	"src/engine/sidebar/engine_scene_action_editor.cpp"
+	"src/engine/sidebar/engine_scene_action_editor.h"
+	"src/engine/sidebar/engine_scene_editor.cpp"
+	"src/engine/sidebar/engine_scene_editor.h"
 
 	# game
 	"src/game/context.cpp"
@@ -133,15 +133,13 @@ add_executable (
 
 	# model internal
 	"src/model_internals/builders/chapter_builder.h"
-	"src/model_internals/builders/chapter_node_builder.h"
+	"src/model_internals/builders/node_builder.h"
 	"src/model_internals/builders/character_builder.h"
 	"src/model_internals/builders/linkable_builder.h"
 	"src/model_internals/builders/relations_builder.h"
 	"src/model_internals/builders/texture_store_builder.h"
 
-	"src/model_internals/chapter_node/chapter_node.cpp"
-	"src/model_internals/chapter_node/chapter_node.h"
-	"src/model_internals/chapter_node/chapter_node_types.h"
+	"src/model_internals/linkable/node_types.h"
 
 	"src/model_internals/character/character.cpp"
 	"src/model_internals/character/character.h"
@@ -201,7 +199,13 @@ add_executable (
 	"src/state/interface/state_subject.cpp"
 	"src/state/interface/state_subject.h"
 	"src/state/interface/state_types.h"
-)
+ "src/engine/sidebar/engine_relation_editor.h" 
+ "src/engine/sidebar/engine_relation_editor.cpp" 
+ "src/engine/sidebar/engine_character_editor.h" 
+ "src/engine/sidebar/engine_character_editor.cpp" 
+ "src/engine/sidebar/engine_texture_editor.h" 
+ "src/engine/sidebar/engine_texture_editor.cpp" 
+ "src/engine/engine_helpers.h" "src/engine/sidebar/engine_chapter_editor.h")
 
 target_include_directories(
 	"vn_engine"

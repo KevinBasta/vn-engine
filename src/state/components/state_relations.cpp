@@ -13,7 +13,7 @@ Relations::RelationValue StateRelations::getRelationValue(CharacterRelation& rel
 
 	auto iter{ m_characterRelationsData.find(relation.characterOneId) };
 	if (iter != m_characterRelationsData.end()) {
-		relationValue = iter->second.get()->getCharacterRelation(
+		relationValue = iter->second.get()->getRelationWith(
 			relation.characterTwoId,
 			relation.relationTypeId
 		);
@@ -142,7 +142,7 @@ void StateRelations::handle(const ActionRelationModify& action) {
 		m_characterRelationsData[action.relation.characterOneId] = std::make_unique<Relations>();
 	}
 
-	m_characterRelationsData[action.relation.characterOneId].get()->modifyCharacterRelation(
+	m_characterRelationsData[action.relation.characterOneId].get()->modifyRelationWith(
 		action.relation.characterTwoId,
 		action.relation.relationTypeId,
 		action.modificationType,

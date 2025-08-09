@@ -45,7 +45,7 @@ public:
 
 	std::wstring getLinkableName(id linkableId) {
 		std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
-		std::wstring wide = converter.from_bytes(ModelEngineInterface::getNodeById(linkableId)->m_temp);
+		std::wstring wide = converter.from_bytes(ModelEngineInterface::getNodeById(linkableId)->m_name);
 
 		return wide;
 	}

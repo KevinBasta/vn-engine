@@ -90,10 +90,16 @@ public:
 		}
 
 		if (state.render != false) {
-			drawText(frame,
-				state.speakerName,
-				state.color,
-				200.0f);
+			if (state.speakerEnabled) {
+				drawText(frame,
+					state.speakerName,
+					state.color,
+					200.0f);
+			}
+			
+			if (state.narrationBackground) {
+				// TODO: draw the background
+			}
 
 			drawText(frame,
 				state.line,

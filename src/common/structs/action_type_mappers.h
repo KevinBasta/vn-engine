@@ -2,9 +2,9 @@
 #ifndef VN_ACTION_TYPE_MAPPERS_H
 #define VN_ACTION_TYPE_MAPPERS_H
 
-#include "chapter_node.h"
-#include "chapter_node_types.h"
-#include "chapter_node_builder.h"
+#include "node.h"
+#include "node_types.h"
+#include "node_builder.h"
 
 #include "model_engine_interface.h"
 #include "action_type_mappers_helpers.h"
@@ -24,7 +24,7 @@ public:
 	
 	// Draw fields in engine node editor
 	std::function<bool()> drawNew;
-	std::function<bool(ChapterNode* node, int index)> drawExisting;
+	std::function<bool(Node* node, int index)> drawExisting;
  
 	// Calling ChapterBuilder member functions
 	std::function<void(id nodeId, index stepIndex)> addStaticObjToNodeAtStep;

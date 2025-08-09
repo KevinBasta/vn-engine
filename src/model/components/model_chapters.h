@@ -3,9 +3,9 @@
 
 #include "chapter.h"
 #include "chapter_builder.h"
-#include "chapter_node.h"
-#include "chapter_node_builder.h"
-#include "chapter_node_types.h"
+#include "node.h"
+#include "node_builder.h"
+#include "node_types.h"
 #include "engine_chapter_manager.h"
 #include "engine_node_manager.h"
 
@@ -33,28 +33,28 @@ private:
 		// Can inital all nodes as strays then mark the head node as not a stray with a member variable?
 		Chapter* chapterOne = new Chapter{};
 
-		ChapterNode* head{ new ChapterNode("head node") };
+		Node* head{ new Node("head node") };
 
-		ChapterNode* oneone{ new ChapterNode("one one node") };
-		ChapterNode* onetwo{ new ChapterNode("one two node") };
+		Node* oneone{ new Node("one one node") };
+		Node* onetwo{ new Node("one two node") };
 
-		ChapterNode* twoone{ new ChapterNode("two one node") };
-		ChapterNode* twotwo{ new ChapterNode("two two node") };
+		Node* twoone{ new Node("two one node") };
+		Node* twotwo{ new Node("two two node") };
 
-		ChapterNode* threeone{ new ChapterNode("three one node") };
+		Node* threeone{ new Node("three one node") };
 
-		ChapterNodeBuilder{ head }.link(oneone);
-		ChapterNodeBuilder{ head }.setStep<ActionTextLine>(1, ActionTextLine{ 1, L"builder test hello!" });
-		ChapterNodeBuilder{ head }.moveStep<ActionTextOverrides>(2, 1);
-		//ChapterNodeBuilder{ head }.removeStep<ActionTextLine>(1);
-		ChapterNodeBuilder{ head }.link(onetwo);
-		ChapterNodeBuilder{ oneone }.link(twoone);
-		ChapterNodeBuilder{ oneone }.link(twotwo);
-		ChapterNodeBuilder{ oneone }.link(threeone);
-		ChapterNodeBuilder{ twoone }.link(threeone);
+		NodeBuilder{ head }.link(oneone);
+		NodeBuilder{ head }.setStep<ActionTextLine>(1, ActionTextLine{ false, 1, L"builder test hello!" });
+		NodeBuilder{ head }.moveStep<ActionTextOverrides>(2, 1);
+		//NodeBuilder{ head }.removeStep<ActionTextLine>(1);
+		NodeBuilder{ head }.link(onetwo);
+		NodeBuilder{ oneone }.link(twoone);
+		NodeBuilder{ oneone }.link(twotwo);
+		NodeBuilder{ oneone }.link(threeone);
+		NodeBuilder{ twoone }.link(threeone);
 
-		ChapterNodeBuilder{ oneone }.unlink(threeone);
-		ChapterNodeBuilder{ oneone }.unlink(threeone);
+		NodeBuilder{ oneone }.unlink(threeone);
+		NodeBuilder{ oneone }.unlink(threeone);
 
 
 		//chapterOneChild4->addChild(chapterOneChild5);
@@ -71,7 +71,7 @@ private:
 		m_nodes.add(threeone);
 
 		Chapter* chapterTwo = new Chapter{};
-		ChapterNode* fourone = ChapterNodeBuilder{ "four one node" }.get();
+		Node* fourone = NodeBuilder{ "four one node" }.get();
 		m_nodes.add(fourone);
 		
 

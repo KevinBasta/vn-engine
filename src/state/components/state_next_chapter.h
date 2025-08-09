@@ -2,7 +2,7 @@
 #define VN_STATE_NEXT_CHAPTER_H
 
 #include "id.h"
-#include "chapter_node_types.h"
+#include "node_types.h"
 
 #include <optional>
 #include <vector>
@@ -30,7 +30,7 @@ public:
 public:
 	void handle(const ActionSetNextChapter& action) {
 		std::cout << "set next chapter" << std::endl;
-		set(action.m_chapterId);
+		set(action.chapterId);
 	}
 };
 

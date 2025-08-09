@@ -3,7 +3,7 @@
 #define VN_RELATIONS_H
 
 #include "id.h"
-#include "chapter_node_types.h"
+#include "node_types.h"
 
 #include <utility>
 #include <string>
@@ -30,8 +30,8 @@ private:
 public: 
 	Relations() : m_relationships{} { }
 
-	int  getCharacterRelation(int characterId, int relationId);
-	bool modifyCharacterRelation(int characterId, int relationId, RelationModification modification, int amount);
+	int  getRelationWith(int characterId, int relationId);
+	bool modifyRelationWith(int characterId, int relationId, RelationModification modification, int amount);
 
 	friend std::ostream& operator<<(std::ostream& out, Relations& relation);
 };

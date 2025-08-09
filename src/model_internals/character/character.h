@@ -28,6 +28,8 @@ private:
 	
 public:
 	Character();
+	Character(id userSetId);
+	Character(const Character& character);
 	~Character();
 
 	id getId() const { return m_id; }

@@ -14,7 +14,7 @@
 #include <list>
 #include <unordered_map>
 
-enum class ChapterNodeActionType {
+enum class NodeActionType {
 	BACKGROUND,
 	SPRITE,
 	TEXT,
@@ -122,6 +122,7 @@ struct ActionSpriteAnimation {
  * 
  */
 struct ActionTextLine {
+	bool narration{};
 	int characterId{};
 	std::wstring line{};
 };
@@ -227,15 +228,15 @@ struct ActionRelationSetNextChapter {
 using ChoiceIndex = int;
 
 struct ActionChoiceModifyRelation {
-	std::unordered_map<ChoiceIndex, std::vector<ActionRelationModify>> m_relationModifications{};
+	std::vector<std::pair<ChoiceIndex, std::vector<ActionRelationModify>>> relationModifications{};
 };
 
 struct ActionChoiceSetNextNode {
-	std::unordered_map<ChoiceIndex, id> m_nodeId{};
+	std::vector<std::pair<ChoiceIndex, id>> nodeId{};
 };
 
 struct ActionChoiceSetNextChapter {
-	std::unordered_map<ChoiceIndex, id> m_chapterId{};
+	std::vector<std::pair<ChoiceIndex, id>> chapterId{};
 };
 
 
@@ -255,7 +256,7 @@ enum class ChoiceStyle {
 };*/
 
 struct ActionChoice {
-	ChoiceStyle m_style{};
+	ChoiceStyle style{};
 
 	// TODO: add support for not displaying already visited node
 	// The usecase being nodes that branch off and loop back to explore multiple loop paths
@@ -264,7 +265,7 @@ struct ActionChoice {
 	// would need the default move-forward behavior to be any node that is not visited. Otherwise the 0th node or error out?
 	// but erroring out needs to be recoverable somehow 
 	// bool m_doNotDisplayVisited{};
-	std::vector<std::wstring> m_choices{};
+	std::vector<std::wstring> choices{};
 };
 
 
@@ -273,7 +274,7 @@ struct ActionChoice {
  * 
  */
 struct ActionSetNextChapter {
-	id m_chapterId{};
+	id chapterId{};
 };
 
 #endif // VN_CHAPTER_NODE_TYPES_H

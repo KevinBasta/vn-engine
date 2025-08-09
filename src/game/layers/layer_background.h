@@ -5,7 +5,7 @@
 #include "shader.h"
 #include "texture.h"
 #include "state_subject.h"
-#include "chapter_node_types.h"
+#include "node_types.h"
 
 #define TEMP_VERTEX_PATH	VN_BASE_PATH"/src/game_internals/glsl/vertex_texture.glsl"
 #define TEMP_FRAGMENT_PATH	VN_BASE_PATH"/src/game_internals/glsl/fragment_texture.glsl"

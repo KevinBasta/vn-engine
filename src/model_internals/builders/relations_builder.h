@@ -3,7 +3,7 @@
 
 #include "id.h"
 #include "relations.h"
-#include "chapter_node_types.h"
+#include "node_types.h"
 
 class RelationsBuilder {
 private:
@@ -17,7 +17,7 @@ public:
 	bool setRelationValue(id relationWithId, id relationTypeId, int relationAmount) {
 		if (m_relations == nullptr) { return false; }
 
-		bool success{ m_relations->modifyCharacterRelation(relationWithId, relationTypeId, RelationModification::SET, relationAmount) };
+		bool success{ m_relations->modifyRelationWith(relationWithId, relationTypeId, RelationModification::SET, relationAmount) };
 
 		return success;
 	}

@@ -27,8 +27,8 @@ public:
 	int getChildrenAmount() const { return m_children.size(); }
 	id getFirstChildId() const;
 	bool hasChild(id childId) const;
-	const std::set<id>& getParentsSet() const { return m_parents; }
-	const std::set<id>& getChildrenSet() const { return m_children; }
+	const std::set<id>& getParents() const { return m_parents; }
+	const std::set<id>& getChildren() const { return m_children; }
 };
 
 #endif // VN_LINKABLE_OBJECT_H

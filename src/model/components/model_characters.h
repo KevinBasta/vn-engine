@@ -4,6 +4,8 @@
 #include "character.h"
 #include "character_builder.h"
 
+#include <exception>
+
 class ModelSubject;
 class ModelCommonInterface;
 class ModelRuntimeInterface;
@@ -31,7 +33,12 @@ private:
 	}
 
 	Character* getCharacterById(int id) {
-		return m_characters[id].get();
+		try {
+			return m_characters.at(id).get();
+		}
+		catch (std::out_of_range) {
+			return nullptr;
+		}
 	}
 };
 

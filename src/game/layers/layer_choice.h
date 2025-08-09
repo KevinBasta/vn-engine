@@ -2,7 +2,7 @@
 #define VN_LAYER_CHOICE_H
 
 #include "window.h"
-#include "chapter_node_types.h"
+#include "node_types.h"
 #include "state_subject.h"
 #include "shader.h"
 #include "text.h"
@@ -86,7 +86,7 @@ public:
 			int index{ 0 };
 			int selected{ m_stateSubject->m_choices.getChoiceIndex() };
 			float paddingBottom{ 200.0f };
-			for (std::wstring_view choice : choices->m_choices) {
+			for (std::wstring_view choice : choices->choices) {
 				glm::vec3 color{};
 				
 				if (index == selected) {

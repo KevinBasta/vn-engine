@@ -6,7 +6,7 @@
 #include "model_engine_interface.h"
 
 #include "node.h"
-#include "chapter_node_builder.h"
+#include "node_builder.h"
 
 #include "engine_timeline.h"
 
@@ -30,7 +30,7 @@ protected:
 
 	std::pair<index, index> getTimelineRange() {
 		id current{ m_stateSubject->getNodeId() };
-		ChapterNode* node{ static_cast<ChapterNode*>(ModelCommonInterface::getNodeById(current)) };
+		Node* node{ static_cast<Node*>(ModelCommonInterface::getNodeById(current)) };
 		if (node == nullptr) { return { 0,0 }; }
 		
 		// TODO: the range starting from 1 depends on some internal chapterNode property. Perhaps certralize this.
@@ -39,7 +39,7 @@ protected:
 
 	index getTimlineRangeMax() {
 		id current{ m_stateSubject->getNodeId() };
-		ChapterNode* node{ static_cast<ChapterNode*>(ModelCommonInterface::getNodeById(current)) };
+		Node* node{ static_cast<Node*>(ModelCommonInterface::getNodeById(current)) };
 		if (node == nullptr) { return 0; }
 
 		return node->getLastStepIndex();
@@ -68,17 +68,17 @@ protected:
 
 	bool handleDeletingNode(index rangeIndex) {
 		id current{ m_stateSubject->getNodeId() };
-		ChapterNode* node{ static_cast<ChapterNode*>(ModelCommonInterface::getNodeById(current)) };
+		Node* node{ static_cast<Node*>(ModelCommonInterface::getNodeById(current)) };
 
 		std::cout << "in handle deleting node" << std::endl;
-		//ChapterNodeBuilder{ node }.removeStep(rangeIndex);
+		//NodeBuilder{ node }.removeStep(rangeIndex);
 
 		return false;
 	}
 
 	ImColor getSelectionColor() {
 		id current{ m_stateSubject->getNodeId() };
-		ChapterNode* node{ static_cast<ChapterNode*>(ModelCommonInterface::getNodeById(current)) };
+		Node* node{ static_cast<Node*>(ModelCommonInterface::getNodeById(current)) };
 		
 		if (m_stateSubject->inAutoAction()) {
 			// TODO: perhaps it can start as green and over time as we get closer to

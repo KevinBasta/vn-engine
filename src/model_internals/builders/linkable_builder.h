@@ -4,6 +4,9 @@
 #include "linkable.h"
 
 #include <set>
+#include <vector>
+#include <functional>
+#include <iostream>
 
 class LinkableBuilder {
 protected:
@@ -23,7 +26,10 @@ public:
 	{
 	}
 
-public:
+	std::set<id>& getParents()  { return m_linkableObject->m_parents; }
+	std::set<id>& getChildren() { return m_linkableObject->m_children; }
+
+private:
 	//
 	// Model File Loading Interface
 	//
@@ -58,8 +64,9 @@ public:
 	//
 
 	void link(Linkable* secondLinkableObject) {
-		if (m_linkableObject == nullptr || secondLinkableObject == nullptr) { std::cout << "LINKABLE BUILDER: ONE OF OBJECTS IS NULL" << std::endl; return; }
+		if (m_linkableObject == nullptr || secondLinkableObject == nullptr) { std::cout << "LINKABLE BUILDER: ONE OF OBJECTS IS NULL" << std::endl; return;  }
 
+		// Link this as parent and secondLinkableObject as child
 		addChild(secondLinkableObject->getId());
 		LinkableBuilder{ secondLinkableObject }.addParent(m_linkableObject->getId());
 	}
@@ -67,8 +74,14 @@ public:
 	void unlink(Linkable* secondLinkableObject) {
 		if (m_linkableObject == nullptr || secondLinkableObject == nullptr) { std::cout << "LINKABLE BUILDER: ONE OF OBJECTS IS NULL" << std::endl; return; }
 
-		removeChild(secondLinkableObject->getId());
-		LinkableBuilder{ secondLinkableObject }.removeParent(m_linkableObject->getId());
+		// Unlink this as parent and secondLinkableObject as child
+		if (secondLinkableObject != nullptr) {
+			removeChild(secondLinkableObject->getId());
+		}
+
+		if (m_linkableObject != nullptr) {
+			LinkableBuilder{ secondLinkableObject }.removeParent(m_linkableObject->getId());
+		}
 	}
 
 public:

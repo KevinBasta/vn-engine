@@ -4,7 +4,7 @@
 #include "model_subject.h"
 #include "model_runtime_interface.h"
 #include "state_sprites.h"
-#include "chapter_node_types.h"
+#include "node_types.h"
 
 
 //
