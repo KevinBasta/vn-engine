@@ -1,7 +1,9 @@
 #ifndef VN_ENGINE_RELATIONS_CONFIG_H
 #define VN_ENGINE_RELATIONS_CONFIG_H
 
+class VnEngineRelationEditor {
 
+};
 
 
 #endif // VN_ENGINE_RELATIONS_CONFIG_H

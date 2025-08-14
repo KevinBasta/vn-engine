@@ -32,6 +32,14 @@ public:
 		return *this;
 	}
 
+	/*CharacterBuilder& setId(id newid) {
+		if (m_character == nullptr) { std::cout << "CHARACTER NULL" << std::endl; return *this; }
+
+		m_character->m_id = newid;
+
+		return *this;
+	}*/
+
 	CharacterBuilder& reset() {
 		if (m_character == nullptr) { std::cout << "CHARACTER NULL" << std::endl; return *this; }
 

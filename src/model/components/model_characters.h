@@ -1,6 +1,9 @@
 #ifndef VN_MODEL_CHARACTERS_H
 #define VN_MODEL_CHARACTERS_H
 
+#include "id.h"
+#include "logging.h"
+
 #include "character.h"
 #include "character_builder.h"
 
@@ -37,6 +40,11 @@ private:
 			return m_characters.at(id).get();
 		}
 		catch (std::out_of_range) {
+			// Tell the user that the character is invalid
+			// Useful for maybing having an auto advancer that explores all nodes to create a log of things for
+			// user to fix
+			EngineLog::stateError("ModelCharacters::getCharacterById: Character #" + std::to_string(id) + " not found.");
+
 			return nullptr;
 		}
 	}

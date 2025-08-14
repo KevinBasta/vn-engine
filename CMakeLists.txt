@@ -45,8 +45,8 @@ add_executable (
 	"src/common/timer.h" 
 	"src/common/id.cpp"
 	"src/common/id.h"
-	"src/common/log.h" 
-	"src/common/log.cpp" 
+	"src/common/logging.h" 
+	"src/common/logging.cpp" 
 	"src/common/index.h"
 	#"src/common/types.h"
 

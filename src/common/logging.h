@@ -3,6 +3,7 @@
 
 #include <string>
 #include <iostream>
+#include <fstream>
 
 // need a way to set and remove warnings, such as 
 // removed texture index from texture store used
@@ -15,6 +16,30 @@ public:
 
 	//	return nullptr;
 	//}
+
+	static void writeOut() {
+
+	}
+
+	static void resetLogs() {
+
+	}
+	
+	static void stateError(std::string err) {
+
+	}
+
+	static void modelError(std::string err) {
+
+	}
+
+	static void engineError(std::string err) {
+
+	}
+
+	static void engineWarning(std::string err) {
+
+	}
 
 	EngineLog* operator<<(std::string& str) {
 		std::cout << str << std::endl;
