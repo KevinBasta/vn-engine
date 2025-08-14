@@ -122,6 +122,7 @@ private:
 	}
 
 	Node* getNodeById(id nodeId) {
+		// TODO: NEEDS TO LOAD FROM SQL
 		return m_nodes.get(nodeId);
 	}
 
