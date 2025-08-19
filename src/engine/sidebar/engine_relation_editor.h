@@ -3,17 +3,17 @@
 
 #include "state_subject.h"
 
-class VnEngineRelationsEditor {
+class VnEngineRelationEditor {
 private:
 	static StateSubject* m_stateSubject;
 
 public:
-	VnEngineRelationsEditor(StateSubject* stateSubject)
+	VnEngineRelationEditor(StateSubject* stateSubject)
 	{
 		m_stateSubject = stateSubject;
 	}
 
-	~VnEngineRelationsEditor() {}
+	~VnEngineRelationEditor() {}
 
 
 public:

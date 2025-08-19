@@ -12,6 +12,9 @@
 #include "engine_step_timeline.h"
 #include "engine_preview.h"
 #include "engine_character_editor.h"
+#include "engine_texture_editor.h"
+#include "engine_relation_editor.h"
+#include "engine_chapter_editor.h"
 #include "engine_scene_editor.h"
 
 #include "imgui.h"
@@ -52,6 +55,9 @@ private:
 	VnEngineStepTimeline	m_engineStepTimeline;
 
 	VnEngineCharacterEditor m_engineCharacterEditor;
+	VnEngineChapterEditor m_engineChapterEditor;
+	VnEngineTextureEditor m_engineTextureEditor;
+	VnEngineRelationEditor m_engineRelationEditor;
 	VnEngineSceneEditor m_engineSceneEditor;
 
 

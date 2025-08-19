@@ -24,3 +24,25 @@ void TextureStore::loadTexture(index textureIndex) {
 		m_loadedTextures.insert(textureIndex);
 	}
 }
+
+void TextureStore::forceReloadTexture(index textureIndex) {
+	if (textureIndex < 0 || textureIndex >= m_texturePaths.size()) {
+		throw std::out_of_range{ "Texture index out of range" };
+	}
+
+	if (m_texturePaths[textureIndex].has_value() == false) {
+		throw std::range_error{ "Texture at index is empty" };
+	}
+
+	runtimeTextureSet::iterator textureLoaded{ m_loadedTextures.find(textureIndex) };
+
+	if (textureLoaded != m_loadedTextures.end()) {
+		std::string& texturePath{ m_texturePaths[textureIndex].value() };
+		TextureManager::unregisterTexture({ m_id, textureIndex });
+		m_loadedTextures.erase(textureIndex);
+	}
+
+	std::string& texturePath{ m_texturePaths[textureIndex].value() };
+	TextureManager::registerTexture({ m_id, textureIndex }, texturePath);
+	m_loadedTextures.insert(textureIndex);
+}

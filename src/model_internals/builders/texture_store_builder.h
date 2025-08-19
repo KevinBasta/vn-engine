@@ -72,6 +72,12 @@ public:
 
 		m_textureStore->m_texturePaths[pathIndex].reset();
 	}
+
+	TextureStore::compiletimePathVector& getTexturePathVector() {
+		if (m_textureStore == nullptr) { throw "No Texture Store"; }
+
+		return m_textureStore->m_texturePaths;
+	}
 };
 
 #endif // VN_TEXTURE_STORE_BUILDER_H

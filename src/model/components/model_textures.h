@@ -9,6 +9,7 @@
 
 #define TEMP_BACKGROUND_TEXTURE VN_BASE_PATH"/test/assets/test.jpg"
 #define TEMP_SPRITE_TEXTURE		VN_BASE_PATH"/test/assets/garu_outline.png"
+#define TEMP_SPRITE_TEXTURE_TWO		VN_BASE_PATH"/test/assets/garu_outline_two.png"
 
 class ModelSubject;
 class ModelCommonInterface;
@@ -28,6 +29,7 @@ private:
 	void initTextureStores() {
 		TextureStoreBuilder garuStore{};
 		garuStore.addTexture(TEMP_SPRITE_TEXTURE);
+		garuStore.addTexture(TEMP_SPRITE_TEXTURE_TWO);
 		garuStore.setName("Garu Sprites");
 
 		m_textureStores[garuStore.get()->getId()] = std::unique_ptr<TextureStore>{ garuStore.get() };
