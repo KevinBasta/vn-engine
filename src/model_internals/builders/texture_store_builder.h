@@ -38,15 +38,17 @@ public:
 		m_textureStore->m_name = name;
 	}
 
-	void addTexture(std::string path) {
-		if (m_textureStore == nullptr) { return; }
+	bool addTexture(std::string path) {
+		if (m_textureStore == nullptr) { return false; }
 
 		// TODO: Validate the file path given is readable
 		if (!std::filesystem::exists(path)) {
-			return;
+			return false;
 		}
 
 		m_textureStore->m_texturePaths.push_back(path);
+
+		return true;
 	}
 
 	void replaceTexture(index pathIndex, std::string path) {

@@ -206,7 +206,7 @@ add_executable (
  "src/engine/sidebar/engine_texture_editor.h" 
  "src/engine/sidebar/engine_texture_editor.cpp" 
  "src/engine/sidebar/engine_chapter_editor.cpp"
- "src/engine/engine_helpers.h" "src/engine/sidebar/engine_chapter_editor.h")
+ "src/engine/engine_helpers.h" "src/engine/sidebar/engine_chapter_editor.h" "src/engine/engine_helpers.cpp")
 
 target_include_directories(
 	"vn_engine"

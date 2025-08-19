@@ -126,7 +126,7 @@ private:
 			if (deleteTexture) {
 				// TODO: maybe allow the last index in the vector to actually be deleted
 				elem.value() = "";
-				store->forceReloadTexture(i);
+				TextureStoreBuilder{ store }.removeTexture(i);
 			}
 
 			ImGui::Spacing();
@@ -139,8 +139,14 @@ private:
 
 		bool staticPathModified{ ImGui::Button(addIdFromPtr("Add Texture", &newTexturePath).c_str(), ImVec2(150, 25)) };
 		if (staticPathModified) {
-			storeVector.emplace_back(newTexturePath);
-			newTexturePath = "";
+			bool added = TextureStoreBuilder{ store }.addTexture(newTexturePath);
+			
+			if (added) {
+				newTexturePath = "";
+			}
+			else {
+				EngineToolTip::setTooltipFor(500, "Invalid Texture Path!");
+			}
 		}
 
 		ImGui::Spacing();

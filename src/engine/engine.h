@@ -16,6 +16,7 @@
 #include "engine_relation_editor.h"
 #include "engine_chapter_editor.h"
 #include "engine_scene_editor.h"
+#include "engine_helpers.h"
 
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
