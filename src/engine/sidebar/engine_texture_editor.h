@@ -114,20 +114,42 @@ private:
 				store->forceReloadTexture(i);
 			}
 			else {
-				ImGui::Image((ImTextureID)(intptr_t)texture->openglId(), ImVec2(texture->width() / 5, texture->height() / 5));
+				try {
+					ImGui::Image((ImTextureID)(intptr_t)texture->openglId(), ImVec2(texture->width() / 5, texture->height() / 5));
+				}
+				catch (...) {
+					// do nothing
+				}
+			}
+
+			bool deleteTexture = ImGui::Button(addIdFromPtr("Delete##TextureFromStore", &elem).c_str(), ImVec2(150, 25));
+			if (deleteTexture) {
+				// TODO: maybe allow the last index in the vector to actually be deleted
+				elem.value() = "";
+				store->forceReloadTexture(i);
 			}
 
 			ImGui::Spacing();
 			i++;
 		}
+		
+		ImGui::Text("Add New Texture");
+		static std::string newTexturePath{ "" };
+		ImGui::InputText(addIdFromPtr("##TextureStoreName", &newTexturePath).c_str(), &(newTexturePath));
 
+		bool staticPathModified{ ImGui::Button(addIdFromPtr("Add Texture", &newTexturePath).c_str(), ImVec2(150, 25)) };
+		if (staticPathModified) {
+			storeVector.emplace_back(newTexturePath);
+			newTexturePath = "";
+		}
+
+		ImGui::Spacing();
+
+		bool deleteStore = ImGui::Button(addIdFromPtr("Delete Store##", store).c_str(), ImVec2(150, 25));
+		if (deleteStore) {
+			map.erase(iter);
+		}
 	}
-
-	void addNewTexture(ModelEngineInterface::TextureStoreMap& map) {
-
-	}
-
-
 
 public:
 
@@ -140,9 +162,6 @@ public:
 		drawStoresCombo(map);
 
 		drawStore(map);
-
-		
-
 	}
 
 };

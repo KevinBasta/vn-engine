@@ -37,7 +37,6 @@ void TextureStore::forceReloadTexture(index textureIndex) {
 	runtimeTextureSet::iterator textureLoaded{ m_loadedTextures.find(textureIndex) };
 
 	if (textureLoaded != m_loadedTextures.end()) {
-		std::string& texturePath{ m_texturePaths[textureIndex].value() };
 		TextureManager::unregisterTexture({ m_id, textureIndex });
 		m_loadedTextures.erase(textureIndex);
 	}

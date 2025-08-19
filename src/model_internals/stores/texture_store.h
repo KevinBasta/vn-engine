@@ -26,6 +26,14 @@ public:
 	TextureStore() : m_id{ IdGenerator<TextureStore>::getId() } {}
 	TextureStore(std::string name) : m_id{ IdGenerator<TextureStore>::getId() }, m_name{ name } {}
 	TextureStore(id id) : m_id{ id } {}
+	~TextureStore() {
+		// Can be allowed to be replaced by a new store
+		// IdGenerator<TextureStore>::deleted(m_id);
+
+		for (index idx : m_loadedTextures) {
+			TextureManager::unregisterTexture({ m_id, idx });
+		}
+	}
 
 private:
 	id m_id{};
