@@ -4,7 +4,7 @@
 #include "window.h"
 #include "state_subject.h"
 #include "engine_properties.h"
-
+#include "controller_helpers.h"
 
 static bool sg_leftButtonReleaseEvent{ false };
 static bool sg_upKeyButtonReleaseEvent{ false };
@@ -71,7 +71,10 @@ private:
 	void processMouse() {
 		// Do a state step on left click
 		if (sg_leftButtonReleaseEvent) {
-			if (m_stateSubject->m_choices.isChoiceActive() == false) {
+			if (m_stateSubject->inMainMenu()) {
+				
+			}
+			else if (m_stateSubject->m_choices.isChoiceActive() == false) {
 				m_stateSubject->action();
 			}
 
@@ -105,7 +108,7 @@ private:
 
 	void processKeyboard() {
 
-		if (/*!IS_ENGINE_ACTIVE && */glfwGetKey(m_window->get(), GLFW_KEY_ESCAPE) == GLFW_PRESS) {
+		if (/*!IS_ENGINE_ACTIVE && */glfwGetKey(m_window->get(), GLFW_KEY_ESCAPE) == GLFW_PRESS || m_stateSubject->inQuitState()) {
 			// TODO: open menu?
 			glfwSetWindowShouldClose(m_window->get(), true);
 		}
@@ -119,7 +122,9 @@ private:
 
 		// Change node child choice index with up and down arrows
 		if (sg_upKeyButtonReleaseEvent) {
-			if (m_stateSubject->m_choices.isChoiceActive()) {
+			if (m_stateSubject->inMainMenu()) {
+				m_stateSubject->m_mainMenu.chooseUpChoice();;
+			} else if (m_stateSubject->m_choices.isChoiceActive()) {
 				m_stateSubject->m_choices.chooseUpChoice();
 			}
 			
@@ -127,7 +132,10 @@ private:
 		}
 
 		if (sg_downKeyButtonReleaseEvent) {
-			if (m_stateSubject->m_choices.isChoiceActive()) {
+			if (m_stateSubject->inMainMenu()) {
+				m_stateSubject->m_mainMenu.chooseDownChoice();
+			}
+			else if (m_stateSubject->m_choices.isChoiceActive()) {
 				m_stateSubject->m_choices.chooseDownChoice();
 			}
 			

@@ -52,7 +52,6 @@ void memCheck() {
 
 	// Create game state and load model
 	SubjectsOrchestrator subjectsOrchestrator{};
-	subjectsOrchestrator.newGame();
 
 	// Crate game graphics and engine ui
 	GameObserver game{ &window, subjectsOrchestrator.getState() };

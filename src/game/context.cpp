@@ -28,6 +28,7 @@ GameContext::GameContext(VnWindow* window, StateSubject* stateSubject) :
 	m_spriteLayer{ window, stateSubject },
 	m_textLayer{ window, stateSubject },
 	m_choiceLayer{ window, stateSubject },
+	m_mainMenuLayer{ window, stateSubject },
 	m_defaultShader{ TEMP_VERTEX_PATH, TEMP_FRAGMENT_PATH },
 	m_screenShader{	TEMP_FRAMEBUFFER_VERTEX, TEMP_FRAMEBUFFER_FRAGMENT }
 

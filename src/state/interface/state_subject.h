@@ -15,11 +15,13 @@
 #include "state_types.h"
 #include "state_next_node.h"
 #include "state_next_chapter.h"
+#include "state_main_menu.h"
 
 #include "character.h"
 #include "relations.h"
 //#include "chapter.h"
 #include "chapter_iterator.h"
+#include "controller_helpers.h"
 
 #include <string>
 #include <string_view>
@@ -81,6 +83,7 @@ public:
 	StateDialogue m_dialogue{};
 	StateBackground m_background{};
 	StateSprites m_sprites{ this };
+	StateMainMenu m_mainMenu{ this };
 
 	// half-serialize critical (partial data needs to be saved)
 	StateChoices m_choices{ this };
@@ -102,6 +105,11 @@ public:
 	}
 
 	void action() {
+		if (inMainMenu()) {
+			m_mainMenu.applyMainMenuChoice();
+			return;
+		}
+
 		if (inAutoAction()) {
 			endAutoActions();
 			clearAutoAction();
@@ -139,7 +147,42 @@ public:
 	//
 	// Menu operations
 	//
+	class VNFSA {
+	public:
+		enum class VNState {
+			MAIN_MENU,
+			SAVES_MENU,
+			OPTIONS_MENU,
+			IN_GAME,
+			IN_GAME_WITH_SIDE_BAR,
+			QUIT
+		};
+
+		static inline VNState gameState{ VNState::MAIN_MENU };
+
+		static bool validateTransition(VNState newState) {
+			// TODO
+			return true;
+		}
+
+		static bool transition(VNState newState) {
+			//validateTransition(newState);
+			gameState = newState;
+
+			return true;
+		}
+	};
+
+	bool inMainMenu()		{ return VNFSA::gameState == VNFSA::VNState::MAIN_MENU; }
+	bool inSaves()			{ return VNFSA::gameState == VNFSA::VNState::SAVES_MENU; }
+	bool inOptionsMenu()	{ return VNFSA::gameState == VNFSA::VNState::OPTIONS_MENU; }
+	bool inGame()			{ return VNFSA::gameState == VNFSA::VNState::IN_GAME; }
+	bool optionsSidebarOpen() { return VNFSA::gameState == VNFSA::VNState::IN_GAME_WITH_SIDE_BAR; }
+	bool inQuitState()		{ return VNFSA::gameState == VNFSA::VNState::QUIT; }
+	
 	void newGame() {
+		VNFSA::transition(VNFSA::VNState::IN_GAME);
+
 		m_relations.reset();
 		
 		m_dialogue.reset();
@@ -147,9 +190,15 @@ public:
 		m_choices.reset();
 		m_nextNode.reset();
 		m_nextChapter.reset();
+
+		m_mainMenu.reset();
+
+		// Go to first node
+		action();
 	}
 
 	void loadSave() {
+		VNFSA::transition(VNFSA::VNState::IN_GAME);
 
 	}
 
