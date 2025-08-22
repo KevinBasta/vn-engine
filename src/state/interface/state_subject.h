@@ -21,7 +21,6 @@
 #include "relations.h"
 //#include "chapter.h"
 #include "chapter_iterator.h"
-#include "controller_helpers.h"
 
 #include <string>
 #include <string_view>
@@ -151,7 +150,8 @@ public:
 	public:
 		enum class VNState {
 			MAIN_MENU,
-			SAVES_MENU,
+			SAVES_MENU_LOAD,
+			SAVES_MENU_SAVE,
 			OPTIONS_MENU,
 			IN_GAME,
 			IN_GAME_WITH_SIDE_BAR,
@@ -174,7 +174,8 @@ public:
 	};
 
 	bool inMainMenu()		{ return VNFSA::gameState == VNFSA::VNState::MAIN_MENU; }
-	bool inSaves()			{ return VNFSA::gameState == VNFSA::VNState::SAVES_MENU; }
+	bool inSavesLoad()		{ return VNFSA::gameState == VNFSA::VNState::SAVES_MENU_LOAD; }
+	bool inSavesSave()		{ return VNFSA::gameState == VNFSA::VNState::SAVES_MENU_SAVE; }
 	bool inOptionsMenu()	{ return VNFSA::gameState == VNFSA::VNState::OPTIONS_MENU; }
 	bool inGame()			{ return VNFSA::gameState == VNFSA::VNState::IN_GAME; }
 	bool optionsSidebarOpen() { return VNFSA::gameState == VNFSA::VNState::IN_GAME_WITH_SIDE_BAR; }

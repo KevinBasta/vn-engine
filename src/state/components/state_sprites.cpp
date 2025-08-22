@@ -152,6 +152,18 @@ bool StateSprites::tickPropertyAnimation(bool& enabled, float timePassed, index&
 		return false;
 	}
 
+	if (keyframes[stepIndex].transitionSeconds == 0) {
+		if (stepIndex + 1 > keyframes.size() - 1) {
+			enabled = false;
+			return false;
+		}
+		else {
+			stepIndex++;
+		}
+
+		return true;
+	}
+
 	// TODO: error when engine modifies this
 	auto& currentAction{ keyframes[stepIndex] };
 	float goalValue = (currentAction.value);

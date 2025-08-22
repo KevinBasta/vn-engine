@@ -4,7 +4,6 @@
 #include "window.h"
 #include "state_subject.h"
 #include "engine_properties.h"
-#include "controller_helpers.h"
 
 static bool sg_leftButtonReleaseEvent{ false };
 static bool sg_upKeyButtonReleaseEvent{ false };
