@@ -5,9 +5,6 @@
 #include "node_types.h"
 #include "model_subject.h"
 
-#include <optional>
-#include <vector>
-
 class StateMainMenu {
 private:
 	StateSubject* m_stateSubject{ nullptr };
@@ -22,7 +19,7 @@ public:
 
 	}
 
-	void applyMainMenuChoice();
+	void applyCurrentChoice();
 
 	int currentChoice() {
 		return m_mainMenuChoice;
@@ -37,8 +34,8 @@ public:
 		m_mainMenuChoice--;
 	}
 	void chooseDownChoice() {
-		if (m_mainMenuChoice >= 3) {
-			m_mainMenuChoice = 3;
+		if (m_mainMenuChoice >= m_mainMenuMaxChoice) {
+			m_mainMenuChoice = m_mainMenuMaxChoice;
 			return;
 		}
 

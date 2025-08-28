@@ -68,8 +68,13 @@ private:
 	void drawBaseRelations() {
 		ImGui::SeparatorText("Base Relations");
 
-		ModelEngineInterface::Relation& types{ ModelEngineInterface::getRelationTypesMap() };
+		ModelEngineInterface::RelationsMap& relations{ ModelEngineInterface::getRelationsMap() };
 		
+		for (auto iter{ relations.begin() }; iter != relations.end(); iter++) {
+
+		}
+
+
 	}
 
 public:

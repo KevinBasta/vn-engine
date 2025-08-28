@@ -11,6 +11,7 @@
 #include "layer_text.h"
 #include "layer_choice.h"
 #include "layer_main_menu.h"
+#include "layer_saves.h"
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -27,6 +28,7 @@ public:
 	TextLayer m_textLayer;
 	ChoiceLayer m_choiceLayer;
 	MainMenuLayer m_mainMenuLayer;
+	SavesMenuLayer m_savesMenuLayer;
 	Shader m_defaultShader;
 	Shader m_screenShader;
 	unsigned int m_quadVAO, m_quadVBO, m_framebuffer, m_textureColorbuffer, m_rbo;
@@ -43,8 +45,8 @@ public:
 		if (m_stateSubject->inMainMenu()) {
 			m_mainMenuLayer.pollAndDraw(frame);
 		}
-		else if (m_stateSubject->inOptionsMenu()) {
-
+		else if (m_stateSubject->inSavesMenu()) {
+			m_savesMenuLayer.pollAndDraw(frame);
 		}
 		else if (m_stateSubject->inGame()) {
 			// Draw each layer
