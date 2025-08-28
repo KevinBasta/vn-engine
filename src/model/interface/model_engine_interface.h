@@ -22,12 +22,40 @@ public:
 		return model->m_modelCharacters.m_characters;
 	}
 
-	using RelationTypeMap = ModelRelationTypes::TypeIdToNameMap;
-	static const RelationTypeMap& getRelationTypesMap() {
+	using RelationsMap = ModelRelations::RelationsMap;
+	static RelationsMap& getRelationsMap() {
 		ModelSubject* model{ ModelSubject::validateInstance() };
+		if (model == nullptr) { throw "model not found"; }
+		return model->m_modelRelations.m_baseRelations;
+	}
 
+	using RelationTypeMap = ModelRelationTypes::TypeIdToNameMap;
+	static RelationTypeMap& getRelationTypesMap() {
+		ModelSubject* model{ ModelSubject::validateInstance() };
+		if (model == nullptr) { throw "model not found"; }
 		return model->m_modelRelationTypes.m_relationTypeIdToName;
 	}
+
+	static void addRelationType(std::string relationName) {
+		ModelSubject* model{ ModelSubject::validateInstance() };
+		
+		model->m_modelRelationTypes.addRelationType(relationName);
+	}
+
+	/*static bool removeRelationType(id relationId) {
+		ModelSubject* model{ ModelSubject::validateInstance() };
+		if (model == nullptr) { return false; }
+
+		RelationTypeMap* map{ model->m_modelRelationTypes.getTypeIdToNameMap() };
+		if (map == nullptr) { return false; }
+
+		auto iter{ map->find(relationId) };
+		if (iter == map->end()) { return false; }
+
+		map->erase(iter);
+
+		return true;
+	}*/
 
 };
 

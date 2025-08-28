@@ -10,6 +10,9 @@
 #include "engine_node_graph.h"
 #include "engine_preview.h"
 #include "engine_scene_editor.h"
+#include "engine_chapter_editor.h"
+#include "engine_texture_editor.h"
+#include "engine_relation_editor.h"
 
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
@@ -28,6 +31,9 @@ VnEngine::VnEngine(VnWindow* window, StateSubject* stateSubject, GameContext* co
 	m_engineStepTimeline{ stateSubject },
 	m_enginePreview{ context },
 	m_engineCharacterEditor{ stateSubject },
+	m_engineChapterEditor{ stateSubject },
+	m_engineRelationEditor{ stateSubject },
+	m_engineTextureEditor{ stateSubject },
 	m_engineSceneEditor{ stateSubject }
 {
 	initImgui();
@@ -216,17 +222,17 @@ void VnEngine::draw() {
 	ImGui::End();
 
 	if (ImGui::Begin(WINDOW_TEXTURES_CONFIG)) {
-
+		m_engineTextureEditor.draw();
 	}
 	ImGui::End();
 
 	if (ImGui::Begin(WINDOW_RELATIONS_CONFIG)) {
-
+		m_engineRelationEditor.draw();
 	}
 	ImGui::End();
 
 	if (ImGui::Begin(WINDOW_CHAPTERS_EDITOR)) {
-		
+		m_engineChapterEditor.draw();
 	}
 	ImGui::End();
 	
@@ -234,6 +240,8 @@ void VnEngine::draw() {
 		m_engineSceneEditor.draw();
 	}
 	ImGui::End();
+
+	EngineToolTip::draw();
 
 	//ImGui::ShowDemoWindow();
 

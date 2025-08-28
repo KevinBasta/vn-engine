@@ -3,10 +3,17 @@
 
 #include "node_types.h"
 
+#include "imgui.h"
+#include "imgui_impl_glfw.h"
+#include "imgui_impl_opengl3.h"
+#include "imgui_internal.h"
+#include "imgui_node_editor.h"
+
 #include <locale>
 #include <codecvt>
 #include <string>
 #include <algorithm>
+#include <chrono>
 
 static std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> myconv;
 
@@ -72,5 +79,35 @@ static std::string toString(enum class ChoiceStyle style) {
 	return "NONE";
 }
 
+class EngineToolTip {
+private:
+	static bool m_active;
+	static std::chrono::time_point<std::chrono::steady_clock> m_start;
+	static std::chrono::time_point<std::chrono::steady_clock> m_goal;
+
+	static std::string m_tip;
+
+public:
+	// TODO: unsure if this should be kept or not
+	static void setTooltipFor(int ms, std::string tip) {
+		m_active = true;
+
+		m_start = std::chrono::steady_clock::now();
+		m_goal = m_start + std::chrono::milliseconds(ms);
+
+		m_tip = tip;
+	}
+
+	static void draw() {
+		if (m_active) {
+			if (std::chrono::steady_clock::now() <= m_goal) {
+				ImGui::SetTooltip(m_tip.c_str());
+			}
+			else {
+				m_active = false;
+			}
+		}
+	}
+};
 
 #endif // VN_ENGINE_HELPERS_H

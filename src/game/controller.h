@@ -5,7 +5,6 @@
 #include "state_subject.h"
 #include "engine_properties.h"
 
-
 static bool sg_leftButtonReleaseEvent{ false };
 static bool sg_upKeyButtonReleaseEvent{ false };
 static bool sg_downKeyButtonReleaseEvent{ false };
@@ -71,9 +70,14 @@ private:
 	void processMouse() {
 		// Do a state step on left click
 		if (sg_leftButtonReleaseEvent) {
-			if (m_stateSubject->m_choices.isChoiceActive() == false) {
+			if (m_stateSubject->inMainMenu()) {
+				
+			}
+			else if (m_stateSubject->m_choices.isChoiceActive() == false) {
 				m_stateSubject->action();
 			}
+
+			StateSubject::VNFSA::printCurrent();
 
 			sg_leftButtonReleaseEvent = false;
 		}
@@ -105,21 +109,43 @@ private:
 
 	void processKeyboard() {
 
-		if (/*!IS_ENGINE_ACTIVE && */glfwGetKey(m_window->get(), GLFW_KEY_ESCAPE) == GLFW_PRESS) {
+		if (/*!IS_ENGINE_ACTIVE && */glfwGetKey(m_window->get(), GLFW_KEY_GRAVE_ACCENT) == GLFW_PRESS || m_stateSubject->inQuitState()) {
 			// TODO: open menu?
 			glfwSetWindowShouldClose(m_window->get(), true);
 		}
 
+		if (glfwGetKey(m_window->get(), GLFW_KEY_ESCAPE) == GLFW_PRESS) {
+			if (m_stateSubject->inSavesMenu()) {
+				m_stateSubject->m_savesMenu.handleEscape();
+			}
+
+		}
+
 		// Do a state step on enter press (picking a node child if choice is active)
 		if (sg_enterKeyButtonReleaseEvent) {
-			m_stateSubject->action();
+			if (m_stateSubject->inMainMenu()) {
+				m_stateSubject->m_mainMenu.applyCurrentChoice();
+			}
+			else if (m_stateSubject->inSavesMenu()) {
+				m_stateSubject->m_savesMenu.applyCurrentChoice();
+			}
+			else if (m_stateSubject->inGame()) {
+				m_stateSubject->action();
+			}
+
 			sg_enterKeyButtonReleaseEvent = false;
 		}
 		
 
 		// Change node child choice index with up and down arrows
 		if (sg_upKeyButtonReleaseEvent) {
-			if (m_stateSubject->m_choices.isChoiceActive()) {
+			if (m_stateSubject->inMainMenu()) {
+				m_stateSubject->m_mainMenu.chooseUpChoice();;
+			}
+			else if (m_stateSubject->inSavesMenu()) {
+				m_stateSubject->m_savesMenu.chooseUpChoice();;
+			} 
+			else if (m_stateSubject->m_choices.isChoiceActive()) {
 				m_stateSubject->m_choices.chooseUpChoice();
 			}
 			
@@ -127,7 +153,13 @@ private:
 		}
 
 		if (sg_downKeyButtonReleaseEvent) {
-			if (m_stateSubject->m_choices.isChoiceActive()) {
+			if (m_stateSubject->inMainMenu()) {
+				m_stateSubject->m_mainMenu.chooseDownChoice();
+			}
+			else if (m_stateSubject->inSavesMenu()) {
+				m_stateSubject->m_savesMenu.chooseDownChoice();;
+			}
+			else if (m_stateSubject->m_choices.isChoiceActive()) {
 				m_stateSubject->m_choices.chooseDownChoice();
 			}
 			

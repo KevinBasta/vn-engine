@@ -45,8 +45,8 @@ add_executable (
 	"src/common/timer.h" 
 	"src/common/id.cpp"
 	"src/common/id.h"
-	"src/common/log.h" 
-	"src/common/log.cpp" 
+	"src/common/logging.h" 
+	"src/common/logging.cpp" 
 	"src/common/index.h"
 	#"src/common/types.h"
 
@@ -205,7 +205,8 @@ add_executable (
  "src/engine/sidebar/engine_character_editor.cpp" 
  "src/engine/sidebar/engine_texture_editor.h" 
  "src/engine/sidebar/engine_texture_editor.cpp" 
- "src/engine/engine_helpers.h" "src/engine/sidebar/engine_chapter_editor.h")
+ "src/engine/sidebar/engine_chapter_editor.cpp"
+ "src/engine/engine_helpers.h" "src/engine/sidebar/engine_chapter_editor.h" "src/engine/engine_helpers.cpp" "src/game/layers/layer_main_menu.h" "src/game/layers/layer_main_menu.cpp"  "src/state/components/state_main_menu.h" "src/state/components/state_main_menu.cpp" "src/game/layers/layer_saves.h" "src/game/layers/layer_saves.cpp" "src/state/components/state_saves.cpp" "src/state/components/state_saves.h")
 
 target_include_directories(
 	"vn_engine"

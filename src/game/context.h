@@ -10,6 +10,8 @@
 #include "layer_sprite.h"
 #include "layer_text.h"
 #include "layer_choice.h"
+#include "layer_main_menu.h"
+#include "layer_saves.h"
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -25,6 +27,8 @@ public:
 	SpriteLayer	m_spriteLayer;
 	TextLayer m_textLayer;
 	ChoiceLayer m_choiceLayer;
+	MainMenuLayer m_mainMenuLayer;
+	SavesMenuLayer m_savesMenuLayer;
 	Shader m_defaultShader;
 	Shader m_screenShader;
 	unsigned int m_quadVAO, m_quadVBO, m_framebuffer, m_textureColorbuffer, m_rbo;
@@ -38,15 +42,27 @@ public:
 		glClearColor(0.5f, 0.2f, 0.1f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		// Draw each layer
-		m_backgroundLayer.pollAndDraw(frame);
-		m_spriteLayer.pollAndDraw(frame);
-		
-		if (m_stateSubject->m_choices.isChoiceActive()) {
-			m_choiceLayer.pollAndDraw(frame);
+		if (m_stateSubject->inMainMenu()) {
+			m_mainMenuLayer.pollAndDraw(frame);
 		}
-		else {
-			m_textLayer.pollAndDraw(frame);
+		else if (m_stateSubject->inSavesMenu()) {
+			m_savesMenuLayer.pollAndDraw(frame);
+		}
+		else if (m_stateSubject->inGame()) {
+			// Draw each layer
+			m_backgroundLayer.pollAndDraw(frame);
+			m_spriteLayer.pollAndDraw(frame);
+		
+			if (m_stateSubject->m_choices.isChoiceActive()) {
+				m_choiceLayer.pollAndDraw(frame);
+			}
+			else {
+				m_textLayer.pollAndDraw(frame);
+			}
+		
+			if (m_stateSubject->optionsSidebarOpen()) {
+
+			}
 		}
 
 		// Unbind framebuffer

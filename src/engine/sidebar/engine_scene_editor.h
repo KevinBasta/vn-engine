@@ -250,10 +250,10 @@ private:
 				}
 
 				if (!reloadState) {
-					NodeEditorToolTip::setTooltipFor(500, "Nothing to move here!");
+					EngineToolTip::setTooltipFor(500, "Nothing to move here!");
 				}
 				else {
-					NodeEditorToolTip::setTooltipFor(500, "Moved!");
+					EngineToolTip::setTooltipFor(500, "Moved!");
 				}
 			}
 			if (NodeEditorOptions::getMode() == ActionDragMode::DRAG_COPY)
@@ -268,10 +268,10 @@ private:
 				}
 				
 				if (!reloadState) {
-					NodeEditorToolTip::setTooltipFor(500, "Nothing to copy here!");
+					EngineToolTip::setTooltipFor(500, "Nothing to copy here!");
 				}
 				else {
-					NodeEditorToolTip::setTooltipFor(500, "Copied!");
+					EngineToolTip::setTooltipFor(500, "Copied!");
 				}
 
 			}
@@ -287,10 +287,10 @@ private:
 				}
 				
 				if (!reloadState) {
-					NodeEditorToolTip::setTooltipFor(500, "Nothing to swap here!");
+					EngineToolTip::setTooltipFor(500, "Nothing to swap here!");
 				}
 				else {
-					NodeEditorToolTip::setTooltipFor(500, "Swapped!");
+					EngineToolTip::setTooltipFor(500, "Swapped!");
 				}
 			}
 
@@ -366,7 +366,7 @@ private:
 
 					if (reloadState) {
 						NodeSteps::reloadStateToStep(payloadCast.m_sourceStepIndex);
-						NodeEditorToolTip::setTooltipFor(500, "Deleted!");
+						EngineToolTip::setTooltipFor(500, "Deleted!");
 					}
 				}
 				ImGui::EndDragDropTarget();
@@ -403,10 +403,10 @@ private:
 							m_stateSubject->goToStepIndex(m_stateSubject->getStepIndex());
 						}
 
-						NodeEditorToolTip::setTooltipFor(500, "Deleted!");
+						EngineToolTip::setTooltipFor(500, "Deleted!");
 					}
 					else {
-						NodeEditorToolTip::setTooltipFor(500, "Can't delete 0th step!");
+						EngineToolTip::setTooltipFor(500, "Can't delete 0th step!");
 					}
 
 				}
@@ -415,41 +415,10 @@ private:
 			}
 
 			if (deleteButton) {
-				NodeEditorToolTip::setTooltipFor(500, "Drag steps/actions here to delete!");
+				EngineToolTip::setTooltipFor(500, "Drag steps/actions here to delete!");
 			}
 
 			// TODO: undo buttons?
-		}
-	};
-
-	class NodeEditorToolTip {
-	private:
-		static bool m_active;
-		static std::chrono::time_point<std::chrono::steady_clock> m_start;
-		static std::chrono::time_point<std::chrono::steady_clock> m_goal;
-
-		static std::string m_tip;
-		
-	public:
-		// TODO: unsure if this should be kept or not
-		static void setTooltipFor(int ms, std::string tip) {
-			m_active = true;
-			
-			m_start = std::chrono::steady_clock::now();
-			m_goal = m_start + std::chrono::milliseconds(ms);
-			
-			m_tip = tip;
-		}
-
-		static void draw() {
-			if (m_active) {
-				if (std::chrono::steady_clock::now() <= m_goal) {
-					ImGui::SetTooltip(m_tip.c_str());
-				}
-				else {
-					m_active = false;
-				}
-			}
 		}
 	};
 
@@ -489,7 +458,7 @@ private:
 						}
 					}
 					else {
-						NodeEditorToolTip::setTooltipFor(500, "Invalid Node Id!");
+						EngineToolTip::setTooltipFor(500, "Invalid Node Id!");
 					}
 				}
 				
@@ -594,7 +563,7 @@ private:
 				}
 
 				if (deleteClicked) {
-					NodeEditorToolTip::setTooltipFor(500, "Drag parent/child here to delete a link!");
+					EngineToolTip::setTooltipFor(500, "Drag parent/child here to delete a link!");
 				}
 
 				// Add a new node as parent or child
@@ -626,9 +595,7 @@ private:
 	}
 
 public:
-	void draw() {
-		NodeEditorToolTip::draw();
-		
+	void draw() {		
 		NodeProperties::draw();
 
 		ComboActions::draw();

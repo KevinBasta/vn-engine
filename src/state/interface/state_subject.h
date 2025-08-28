@@ -15,6 +15,8 @@
 #include "state_types.h"
 #include "state_next_node.h"
 #include "state_next_chapter.h"
+#include "state_main_menu.h"
+#include "state_saves.h"
 
 #include "character.h"
 #include "relations.h"
@@ -82,6 +84,9 @@ public:
 	StateBackground m_background{};
 	StateSprites m_sprites{ this };
 
+	StateMainMenu m_mainMenu{ this };
+	StateSaves m_savesMenu{ this };
+
 	// half-serialize critical (partial data needs to be saved)
 	StateChoices m_choices{ this };
 	StateNextNode m_nextNode{};
@@ -139,7 +144,69 @@ public:
 	//
 	// Menu operations
 	//
+	class VNFSA {
+	public:
+		enum class VNState {
+			MAIN_MENU,
+			SAVES_MENU_LOAD,
+			SAVES_MENU_SAVE,
+			OPTIONS_MENU,
+			IN_GAME,
+			IN_GAME_WITH_SIDE_BAR,
+			QUIT
+		};
+
+		static inline VNState gameState{ VNState::MAIN_MENU };
+
+		static bool validateTransition(VNState newState) {
+			// TODO
+			return true;
+		}
+
+		static void printCurrent() {
+			std::cout << int(gameState) << std::endl;
+		}
+
+		static bool transition(VNState newState) {
+			//validateTransition(newState);
+			gameState = newState;
+
+			return true;
+		}
+	};
+
+	bool inMainMenu()		{ return VNFSA::gameState == VNFSA::VNState::MAIN_MENU; }
+	bool inSavesToLoad()	{ return VNFSA::gameState == VNFSA::VNState::SAVES_MENU_LOAD; }
+	bool inSavesToSave()	{ return VNFSA::gameState == VNFSA::VNState::SAVES_MENU_SAVE; }
+	bool inSavesMenu()		{ return inSavesToLoad() || inSavesToSave(); }
+	bool inOptionsMenu()	{ return VNFSA::gameState == VNFSA::VNState::OPTIONS_MENU; }
+	bool inGame()			{ return VNFSA::gameState == VNFSA::VNState::IN_GAME; }
+	bool optionsSidebarOpen() { return VNFSA::gameState == VNFSA::VNState::IN_GAME_WITH_SIDE_BAR; }
+	bool inQuitState()		{ return VNFSA::gameState == VNFSA::VNState::QUIT; }
+	
+	void goToMainMenu() {
+		VNFSA::transition(VNFSA::VNState::MAIN_MENU);
+
+	}
+
+	void goToSavesToLoad() {
+		VNFSA::transition(VNFSA::VNState::SAVES_MENU_LOAD);
+		
+	}
+
+	void goToSavesToSave() {
+		VNFSA::transition(VNFSA::VNState::SAVES_MENU_SAVE);
+
+	}
+
+	void goToInGameWithSideBar() {
+		VNFSA::transition(VNFSA::VNState::IN_GAME_WITH_SIDE_BAR);
+
+	}
+
 	void newGame() {
+		VNFSA::transition(VNFSA::VNState::IN_GAME);
+
 		m_relations.reset();
 		
 		m_dialogue.reset();
@@ -147,9 +214,15 @@ public:
 		m_choices.reset();
 		m_nextNode.reset();
 		m_nextChapter.reset();
+
+		m_mainMenu.reset();
+
+		// Go to first node
+		action();
 	}
 
 	void loadSave() {
+		VNFSA::transition(VNFSA::VNState::IN_GAME);
 
 	}
 

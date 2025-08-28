@@ -28,6 +28,13 @@ public:
 
 		return model->m_modelRelations.m_baseRelations;
 	}
+
+	static TextureIdentifier getMainMenuBackground() {
+		// TODO: Replace static with configurable value
+		ModelSubject* model{ ModelSubject::validateInstance() };
+		model->m_modelTextures.loadTexture({ 2, 1 });
+		return { 2, 1 };
+	}
 };
 
 #endif // MODEL_INTERFACE_RUNTIME_H
