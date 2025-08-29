@@ -19,7 +19,6 @@ public:
 
 	}
 
-	bool handleEscape();
 	bool loadCurrentSave();
 	bool setCurrentSave();
 	bool applyCurrentChoice();

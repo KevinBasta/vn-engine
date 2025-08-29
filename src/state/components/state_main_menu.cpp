@@ -15,7 +15,7 @@ void StateMainMenu::applyCurrentChoice() {
 
 		break;
 	case 3:
-		StateSubject::VNFSA::gameState = StateSubject::VNFSA::VNState::QUIT;
+		m_stateSubject->quitGame();
 		break;
 	default:
 		break;

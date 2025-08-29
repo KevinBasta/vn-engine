@@ -42,13 +42,13 @@ public:
 		glClearColor(0.5f, 0.2f, 0.1f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		if (m_stateSubject->inMainMenu()) {
+		if (VNFSA::inMainMenu()) {
 			m_mainMenuLayer.pollAndDraw(frame);
 		}
-		else if (m_stateSubject->inSavesMenu()) {
+		else if (VNFSA::inSavesMenu()) {
 			m_savesMenuLayer.pollAndDraw(frame);
 		}
-		else if (m_stateSubject->inGame()) {
+		else if (VNFSA::inGame()) {
 			// Draw each layer
 			m_backgroundLayer.pollAndDraw(frame);
 			m_spriteLayer.pollAndDraw(frame);
@@ -60,7 +60,7 @@ public:
 				m_textLayer.pollAndDraw(frame);
 			}
 		
-			if (m_stateSubject->optionsSidebarOpen()) {
+			if (VNFSA::optionsSidebarOpen()) {
 
 			}
 		}
