@@ -16,18 +16,15 @@
 class MainMenuLayer {
 private:
 	VnWindow* m_window{ nullptr };
-	Shader m_defaultShader;
-	Shader m_textShader;
 	StateSubject* m_stateSubject{ nullptr };
+	Shader m_textShader;
 
-	void drawBackground(const FrameDimensions& frame, TextureIdentifier texture);
 	void drawOptions(const FrameDimensions& frame);
 
 public:
 	MainMenuLayer(VnWindow* window, StateSubject* stateSubject) :
 		m_window{ window },
 		m_stateSubject{ stateSubject },
-		m_defaultShader{ TEMP_VERTEX_PATH, TEMP_FRAGMENT_PATH },
 		m_textShader{ TEMP_TEXT_VERTEX_SHADER, TEMP_TEXT_FRAGMENT_SHADER }
 	{
 	}

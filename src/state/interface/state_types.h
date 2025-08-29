@@ -25,6 +25,8 @@ struct SpriteState {
 	// Can add vertex shader, fragment shader to use here too
 };
 
+using BackgroundOffsets = SpriteState;
+
 //For typing animation
 //enum class TextAction {
 //	NONE,

@@ -8,10 +8,13 @@
 #include "state_subject.h"
 
 class SavesMenuLayer {
-public:
+private:
 	VnWindow* m_window{ nullptr };
 	StateSubject* m_stateSubject{ nullptr };
 
+	void drawOptions();
+
+public:
 	SavesMenuLayer(VnWindow* window, StateSubject* stateSubject) :
 		m_window{ window },
 		m_stateSubject{ stateSubject }

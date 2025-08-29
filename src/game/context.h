@@ -43,9 +43,11 @@ public:
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		if (VNFSA::inMainMenu()) {
+			m_backgroundLayer.draw(frame, ModelRuntimeInterface::getMainMenuBackground());
 			m_mainMenuLayer.pollAndDraw(frame);
 		}
 		else if (VNFSA::inSavesMenu()) {
+			m_backgroundLayer.draw(frame, ModelRuntimeInterface::getMainMenuBackground());
 			m_savesMenuLayer.pollAndDraw(frame);
 		}
 		else if (VNFSA::inGame()) {

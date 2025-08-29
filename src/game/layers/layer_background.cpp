@@ -5,10 +5,11 @@
 #include "shader.h"
 #include "texture.h"
 #include "state_subject.h"
+#include "state_types.h"
 #include "state_background.h"
 #include "node_types.h"
 
-void BackgroundLayer::drawBackground(const FrameDimensions& frame, TextureIdentifier& textureIdentifier) {
+void BackgroundLayer::drawBackground(const FrameDimensions& frame, TextureIdentifier& textureIdentifier, BackgroundOffsets& offsets) {
 	m_defaultShader.use();
 
 	Texture2D* texture{ TextureManager::getTexture(textureIdentifier) };
@@ -21,8 +22,9 @@ void BackgroundLayer::drawBackground(const FrameDimensions& frame, TextureIdenti
 	float scale{ texture->getScaleToFrame(frame.width, frame.height) };
 
 	glm::mat4 model = glm::mat4(1.0f);
-	model = glm::translate(model, glm::vec3(0.0f, 0.0f, -99.0f));
-	model = glm::scale(model, glm::vec3(scale, scale, 0.0f));
+	model = glm::translate(model, glm::vec3(offsets.xpos, offsets.ypos, -99.0f + offsets.zpos));
+	model = glm::rotate(model, glm::radians(offsets.rotation), glm::vec3(0.0, 0.0, 1.0));
+	model = glm::scale(model, glm::vec3(scale * offsets.scale, scale * offsets.scale, 0.0f));
 
 	unsigned int modelLocation = glGetUniformLocation(m_defaultShader.ID(), "inModel");
 	glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(model));
@@ -40,15 +42,19 @@ void BackgroundLayer::drawBackground(const FrameDimensions& frame, TextureIdenti
 	glUniformMatrix4fv(orthoLocation, 1, GL_FALSE, glm::value_ptr(ortho));
 
 	unsigned int opacityLocation = glGetUniformLocation(m_defaultShader.ID(), "inOpacity");
-	glUniform1f(opacityLocation, 1.0f);
+	glUniform1f(opacityLocation, offsets.opacity);
 
 	texture->draw();
 }
 
 void BackgroundLayer::pollAndDraw(const FrameDimensions& frame) {
-	drawBackground(frame, m_stateSubject->m_background.m_currentBackground);
+	drawBackground(frame, m_stateSubject->m_background.m_currentBackground, m_stateSubject->m_background.m_positionOffsets);
 
 	if (m_stateSubject->isInDelta(StateDelta::BACKGROUND)) {
 		std::cout << "BACKGROUND IN DELTA" << std::endl;
 	}
+}
+
+void BackgroundLayer::draw(const FrameDimensions& frame, TextureIdentifier texture, BackgroundOffsets offsets) {
+	drawBackground(frame, texture, offsets);
 }
