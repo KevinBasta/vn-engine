@@ -9,6 +9,13 @@
 #include "state_background.h"
 #include "node_types.h"
 
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
+
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
 void BackgroundLayer::drawBackground(const FrameDimensions& frame, TextureIdentifier& textureIdentifier, BackgroundOffsets& offsets) {
 	m_defaultShader.use();
 

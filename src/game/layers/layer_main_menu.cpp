@@ -1,13 +1,19 @@
-#include "layer_main_menu.h"
 
+#include "layer_main_menu.h"
 
 #include "window.h"
 #include "shader.h"
 #include "texture.h"
 #include "text.h"
 #include "state_subject.h"
-#include "state_background.h"
 #include "node_types.h"
+
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
+
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 void MainMenuLayer::drawOptions(const FrameDimensions& frame) {
 	m_textShader.use();

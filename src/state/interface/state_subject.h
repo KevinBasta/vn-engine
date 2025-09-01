@@ -160,6 +160,11 @@ public:
 		
 	}
 
+	void goToOptionsMainMenu() {
+		VNFSA::transition(VNState::OPTIONS_MENU_MAIN_MENU);
+		
+	}
+
 	void goToSavesToSave() {
 		VNFSA::transition(VNState::SAVES_MENU_SAVE);
 
@@ -167,7 +172,10 @@ public:
 
 	void goToInGameWithSideBar() {
 		VNFSA::transition(VNState::IN_GAME_WITH_SIDE_BAR);
+	}
 
+	void goToInGame() {
+		VNFSA::transition(VNState::IN_GAME);
 	}
 
 	void newGame() {

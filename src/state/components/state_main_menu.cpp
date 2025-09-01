@@ -12,7 +12,7 @@ void StateMainMenu::applyCurrentChoice() {
 		m_stateSubject->goToSavesToLoad();
 		break;
 	case 2:
-
+		m_stateSubject->goToOptionsMainMenu();
 		break;
 	case 3:
 		m_stateSubject->quitGame();

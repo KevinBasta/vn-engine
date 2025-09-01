@@ -7,7 +7,8 @@ enum class VNState {
 	MAIN_MENU,
 	SAVES_MENU_LOAD,
 	SAVES_MENU_SAVE,
-	OPTIONS_MENU,
+	OPTIONS_MENU_IN_GAME,
+	OPTIONS_MENU_MAIN_MENU,
 	IN_GAME,
 	IN_GAME_WITH_SIDE_BAR,
 	QUIT
@@ -34,12 +35,18 @@ public:
 	}
 
 	static bool inMainMenu()			{ return VNFSA::gameState == VNState::MAIN_MENU; }
+	
 	static bool inSavesToLoad()			{ return VNFSA::gameState == VNState::SAVES_MENU_LOAD; }
 	static bool inSavesToSave()			{ return VNFSA::gameState == VNState::SAVES_MENU_SAVE; }
 	static bool inSavesMenu()			{ return inSavesToLoad() || inSavesToSave(); }
-	static bool inOptionsMenu()			{ return VNFSA::gameState == VNState::OPTIONS_MENU; }
-	static bool optionsSidebarOpen()	{ return VNFSA::gameState == VNState::IN_GAME_WITH_SIDE_BAR; }
-	static bool inGame()				{ return VNFSA::gameState == VNState::IN_GAME || optionsSidebarOpen(); }
+	
+	static bool inOptionsMenuInGame()	{ return VNFSA::gameState == VNState::OPTIONS_MENU_IN_GAME; }
+	static bool inOptionsMenuMainMenu()	{ return VNFSA::gameState == VNState::OPTIONS_MENU_MAIN_MENU; }
+	static bool inOptionsMenu()			{ return inOptionsMenuInGame() || inOptionsMenuMainMenu(); }
+
+	static bool inGameWithSideBar()		{ return VNFSA::gameState == VNState::IN_GAME_WITH_SIDE_BAR; }
+	static bool inGame()				{ return VNFSA::gameState == VNState::IN_GAME || inGameWithSideBar(); }
+	
 	static bool inQuitState()			{ return VNFSA::gameState == VNState::QUIT; }
 };
 

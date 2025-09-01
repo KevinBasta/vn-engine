@@ -122,6 +122,12 @@ private:
 			else if (VNFSA::inSavesToSave()) {
 				m_stateSubject->goToInGameWithSideBar();
 			}
+			else if (VNFSA::inOptionsMenuMainMenu()) {
+				m_stateSubject->goToMainMenu();
+			}
+			else if (VNFSA::inOptionsMenuInGame()) {
+				m_stateSubject->goToInGameWithSideBar();
+			}
 		}
 
 		// Do a state step on enter press (picking a node child if choice is active)
