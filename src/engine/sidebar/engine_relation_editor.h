@@ -5,6 +5,9 @@
 #include "engine_helpers.h"
 #include "model_engine_interface.h"
 
+#include "relations.h"
+#include "engine_helpers.h"
+
 #include "imgui.h"
 #include "imgui_stdlib.h"
 #include "imgui_impl_glfw.h"
@@ -69,9 +72,70 @@ private:
 		ImGui::SeparatorText("Base Relations");
 
 		ModelEngineInterface::RelationsMap& relations{ ModelEngineInterface::getRelationsMap() };
+		ModelEngineInterface::RelationTypeMap& relationTypes{ ModelEngineInterface::getRelationTypesMap() };
 		
 		for (auto iter{ relations.begin() }; iter != relations.end(); iter++) {
+			Character* mainCharacterOfRelation{ ModelEngineInterface::getCharacterById(iter->first) };
+			if (mainCharacterOfRelation == nullptr) {
+				continue;
+			}
 
+			ImGui::Separator();
+			std::string title{ "Relations of " + myconv.to_bytes(mainCharacterOfRelation->getName()) };
+			ImGui::Text(title.c_str());
+			ImGui::SameLine();
+			bool relationDeleteClicked{ ImGui::Button(addIdFromPtr("Delete###", &(iter->first)).c_str()) };
+			if (relationDeleteClicked) {
+				iter = relations.erase(iter);
+				if (iter == relations.end()) {
+					break;
+				}
+			}
+
+			Relations* curRelations{ iter->second.get() };
+
+			if (curRelations != nullptr) {
+				auto characterToRelationMap{ RelationsBuilder{curRelations}.getCharacterToRelationMap() };
+
+				for (auto iter2{ characterToRelationMap.begin() }; iter2 != characterToRelationMap.end(); iter2++) {
+					Character* relationWithCharacter{ ModelEngineInterface::getCharacterById(iter2->first) };
+					if (relationWithCharacter == nullptr) {
+						continue;
+					}
+
+					std::string subtitle{ "Relation with: " + myconv.to_bytes(relationWithCharacter->getName()) };
+					ImGui::Text(subtitle.c_str());
+					ImGui::SameLine();
+					bool relationWithDeleteClicked{ ImGui::Button(addIdFromPtr("Delete###", &(iter2->first)).c_str()) };
+					if (relationWithDeleteClicked) {
+						iter2 = characterToRelationMap.erase(iter2);
+						if (iter2 == characterToRelationMap.end()) {
+							break;
+						}
+					}
+
+					for (auto iter3{ iter2->second.begin() }; iter3 != iter2->second.end(); iter3++) {
+						auto relationTypeIter{ relationTypes.find(iter3->first) };
+						if (relationTypeIter != relationTypes.end()) {
+							ImGui::Text(relationTypeIter->second.c_str());
+							ImGui::SameLine();
+							int curVal{ iter3->second };
+							bool curValModified{ ImGui::DragInt(addIdFromPtr("###", &(iter3->second)).c_str(), &(curVal), 1.0f, INT_MIN, INT_MAX, "%d", ImGuiSliderFlags_AlwaysClamp) };
+							if (curValModified) { iter2->second[iter3->first] = curVal; break; }
+							ImGui::SameLine();
+						}
+						
+						bool relationTypeDeleteClicked{ ImGui::Button(addIdFromPtr("Delete###", &(iter3->first)).c_str()) };
+						if (relationTypeDeleteClicked) {
+							iter3 = iter2->second.erase(iter3);
+							if (iter3 == iter2->second.end()) {
+								break;
+							}
+						}
+					}
+				}
+
+			}
 		}
 
 

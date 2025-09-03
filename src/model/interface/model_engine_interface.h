@@ -22,6 +22,17 @@ public:
 		return model->m_modelCharacters.m_characters;
 	}
 
+	static Character* getCharacterById(id id) {
+		ModelSubject* model{ ModelSubject::validateInstance() };
+
+		auto character{ model->m_modelCharacters.m_characters.find(id) };
+		if (character == model->m_modelCharacters.m_characters.end()) {
+			return nullptr;
+		}
+
+		return character->second.get();
+	}
+
 	using RelationsMap = ModelRelations::RelationsMap;
 	static RelationsMap& getRelationsMap() {
 		ModelSubject* model{ ModelSubject::validateInstance() };

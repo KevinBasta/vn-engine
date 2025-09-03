@@ -11,6 +11,8 @@
 #include <vector>
 #include <unordered_map>
 
+class RelationsBuilder;
+
 /*
  * A generalized data class that contians some statuses (e.g. affection)
  * towards the main character. Can be generalized to include for all other characters?
@@ -19,6 +21,8 @@
 class Relations {
 public:
 	using RelationValue = int;
+	friend class RelationsBuilder;
+
 private:
 	using CharacterId	= id;
 	using RelationId	= id;
