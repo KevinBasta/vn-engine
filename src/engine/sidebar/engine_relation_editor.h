@@ -73,6 +73,7 @@ private:
 
 		ModelEngineInterface::RelationsMap& relations{ ModelEngineInterface::getRelationsMap() };
 		ModelEngineInterface::RelationTypeMap& relationTypes{ ModelEngineInterface::getRelationTypesMap() };
+		ModelEngineInterface::CharacterMap& characterMap{ ModelEngineInterface::getCharacterMap() };
 		
 		// Loop through each relation of character to other characters
 		for (auto iter{ relations.begin() }; iter != relations.end(); ) {
@@ -82,85 +83,150 @@ private:
 
 			// Display which character's relations this section is
 			ImGui::Separator();
-			std::string title{ "Relations of " + myconv.to_bytes(mainCharacterOfRelation->getName()) };
-			ImGui::Text(title.c_str());
-			ImGui::SameLine();
-			bool relationDeleteClicked{ ImGui::Button(addIdFromPtr("Delete###relationOf", &(iter->first)).c_str()) };
+			std::string title{ "Relations of " + myconv.to_bytes(mainCharacterOfRelation->getName()) + "###id" };
+			bool isTreeOpen = true;
+			ImGui::SeparatorText(addIdFromPtr(title, &iter->first).c_str());
 
-			// Get the ptr from the unique ptr, then get the map of relations with other characters
-			Relations* characterRelations{ iter->second.get() };
-			if (characterRelations == nullptr) { return; }
-			auto& characterToRelationMap{ RelationsBuilder{characterRelations}.getCharacterToRelationMap() };
+			if (isTreeOpen) {
+				bool relationDeleteClicked{ ImGui::Button(addIdFromPtr("Delete###relationOf", &(iter->first)).c_str()) };
 
-			// Iterate through the current character's relations with other characters
-			for (auto iter2{ characterToRelationMap.begin() }; iter2 != characterToRelationMap.end();) {
-				// Attempt to find the name of the other character
-				Character* relationWithCharacter{ ModelEngineInterface::getCharacterById(iter2->first) };
-				if (relationWithCharacter == nullptr) { continue; } // TODO: Delete relation entry if not found
+				// Get the ptr from the unique ptr, then get the map of relations with other characters
+				Relations* characterRelations{ iter->second.get() };
+				if (characterRelations == nullptr) { break; }
+				auto& characterToRelationMap{ RelationsBuilder{characterRelations}.getCharacterToRelationMap() };
 
-				// Display which character this relation is with
-				std::string subtitle{ "Relation with: " + myconv.to_bytes(relationWithCharacter->getName()) };
-				ImGui::Text(subtitle.c_str());
-				ImGui::SameLine();
-				bool relationWithDeleteClicked{ ImGui::Button(addIdFromPtr("Delete###relationWith", &(iter2->first)).c_str()) };
-				
-				auto& relationshipFeelings{ iter2->second };
+				// Iterate through the current character's relations with other characters
+				for (auto iter2{ characterToRelationMap.begin() }; iter2 != characterToRelationMap.end();) {
+					// Attempt to find the name of the other character
+					Character* relationWithCharacter{ ModelEngineInterface::getCharacterById(iter2->first) };
+					if (relationWithCharacter == nullptr) { continue; } // TODO: Delete relation entry if not found
 
-				// Iterate through the differnet types of feelings in the relation
-				for (auto iter3{ relationshipFeelings.begin() }; iter3 != relationshipFeelings.end();) {
-					// Get the name of the relation feeling to display it
-					auto relationTypeIter{ relationTypes.find(iter3->first) };
-					if (relationTypeIter != relationTypes.end()) {
-						ImGui::Text(relationTypeIter->second.c_str());
-						ImGui::SameLine();
-						
-						// Allow modification of the value of the realtion type
-						int curVal{ iter3->second };
-						bool curValModified{ ImGui::DragInt(addIdFromPtr("###therelationvalue", &(iter3->first)).c_str(), &(curVal), 1.0f, INT_MIN, INT_MAX, "%d", ImGuiSliderFlags_AlwaysClamp) };
-						if (curValModified) { 
-							iter2->second[iter3->first] = curVal; 
-							break; 
+					// Display which character this relation is with
+					std::string subtitle{ "Relation with: " + myconv.to_bytes(relationWithCharacter->getName()) };
+					ImGui::Text(subtitle.c_str());
+					ImGui::SameLine();
+					bool relationWithDeleteClicked{ ImGui::Button(addIdFromPtr("Delete###relationWith", &(iter2->first)).c_str()) };
+
+					auto& relationshipFeelings{ iter2->second };
+
+					// Iterate through the differnet types of feelings in the relation
+					for (auto iter3{ relationshipFeelings.begin() }; iter3 != relationshipFeelings.end();) {
+						// Get the name of the relation feeling to display it
+						auto relationTypeIter{ relationTypes.find(iter3->first) };
+						if (relationTypeIter != relationTypes.end()) {
+							ImGui::Text(relationTypeIter->second.c_str());
+							ImGui::SameLine();
+
+							// Allow modification of the value of the realtion type
+							int curVal{ iter3->second };
+							bool curValModified{ ImGui::DragInt(addIdFromPtr("###therelationvalue", &(iter3->first)).c_str(), &(curVal), 1.0f, INT_MIN, INT_MAX, "%d", ImGuiSliderFlags_AlwaysClamp) };
+							if (curValModified) {
+								iter2->second[iter3->first] = curVal;
+							}
+
+							ImGui::SameLine();
 						}
-						
-						ImGui::SameLine();
+
+						// Allow delete of the relation feeling
+						bool relationTypeDeleteClicked{ ImGui::Button(addIdFromPtr("Delete###relationItself", &(iter3->first)).c_str()) };
+						if (relationTypeDeleteClicked) {
+							iter3 = iter2->second.erase(iter3);
+							if (iter3 == iter2->second.end()) {
+								break;
+							}
+						}
+						else {
+							iter3++;
+						}
 					}
-					
-					// Allow delete of the relation feeling
-					bool relationTypeDeleteClicked{ ImGui::Button(addIdFromPtr("Delete###relationItself", &(iter3->first)).c_str()) };
-					if (relationTypeDeleteClicked) {
-						iter3 = iter2->second.erase(iter3);
-						if (iter3 == iter2->second.end()) {
+					// Add a relation feeling type to the character relationship with another character obj
+					ImGui::Text("Add Relation Type: ");
+					ImGui::SameLine();
+					ImGui::PushItemWidth(200);
+					static id relationTypeToAdd{ relationTypes.begin()->first }; // TODO change to non static 
+					if (ImGui::BeginCombo(addIdFromPtr("###RelationTypePickerForCharacter", &(iter2->first)).c_str(), relationTypes.at(relationTypeToAdd).c_str(), 0)) {
+						for (auto relationTypeIter{ relationTypes.begin() }; relationTypeIter != relationTypes.end(); relationTypeIter++) {
+							const bool isSelected = (relationTypeToAdd == relationTypeIter->first);
+
+							if (ImGui::Selectable(relationTypeIter->second.c_str(), isSelected)) {
+								relationTypeToAdd = relationTypeIter->first;
+							}
+
+						}
+						ImGui::EndCombo();
+					}
+					ImGui::PopItemWidth();
+					ImGui::SameLine();
+					bool relationTypeAddClicked{ ImGui::Button(addIdFromPtr("Add###relationItself", &(iter2->first)).c_str(), {50, 20}) };
+					if (relationTypeAddClicked) {
+						if (relationshipFeelings.find(relationTypeToAdd) == relationshipFeelings.end()) {
+							relationshipFeelings.insert({ relationTypeToAdd, 0 });
+						}
+						else {
+							EngineToolTip::setTooltipFor(500, "Relation Type Already Used!");
+						}
+					}
+
+					// Allow delete of relation with a character
+					if (relationWithDeleteClicked) {
+						iter2 = characterToRelationMap.erase(iter2);
+						if (iter2 == characterToRelationMap.end()) {
 							break;
 						}
 					}
 					else {
-						iter3++;
+						iter2++;
 					}
 				}
 
-				// Allow delete of relation with a character
-				if (relationWithDeleteClicked) {
-					iter2 = characterToRelationMap.erase(iter2);
-					if (iter2 == characterToRelationMap.end()) {
+				// Add a relation with a character
+				ImGui::Text("Add Relation With: ");
+				ImGui::SameLine();
+				ImGui::PushItemWidth(200);
+				static id characterToAddRelationWtih{ relationTypes.begin()->first }; // TODO change to non static 
+				std::string curCharacterName{ myconv.to_bytes(characterMap.at(characterToAddRelationWtih).get()->getName()) };
+
+				if (ImGui::BeginCombo(addIdFromPtr("###RelationTypePickerForCharacter", &(iter->first)).c_str(), curCharacterName.c_str(), 0)) {
+					for (auto charactersIter{ characterMap.begin() }; charactersIter != characterMap.end(); charactersIter++) {
+						const bool isSelected = (characterToAddRelationWtih == charactersIter->first);
+
+						std::string curCharacterName{ myconv.to_bytes(charactersIter->second.get()->getName()) };
+						if (ImGui::Selectable(curCharacterName.c_str(), isSelected)) {
+							characterToAddRelationWtih = charactersIter->first;
+						}
+
+					}
+					ImGui::EndCombo();
+				}
+				ImGui::PopItemWidth();
+				ImGui::SameLine();
+				bool relationWithAddClicked{ ImGui::Button(addIdFromPtr("Add###relationWith", &(iter->first)).c_str(), {50, 20}) };
+				if (relationWithAddClicked) {
+					if (characterToRelationMap.find(characterToAddRelationWtih) == characterToRelationMap.end()) {
+						characterToRelationMap.insert({ characterToAddRelationWtih, {} });
+					}
+					else {
+						EngineToolTip::setTooltipFor(500, "Relation With Character Exists!");
+					}
+				}
+
+
+				// Allow delete of relation of a character
+				if (relationDeleteClicked) {
+					iter = relations.erase(iter);
+					if (iter == relations.end()) {
 						break;
 					}
 				}
 				else {
-					iter2++;
+					iter++;
 				}
-			}
-
-			// Allow delete of relation of a character
-			if (relationDeleteClicked) {
-				iter = relations.erase(iter);
-				if (iter == relations.end()) {
-					break;
-				}
-			}
-			else {
-				iter++;
 			}
 		}
+
+		// Add relations of a character
+
+		bool relationAddClicked{ ImGui::Button(addIdFromPtr("Add###relationOf", &(relations)).c_str(), {150, 50})};
 
 
 	}
