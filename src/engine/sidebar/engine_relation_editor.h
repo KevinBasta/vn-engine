@@ -45,8 +45,10 @@ private:
 			bool typeNameModified = ImGui::InputText(addIdFromPtr("##relationType", &(iter->second)).c_str(), &(relationName));
 			if (typeNameModified) { types[iter->first] = relationName; }
 			ImGui::SameLine();
-			bool deleteClicked = ImGui::Button(addIdFromPtr("Delete##deleteRelationType", &(iter->second)).c_str(), ImVec2(70.0f, 0.0f));
+			
+			bool deleteClicked{ ImGui::Button(addIdFromPtr("Delete##deleteRelationType", &(iter->second)).c_str(), ImVec2(70.0f, 0.0f)) };
 			if (deleteClicked) {
+				IdGenerator<ModelRelationTypes>::deleted(iter->first);
 				iter = types.erase(iter);
 
 				if (iter == types.end()) {
@@ -121,16 +123,26 @@ private:
 		ImGui::SameLine();
 		ImGui::PushItemWidth(200);
 		static id relationTypeToAdd{ relationTypes.begin()->first }; // TODO change to non static 
-		if (ImGui::BeginCombo(addIdFromPtr("###RelationTypePickerForCharacter", &(relationTypeToAdd)).c_str(), relationTypes.at(relationTypeToAdd).c_str(), 0)) {
-			for (auto relationTypeIter{ relationTypes.begin() }; relationTypeIter != relationTypes.end(); relationTypeIter++) {
-				const bool isSelected = (relationTypeToAdd == relationTypeIter->first);
+		try {
+			if (ImGui::BeginCombo(addIdFromPtr("###RelationTypePickerForCharacter", &(relationTypeToAdd)).c_str(), relationTypes.at(relationTypeToAdd).c_str(), 0)) {
+				for (auto relationTypeIter{ relationTypes.begin() }; relationTypeIter != relationTypes.end(); relationTypeIter++) {
+					const bool isSelected = (relationTypeToAdd == relationTypeIter->first);
 
-				if (ImGui::Selectable(relationTypeIter->second.c_str(), isSelected)) {
-					relationTypeToAdd = relationTypeIter->first;
+					if (ImGui::Selectable(relationTypeIter->second.c_str(), isSelected)) {
+						relationTypeToAdd = relationTypeIter->first;
+					}
+
 				}
-
+				ImGui::EndCombo();
 			}
-			ImGui::EndCombo();
+		}
+		catch (...) {
+			if (relationTypes.begin() == relationTypes.end()) {
+				relationTypeToAdd = 0;
+			}
+			else {
+				relationTypeToAdd = relationTypes.begin()->first;
+			}
 		}
 		ImGui::PopItemWidth();
 		
