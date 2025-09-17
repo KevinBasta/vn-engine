@@ -53,6 +53,13 @@ public:
 		model->m_modelRelationTypes.addRelationType(relationName);
 	}
 
+	using ChapterMap = EngineChapterManager::ChapterMap;
+	static ChapterMap& getChaptersMap() {
+		ModelSubject* model{ ModelSubject::validateInstance() };
+		if (model == nullptr) { throw "model not found"; }
+		return model->m_modelChapters.m_chapters.getChapters();
+	}
+
 	/*static bool removeRelationType(id relationId) {
 		ModelSubject* model{ ModelSubject::validateInstance() };
 		if (model == nullptr) { return false; }

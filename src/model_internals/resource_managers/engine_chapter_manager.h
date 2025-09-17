@@ -31,7 +31,7 @@ public:
 		return nullptr;
 	}
 
-	const ChapterMap& getChapters() {
+	ChapterMap& getChapters() {
 		return m_chapters;
 	}
 

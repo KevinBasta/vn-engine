@@ -163,7 +163,7 @@ add_executable (
 
 	"src/model_internals/resource_managers/engine_chapter_manager.h"
 	"src/model_internals/resource_managers/engine_node_manager.h"
-	"src/model_internals/resource_managers/runtime_chapter_manager.h"
+	
 
 	#"src/model_internals/serialize/json/json_lexer.cpp"
 	#"src/model_internals/serialize/json/json_token.cpp"
