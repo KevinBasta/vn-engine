@@ -4,6 +4,7 @@
 
 #include "model_subject.h"
 #include "model_common_interface.h"
+#include "exceptions.h"
 
 class ModelRuntimeInterface : public ModelCommonInterface {
 public:

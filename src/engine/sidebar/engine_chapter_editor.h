@@ -188,7 +188,7 @@ public:
 
 		ImGui::SeparatorText("Starting Chapter: ");
 		static id startingChapter{ ModelEngineInterface::getFirstChapterId() };
-		bool startingChapterModified{ ImGui::DragInt(addIdFromPtr("##startingchapterid", &startingChapter).c_str(), &startingChapter, 1, 1, INT_MAX) };
+		bool startingChapterModified{ ImGui::DragInt("##EngineStartingChapterIdSetter", &startingChapter, 1, 1, INT_MAX)};
 		if (startingChapterModified) {
 			ModelEngineInterface::setFirstChapterId(startingChapter);
 		}
@@ -207,6 +207,7 @@ public:
 		ImGui::SameLine();
 		static int tempHeadNodeId{ 0 };
 		bool tempHeadNodeIdModified{ ImGui::DragInt(addIdFromPtr("##addheadnodeid", &tempHeadNodeId).c_str(), &tempHeadNodeId, 1, 1, INT_MAX) };
+		if (tempHeadNodeIdModified) { std::cout << "temp head node id modified" << std::endl; }
 		ImGui::PopItemWidth();
 
 		// Add button

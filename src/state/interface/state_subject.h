@@ -34,7 +34,6 @@
 
 class StateSubject : public Subject {
 private:
-	Chapter* currentChapter{ nullptr };
 	ChapterIterator iterator{};
 	
 public:
@@ -188,6 +187,7 @@ public:
 
 	void newGame() {
 		VNFSA::transition(VNState::IN_GAME);
+		iterator = ChapterIterator{};
 
 		m_relations.reset();
 		
