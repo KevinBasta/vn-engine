@@ -60,6 +60,12 @@ public:
 		return model->m_modelChapters.m_chapters.getChapters();
 	}
 
+	static void addChapter(Chapter* chapter) {
+		ModelSubject* model{ ModelSubject::validateInstance() };
+		if (model == nullptr) { throw "model not found"; }
+		return model->m_modelChapters.m_chapters.add(chapter);
+	}
+
 	/*static bool removeRelationType(id relationId) {
 		ModelSubject* model{ ModelSubject::validateInstance() };
 		if (model == nullptr) { return false; }

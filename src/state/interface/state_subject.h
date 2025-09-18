@@ -116,9 +116,17 @@ public:
 			return;
 		}
 
-		ChapterState result = iterator.step(this);
+		try {
+			ChapterState result = iterator.step(this);
+			
+			std::cout << "ITERATOR RESULT: " << result << std::endl;
+		}
+		catch (...) {
+			chapterEndActions();
+			goToMainMenu();
+			return;
+		}
 
-		std::cout << "ITERATOR RESULT: " << result << std::endl;
 
 		// if state delta not empty
 		notify();

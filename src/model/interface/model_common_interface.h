@@ -7,8 +7,16 @@
 
 class ModelCommonInterface {
 public:
+
+	// TODO: move variable
+	static id firstChapterId;
+
 	static id getFirstChapterId() {
-		return 1;
+		return firstChapterId;
+	}
+	
+	static void setFirstChapterId(id newId) {
+		firstChapterId = newId;
 	}
 
 	static const Chapter* getHeadChapter() {
@@ -54,5 +62,6 @@ public:
 
 };
 
+id inline ModelCommonInterface::firstChapterId{ 1 };
 
 #endif // MODEL_INTERFACE_COMMON_H

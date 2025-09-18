@@ -28,7 +28,10 @@ public:
 	}
 
 	id getLinkableHeadId() {
-		return ModelEngineInterface::getChapterById(m_stateSubject->getChapterId())->getHeadNodeId();
+		Chapter* chapter{ ModelEngineInterface::getChapterById(m_stateSubject->getChapterId()) };
+		if (chapter == nullptr) { return 0; }
+		
+		return chapter->getHeadNodeId();
 	}
 
 	Linkable* getLinkableById(id linkableId) {
@@ -40,7 +43,12 @@ public:
 			return nullptr;
 		}
 
-		return static_cast<const Linkable*>(ModelEngineInterface::getNodeById(ModelEngineInterface::getChapterById(m_stateSubject->getChapterId())->getHeadNodeId()));
+		Chapter* chapter{ ModelEngineInterface::getChapterById(m_stateSubject->getChapterId()) };
+		if (chapter == nullptr) {
+			return nullptr;
+		}
+
+		return static_cast<const Linkable*>(ModelEngineInterface::getNodeById(chapter->getHeadNodeId()));
 	}
 
 	std::wstring getLinkableName(id linkableId) {

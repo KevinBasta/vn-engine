@@ -37,6 +37,10 @@ public:
 	//
 	// Shared Engine and Save/Load Interface
 	//
+	Chapter* get() {
+		return m_chapter;
+	}
+
 	void setName(std::wstring name) {
 		validateInstance();
 
