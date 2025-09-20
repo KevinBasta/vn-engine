@@ -16,7 +16,7 @@ private:
 	Shader m_defaultShader;
 	StateSubject* m_stateSubject{ nullptr };
 
-	void drawBackground(const FrameDimensions& frame, TextureIdentifier& texture);
+	void drawBackground(const FrameDimensions& frame, TextureIdentifier& texture, BackgroundOffsets& offsets);
 
 public:
 	BackgroundLayer(VnWindow* window, StateSubject* stateSubject) :
@@ -27,6 +27,7 @@ public:
 	}
 
 	void pollAndDraw(const FrameDimensions& frame);
+	void draw(const FrameDimensions& frame, TextureIdentifier texture, BackgroundOffsets offsets = {});
 };
 
 

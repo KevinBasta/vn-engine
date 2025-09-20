@@ -12,10 +12,10 @@ void StateMainMenu::applyCurrentChoice() {
 		m_stateSubject->goToSavesToLoad();
 		break;
 	case 2:
-
+		m_stateSubject->goToOptionsMainMenu();
 		break;
 	case 3:
-		StateSubject::VNFSA::gameState = StateSubject::VNFSA::VNState::QUIT;
+		m_stateSubject->quitGame();
 		break;
 	default:
 		break;

@@ -12,6 +12,7 @@
 #include "layer_choice.h"
 #include "layer_main_menu.h"
 #include "layer_saves.h"
+#include "layer_options.h"
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -29,6 +30,7 @@ public:
 	ChoiceLayer m_choiceLayer;
 	MainMenuLayer m_mainMenuLayer;
 	SavesMenuLayer m_savesMenuLayer;
+	OptionsMenuLayer m_optionsMenuLayer;
 	Shader m_defaultShader;
 	Shader m_screenShader;
 	unsigned int m_quadVAO, m_quadVBO, m_framebuffer, m_textureColorbuffer, m_rbo;
@@ -42,13 +44,19 @@ public:
 		glClearColor(0.5f, 0.2f, 0.1f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		if (m_stateSubject->inMainMenu()) {
+		if (VNFSA::inMainMenu()) {
+			m_backgroundLayer.draw(frame, ModelRuntimeInterface::getMainMenuBackground());
 			m_mainMenuLayer.pollAndDraw(frame);
 		}
-		else if (m_stateSubject->inSavesMenu()) {
+		else if (VNFSA::inSavesMenu()) {
+			m_backgroundLayer.draw(frame, ModelRuntimeInterface::getMainMenuBackground());
 			m_savesMenuLayer.pollAndDraw(frame);
 		}
-		else if (m_stateSubject->inGame()) {
+		else if (VNFSA::inOptionsMenu()) {
+			m_backgroundLayer.draw(frame, ModelRuntimeInterface::getMainMenuBackground());
+			m_optionsMenuLayer.pollAndDraw(frame);
+		}
+		else if (VNFSA::inGame()) {
 			// Draw each layer
 			m_backgroundLayer.pollAndDraw(frame);
 			m_spriteLayer.pollAndDraw(frame);
@@ -60,7 +68,7 @@ public:
 				m_textLayer.pollAndDraw(frame);
 			}
 		
-			if (m_stateSubject->optionsSidebarOpen()) {
+			if (VNFSA::inGameWithSideBar()) {
 
 			}
 		}

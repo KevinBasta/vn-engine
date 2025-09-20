@@ -89,33 +89,6 @@ bool drawTextureAndTextureStore(TextureIdentifier& texture) {
 
 
 
-/*
-* Background actions
-*/
-
-template<>
-bool ActionField<ActionBackgroundTexture>::drawInternal(ActionBackgroundTexture* obj) {
-	bool modified = false;
-	if (obj == nullptr) { return modified; }
-
-	std::string actionTitle{ ActionHelper{ std::in_place_type<ActionBackgroundTexture> }.getName() };
-
-	bool isTreeOpen = ImGui::TreeNode(addIdFromPtr(actionTitle, obj).c_str());
-	dragDropSourceSet(obj);
-
-	if (isTreeOpen) {
-		modified |= drawTextureAndTextureStore(obj->texture);
-
-		ImGui::TreePop();
-	}
-
-	return modified;
-}
-
-
-
-
-
 
 /*
 * Sprite actions
@@ -351,6 +324,48 @@ bool ActionField<ActionSpriteAnimation>::drawInternal(ActionSpriteAnimation* obj
 
 	return modified;
 }
+
+
+
+
+
+/*
+* Background actions
+*/
+
+template<>
+bool ActionField<ActionBackgroundTexture>::drawInternal(ActionBackgroundTexture* obj) {
+	bool modified = false;
+	if (obj == nullptr) { return modified; }
+
+	std::string actionTitle{ ActionHelper{ std::in_place_type<ActionBackgroundTexture> }.getName() };
+
+	bool isTreeOpen = ImGui::TreeNode(addIdFromPtr(actionTitle, obj).c_str());
+	dragDropSourceSet(obj);
+
+	if (isTreeOpen) {
+		modified |= drawTextureAndTextureStore(obj->texture);
+
+		// Draw Sprite Property Picker
+		ImGui::Spacing();
+		ImGui::Text("Background Properties");
+
+		modified |= drawSpritePropertyField(SpriteProperty::XPOS, obj->xpos, obj->xposEnabled);
+		modified |= drawSpritePropertyField(SpriteProperty::YPOS, obj->ypos, obj->yposEnabled);
+		modified |= drawSpritePropertyField(SpriteProperty::ZPOS, obj->zpos, obj->zposEnabled);
+		modified |= drawSpritePropertyField(SpriteProperty::SCALE, obj->scale, obj->scaleEnabled);
+		modified |= drawSpritePropertyField(SpriteProperty::ROTATION, obj->rotation, obj->rotationEnabled);
+		modified |= drawSpritePropertyField(SpriteProperty::OPACITY, obj->opacity, obj->opacityEnabled);
+
+		ImGui::TreePop();
+	}
+
+	return modified;
+}
+
+
+
+
 
 
 /**

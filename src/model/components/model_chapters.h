@@ -27,6 +27,7 @@ private:
 
 	EngineNodeManager m_nodes{};
 	EngineChapterManager m_chapters{};
+	id m_headChapterId{};
 
 	void createChapterOne() {
 
@@ -93,7 +94,7 @@ private:
 		m_chapters.add(chapterThree);
 		m_chapters.add(chapterFour);
 
-
+		m_headChapterId = chapterOne->getId();
 		//std::cout << chapterOneGraph << std::endl;
 	}
 
@@ -118,7 +119,15 @@ private:
 	}
 
 	const Chapter* getHeadChapter() {
-		return m_chapters.get(1);
+		return m_chapters.get(m_headChapterId);
+	}
+
+	id getHeadChapterId() {
+		return m_headChapterId;
+	}
+
+	void setHeadChapterId(id newHeadChapterId) {
+		m_headChapterId = newHeadChapterId;
 	}
 
 	Node* getNodeById(id nodeId) {

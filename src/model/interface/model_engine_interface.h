@@ -22,6 +22,17 @@ public:
 		return model->m_modelCharacters.m_characters;
 	}
 
+	static Character* getCharacterById(id id) {
+		ModelSubject* model{ ModelSubject::validateInstance() };
+
+		auto character{ model->m_modelCharacters.m_characters.find(id) };
+		if (character == model->m_modelCharacters.m_characters.end()) {
+			return nullptr;
+		}
+
+		return character->second.get();
+	}
+
 	using RelationsMap = ModelRelations::RelationsMap;
 	static RelationsMap& getRelationsMap() {
 		ModelSubject* model{ ModelSubject::validateInstance() };
@@ -40,6 +51,19 @@ public:
 		ModelSubject* model{ ModelSubject::validateInstance() };
 		
 		model->m_modelRelationTypes.addRelationType(relationName);
+	}
+
+	using ChapterMap = EngineChapterManager::ChapterMap;
+	static ChapterMap& getChaptersMap() {
+		ModelSubject* model{ ModelSubject::validateInstance() };
+		if (model == nullptr) { throw "model not found"; }
+		return model->m_modelChapters.m_chapters.getChapters();
+	}
+
+	static void addChapter(Chapter* chapter) {
+		ModelSubject* model{ ModelSubject::validateInstance() };
+		if (model == nullptr) { throw "model not found"; }
+		return model->m_modelChapters.m_chapters.add(chapter);
 	}
 
 	/*static bool removeRelationType(id relationId) {

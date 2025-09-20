@@ -261,6 +261,8 @@ public:
 	}
 
 	void drawGraphNode(const Linkable* linkable, int x = 0, int y = 0) {
+		if (linkable == nullptr) { return; }
+
 		std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> myconv;
 		std::string convertedName{ myconv.to_bytes(getLinkableName(linkable->getId())) };
 

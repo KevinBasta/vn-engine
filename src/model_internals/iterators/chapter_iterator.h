@@ -61,13 +61,8 @@ private:
 	bool advanceNode(StateSubject* stateSubject);
 
 public:
-	// TODO: iterator with no chapter id input, for new game cases (perhaps can still pass but pass the first chapter id)
-	ChapterIterator():
-		m_chapterId{ 1 }
-	{
-		 // To request from model
-	}
-	
+	ChapterIterator() {}
+
 	ChapterIterator(id chapterId) :
 		m_chapterId{ chapterId }
 	{

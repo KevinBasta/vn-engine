@@ -8,7 +8,15 @@
 class ModelCommonInterface {
 public:
 	static id getFirstChapterId() {
-		return 1;
+		ModelSubject* model{ ModelSubject::validateInstance() };
+		
+		return model->m_modelChapters.getHeadChapterId();
+	}
+	
+	static void setFirstChapterId(id newId) {
+		ModelSubject* model{ ModelSubject::validateInstance() };
+		
+		model->m_modelChapters.setHeadChapterId(newId);
 	}
 
 	static const Chapter* getHeadChapter() {
@@ -42,7 +50,7 @@ public:
 		ModelSubject* model{ ModelSubject::validateInstance() };
 
 		// TODO: provide the id of the first chapter according to model load/save files
-		return ChapterIterator(1);
+		return ChapterIterator(getFirstChapterId());
 	}
 
 	static ChapterIterator iter(id chapterId) {
@@ -53,6 +61,5 @@ public:
 
 
 };
-
 
 #endif // MODEL_INTERFACE_COMMON_H

@@ -26,6 +26,12 @@ public:
 		return m_relations;
 	}
 
+	auto& getCharacterToRelationMap() {
+		if (m_relations == nullptr) { throw "invalid relations object for relations builder."; }
+
+		return m_relations->m_relationships;
+	}
+
 public:
 	//
 	// Loading and saving node model and save files

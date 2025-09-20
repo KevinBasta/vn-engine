@@ -13,7 +13,10 @@ bool ChapterIterator::advanceChapter(StateSubject* stateSubject) {
 	Chapter* chapter{ nullptr };
 	id		 chapterId{ 0 };
 
-	if (stateSubject->m_nextChapter.hasNextChapterId()) {
+	Chapter* currentChapterPtrCheck{ ModelRuntimeInterface::getChapterById(m_chapterId.value_or(0)) };
+	if (m_chapterPtr != currentChapterPtrCheck) { m_chapterPtr = currentChapterPtrCheck; }
+
+	if (stateSubject->m_nextChapter.hasNextChapterId() && m_chapterPtr != nullptr) {
 		// TODO: go to next chapter if there is one, otherwise return false
 		chapterId = stateSubject->m_nextChapter.getNextChapterId();
 
@@ -22,13 +25,15 @@ bool ChapterIterator::advanceChapter(StateSubject* stateSubject) {
 		}
 	}
 
-	if (chapter == nullptr) {
+	if (chapter == nullptr && m_chapterPtr != nullptr) {
 		try {
 			chapterId = m_chapterPtr->getFirstChildId();
 			chapter = ModelRuntimeInterface::getChapterById(chapterId);
 		}
 		catch (...) {
+			// TODO: handle for end credits, maybe should have spearate action for them, so end just goes to main menu
 			std::cout << "no more chapters" << std::endl;
+			stateSubject->goToMainMenu();
 		}
 	}
 
@@ -47,7 +52,7 @@ bool ChapterIterator::advanceChapter(StateSubject* stateSubject) {
 		return true;
 	}
 	else {
-		// TODO: go to main menu
+		stateSubject->goToMainMenu();
 	}
 
 	return false;

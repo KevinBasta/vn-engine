@@ -5,12 +5,18 @@
 #include "node_types.h"
 #include "model_subject.h"
 
+#include <string>
+#include <unordered_map>
+
 class StateSaves {
 private:
 	StateSubject* m_stateSubject{ nullptr };
 
 	int m_savesChoice{ 0 };
-	const int m_savesMaxChoice{ 99 };
+	const int m_savesMaxChoice{ 6 };
+
+	std::wstring emptySlotTitle{ L"Empty Save Slot" };
+	std::unordered_map<int, std::wstring> slotTitle{ {1, L"Test Save :D!"} };
 
 public:
 	StateSaves(StateSubject* stateSubject) :
@@ -19,13 +25,24 @@ public:
 
 	}
 
-	bool handleEscape();
 	bool loadCurrentSave();
 	bool setCurrentSave();
 	bool applyCurrentChoice();
 
 	int currentChoice() {
 		return m_savesChoice;
+	}
+
+	int maxChoice() {
+		return m_savesMaxChoice;
+	}
+
+	std::wstring_view choiceTitleAt(int choice) {
+		if (slotTitle.contains(choice)) {
+			return slotTitle[choice];
+		}
+		
+		return emptySlotTitle;
 	}
 
 	void chooseUpChoice() {

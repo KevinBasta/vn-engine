@@ -2,17 +2,6 @@
 #include "state_saves.h"
 #include "state_subject.h"
 
-bool StateSaves::handleEscape() {
-	if (m_stateSubject->inSavesToLoad()) {
-		m_stateSubject->goToMainMenu();
-	}
-	else if (m_stateSubject->inSavesToSave()) {
-		m_stateSubject->goToInGameWithSideBar();
-	}
-
-	return true;
-}
-
 bool StateSaves::loadCurrentSave() {
 	m_stateSubject->loadSave(/*pass the save index or obj*/);
 
@@ -28,10 +17,10 @@ bool StateSaves::setCurrentSave() {
 }
 
 bool StateSaves::applyCurrentChoice() {
-	if (m_stateSubject->inSavesToLoad()) {
+	if (VNFSA::inSavesToLoad()) {
 		return loadCurrentSave();
 	}
-	else if (m_stateSubject->inSavesToSave()) {
+	else if (VNFSA::inSavesToSave()) {
 		return setCurrentSave();
 	}
 

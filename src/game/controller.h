@@ -3,6 +3,7 @@
 
 #include "window.h"
 #include "state_subject.h"
+#include "state_FSA.h"
 #include "engine_properties.h"
 
 static bool sg_leftButtonReleaseEvent{ false };
@@ -70,14 +71,14 @@ private:
 	void processMouse() {
 		// Do a state step on left click
 		if (sg_leftButtonReleaseEvent) {
-			if (m_stateSubject->inMainMenu()) {
+			if (VNFSA::inMainMenu()) {
 				
 			}
 			else if (m_stateSubject->m_choices.isChoiceActive() == false) {
 				m_stateSubject->action();
 			}
 
-			StateSubject::VNFSA::printCurrent();
+			VNFSA::printCurrent();
 
 			sg_leftButtonReleaseEvent = false;
 		}
@@ -109,27 +110,35 @@ private:
 
 	void processKeyboard() {
 
-		if (/*!IS_ENGINE_ACTIVE && */glfwGetKey(m_window->get(), GLFW_KEY_GRAVE_ACCENT) == GLFW_PRESS || m_stateSubject->inQuitState()) {
+		if (/*!IS_ENGINE_ACTIVE && */glfwGetKey(m_window->get(), GLFW_KEY_GRAVE_ACCENT) == GLFW_PRESS || VNFSA::inQuitState()) {
 			// TODO: open menu?
 			glfwSetWindowShouldClose(m_window->get(), true);
 		}
 
 		if (glfwGetKey(m_window->get(), GLFW_KEY_ESCAPE) == GLFW_PRESS) {
-			if (m_stateSubject->inSavesMenu()) {
-				m_stateSubject->m_savesMenu.handleEscape();
+			if (VNFSA::inSavesToLoad()) {
+				m_stateSubject->goToMainMenu();
 			}
-
+			else if (VNFSA::inSavesToSave()) {
+				m_stateSubject->goToInGameWithSideBar();
+			}
+			else if (VNFSA::inOptionsMenuMainMenu()) {
+				m_stateSubject->goToMainMenu();
+			}
+			else if (VNFSA::inOptionsMenuInGame()) {
+				m_stateSubject->goToInGameWithSideBar();
+			}
 		}
 
 		// Do a state step on enter press (picking a node child if choice is active)
 		if (sg_enterKeyButtonReleaseEvent) {
-			if (m_stateSubject->inMainMenu()) {
+			if (VNFSA::inMainMenu()) {
 				m_stateSubject->m_mainMenu.applyCurrentChoice();
 			}
-			else if (m_stateSubject->inSavesMenu()) {
+			else if (VNFSA::inSavesMenu()) {
 				m_stateSubject->m_savesMenu.applyCurrentChoice();
 			}
-			else if (m_stateSubject->inGame()) {
+			else if (VNFSA::inGame()) {
 				m_stateSubject->action();
 			}
 
@@ -139,10 +148,10 @@ private:
 
 		// Change node child choice index with up and down arrows
 		if (sg_upKeyButtonReleaseEvent) {
-			if (m_stateSubject->inMainMenu()) {
+			if (VNFSA::inMainMenu()) {
 				m_stateSubject->m_mainMenu.chooseUpChoice();;
 			}
-			else if (m_stateSubject->inSavesMenu()) {
+			else if (VNFSA::inSavesMenu()) {
 				m_stateSubject->m_savesMenu.chooseUpChoice();;
 			} 
 			else if (m_stateSubject->m_choices.isChoiceActive()) {
@@ -153,10 +162,10 @@ private:
 		}
 
 		if (sg_downKeyButtonReleaseEvent) {
-			if (m_stateSubject->inMainMenu()) {
+			if (VNFSA::inMainMenu()) {
 				m_stateSubject->m_mainMenu.chooseDownChoice();
 			}
-			else if (m_stateSubject->inSavesMenu()) {
+			else if (VNFSA::inSavesMenu()) {
 				m_stateSubject->m_savesMenu.chooseDownChoice();;
 			}
 			else if (m_stateSubject->m_choices.isChoiceActive()) {

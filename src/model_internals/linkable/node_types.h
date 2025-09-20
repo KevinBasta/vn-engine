@@ -45,15 +45,6 @@ struct TextureIdentifierHasher {
 };
 
 /**
- * BACKGROUND ACTIONS
- *
- */
-struct ActionBackgroundTexture {
-	TextureIdentifier texture{};
-};
-
-
-/**
  * SPRITE ACTIONS
  * 
  */
@@ -115,6 +106,36 @@ struct ActionSpriteAnimation {
 	bool opacityEnabled{ false };
 	std::vector<SpriteAnimationKeyframe> opacity{};
 };
+
+
+/**
+ * BACKGROUND ACTIONS
+ *
+ */
+struct ActionBackgroundTexture {
+	// Same definiton as ActionSpriteAllProperties but diff
+	// name for template overloading ::
+	TextureIdentifier texture{};
+
+	bool xposEnabled{ false };
+	float xpos{ 1.0f };
+
+	bool yposEnabled{ false };
+	float ypos{ 1.0f };
+
+	bool zposEnabled{ false };
+	float zpos{ 1.0f };
+
+	bool scaleEnabled{ false };
+	float scale{ 1.0f };
+
+	bool rotationEnabled{ false };
+	float rotation{ 0.0f };
+
+	bool opacityEnabled{ false };
+	float opacity{ 1.0f };
+};
+
 
 
 /**
