@@ -1,6 +1,8 @@
 # visual-novel-engine
 
-This repository is in progress.
+<img src="test/assets/preview.gif" alt="Early Stage Demo"/>
+
+This repository is in progress. The above gif shows a demonstration of some of the engine's functionality.
 
 ## Running locally
 - Currently external dependancies are used as submodules in the "external" directory. This means that cloning the repository and running cmake is all that is needed. In the future something like vcpkg will be used instead of submodules.
