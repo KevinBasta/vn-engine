@@ -518,6 +518,11 @@ private:
 			Node* node{ ModelEngineInterface::getNodeById(nodeId) };
 			if (node == nullptr) { return; }
 
+			// Display node id
+			ImGui::Text("Node Id: ");
+			ImGui::SameLine();
+			ImGui::Text(std::to_string(nodeId).c_str());
+			
 			// Edit node name
 			static ImGuiInputTextFlags textFlags{ 0 };
 			std::string nodeName = NodeBuilder{ node }.getName();
