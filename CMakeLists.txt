@@ -14,6 +14,10 @@ add_definitions(-DVN_BASE_PATH=\"${CMAKE_CURRENT_SOURCE_DIR}\")
 add_executable (
 	"vn_engine"
 	
+	# sqlite c code (using the cpp wrapper moduel for now to get the c files)
+	"external/SQLiteCpp/sqlite3/sqlite3.c"
+	"external/SQLiteCpp/sqlite3/sqlite3.h"
+
 	# imgui dependancies
 	"external/imgui/imgui_tables.cpp"
 	"external/imgui/imgui_widgets.cpp"
@@ -211,7 +215,7 @@ add_executable (
 target_include_directories(
 	"vn_engine"
 	PUBLIC
-	
+
 	"src"
 	"src/common"
 	"src/common/exceptions"
@@ -264,6 +268,7 @@ target_include_directories(
 	"external/glfw"
 	"external/glm"
 	"external/freetype"
+	"external/SQLiteCpp/sqlite3"
 )
 
 # Add libraries

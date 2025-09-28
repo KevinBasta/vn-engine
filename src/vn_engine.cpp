@@ -21,6 +21,8 @@
 #include <filesystem>
 #include <memory>
 
+#include "sqlite3.h"
+
 #ifdef _WIN32
 #include <crtdbg.h>
 #endif
@@ -39,6 +41,16 @@ void testCore() {
 		std::cout << *temp << std::endl;
 	}*/
 
+}
+
+void sqlCheck() {
+	sqlite3* db;
+	char* zErrMsg = 0;
+	int rc;
+
+	rc = sqlite3_open("hi", &db);
+	sqlite3_close(db);
+	std::cout << "TESTESTESTEST" << std::endl;
 }
 
 void memCheck() {
@@ -75,6 +87,7 @@ int main()
 	std::cout << "Hello CMake." << std::endl;
 	std::cout << "before " << std::endl;
 
+	sqlCheck();
 	//idCheck();
 	memCheck();
 	
