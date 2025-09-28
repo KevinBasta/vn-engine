@@ -14,11 +14,9 @@ add_definitions(-DVN_BASE_PATH=\"${CMAKE_CURRENT_SOURCE_DIR}\")
 add_executable (
 	"vn_engine"
 	
-	# sqlite c code (using the cpp wrapper moduel for now to get the c files)
-	"external/SQLiteCpp/sqlite3/sqlite3.c"
-	"external/SQLiteCpp/sqlite3/sqlite3.h"
 
-	# imgui dependancies
+	## libraries ## 
+	# imgui
 	"external/imgui/imgui_tables.cpp"
 	"external/imgui/imgui_widgets.cpp"
 	"external/imgui/imgui_draw.cpp"
@@ -38,61 +36,96 @@ add_executable (
 	"external/imgui-node-editor/imgui_canvas.cpp"
 	"external/imgui-node-editor/imgui_node_editor_api.cpp"
 	"external/imgui-node-editor/crude_json.cpp"
+	
+	# sqlite c code (using the cpp wrapper moduel for now to get the c files)
+	"external/SQLiteCpp/sqlite3/sqlite3.c"
+	"external/SQLiteCpp/sqlite3/sqlite3.h"
 
-	# main program
+
+
+
+	## main program ##
 	"src/vn_engine.h"
 	"src/vn_engine.cpp"
-	"src/subjects_orchestrator.h"
 
-	# common
-	"src/common/timer.cpp"
-	"src/common/timer.h" 
-	"src/common/id.cpp"
-	"src/common/id.h"
-	"src/common/logging.h" 
-	"src/common/logging.cpp" 
-	"src/common/index.h"
-	#"src/common/types.h"
+	## common ##
+	# exceptions
+	"src/common/exceptions/exceptions.h" 
 
+	# observe
+	"src/common/observe/observer.h" 
+	"src/common/observe/subject.h" 
+
+	# structs
 	"src/common/structs/action_type_mappers.cpp" 
 	"src/common/structs/action_type_mappers.h"
 	"src/common/structs/action_type_mappers_helpers.h"  
 	"src/common/structs/engine_drag_drop_payload.h" 
 
-	 
-	# engine
+	# types
+	"src/common/types/id.cpp"
+	"src/common/types/id.h"
+	"src/common/types/index.h"
+	
+	# util
+	"src/common/util/timer.cpp"
+	"src/common/util/timer.h" 
+	"src/common/util/logging.h" 
+	"src/common/util/logging.cpp" 
+		 
+	## engine ##
 	"src/engine/engine.cpp"
 	"src/engine/engine.h"
-	"src/engine/engine_observer.h"
 	"src/engine/engine_preview.h"
-	"src/engine/engine_properties.h" 
+	"src/engine/engine_helpers.h" 
+	"src/engine/engine_helpers.cpp" 
 
+	# node editors
 	"src/engine/node_editors/graph_editors_common.cpp"
 	"src/engine/node_editors/graph_editors_common.h"
 
+	# graphs
 	"src/engine/node_editors/graphs/engine_chapter_graph.h" 
 	"src/engine/node_editors/graphs/engine_graph.h" 
 	"src/engine/node_editors/graphs/engine_node_graph.h" 
 
+	# timelines
 	"src/engine/node_editors/timelines/engine_animations_timeline.h"
 	"src/engine/node_editors/timelines/engine_step_timeline.h"
 	"src/engine/node_editors/timelines/engine_timeline.h"
 
+	# sidebars
 	"src/engine/sidebar/engine_scene_action_type_list.h"
 	"src/engine/sidebar/engine_scene_action_editor.cpp"
 	"src/engine/sidebar/engine_scene_action_editor.h"
 	"src/engine/sidebar/engine_scene_editor.cpp"
 	"src/engine/sidebar/engine_scene_editor.h"
-
-	# game
+	"src/engine/sidebar/engine_relation_editor.h" 
+	"src/engine/sidebar/engine_relation_editor.cpp" 
+	"src/engine/sidebar/engine_character_editor.h" 
+	"src/engine/sidebar/engine_character_editor.cpp" 
+	"src/engine/sidebar/engine_texture_editor.h" 
+	"src/engine/sidebar/engine_texture_editor.cpp" 
+	"src/engine/sidebar/engine_chapter_editor.cpp"
+	"src/engine/sidebar/engine_chapter_editor.h" 
+	
+	## game ##
 	"src/game/context.cpp"
 	"src/game/context.h"
-	"src/game/controller.cpp"
 	"src/game/controller.h"
-	"src/game/game_loop.h"
 	"src/game/game_observer.h" 
-	"src/game/observer.h" 
 
+	# internals
+	"src/game/internals/shader.cpp"
+	"src/game/internals/shader.h"
+	"src/game/internals/text.cpp"
+	"src/game/internals/text.h"
+	"src/game/internals/texture.cpp"
+	"src/game/internals/texture.h"
+	"src/game/internals/window.cpp" 
+	"src/game/internals/window.h"
+	
+	# layers
 	"src/game/layers/layer_background.cpp"
 	"src/game/layers/layer_background.h"
 	"src/game/layers/layer_choice.cpp" 
@@ -103,21 +136,24 @@ add_executable (
 	"src/game/layers/layer_text.h"
 	"src/game/layers/layer_transition.h" 
 	"src/game/layers/layer_transition.cpp" 
+	"src/game/layers/layer_main_menu.h" 
+	"src/game/layers/layer_main_menu.cpp"  
+	"src/game/layers/layer_saves.h" 
+	"src/game/layers/layer_saves.cpp" 
+	"src/game/layers/layer_options.h" 
+	"src/game/layers/layer_options.cpp" 
+	"src/game/layers/layer_sidebar.h" 
+	"src/game/layers/layer_sidebar.cpp"
 
-	# game internals
-	"src/game_internals/shader.cpp"
-	"src/game_internals/shader.h"
-	"src/game_internals/text.cpp"
-	"src/game_internals/text.h"
-	"src/game_internals/texture.cpp"
-	"src/game_internals/texture.h"
-	"src/game_internals/window.cpp" 
-	"src/game_internals/window.h"
+	# resource managers
+	"src/game/resource_managers/texture_manager.h" 
+	"src/game/resource_managers/texture_manager.cpp" 
 
-	"src/game_internals/resource_managers/texture_manager.h" 
-	"src/game_internals/resource_managers/texture_manager.cpp" 
+	## model ##
+	"src/model/model_subject.cpp"
+	"src/model/model_subject.h"
 
-	# model
+	# components
 	"src/model/components/model_chapters.cpp"
 	"src/model/components/model_chapters.h"
 	"src/model/components/model_characters.cpp" 
@@ -129,59 +165,54 @@ add_executable (
     "src/model/components/model_textures.cpp" 
     "src/model/components/model_textures.h" 
 
+	# interface
 	"src/model/interface/model_common_interface.h"
 	"src/model/interface/model_engine_interface.h" 
-	"src/model/interface/model_runtime_interface.h" 
-	"src/model/interface/model_subject.cpp"
-	"src/model/interface/model_subject.h"
+	"src/model/interface/model_runtime_interface.h"
 
-	# model internal
-	"src/model_internals/builders/chapter_builder.h"
-	"src/model_internals/builders/node_builder.h"
-	"src/model_internals/builders/character_builder.h"
-	"src/model_internals/builders/linkable_builder.h"
-	"src/model_internals/builders/relations_builder.h"
-	"src/model_internals/builders/texture_store_builder.h"
+	# internals
+	"src/model/internals/builders/chapter_builder.h"
+	"src/model/internals/builders/node_builder.h"
+	"src/model/internals/builders/character_builder.h"
+	"src/model/internals/builders/linkable_builder.h"
+	"src/model/internals/builders/relations_builder.h"
+	"src/model/internals/builders/texture_store_builder.h"
 
-	"src/model_internals/linkable/node_types.h"
+	"src/model/internals/linkable/node_types.h"
 
-	"src/model_internals/character/character.cpp"
-	"src/model_internals/character/character.h"
+	"src/model/internals/character/character.cpp"
+	"src/model/internals/character/character.h"
 	
-	"src/model_internals/iterators/chapter_iterator.cpp"
-	"src/model_internals/iterators/chapter_iterator.h"
-	"src/model_internals/iterators/node_runner.cpp"
-	"src/model_internals/iterators/node_runner.h"
+	"src/model/internals/iterators/chapter_iterator.cpp"
+	"src/model/internals/iterators/chapter_iterator.h"
+	"src/model/internals/iterators/node_runner.cpp"
+	"src/model/internals/iterators/node_runner.h"
 
-	"src/model_internals/linkable/chapter.cpp"
-	"src/model_internals/linkable/chapter.h"
-	"src/model_internals/linkable/node.cpp"
-	"src/model_internals/linkable/node.h"
-	"src/model_internals/linkable/linkable.cpp" 
-	"src/model_internals/linkable/linkable.h" 
+	"src/model/internals/linkable/chapter.cpp"
+	"src/model/internals/linkable/chapter.h"
+	"src/model/internals/linkable/node.cpp"
+	"src/model/internals/linkable/node.h"
+	"src/model/internals/linkable/linkable.cpp" 
+	"src/model/internals/linkable/linkable.h" 
 	
-	"src/model_internals/relations/relations.cpp"
-	"src/model_internals/relations/relations.h"
-	 
-	 
+	"src/model/internals/relations/relations.cpp"
+	"src/model/internals/relations/relations.h"
 
-	"src/model_internals/resource_managers/engine_chapter_manager.h"
-	"src/model_internals/resource_managers/engine_node_manager.h"
-	
+	"src/model/internals/resource_managers/engine_chapter_manager.h"
+	"src/model/internals/resource_managers/engine_node_manager.h"
 
-	#"src/model_internals/serialize/json/json_lexer.cpp"
-	#"src/model_internals/serialize/json/json_token.cpp"
-	#"src/model_internals/serialize/json/json_error.cpp"
-	#"src/model_internals/serialize/json/json_expr.cpp"
+	"src/model/internals/stores/sound_store.h" 
+	"src/model/internals/stores/sound_store.cpp" 
+	"src/model/internals/stores/texture_store.h"
+	"src/model/internals/stores/texture_store.cpp"
+	
+	## state ##
+	"src/state/state_subject.cpp"
+	"src/state/state_subject.h"
+	"src/state/state_FSA.h" 
+	"src/state/state_FSA.cpp" 
 
-	"src/model_internals/stores/sound_store.h" 
-	"src/model_internals/stores/sound_store.cpp" 
-	"src/model_internals/stores/texture_store.h"
-	"src/model_internals/stores/texture_store.cpp"
-	
-	# state
-	"src/state/subject.h"
-	
+	# components	
 	"src/state/components/state_background.cpp" 
 	"src/state/components/state_background.h" 
 	"src/state/components/state_choices.cpp" 
@@ -196,21 +227,14 @@ add_executable (
 	"src/state/components/state_relations.h" 
 	"src/state/components/state_sprites.cpp" 
 	"src/state/components/state_sprites.h" 
+	"src/state/components/state_main_menu.h" 
+	"src/state/components/state_main_menu.cpp" 
+	"src/state/components/state_saves.cpp" 
+	"src/state/components/state_saves.h" 
+	"src/state/components/state_types.h"
+)
 
-	"src/state/interface/state_common_interface.h" 
-	"src/state/interface/state_engine_interface.h" 
-	"src/state/interface/state_runtime_interface.h" 
-	"src/state/interface/state_subject.cpp"
-	"src/state/interface/state_subject.h"
-	"src/state/interface/state_types.h"
- "src/engine/sidebar/engine_relation_editor.h" 
- "src/engine/sidebar/engine_relation_editor.cpp" 
- "src/engine/sidebar/engine_character_editor.h" 
- "src/engine/sidebar/engine_character_editor.cpp" 
- "src/engine/sidebar/engine_texture_editor.h" 
- "src/engine/sidebar/engine_texture_editor.cpp" 
- "src/engine/sidebar/engine_chapter_editor.cpp"
- "src/engine/engine_helpers.h" "src/engine/sidebar/engine_chapter_editor.h" "src/engine/engine_helpers.cpp" "src/game/layers/layer_main_menu.h" "src/game/layers/layer_main_menu.cpp"  "src/state/components/state_main_menu.h" "src/state/components/state_main_menu.cpp" "src/game/layers/layer_saves.h" "src/game/layers/layer_saves.cpp" "src/state/components/state_saves.cpp" "src/state/components/state_saves.h" "src/state/interface/state_FSA.h" "src/state/interface/state_FSA.cpp" "src/game/layers/layer_options.h" "src/game/layers/layer_options.cpp" "src/common/exceptions/exceptions.h" "src/game/layers/layer_sidebar.h" "src/game/layers/layer_sidebar.cpp")
+
 
 target_include_directories(
 	"vn_engine"
@@ -219,7 +243,10 @@ target_include_directories(
 	"src"
 	"src/common"
 	"src/common/exceptions"
+	"src/common/observe"
 	"src/common/structs"
+	"src/common/types"
+	"src/common/util"
 	
 	"src/engine"
 	"src/engine/node_editors"
@@ -229,29 +256,28 @@ target_include_directories(
 
 	"src/game"
 	"src/game/layers"
-
-	"src/game_internals"
-	"src/game_internals/glsl"
-	"src/game_internals/resource_managers"
+	"src/game/glsl"
+	"src/game/resource_managers"
+	"src/game/internals"
 
 	"src/model"
 	"src/model/components"
 	"src/model/interface"
-
-	"src/model_internals"
-	"src/model_internals/builders"
-	"src/model_internals/chapter_node"
-	"src/model_internals/character"
-	"src/model_internals/iterators"
-	"src/model_internals/linkable"
-	"src/model_internals/relations"
-	"src/model_internals/resource_managers"
-	"src/model_internals/serialize"
-	"src/model_internals/stores"
+	"src/model/internals"
+	"src/model/internals/builders"
+	"src/model/internals/chapter_node"
+	"src/model/internals/character"
+	"src/model/internals/iterators"
+	"src/model/internals/linkable"
+	"src/model/internals/relations"
+	"src/model/internals/resource_managers"
+	"src/model/internals/serialize"
+	"src/model/internals/stores"
 
 	"src/state"
 	"src/state/components"
-	"src/state/interface"
+
+	"src/serialize"
 )
 
 # Avoid warnings/errors from libraries 

@@ -113,14 +113,6 @@ class VnWindow {
 private:
 	GLFWwindow* m_window{};
 
-public:
-	VnWindow() {}
-	~VnWindow() { 
-		std::cout << "VN WINDOW DYSTROYED" << std::endl;
-		glfwDestroyWindow(m_window);
-		glfwTerminate();
-	}
-
 	// load glfw, create window, and load glad
 	void load() {
 		glfwInit();
@@ -160,6 +152,17 @@ public:
 #endif
 
 		std::cout << "OpenGL " << GLVersion.major << "." << GLVersion.minor << std::endl;
+	}
+
+public:
+	VnWindow() {
+		load();
+	}
+
+	~VnWindow() { 
+		std::cout << "VN WINDOW DYSTROYED" << std::endl;
+		glfwDestroyWindow(m_window);
+		glfwTerminate();
 	}
 
 	int width() {

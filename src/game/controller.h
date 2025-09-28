@@ -1,10 +1,11 @@
 #ifndef VN_GAME_CONTROLLER_H
 #define VN_GAME_CONTROLLER_H
 
+#include "vn_engine.h"
+
 #include "window.h"
 #include "state_subject.h"
 #include "state_FSA.h"
-#include "engine_properties.h"
 
 static bool sg_leftButtonReleaseEvent{ false };
 static bool sg_upKeyButtonReleaseEvent{ false };

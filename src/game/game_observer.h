@@ -1,12 +1,13 @@
 ﻿#ifndef GAME_OBSERVER_H
 #define GAME_OBSERVER_H
 
+#include "vn_engine.h"
+
 #include "observer.h"
 #include "context.h"
 #include "state_subject.h"
 #include "controller.h"
 #include "text.h"
-#include "engine_properties.h"
 //#include "engine_observer.h"
 #include "engine.h"
 

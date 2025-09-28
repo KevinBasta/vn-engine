@@ -8,13 +8,10 @@
 #include "timer.h"
 #include "window.h"
 
-#include "subjects_orchestrator.h"
 #include "model_subject.h"
 #include "state_subject.h"
 
-#include "game_loop.h"
 #include "game_observer.h"
-#include "engine_observer.h"
 
 #include <iostream>
 #include <string>
@@ -53,23 +50,6 @@ void sqlCheck() {
 	std::cout << "TESTESTESTEST" << std::endl;
 }
 
-void memCheck() {
-	std::cout << "checking normal operation" << std::endl;
-
-	std::cout << VN_BASE_PATH << std::endl;
-
-	// Create a game window
-	VnWindow window{};
-	window.load();
-
-	// Create game state and load model
-	SubjectsOrchestrator subjectsOrchestrator{};
-
-	// Crate game graphics and engine ui
-	GameObserver game{ &window, subjectsOrchestrator.getState() };
-	game.run();
-}
-
 void idCheck() {
 	std::cout << IdGenerator<Character>::getId() << std::endl;
 	std::cout << IdGenerator<Character>::getId() << std::endl;
@@ -78,18 +58,33 @@ void idCheck() {
 	std::cout << IdGenerator<Node>::getId() << std::endl;
 	std::cout << IdGenerator<Node>::getId() << std::endl;
 	std::cout << IdGenerator<Node>::getId() << std::endl;
-	
+
 	std::cout << IdGenerator<Character>::getId() << std::endl;
 }
+
+
+
+void runEngine() {
+	std::cout << "checking normal operation" << std::endl;
+	std::cout << VN_BASE_PATH << std::endl;
+
+	std::unique_ptr<VnWindow> window{};
+	std::unique_ptr<StateSubject> state{};
+
+	GameObserver game{ window.get(), state.get()};
+	game.run();
+}
+
+
 
 int main()
 {
 	std::cout << "Hello CMake." << std::endl;
 	std::cout << "before " << std::endl;
 
-	sqlCheck();
+	//sqlCheck();
 	//idCheck();
-	memCheck();
+	runEngine();
 	
 	std::cout << "End of program" << std::endl;
 
@@ -108,6 +103,5 @@ int main()
 	//std::cout << ((test == 1) ? "MEMORY LEAK PRESENT" : "NO MEMORY LEAK DETECTED") << std::endl;
 #endif
 
-
-	return 0;
+	exit(0);
 }
