@@ -17,22 +17,36 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-#define DBG_VERTEX_PATH	VN_BASE_PATH"/src/game_internals/glsl/vertex_debug.glsl"
-#define DBG_FRAGMENT_PATH	VN_BASE_PATH"/src/game_internals/glsl/fragment_debug.glsl"
+#define TEMP_TEXTURE_VERTEX		VN_BASE_PATH"/src/game/glsl/vertex_texture.glsl"
+#define TEMP_TEXTURE_FRAGMENT	VN_BASE_PATH"/src/game/glsl/fragment_texture.glsl"
+
+#define TEMP_TEXT_VERTEX		VN_BASE_PATH"/src/game/glsl/vertex_text.glsl"
+#define TEMP_TEXT_FRAGMENT		VN_BASE_PATH"/src/game/glsl/fragment_text.glsl"
+
+#define TEMP_FRAMEBUFFER_VERTEX		VN_BASE_PATH"/src/game/glsl/vertex_framebuffer.glsl"
+#define TEMP_FRAMEBUFFER_FRAGMENT	VN_BASE_PATH"/src/game/glsl/fragment_framebuffer.glsl"
+
+#define DBG_VERTEX_PATH			VN_BASE_PATH"/src/game/glsl/vertex_debug.glsl"
+#define DBG_FRAGMENT_PATH		VN_BASE_PATH"/src/game/glsl/fragment_debug.glsl"
 
 class GameContext {
 public:
-	VnWindow* m_window{};
-	StateSubject* m_stateSubject{};
-	BackgroundLayer m_backgroundLayer;
-	SpriteLayer	m_spriteLayer;
-	TextLayer m_textLayer;
-	ChoiceLayer m_choiceLayer;
-	MainMenuLayer m_mainMenuLayer;
-	SavesMenuLayer m_savesMenuLayer;
-	OptionsMenuLayer m_optionsMenuLayer;
-	Shader m_defaultShader;
-	Shader m_screenShader;
+	VnWindow* m_window{ nullptr };
+	StateSubject* m_stateSubject{ nullptr };
+
+	BackgroundLayer		m_backgroundLayer;
+	SpriteLayer			m_spriteLayer;
+	TextLayer			m_textLayer;
+	ChoiceLayer			m_choiceLayer;
+	MainMenuLayer		m_mainMenuLayer;
+	SavesMenuLayer		m_savesMenuLayer;
+	OptionsMenuLayer	m_optionsMenuLayer;
+	
+	//Shader m_defaultShader{ DBG_VERTEX_PATH, DBG_FRAGMENT_PATH };
+	Shader m_textureShader{ TEMP_TEXTURE_VERTEX, TEMP_TEXTURE_FRAGMENT };
+	Shader m_textShader{ TEMP_TEXT_VERTEX, TEMP_TEXT_FRAGMENT };
+	Shader m_screenShader{ TEMP_FRAMEBUFFER_VERTEX, TEMP_FRAMEBUFFER_FRAGMENT };
+	
 	unsigned int m_quadVAO, m_quadVBO, m_framebuffer, m_textureColorbuffer, m_rbo;
 
 	void drawLayers(const FrameDimensions& frame) {

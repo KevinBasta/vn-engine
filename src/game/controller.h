@@ -20,6 +20,9 @@ void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
 	}
 }
 
+static void scrollCallback(GLFWwindow* window, double xoffset, double yoffset) {
+	std::cout << "scroll" << std::endl;
+}
 
 void keyPressCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
@@ -47,8 +50,10 @@ public:
 		m_window{ window },
 		m_stateSubject{ stateSubject }
 	{
+		//glfwSetInputMode(m_window->get(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 		glfwSetMouseButtonCallback(window->get(), mouseButtonCallback);
 		glfwSetKeyCallback(window->get(), keyPressCallback);
+		glfwSetScrollCallback(m_window->get(), scrollCallback);
 	}
 
 	void processInput(bool processInput = true) {

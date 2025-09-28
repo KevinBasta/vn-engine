@@ -17,7 +17,7 @@
 #include <glm/gtc/type_ptr.hpp>
 
 void BackgroundLayer::drawBackground(const FrameDimensions& frame, TextureIdentifier& textureIdentifier, BackgroundOffsets& offsets) {
-	m_defaultShader.use();
+	m_textureShader->use();
 
 	Texture2D* texture{ TextureManager::getTexture(textureIdentifier) };
 
@@ -33,22 +33,22 @@ void BackgroundLayer::drawBackground(const FrameDimensions& frame, TextureIdenti
 	model = glm::rotate(model, glm::radians(offsets.rotation), glm::vec3(0.0, 0.0, 1.0));
 	model = glm::scale(model, glm::vec3(scale * offsets.scale, scale * offsets.scale, 0.0f));
 
-	unsigned int modelLocation = glGetUniformLocation(m_defaultShader.ID(), "inModel");
+	unsigned int modelLocation = glGetUniformLocation(m_textureShader->ID(), "inModel");
 	glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(model));
 
 	glm::mat4 view = glm::mat4(1.0f);
 	view = glm::translate(view, glm::vec3(0.0f, 0.0f, 0.0f));
 
-	unsigned int viewLocation = glGetUniformLocation(m_defaultShader.ID(), "inView");
+	unsigned int viewLocation = glGetUniformLocation(m_textureShader->ID(), "inView");
 	glUniformMatrix4fv(viewLocation, 1, GL_FALSE, glm::value_ptr(view));
 
 
 	glm::mat4 ortho = glm::ortho(0.0f, static_cast<float>(frame.width), 0.0f, static_cast<float>(frame.height), 0.0f, 100.0f);
 
-	unsigned int orthoLocation = glGetUniformLocation(m_defaultShader.ID(), "inOrtho");
+	unsigned int orthoLocation = glGetUniformLocation(m_textureShader->ID(), "inOrtho");
 	glUniformMatrix4fv(orthoLocation, 1, GL_FALSE, glm::value_ptr(ortho));
 
-	unsigned int opacityLocation = glGetUniformLocation(m_defaultShader.ID(), "inOpacity");
+	unsigned int opacityLocation = glGetUniformLocation(m_textureShader->ID(), "inOpacity");
 	glUniform1f(opacityLocation, offsets.opacity);
 
 	texture->draw();

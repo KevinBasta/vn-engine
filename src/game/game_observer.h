@@ -19,13 +19,6 @@
 
 #include <GLFW/glfw3.h>
 
-static void mouseCallback(GLFWwindow* window, double xpos, double ypos) {
-	//(*g_camera).processMouseMovement(xpos, ypos);
-}
-
-static void scrollCallback(GLFWwindow* window, double xoffset, double yoffset) {
-	//(*g_camera).processMouseScroll(yoffset);
-}
 
 class GameObserver : public Observer {
 private:
@@ -35,7 +28,6 @@ private:
 	GameContext m_context;
 	GameController m_controller;
 	bool m_rerenderContext{ false };
-	//EngineObserver m_engine{};
 
 public:
 	// can register the callbacks here for controller
@@ -45,14 +37,7 @@ public:
 		m_context{ window, stateSubjcet },
 		m_controller{ window, stateSubjcet }
 	{
-		init();
 		m_stateSubject->attatch(this);
-	}
-
-	void init() {
-		//glfwSetInputMode(m_window->get(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-		//glfwSetCursorPosCallback(m_window->get(), mouseCallback);
-		//glfwSetScrollCallback(m_window->get(), scrollCallback);
 	}
 
 	void run() {

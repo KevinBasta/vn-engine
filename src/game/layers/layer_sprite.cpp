@@ -9,7 +9,7 @@
 #include "state_subject.h"
 
 void SpriteLayer::drawSprite(const FrameDimensions& frame, const TextureIdentifier& textureIdentifier, const SpriteState& spriteState) {
-	m_defaultShader.use();
+	m_textureShader->use();
 
 	Texture2D* texture{ TextureManager::getTexture(textureIdentifier) };
 
@@ -37,22 +37,22 @@ void SpriteLayer::drawSprite(const FrameDimensions& frame, const TextureIdentifi
 	model = glm::rotate(model, glm::radians(spriteState.rotation), glm::vec3(0.0, 0.0, 1.0));
 	model = glm::scale(model, glm::vec3(scale, scale, 0.0f));
 
-	unsigned int modelLocation = glGetUniformLocation(m_defaultShader.ID(), "inModel");
+	unsigned int modelLocation = glGetUniformLocation(m_textureShader->ID(), "inModel");
 	glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(model));
 
 	glm::mat4 view = glm::mat4(1.0f);
 	view = glm::translate(view, glm::vec3(0.0f, 0.0f, 0.0f));
 
-	unsigned int viewLocation = glGetUniformLocation(m_defaultShader.ID(), "inView");
+	unsigned int viewLocation = glGetUniformLocation(m_textureShader->ID(), "inView");
 	glUniformMatrix4fv(viewLocation, 1, GL_FALSE, glm::value_ptr(view));
 
 
 	glm::mat4 ortho = glm::ortho(0.0f, static_cast<float>(frame.width), 0.0f, static_cast<float>(frame.height), 0.0f, 100.0f);
 
-	unsigned int orthoLocation = glGetUniformLocation(m_defaultShader.ID(), "inOrtho");
+	unsigned int orthoLocation = glGetUniformLocation(m_textureShader->ID(), "inOrtho");
 	glUniformMatrix4fv(orthoLocation, 1, GL_FALSE, glm::value_ptr(ortho));
 
-	unsigned int opacityLocation = glGetUniformLocation(m_defaultShader.ID(), "inOpacity");
+	unsigned int opacityLocation = glGetUniformLocation(m_textureShader->ID(), "inOpacity");
 	glUniform1f(opacityLocation, spriteState.opacity);
 
 	glEnable(GL_BLEND);

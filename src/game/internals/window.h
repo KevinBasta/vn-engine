@@ -165,6 +165,10 @@ public:
 		glfwTerminate();
 	}
 
+	void makeCurrentContext() {
+		glfwMakeContextCurrent(m_window);
+	}
+
 	int width() {
 		return sg_frame.width;
 	}

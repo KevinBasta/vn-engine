@@ -7,22 +7,19 @@
 #include "state_subject.h"
 #include "node_types.h"
 
-#define TEMP_VERTEX_PATH	VN_BASE_PATH"/src/game_internals/glsl/vertex_texture.glsl"
-#define TEMP_FRAGMENT_PATH	VN_BASE_PATH"/src/game_internals/glsl/fragment_texture.glsl"
-
 class BackgroundLayer {
 private:
 	VnWindow* m_window{ nullptr };
-	Shader m_defaultShader;
 	StateSubject* m_stateSubject{ nullptr };
+	Shader* m_textureShader{ nullptr };
 
 	void drawBackground(const FrameDimensions& frame, TextureIdentifier& texture, BackgroundOffsets& offsets);
 
 public:
-	BackgroundLayer(VnWindow* window, StateSubject* stateSubject) :
+	BackgroundLayer(VnWindow* window, StateSubject* stateSubject, Shader* textureShader) :
 		m_window{ window },
 		m_stateSubject{ stateSubject },
-		m_defaultShader{ TEMP_VERTEX_PATH, TEMP_FRAGMENT_PATH }
+		m_textureShader{ textureShader }
 	{
 	}
 

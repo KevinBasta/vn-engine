@@ -14,16 +14,28 @@ Shader::Shader(const char* vertexPath, const char* fragmentPath) :
 	m_vertexPath{ vertexPath },
 	m_fragmentPath{ fragmentPath }
 {
-	compileShaderFiles();
+}
+
+void Shader::checkCompiled() {
+	if (!m_compiled) {
+		compileShaderFiles();
+		m_compiled = true;
+	}
 }
 
 void Shader::reload() {
 	compileShaderFiles();
 }
 
-void Shader::use() const {
+void Shader::use() {
+	checkCompiled();
 	glUseProgram(m_programID);
 }
+
+GLuint Shader::ID() { 
+	checkCompiled();  
+	return m_programID; 
+};
 
 void Shader::compileShaderFiles() {
 	// 1: Get the shader code from files
@@ -57,6 +69,8 @@ void Shader::compileShaderFiles() {
 		fragmentCode = fragmentShaderStream.str();
 	}
 	catch (std::ifstream::failure& e) {
+		std::cout << "Shader file load error for " << m_vertexPath << std::endl;
+		std::cout << "Shader file load error for " << m_fragmentPath << std::endl;
 		std::cout << "ERROR::SHADER_FILE_NOT_SUCCESSFULLY_READ: " << e.what() << std::endl;
 	}
 

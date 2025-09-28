@@ -75,12 +75,16 @@ private:
 		ModelEngineInterface::CharacterMap& characterMap{ ModelEngineInterface::getCharacterMap() };
 
 		ImGui::SeparatorText("Starting Relations Settings");
+		if (characterMap.begin() == characterMap.end()) {
+			return;
+		}
 
 		// Relation of
 		ImGui::Text("Relation Of: ");
 		ImGui::SameLine();
 		ImGui::PushItemWidth(200);
 		static id characterOne{ characterMap.begin()->first };
+
 		std::string characterOneName{ myconv.to_bytes(characterMap.at(characterOne).get()->getName()) };
 
 		if (ImGui::BeginCombo(addIdFromPtr("###RelationTypePickerForCharacterOne", &(characterOne)).c_str(), characterOneName.c_str(), 0)) {

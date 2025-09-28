@@ -68,8 +68,9 @@ void runEngine() {
 	std::cout << "checking normal operation" << std::endl;
 	std::cout << VN_BASE_PATH << std::endl;
 
-	std::unique_ptr<VnWindow> window{};
-	std::unique_ptr<StateSubject> state{};
+	std::unique_ptr<VnWindow> window{std::make_unique<VnWindow>()};
+	std::unique_ptr<StateSubject> state{ std::make_unique<StateSubject>() };
+	ModelSubject::init();
 
 	GameObserver game{ window.get(), state.get()};
 	game.run();

@@ -1,5 +1,4 @@
 
-#include "shader.h"
 #include "context.h"
 
 #include <glad/glad.h>
@@ -14,9 +13,6 @@
 
 #include "model_subject.h"
 
-#define TEMP_FRAMEBUFFER_VERTEX		VN_BASE_PATH"/src/game_internals/glsl/vertex_framebuffer.glsl"
-#define TEMP_FRAMEBUFFER_FRAGMENT	VN_BASE_PATH"/src/game_internals/glsl/fragment_framebuffer.glsl"
-
 // TODO: init both shaders here first then pass to the layers
 // TODO: put camera object in context to contain ortho?
 // TODO: change the shader interfact to allow better uniform passing,
@@ -24,16 +20,13 @@
 GameContext::GameContext(VnWindow* window, StateSubject* stateSubject) :
 	m_window{ window },
 	m_stateSubject{ stateSubject },
-	m_backgroundLayer{ window, stateSubject },
-	m_spriteLayer{ window, stateSubject },
-	m_textLayer{ window, stateSubject },
-	m_choiceLayer{ window, stateSubject },
-	m_mainMenuLayer{ window, stateSubject },
-	m_savesMenuLayer{ window, stateSubject },
-	m_optionsMenuLayer{ window, stateSubject },
-	m_defaultShader{ TEMP_VERTEX_PATH, TEMP_FRAGMENT_PATH },
-	m_screenShader{	TEMP_FRAMEBUFFER_VERTEX, TEMP_FRAMEBUFFER_FRAGMENT }
-
+	m_backgroundLayer{ window, stateSubject, &m_textureShader },
+	m_spriteLayer{ window, stateSubject, &m_textureShader },
+	m_textLayer{ window, stateSubject, &m_textShader },
+	m_choiceLayer{ window, stateSubject, &m_textShader },
+	m_mainMenuLayer{ window, stateSubject, &m_textShader },
+	m_savesMenuLayer{ window, stateSubject, &m_textShader },
+	m_optionsMenuLayer{ window, stateSubject, &m_textShader }
 {
 	// vertex attributes for a quad that fills the entire screen in Normalized Device Coordinates.
 	float quadVertices[] = {

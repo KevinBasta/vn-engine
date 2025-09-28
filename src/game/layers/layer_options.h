@@ -7,24 +7,21 @@
 #include "state_types.h"
 #include "state_subject.h"
 
-#define TEMP_TEXT_VERTEX_SHADER		VN_BASE_PATH"/src/game_internals/glsl/vertex_text.glsl"
-#define TEMP_TEXT_FRAGMENT_SHADER	VN_BASE_PATH"/src/game_internals/glsl/fragment_text.glsl"
-
 class OptionsMenuLayer {
 private:
 	VnWindow* m_window{ nullptr };
 	StateSubject* m_stateSubject{ nullptr };
-	Shader m_textShader;
+	Shader* m_textShader{ nullptr };
 
 	void drawOptions(const FrameDimensions& frame) {
 
 	}
 
 public:
-	OptionsMenuLayer(VnWindow* window, StateSubject* stateSubject) :
+	OptionsMenuLayer(VnWindow* window, StateSubject* stateSubject, Shader* textShader) :
 		m_window{ window },
 		m_stateSubject{ stateSubject },
-		m_textShader{ TEMP_TEXT_VERTEX_SHADER, TEMP_TEXT_FRAGMENT_SHADER }
+		m_textShader{ textShader }
 	{
 	}
 

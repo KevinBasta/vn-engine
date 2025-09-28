@@ -11,6 +11,7 @@ public:
 	GLuint	m_programID{};
 	const char*	m_vertexPath{};
 	const char*	m_fragmentPath{};
+	bool m_compiled{ false };
 
 public:
 	/**
@@ -19,12 +20,13 @@ public:
 	 */
 	Shader(const char* vertexPath, const char* fragmentPath);
 	~Shader() { deleteShaderProgram(); };
-	void use() const;
+	void use();
 	void reload();
-	GLuint ID() const { return m_programID; };
+	GLuint ID();
 
 
 private:
+	void checkCompiled();
 	void compileShaderFiles();
 	void checkCompileErrors(GLuint shader, std::string type);
 	void checkLinkErrors(GLuint shader);
