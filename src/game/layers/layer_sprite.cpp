@@ -22,20 +22,37 @@ void SpriteLayer::drawSprite(const FrameDimensions& frame, const TextureIdentifi
 	glm::mat4 model = glm::mat4(1.0f);
 	//model = glm::translate(model, glm::vec3((static_cast<float>(m_window->width()) / 2) - (static_cast<float>(texture->width()) / 2), 0.0f, 0.0f));
 	
-	float centeredX = (spriteState.xpos * frame.scale) - ((texture->width() * frame.scale) / 2.0f);
-	float centeredY = (spriteState.ypos * frame.scale) - ((texture->height() * frame.scale) / 2.0f);
+	float spriteCenteredX = ((texture->width()) / 2.0f);
+	float spriteCenteredY = ((texture->height()) / 2.0f);
 
-	model = glm::translate(model,
-		glm::vec3(centeredX,
-				  centeredY,
-				  spriteState.zpos - 10.0f));
+	float originX = spriteState.xpos;
+	float originY = spriteState.ypos;
+
+
+	//model = glm::translate(model, glm::vec3(-(texture->width() * frame.scale) / 2.0f, -(texture->height() * frame.scale) / 2.0f, 0));
+	model = glm::translate(model, glm::vec3(spriteState.xpos, spriteState.ypos, 0));
+	
+	auto model0 = model[0].a;
+	auto model1 = model[1].a;
+	model = glm::translate(model, glm::vec3(spriteCenteredX - model0, spriteCenteredY - model1, spriteState.zpos - 10.0f));
+	model = glm::rotate(model, glm::radians(spriteState.rotation), glm::vec3(0.0, 0.0, 1.0));
+	model = glm::translate(model, glm::vec3(model0 - spriteCenteredX, model1 - spriteCenteredY, spriteState.zpos - 10.0f));
+	
+
+	model0 = model[0].a;
+	model1 = model[1].a;
+	model = glm::translate(model, glm::vec3(spriteCenteredX - model0, spriteCenteredY - model1, spriteState.zpos - 10.0f));
+	model = glm::scale(model, glm::vec3(scale, scale, 0.0f));
+	model = glm::translate(model, glm::vec3(model0 - spriteCenteredX, model1 - spriteCenteredY, spriteState.zpos - 10.0f));
+	
+	//model = glm::translate(model, glm::vec3(, -, spriteState.zpos - 10.0f));
+	//model = glm::translate(model, glm::vec3(centeredX, centeredY, spriteState.zpos - 10.0f));
+	//model = glm::translate(model, glm::vec3(frame.width, centeredY, spriteState.zpos - 10.0f));
 
 	//std::cout << "scale to view port" << scale << std::endl;
 	//std::cout << "scale to view port" << spriteState.m_position.m_xCoord << std::endl;
 	//std::cout << "scale to view port" << spriteState.m_position.m_yCoord << std::endl;
 	//std::cout << "scale to view port" << spriteState.m_position.m_zCoord << std::endl;
-	model = glm::rotate(model, glm::radians(spriteState.rotation), glm::vec3(0.0, 0.0, 1.0));
-	model = glm::scale(model, glm::vec3(scale, scale, 0.0f));
 
 	unsigned int modelLocation = glGetUniformLocation(m_textureShader->ID(), "inModel");
 	glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(model));

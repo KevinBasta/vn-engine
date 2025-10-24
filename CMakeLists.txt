@@ -232,7 +232,7 @@ add_executable (
 	"src/state/components/state_saves.cpp" 
 	"src/state/components/state_saves.h" 
 	"src/state/components/state_types.h"
-)
+ "src/serialize/save_model.h" "src/serialize/save_state.h")
 
 
 
